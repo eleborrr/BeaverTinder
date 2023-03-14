@@ -5,11 +5,11 @@ namespace BeaverTinder.Controllers;
 
 
 [ApiController]
-[Route("[conroller]")]
+[Route("[controller]")]
 public class UserController
 {
     [HttpGet]
-    public List<User> GetAllUsers()
+    public void GetAllUsers()  //List<User>
     {
         
     }
