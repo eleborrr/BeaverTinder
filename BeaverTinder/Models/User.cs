@@ -1,8 +1,10 @@
-﻿namespace BeaverTinder.Models;
+﻿using Microsoft.AspNetCore.Identity;
 
-public class User
+namespace BeaverTinder.Models;
+
+public class User: IdentityUser
 {
-    public Guid Id { get; set; }
+    public int Id { get; set; }
     public string Name { get; set; }
     public string Surname { get; set; }
     public Sex Sex { get; set; }  //?
