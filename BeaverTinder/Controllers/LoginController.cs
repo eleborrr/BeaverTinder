@@ -21,7 +21,14 @@ public class LoginController : Controller
         _context = ctx;
     }
 
-    [HttpPost("login")]
+    [HttpGet()]
+    public IActionResult GetLogin()
+    {
+        return View();
+        ///тут как то отображается логин форма, я хуй знает как связываетя бэк и фронт :)
+    }
+    
+    [HttpPost()]
     public async Task<IResult> Login()
     {
         //у пароля ток хэш??
@@ -40,9 +47,5 @@ public class LoginController : Controller
         var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
         await HttpContext.SignInAsync(claimsPrincipal);
         return Results.Redirect("/");
-        
-
     }
-    
-    
 }

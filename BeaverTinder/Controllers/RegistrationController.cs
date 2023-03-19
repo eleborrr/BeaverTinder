@@ -13,6 +13,7 @@ public class RegistrationController : Controller
         //снова фронт с беком
     }
 
+    [HttpPost]
     public IResult Register()
     {
         var context = HttpContext;

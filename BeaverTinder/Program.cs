@@ -10,7 +10,8 @@
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(); 
+builder.Services.AddMvc(); 
 builder.Services.AddDbContext<dbContext>(options => 
     options.UseSqlServer(builder.Configuration.GetConnectionString("BeaverTinderDatabase")));
  builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -50,7 +51,8 @@ app.UseHttpsRedirection();
  
 app.UseAuthentication(); 
 app.UseAuthorization();
+ 
 
-app.MapControllers();
+ app.MapControllers();
 
 app.Run();
