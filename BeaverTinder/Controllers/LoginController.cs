@@ -9,27 +9,42 @@ namespace BeaverTinder.Controllers;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 
+[ApiController]
+[Route("[controller]")]
 public class LoginController : Controller
 {
-    [Authorize]
+    private readonly dbContext _context;
+
+    public LoginController(dbContext ctx)
+    {
+        _context = ctx;
+    }
+
+    [HttpGet("login")]
+    public void GetLogin()
+    {
+        ///тут как то отображается логин форма, я хуй знает как связываетя бэк и фронт :)
+    }
+    
     [HttpPost("login")]
-    public IResult Login()
+    public async Task<IResult> Login()
     {
         //у пароля ток хэш??
         var form = HttpContext.Request.Form;
         if (!form.ContainsKey("email") || !form.ContainsKey("password"))
             return Results.BadRequest("Логин и/или пароль не установлены");
         string email = form["email"];
-        //string password = form["password"];
-        User? user = dbContext.Users.FirstOrDefault(p => p.Email == email);
-        // если пользователь не найден, отправляем статусный код 401
+        string password = form["password"];
+        User? user = _context.Users.FirstOrDefault(p => p.Email == email);
         if (user is null) return Results.Unauthorized();
         var claims = new List<Claim>
         { 
-            //new Claim(ClaimTypes.Role, user.RoleId), в юзере паходу нужен string role
+            new Claim(ClaimTypes.Role, user.RoleId.ToString())
         };
         var claimsIdentity = new ClaimsIdentity(claims, "Cookies");
         var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+        await HttpContext.SignInAsync(claimsPrincipal);
+        return Results.Redirect("/");
         
 
     }

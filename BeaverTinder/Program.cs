@@ -23,10 +23,10 @@ builder.Services.AddDbContext<dbContext>(options =>
  builder.Services.AddAuthorization(opts => {
  
      opts.AddPolicy("OnlyForAdmins", policy => {
-         policy.RequireClaim(ClaimTypes.Role, "Admin");
+         policy.RequireClaim(ClaimTypes.Role, "1");
      });
      opts.AddPolicy("OnlyForModerators", policy => {
-         policy.RequireClaim(ClaimTypes.Role, "Moderator");
+         policy.RequireClaim(ClaimTypes.Role, "2");
      });
  });
  
