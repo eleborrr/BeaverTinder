@@ -10,7 +10,7 @@ namespace BeaverTinder.Controllers;
 public class UserController
 {
     [Authorize]
-    [HttpGet]
+    [HttpGet("/all")]
     public string GetAllUsers()  //List<User>
     {
         return "all users";
@@ -24,7 +24,7 @@ public class UserController
     }
     
     [Authorize(Policy = "OnlyMapSub")]
-    [HttpGet]
+    [HttpGet("/map")]
     public string GetMapSubPage()  //List<User>
     {
         return "map sub page";
