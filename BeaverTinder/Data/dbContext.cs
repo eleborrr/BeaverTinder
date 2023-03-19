@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 public class dbContext: DbContext
 {
-    public DbSet<User> Users { get; set; }
+    public static DbSet<User> Users { get; set; }
     public DbSet<Like> Likes { get; set; }
     public DbSet<Message> Messages { get; set; }
     
