@@ -1,3 +1,4 @@
+ using System.Security.Claims;
  using BeaverTinder.DataBase;
  using Microsoft.AspNetCore.Authentication.Cookies;
  using Microsoft.EntityFrameworkCore;
@@ -28,17 +29,14 @@ builder.Services.AddDbContext<dbContext>(options =>
      {
          policy.RequireClaim("Subscription", "Like");
      });
-     options.AddPolicy("OnlyAdmin", policy =>
-     {
-         policy.RequireClaim("Role", "Admin");
+     options.AddPolicy("OnlyForAdmins", policy => {
+         policy.RequireClaim(ClaimTypes.Role, "1");
      });
-     options.AddPolicy("OnlyModerator", policy =>
-     {
-         policy.RequireClaim("Role", "Moderator", "Admin");
+     options.AddPolicy("OnlyForModerators", policy => {
+         policy.RequireClaim(ClaimTypes.Role, "2");
      });
  });
- 
- 
+
  var app = builder.Build();
 
 // Configure the HTTP request pipeline.

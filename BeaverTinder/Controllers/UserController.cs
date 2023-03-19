@@ -7,8 +7,9 @@ namespace BeaverTinder.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class UserController
+public class UserController : Controller
 {
+    // TEST DATA
     [Authorize]
     [HttpGet("/all")]
     public string GetAllUsers()  //List<User>
