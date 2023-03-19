@@ -21,12 +21,6 @@ public class LoginController : Controller
         _context = ctx;
     }
 
-    [HttpGet("login")]
-    public void GetLogin()
-    {
-        ///тут как то отображается логин форма, я хуй знает как связываетя бэк и фронт :)
-    }
-    
     [HttpPost("login")]
     public async Task<IResult> Login()
     {
