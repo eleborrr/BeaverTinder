@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Identity;
 
 public class LoginController
 {
-    [Authorize]
     public void Login()
     {
         var inputLogin = ""; //

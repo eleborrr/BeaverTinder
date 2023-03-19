@@ -1,4 +1,5 @@
 ﻿using BeaverTinder.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BeaverTinder.Controllers;
@@ -8,9 +9,24 @@ namespace BeaverTinder.Controllers;
 [Route("[controller]")]
 public class UserController
 {
+    [Authorize]
     [HttpGet]
-    public void GetAllUsers()  //List<User>
+    public string GetAllUsers()  //List<User>
     {
-        
+        return "all users";
+    }
+    
+    [Authorize]
+    [HttpGet("/1")]
+    public string GetUser()  //List<User>
+    {
+        return "1 user";
+    }
+    
+    [Authorize(Policy = "OnlyMapSub")]
+    [HttpGet]
+    public string GetMapSubPage()  //List<User>
+    {
+        return "map sub page";
     }
 }
