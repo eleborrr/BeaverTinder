@@ -9,5 +9,6 @@ public class User: IdentityUser
     public string About { get; set; }
     public string Gender { get; set; }  //?
     public DateTime DateOfBirth { get; set; }
+    public bool IsBlocked { get; set; }
     public string Image { get; set; } // ? kak xranit kartinku
 }
