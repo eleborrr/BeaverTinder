@@ -10,5 +10,6 @@ public class User: IdentityUser
     public string Gender { get; set; }  //?
     public DateTime DateOfBirth { get; set; }
     public bool IsBlocked { get; set; }
+    public bool IsSearching { get; set; }
     public string Image { get; set; } // ? kak xranit kartinku
 }
