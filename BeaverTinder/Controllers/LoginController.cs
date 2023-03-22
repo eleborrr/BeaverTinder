@@ -14,38 +14,56 @@ using Microsoft.AspNetCore.Identity;
 [Route("[controller]")]
 public class LoginController : Controller
 {
+    private readonly SignInManager<User> _signInManager;
     private readonly dbContext _context;
 
-    public LoginController(dbContext ctx)
+    public LoginController(dbContext ctx, SignInManager<User> signInManager)
     {
         _context = ctx;
+        _signInManager = signInManager;
     }
 
-    [HttpGet()]
-    public IActionResult GetLogin()
+    [HttpGet]
+    public IActionResult Login(string? returnUrl = null)
     {
-        return View();
-        ///тут как то отображается логин форма, я хуй знает как связываетя бэк и фронт :)
+        return View(new LoginViewModel { ReturnUrl = returnUrl });
     }
-    
-    [HttpPost()]
-    public async Task<IResult> Login()
+
+    [HttpPost]
+    public async Task<IActionResult> Login([FromForm]LoginViewModel model)
     {
-        //у пароля ток хэш??
-        var form = HttpContext.Request.Form;
-        if (!form.ContainsKey("email") || !form.ContainsKey("password"))
-            return Results.BadRequest("Логин и/или пароль не установлены");
-        string email = form["email"];
-        string password = form["password"];
-        User? user = _context.Users.FirstOrDefault(p => p.Email == email);
-        if (user is null) return Results.Unauthorized();
-        var claims = new List<Claim>
-        { 
-            new Claim(ClaimTypes.Role, user.RoleId.ToString())
-        };
-        var claimsIdentity = new ClaimsIdentity(claims, "Cookies");
-        var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
-        await HttpContext.SignInAsync(claimsPrincipal);
-        return Results.Redirect("/");
+        bool rememberMe = false;
+        if (Request.Form.ContainsKey("RememberMe"))
+        {
+            bool.TryParse(Request.Form["RememberMe"], out rememberMe);
+        }
+        model.RememberMe = rememberMe;
+        
+        // УЕБАНСКАЯ ХУЙНЯ ЛОМАЕТСЯ ИЗ ЗА ТОГО ЧТО emailconfirmed должен быть true!!!!! 
+        if (ModelState.IsValid)
+        {
+            User? signedUser = await _signInManager.UserManager.FindByNameAsync(model.UserName);
+            var a = await _signInManager.CheckPasswordSignInAsync(signedUser, model.Password, false);
+            Console.WriteLine(signedUser.UserName);
+            Console.WriteLine(signedUser.PasswordHash);
+            Console.WriteLine(a);
+            var result = await _signInManager.PasswordSignInAsync(signedUser.UserName, model.Password, false, lockoutOnFailure: false);
+            // var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
+            if (result.Succeeded)
+            {
+                return RedirectToAction("GetAllUsers", "Account");
+            }
+
+            ModelState.AddModelError("error_message", "Invalid login attempt.");
+        }
+
+        return View(model);
+    }
+
+    [HttpGet("/logout")]
+    public async Task<IActionResult> Logout()
+    {
+        await _signInManager.SignOutAsync();
+        return RedirectToAction("Login", "Login");
     }
 }

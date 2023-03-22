@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BeaverTinder.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BeaverTinder.Controllers;
 
@@ -7,18 +9,50 @@ namespace BeaverTinder.Controllers;
 [Route("[controller]")]
 public class RegistrationController : Controller
 {
-    [HttpGet]
-    public void GetRegister()
+    private readonly UserManager<User> _userManager;
+    private readonly SignInManager<User> _signInManager;
+    public RegistrationController(UserManager<User> userManager, SignInManager<User> signInManager)
     {
-        //снова фронт с беком
+        _userManager = userManager;
+        _signInManager = signInManager;
+    }
+    
+    [HttpGet]
+    public IActionResult Register()
+    {
+        return View();
     }
 
     [HttpPost]
-    public IResult Register()
+    public async Task<IActionResult> Register([FromForm]RegisterViewModel model)
     {
-        var context = HttpContext;
-        var form = context.Request.Form;
-        //ну и дальш хз как указывать при регистрации какая роль
-        return Results.Empty; //затычка
+        if (ModelState.IsValid)
+        {
+            var user = new User
+            {
+                LastName = model.LastName,
+                FirstName = model.FirstName,
+                UserName = model.UserName,
+                Email = model.Email,
+                Gender = model.Gender,
+                About = model.About,
+                Image = "TEST"
+            };
+
+            var result = await _userManager.CreateAsync(user, model.Password);
+
+            if (result.Succeeded)
+            {
+                await _signInManager.SignInAsync(user, isPersistent: false);
+                return RedirectToAction("GetAllUsers", "Account");
+            }
+
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError("error_message", error.Description);
+            }
+        }
+
+        return View(model);
     }
 }

@@ -1,6 +1,8 @@
  using System.Security.Claims;
  using BeaverTinder.DataBase;
+ using BeaverTinder.Models;
  using Microsoft.AspNetCore.Authentication.Cookies;
+ using Microsoft.AspNetCore.Identity;
  using Microsoft.EntityFrameworkCore;
 
  var builder = WebApplication.CreateBuilder(args);
@@ -11,14 +13,18 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(); 
-builder.Services.AddMvc(); 
-builder.Services.AddDbContext<dbContext>(options => 
+builder.Services.AddMvc();
+ builder.Services.AddDbContext<dbContext>(options => 
     options.UseSqlServer(builder.Configuration.GetConnectionString("BeaverTinderDatabase")));
+ builder.Services.AddIdentity<User, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
+     .AddEntityFrameworkStores<dbContext>()
+     .AddDefaultTokenProviders()
+     .AddUserManager<UserManager<User>>();
  builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
      .AddCookie(options =>
      {
          options.LoginPath = "/login";
-         options.AccessDeniedPath = "/login";
+         options.AccessDeniedPath = "../login";
      });
  builder.Services.AddAuthorization(options =>
  {
