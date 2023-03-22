@@ -1,0 +1,24 @@
+﻿@model BeaverTinder.Models.BanUserViewModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>title</title>
+</head>
+<body>
+<div>
+       <form asp-action="Ban" method="post">
+           <div class="form-group">
+               <label asp-for="UserId"></label>
+               <input name="userId" asp-for="UserId" class="form-control" />
+           </div>
+           <button type="submit" class="btn btn-primary">Login</button>
+       </form> 
+</div>
+</body>
+</html>

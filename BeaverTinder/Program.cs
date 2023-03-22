@@ -37,10 +37,10 @@ builder.Services.AddMvc();
          policy.RequireClaim("Subscription", "Like");
      });
      options.AddPolicy("OnlyForAdmins", policy => {
-         policy.RequireClaim(ClaimTypes.Role, "1");
+         policy.RequireClaim(ClaimTypes.Role, "Admin");
      });
      options.AddPolicy("OnlyForModerators", policy => {
-         policy.RequireClaim(ClaimTypes.Role, "2");
+         policy.RequireClaim(ClaimTypes.Role, "Moderator");
      });
  });
 

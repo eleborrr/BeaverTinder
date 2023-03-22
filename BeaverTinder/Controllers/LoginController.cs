@@ -44,13 +44,14 @@ public class LoginController : Controller
         {
             User? signedUser = await _signInManager.UserManager.FindByNameAsync(model.UserName);
             var a = await _signInManager.CheckPasswordSignInAsync(signedUser, model.Password, false);
-            Console.WriteLine(signedUser.UserName);
-            Console.WriteLine(signedUser.PasswordHash);
-            Console.WriteLine(a);
             var result = await _signInManager.PasswordSignInAsync(signedUser.UserName, model.Password, false, lockoutOnFailure: false);
-            // var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
+
+            
             if (result.Succeeded)
             {
+                if (await _signInManager.UserManager.IsInRoleAsync(signedUser, "Admin"))
+                    await _signInManager.UserManager.AddClaimAsync(signedUser, new Claim(ClaimTypes.Role, "Admin"));
+
                 return RedirectToAction("GetAllUsers", "Account");
             }
 

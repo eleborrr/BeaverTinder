@@ -27,4 +27,9 @@
       </Content>
     </ItemGroup>
 
+    <ItemGroup>
+      <AdditionalFiles Include="Views\Login\Login.cshtml" />
+      <AdditionalFiles Include="Views\Registration\Register.cshtml" />
+    </ItemGroup>
+
 </Project>
