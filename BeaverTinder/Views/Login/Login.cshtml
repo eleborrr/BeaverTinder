@@ -1,0 +1,34 @@
+﻿@model BeaverTinder.Models.LoginViewModel
+@Html.ValidationMessage("error_message")
+
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>title</title>
+</head>
+<body>
+<div>
+    <form asp-action="Login" method="post" asp-route-returnUrl="@Model.ReturnUrl">
+        <div class="form-group">
+            <label asp-for="UserName"></label>
+            <input name="UserName" asp-for="UserName" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label asp-for="Password"></label>
+            <input name="Password" asp-for="Password" class="form-control" />
+        </div>
+        <div>
+            <label asp-for="RememberMe"></label><br />
+            <input type="submit" value="false" name="RememberMe" asp-for="RememberMe" />
+        </div>
+        <button type="submit" class="btn btn-primary">Login</button>
+    </form>      
+</div>
+</body>
+</html>

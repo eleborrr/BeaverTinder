@@ -1,17 +1,15 @@
-﻿namespace BeaverTinder.Models;
+﻿using Microsoft.AspNetCore.Identity;
 
-public class User
+namespace BeaverTinder.Models;
+
+public class User: IdentityUser
 {
-    public Guid Id { get; set; }
-    public string Name { get; set; }
-    public string Surname { get; set; }
-    public Sex Sex { get; set; }  //?
-    public int ImageId { get; set; } // ? kak xranit kartinku
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
     public string About { get; set; }
-}
-
-
-public class Sex
-{
-    public bool IsMan { get; set; } //default = true
+    public string Gender { get; set; }  //?
+    public DateTime DateOfBirth { get; set; }
+    public bool IsBlocked { get; set; }
+    public bool IsSearching { get; set; }
+    public string Image { get; set; } // ? kak xranit kartinku
 }
