@@ -53,6 +53,6 @@ public class RegistrationController : Controller
             }
         }
 
-        return View(model);
+        return RedirectToAction("GetAllUsers", "Account");
     }
 }

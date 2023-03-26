@@ -26,7 +26,7 @@ public class AdminController: Controller
     
     [Authorize(Policy = "OnlyForAdmins")]
     [HttpPost("/ban")]
-    public async Task<IActionResult> BanUser([FromForm] BanUserViewModel banUser)  //List<User>
+    public async Task<IActionResult> BanUser([FromBody] BanUserViewModel banUser)  //List<User>
     {
         var user = await _userManager.FindByIdAsync(banUser.UserId);
         
@@ -49,9 +49,9 @@ public class AdminController: Controller
     
     [Authorize(Policy = "OnlyForAdmins")]
     [HttpPost("/deactivate")]
-    public async Task<IActionResult> DeactivateSearch(string userId)  //List<User>
+    public async Task<IActionResult> DeactivateSearch([FromBody] BanUserViewModel userId)  //List<User>
     {
-        var user = await _userManager.FindByIdAsync(userId);
+        var user = await _userManager.FindByIdAsync(userId.UserId);
         
         if (user == null)
         {
@@ -72,9 +72,9 @@ public class AdminController: Controller
 
     [Authorize(Policy = "OnlyForAdmins")]
     [HttpPost("/add_moderator")]
-    public async Task<IActionResult> AddModerator(string userId)
+    public async Task<IActionResult> AddModerator([FromBody] BanUserViewModel userId)
     {
-        var user = await _userManager.FindByIdAsync(userId);
+        var user = await _userManager.FindByIdAsync(userId.UserId);
         if (user == null)
         {
             return NotFound();
@@ -89,4 +89,12 @@ public class AdminController: Controller
 
         return RedirectToAction("GetAllUsers", "Account");
     }
+
+    [Authorize(Policy = "OnlyForAdmins")]
+    [HttpGet("page")]
+    public bool GetAdminPage()
+    {
+        return true;
+    }
+    
 }
