@@ -22,9 +22,10 @@ public class AccountController : Controller
     // TEST DATA
     [Authorize]
     [HttpGet("/all")]
-    public string GetAllUsers()  //List<User>
+    public List<User> GetAllUsers()  //List<User>
     {
-        return "all users";
+        return _userManager.Users.ToList();
+        // return "all users";
     }
     
     [Authorize]

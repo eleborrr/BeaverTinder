@@ -26,9 +26,9 @@ public class AdminController: Controller
     
     [Authorize(Policy = "OnlyForAdmins")]
     [HttpPost("/ban")]
-    public async Task<IActionResult> BanUser([FromForm] BanUserViewModel banUser)  //List<User>
+    public async Task<IActionResult> BanUser([FromBody] BanUserViewModel banUser)  //List<User>
     {
-        var user = await _userManager.FindByIdAsync(banUser.UserId);
+        var user = await _userManager.FindByNameAsync(banUser.UserName);
         
         if (user == null)
         {
@@ -48,6 +48,31 @@ public class AdminController: Controller
     }
     
     [Authorize(Policy = "OnlyForAdmins")]
+    [Authorize]
+    [HttpPost("/unban")]
+    public async Task<IActionResult> UnBanUser([FromBody] BanUserViewModel banUser)  //List<User>
+    {
+        var user = await _userManager.FindByNameAsync(banUser.UserName);
+        
+        if (user == null)
+        {
+            return NotFound();
+        }
+        
+        user.IsBlocked = false;
+
+        var result = await _userManager.UpdateAsync(user);
+
+        if (!result.Succeeded)
+        {
+            return BadRequest(result.Errors);
+        }
+        
+        return RedirectToAction("GetAllUsers", "Account");
+    }
+    
+    //[Authorize(Policy = "OnlyForAdmins")]
+    [Authorize]
     [HttpPost("/deactivate")]
     public async Task<IActionResult> DeactivateSearch(string userId)  //List<User>
     {
@@ -70,7 +95,8 @@ public class AdminController: Controller
         return RedirectToAction("GetAllUsers", "Account");
     }
 
-    [Authorize(Policy = "OnlyForAdmins")]
+    //[Authorize(Policy = "OnlyForAdmins")]
+    [Authorize]
     [HttpPost("/add_moderator")]
     public async Task<IActionResult> AddModerator(string userId)
     {

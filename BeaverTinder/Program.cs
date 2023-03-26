@@ -5,8 +5,20 @@
  using Microsoft.AspNetCore.Identity;
  using Microsoft.EntityFrameworkCore;
 
+ var TestSpesific = "testSpesific";
+
  var builder = WebApplication.CreateBuilder(args);
 
+
+ builder.Services.ConfigureApplicationCookie(options =>
+ {
+     if (builder.Environment.IsDevelopment())
+     {
+         options.Cookie.SameSite = SameSiteMode.None;
+         options.Cookie.HttpOnly = true;
+         options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+     }
+ });
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -44,6 +56,17 @@ builder.Services.AddMvc();
      });
  });
 
+ builder.Services.AddCors(options =>
+ {
+     options.AddPolicy(name: TestSpesific, policyBuilder =>
+     {
+         policyBuilder.WithOrigins("http://localhost:3000")
+             .AllowAnyHeader()
+             .AllowCredentials()
+             .AllowAnyMethod();
+     });
+ });
+
  var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -52,6 +75,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+ app.UseCors(TestSpesific);
 
 app.UseHttpsRedirection();
  
