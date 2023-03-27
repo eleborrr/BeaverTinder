@@ -48,6 +48,29 @@ public class AdminController: Controller
     }
     
     [Authorize(Policy = "OnlyForAdmins")]
+    [HttpPost("/unban")]
+    public async Task<IActionResult> UnbanUser([FromBody] BanUserViewModel banUser)  //List<User>
+    {
+        var user = await _userManager.FindByIdAsync(banUser.UserId);
+        
+        if (user == null)
+        {
+            return NotFound();
+        }
+        
+        user.IsBlocked = false;
+
+        var result = await _userManager.UpdateAsync(user);
+
+        if (!result.Succeeded)
+        {
+            return BadRequest(result.Errors);
+        }
+        
+        return RedirectToAction("GetAllUsers", "Account");
+    }
+    
+    [Authorize(Policy = "OnlyForAdmins")]
     [HttpPost("/deactivate")]
     public async Task<IActionResult> DeactivateSearch([FromBody] BanUserViewModel userId)  //List<User>
     {
@@ -59,6 +82,29 @@ public class AdminController: Controller
         }
         
         user.IsSearching = false;
+
+        var result = await _userManager.UpdateAsync(user);
+
+        if (!result.Succeeded)
+        {
+            return BadRequest(result.Errors);
+        }
+        
+        return RedirectToAction("GetAllUsers", "Account");
+    }
+    
+    [Authorize(Policy = "OnlyForAdmins")]
+    [HttpPost("/activate")]
+    public async Task<IActionResult> ActivateSearch([FromBody] BanUserViewModel userId)  //List<User>
+    {
+        var user = await _userManager.FindByIdAsync(userId.UserId);
+        
+        if (user == null)
+        {
+            return NotFound();
+        }
+        
+        user.IsSearching = true;
 
         var result = await _userManager.UpdateAsync(user);
 

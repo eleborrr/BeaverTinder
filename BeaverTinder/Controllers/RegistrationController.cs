@@ -24,7 +24,7 @@ public class RegistrationController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Register([FromForm]RegisterViewModel model)
+    public async Task<IActionResult> Register([FromBody]RegisterViewModel model)
     {
         if (ModelState.IsValid)
         {
