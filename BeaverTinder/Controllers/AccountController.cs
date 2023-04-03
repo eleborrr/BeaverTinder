@@ -1,7 +1,11 @@
-﻿using BeaverTinder.Models;
+﻿using System.Text;
+using System.Web;
+using BeaverTinder.Models;
+using BeaverTinder.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace BeaverTinder.Controllers;
 
@@ -12,32 +16,21 @@ public class AccountController : Controller
 {
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signInManager;
+    private readonly TwoFAService _faService;
     
-    public AccountController(UserManager<User> userManager, SignInManager<User> signInManager)
+    public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, TwoFAService twoFaService)
     {
         _userManager = userManager;
         _signInManager = signInManager;
+        _faService = twoFaService;
     }
-    
-    // TEST DATA
+
+    [HttpGet("/empty")]
     [Authorize]
-    [HttpGet("/all")]
-    public string GetAllUsers()  //List<User>
+    public IActionResult EmptyPage()
     {
-        return "all users";
+        return View("../EmptyPage");
     }
-    
-    [Authorize]
-    [HttpGet("/1")]
-    public string GetUser()  //List<User>
-    {
-        return "1 user";
-    }
-    
-    [Authorize(Policy = "OnlyMapSub")]
-    [HttpGet("/map")]
-    public string GetMapSubPage()  //List<User>
-    {
-        return "map sub page";
-    }
+
+   
 }
