@@ -7,5 +7,4 @@ public interface ITwoFAService
 {
     public Task SendConfirmationEmailAsync(User user);
     public Task<IdentityResult> ConfirmEmailAsync(string userEmail, string token);
-    public Task<string> GetConfirmationToken(User user);
 }

@@ -24,7 +24,6 @@ public class EmailService: IEmailServiceInterface
     {
         try
         {
-            // var emailMessage = new MailMessage(new MailAddress(ec.FromName, ec.FromAddress));
             var from = new MailAddress(ec.FromAddress);
             var to =  new MailAddress(email);
             var host = ec.Server;

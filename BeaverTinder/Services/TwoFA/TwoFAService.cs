@@ -19,22 +19,13 @@ public class TwoFAService: ITwoFAService
         _emailService = emailService;
     }
 
-    public async Task<string> GetConfirmationToken(User user)
-    {
-        var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-        File.WriteAllText("token.txt", token);
-        return token;
-    }
-
     public async Task SendConfirmationEmailAsync(User user)
     {
         var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
         byte[] tokenGeneratedBytes = Encoding.UTF8.GetBytes(token);
         var codeEncoded = WebEncoders.Base64UrlEncode(tokenGeneratedBytes);
         
-        // var res = await _userManager.ConfirmEmailAsync(user, codeEncoded);
-
-        var link = $"https://localhost:7015/confirm?userEmail={user.Email}&token={token}";
+        var link = $"https://localhost:7015/confirm?userEmail={user.Email}&token={codeEncoded}";
         
         await _emailService.SendEmailAsync(user.Email, "Confirm your account",
             $"Подтвердите регистрацию, перейдя по ссылке: <a href=\"{link}\">ссылка</a>");
@@ -45,13 +36,12 @@ public class TwoFAService: ITwoFAService
     {
         var codeDecodedBytes = WebEncoders.Base64UrlDecode(token);
         var codeDecoded = Encoding.UTF8.GetString(codeDecodedBytes);
-        // token = HttpUtility.HtmlDecode(token);
         var user = await _userManager.FindByEmailAsync(userEmail);
         if (user == null)
         {
             return IdentityResult.Failed();
         }
-        var res = await _userManager.ConfirmEmailAsync(user, token);
+        var res = await _userManager.ConfirmEmailAsync(user, codeDecoded);
         return res;
     }
 }

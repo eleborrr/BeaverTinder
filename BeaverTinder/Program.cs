@@ -25,9 +25,10 @@ builder.Services.AddMvc();
              options.SignIn.RequireConfirmedAccount = false;
              options.SignIn.RequireConfirmedEmail = false;
          })
-     .AddEntityFrameworkStores<dbContext>()
-     // .AddUserManager<UserManager<User>>()
-     .AddDefaultTokenProviders();
+     .AddDefaultTokenProviders()
+     .AddEntityFrameworkStores<dbContext>();
+ builder.Services.Configure<DataProtectionTokenProviderOptions>(
+     o => o.TokenLifespan = TimeSpan.FromHours(3));
  builder.Services.AddScoped<ITwoFAService ,TwoFAService>();
  builder.Services.Configure<EmailConfig>(builder.Configuration.GetSection("SmtpSettings"));
  builder.Services.AddScoped<IEmailServiceInterface, EmailService>();

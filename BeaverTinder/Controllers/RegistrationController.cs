@@ -46,16 +46,14 @@ public class RegistrationController : Controller
                 Email = model.Email,
                 Gender = model.Gender,
                 About = model.About,
-                Image = "TEST"
+                Image = "TEST",
+                
             };
 
             var result = await _userManager.CreateAsync(user, model.Password);
 
             if (result.Succeeded)
             {
-                // var token = await _faService.GetConfirmationToken(user);
-                // await ConfirmEmail(userEmail: user.Email, token: token);
-                // var res = _faService.ConfirmEmailAsync(user.Email, token);
                 await _faService.SendConfirmationEmailAsync(user);
                 return Content(
                     "Для завершения регистрации проверьте электронную почту и перейдите по ссылке, указанной в письме");
@@ -78,9 +76,7 @@ public class RegistrationController : Controller
         {
             return View("../EmptyPage");
         }
-        
 
-        // token = token.Replace(" ", "+");
         var res = await _faService.ConfirmEmailAsync(userEmail, token);
         if (res.Succeeded)
             return View("../Succes");
