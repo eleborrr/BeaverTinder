@@ -20,13 +20,8 @@ public class dbContext: IdentityDbContext<User>
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        
+
         modelBuilder.Entity<User>()
-            .Ignore(u => u.SecurityStamp)
-            .Ignore(u => u.ConcurrencyStamp)
-            .Ignore(u => u.LockoutEnabled)
-            .Ignore(u => u.LockoutEnd)
-            .Ignore(u => u.AccessFailedCount)
             .Ignore(u => u.PhoneNumber)
             .Ignore(u => u.PhoneNumberConfirmed);
         modelBuilder.Entity<IdentityRole>().HasData(

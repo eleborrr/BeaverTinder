@@ -1,6 +1,10 @@
  using System.Security.Claims;
  using BeaverTinder.DataBase;
  using BeaverTinder.Models;
+ using BeaverTinder.Services;
+ using BeaverTinder.Services.Pay;
+ using DogApi.Models;
+ using DogApi.Services;
  using Microsoft.AspNetCore.Authentication.Cookies;
  using Microsoft.AspNetCore.Identity;
  using Microsoft.EntityFrameworkCore;
@@ -28,10 +32,19 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddMvc();
  builder.Services.AddDbContext<dbContext>(options => 
     options.UseSqlServer(builder.Configuration.GetConnectionString("BeaverTinderDatabase")));
- builder.Services.AddIdentity<User, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
-     .AddEntityFrameworkStores<dbContext>()
+ builder.Services.AddIdentity<User, IdentityRole>(
+         options =>
+         {
+             options.SignIn.RequireConfirmedAccount = false; // change in prod
+             options.SignIn.RequireConfirmedEmail = false;  // change in prod
+         })
      .AddDefaultTokenProviders()
-     .AddUserManager<UserManager<User>>();
+     .AddEntityFrameworkStores<dbContext>();
+ builder.Services.Configure<DataProtectionTokenProviderOptions>(
+     o => o.TokenLifespan = TimeSpan.FromHours(3));
+ builder.Services.AddScoped<ITwoFAService ,TwoFAService>();
+ builder.Services.Configure<EmailConfig>(builder.Configuration.GetSection("SmtpSettings"));
+ builder.Services.AddScoped<IEmailServiceInterface, EmailService>();
  builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
      .AddCookie(options =>
      {
@@ -54,6 +67,11 @@ builder.Services.AddMvc();
      options.AddPolicy("OnlyForModerators", policy => {
          policy.RequireClaim(ClaimTypes.Role, "Moderator");
      });
+ });
+ builder.Services.AddRouting(options =>
+ {
+     options.LowercaseUrls = true;
+     options.LowercaseQueryStrings = false;
  });
 
  builder.Services.AddCors(options =>
@@ -80,8 +98,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
  
-app.UseAuthentication(); 
-app.UseAuthorization();
+ app.UseAuthentication(); 
+ app.UseAuthorization();
+
  
 
  app.MapControllers();

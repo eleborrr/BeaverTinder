@@ -32,8 +32,13 @@ public class LoginController : Controller
     [HttpPost]
     public async Task<IActionResult> Login([FromBody]LoginViewModel model)
     {
-
-        // УЕБАНСКАЯ ХУЙНЯ ЛОМАЕТСЯ ИЗ ЗА ТОГО ЧТО emailconfirmed должен быть true!!!!! 
+        bool rememberMe = false;
+        if (Request.Form.ContainsKey("RememberMe"))
+        {
+            bool.TryParse(Request.Form["RememberMe"], out rememberMe);
+        }
+        model.RememberMe = rememberMe;
+        
         if (ModelState.IsValid)
         {
             User? signedUser = await _signInManager.UserManager.FindByNameAsync(model.UserName);
@@ -45,7 +50,6 @@ public class LoginController : Controller
             {
                 if (await _signInManager.UserManager.IsInRoleAsync(signedUser, "Admin"))
                     await _signInManager.UserManager.AddClaimAsync(signedUser, new Claim(ClaimTypes.Role, "Admin"));
-
 
                 return Ok("Success");
                 return RedirectToAction("GetAllUsers", "Account");
