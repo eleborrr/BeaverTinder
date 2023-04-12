@@ -26,10 +26,21 @@
 // Add services to the container.
 
 builder.Services.AddControllers();
+ 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(); 
-builder.Services.AddMvc();
+builder.Services.AddMvc(); 
+ builder.Services.ConfigureApplicationCookie(options =>
+ {
+     if (builder.Environment.IsDevelopment())
+     {
+         options.Cookie.SameSite = SameSiteMode.None;
+         options.Cookie.HttpOnly = true;
+         options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+     }
+ });
+
  builder.Services.AddDbContext<dbContext>(options => 
     options.UseSqlServer(builder.Configuration.GetConnectionString("BeaverTinderDatabase")));
  builder.Services.AddIdentity<User, IdentityRole>(
@@ -68,6 +79,9 @@ builder.Services.AddMvc();
          policy.RequireClaim(ClaimTypes.Role, "Moderator");
      });
  });
+ 
+ var TestSpesific = "testSpesific";
+
  builder.Services.AddRouting(options =>
  {
      options.LowercaseUrls = true;
@@ -93,6 +107,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+ 
+ app.UseCors(TestSpesific);
 
  app.UseCors(TestSpesific);
 

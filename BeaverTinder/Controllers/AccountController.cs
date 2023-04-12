@@ -30,7 +30,6 @@ public class AccountController : Controller
     public List<User> GetAllUsers()  //List<User>
     {
         return _userManager.Users.ToList();
-        // return "all users";
     }
 
     [HttpGet("/empty")]

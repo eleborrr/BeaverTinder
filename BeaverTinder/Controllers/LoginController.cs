@@ -32,12 +32,12 @@ public class LoginController : Controller
     [HttpPost]
     public async Task<IActionResult> Login([FromBody]LoginViewModel model)
     {
-        bool rememberMe = false;
-        if (Request.Form.ContainsKey("RememberMe"))
+        /*bool rememberMe = false;
+        /*if (Request.Form.ContainsKey("RememberMe"))
         {
             bool.TryParse(Request.Form["RememberMe"], out rememberMe);
-        }
-        model.RememberMe = rememberMe;
+        }#1#
+        model.RememberMe = rememberMe;*/
         
         if (ModelState.IsValid)
         {

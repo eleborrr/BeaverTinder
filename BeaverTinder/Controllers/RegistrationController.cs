@@ -34,7 +34,7 @@ public class RegistrationController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Register([FromForm]RegisterViewModel model)
+    public async Task<IActionResult> Register([FromBody]RegisterViewModel model)
     {
         if (ModelState.IsValid)
         {
@@ -65,7 +65,7 @@ public class RegistrationController : Controller
             }
         }
 
-        return View(model);
+        return RedirectToAction("GetAllUsers", "Account");
     }
     
     [HttpGet("/confirm")]
