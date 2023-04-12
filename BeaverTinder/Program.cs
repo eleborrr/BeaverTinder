@@ -1,12 +1,28 @@
  using System.Security.Claims;
  using BeaverTinder.DataBase;
  using BeaverTinder.Models;
+ using BeaverTinder.Services;
+ using BeaverTinder.Services.Pay;
+ using DogApi.Models;
+ using DogApi.Services;
  using Microsoft.AspNetCore.Authentication.Cookies;
  using Microsoft.AspNetCore.Identity;
  using Microsoft.EntityFrameworkCore;
 
+ var TestSpesific = "testSpesific";
+
  var builder = WebApplication.CreateBuilder(args);
 
+
+ builder.Services.ConfigureApplicationCookie(options =>
+ {
+     if (builder.Environment.IsDevelopment())
+     {
+         options.Cookie.SameSite = SameSiteMode.None;
+         options.Cookie.HttpOnly = true;
+         options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+     }
+ });
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -27,10 +43,19 @@ builder.Services.AddMvc();
 
  builder.Services.AddDbContext<dbContext>(options => 
     options.UseSqlServer(builder.Configuration.GetConnectionString("BeaverTinderDatabase")));
- builder.Services.AddIdentity<User, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
-     .AddEntityFrameworkStores<dbContext>()
+ builder.Services.AddIdentity<User, IdentityRole>(
+         options =>
+         {
+             options.SignIn.RequireConfirmedAccount = false; // change in prod
+             options.SignIn.RequireConfirmedEmail = false;  // change in prod
+         })
      .AddDefaultTokenProviders()
-     .AddUserManager<UserManager<User>>();
+     .AddEntityFrameworkStores<dbContext>();
+ builder.Services.Configure<DataProtectionTokenProviderOptions>(
+     o => o.TokenLifespan = TimeSpan.FromHours(3));
+ builder.Services.AddScoped<ITwoFAService ,TwoFAService>();
+ builder.Services.Configure<EmailConfig>(builder.Configuration.GetSection("SmtpSettings"));
+ builder.Services.AddScoped<IEmailServiceInterface, EmailService>();
  builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
      .AddCookie(options =>
      {
@@ -54,7 +79,15 @@ builder.Services.AddMvc();
          policy.RequireClaim(ClaimTypes.Role, "Moderator");
      });
  });
+ 
  var TestSpesific = "testSpesific";
+
+ builder.Services.AddRouting(options =>
+ {
+     options.LowercaseUrls = true;
+     options.LowercaseQueryStrings = false;
+ });
+
  builder.Services.AddCors(options =>
  {
      options.AddPolicy(name: TestSpesific, policyBuilder =>
@@ -65,7 +98,6 @@ builder.Services.AddMvc();
              .AllowAnyMethod();
      });
  });
- 
 
  var app = builder.Build();
 
@@ -78,10 +110,13 @@ if (app.Environment.IsDevelopment())
  
  app.UseCors(TestSpesific);
 
+ app.UseCors(TestSpesific);
+
 app.UseHttpsRedirection();
  
-app.UseAuthentication(); 
-app.UseAuthorization();
+ app.UseAuthentication(); 
+ app.UseAuthorization();
+
  
 
  app.MapControllers();

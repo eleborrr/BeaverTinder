@@ -39,7 +39,6 @@ public class LoginController : Controller
         }#1#
         model.RememberMe = rememberMe;*/
         
-        // УЕБАНСКАЯ ХУЙНЯ ЛОМАЕТСЯ ИЗ ЗА ТОГО ЧТО emailconfirmed должен быть true!!!!! 
         if (ModelState.IsValid)
         {
             User? signedUser = await _signInManager.UserManager.FindByNameAsync(model.UserName);
@@ -52,6 +51,7 @@ public class LoginController : Controller
                 if (await _signInManager.UserManager.IsInRoleAsync(signedUser, "Admin"))
                     await _signInManager.UserManager.AddClaimAsync(signedUser, new Claim(ClaimTypes.Role, "Admin"));
 
+                return Ok("Success");
                 return RedirectToAction("GetAllUsers", "Account");
             }
 
