@@ -5,6 +5,6 @@ namespace BeaverTinder.Models;
 public class BanUserViewModel
 {
     [Required]
-    [Display(Name = "UserId")]
-    public string UserId { get; set; }
+    [Display(Name = "UserName")]
+    public string UserName { get; set; }
 }

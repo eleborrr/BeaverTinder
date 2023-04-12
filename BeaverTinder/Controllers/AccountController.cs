@@ -27,9 +27,10 @@ public class AccountController : Controller
 
     
     [HttpGet("/all")]
-    public IActionResult GetAllUsers()
+    public List<User> GetAllUsers()  //List<User>
     {
-        return Ok("я не лох");
+        return _userManager.Users.ToList();
+        // return "all users";
     }
 
     [HttpGet("/empty")]
