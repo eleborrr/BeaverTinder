@@ -2,6 +2,7 @@
  using BeaverTinder.DataBase;
  using BeaverTinder.Models;
  using BeaverTinder.Services;
+ using BeaverTinder.Services.Pay;
  using DogApi.Models;
  using DogApi.Services;
  using Microsoft.AspNetCore.Authentication.Cookies;
@@ -22,8 +23,8 @@ builder.Services.AddMvc();
  builder.Services.AddIdentity<User, IdentityRole>(
          options =>
          {
-             options.SignIn.RequireConfirmedAccount = false;
-             options.SignIn.RequireConfirmedEmail = false;
+             options.SignIn.RequireConfirmedAccount = false; // change in prod
+             options.SignIn.RequireConfirmedEmail = false;  // change in prod
          })
      .AddDefaultTokenProviders()
      .AddEntityFrameworkStores<dbContext>();

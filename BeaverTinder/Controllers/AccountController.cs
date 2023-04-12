@@ -16,13 +16,20 @@ public class AccountController : Controller
 {
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signInManager;
-    private readonly TwoFAService _faService;
+    private readonly ITwoFAService _faService;
     
-    public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, TwoFAService twoFaService)
+    public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, ITwoFAService twoFaService)
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _faService = twoFaService;
+    }
+
+    
+    [HttpGet("/all")]
+    public IActionResult GetAllUsers()
+    {
+        return Ok("я не лох");
     }
 
     [HttpGet("/empty")]
