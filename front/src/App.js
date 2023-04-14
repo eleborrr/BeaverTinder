@@ -1,4 +1,4 @@
-import './App.css';
+import './assets/css/App.css';
 import { Routes, Route } from 'react-router-dom';
 import HeaderApp from './Components/header';
 import RegisterPage from './Pages/register';
