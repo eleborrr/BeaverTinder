@@ -1,4 +1,4 @@
-import {axiosInstance} from "./../Components/axios_server";
+import {axiosInstance} from "../Components/axios_server";
 import { useEffect, useState } from "react";
 
 const LoginPage = () => {

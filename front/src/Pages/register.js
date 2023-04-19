@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from 'react-router-dom';
 import { axiosInstance } from "../Components/axios_server";
 
 const RegisterPage = () => {
@@ -11,10 +12,12 @@ const RegisterPage = () => {
     const [gender, setGender] = useState('')
     const [about, setAbout] = useState('')
     const [errMess, setErrMess] = useState('')
-    const [errForm, setErrForm] = useState('')
+    const [respStatus, setRespStatus] = useState(0)
+    const [errorCode, setErrorCode] = useState('') 
+    const navigate = useNavigate()
 
     const ValidatePass = (e) => {
-        if (e.target.value != pass){
+        if (e.target.value !== pass){
             setErrMess("Password doesn't match")
         } else {
             setErrMess('')
@@ -24,6 +27,8 @@ const RegisterPage = () => {
 
     const onSubmit = (e) => {
         e.preventDefault();
+        console.log('start');
+        try {
         axiosInstance
             .post('/Registration', {
                 LastName: lName,
@@ -35,13 +40,34 @@ const RegisterPage = () => {
                 Gender: gender,
                 About: about
             })
-            .then(function (response) {
-                console.log(response);
+            .then(function (res) {
+                console.log(res);
+                const token = res.data;
+                localStorage.setItem('token', token);
+                setRespStatus(res.status);
             })
             .catch(function(error) {
-                console.log(error);
+                if (error.status){
+                    setRespStatus(error.status);
+                }else{
+                    setErrorCode(error.code);
+                }
             })
+        }
+        catch(error){
+            console.log(error);
+        }
+        if(respStatus === 200 ){
+            navigate('/home')
+        }
     };
+    useEffect(() => {
+        if (localStorage.getItem('token')){
+            navigate('/home');
+        }
+    }, []);
+    
+    
 
     return (
         <>
@@ -66,7 +92,7 @@ const RegisterPage = () => {
                         </div>
                     </div>
                     <div className="col-lg-4 col-5">
-                        <a href="index.html" className="backto-home"><i className="fas fa-chevron-left"></i> Back to Home</a>
+                        <a href="/home" className="backto-home"><i className="fas fa-chevron-left"></i> Back to Home</a>
                     </div>
                 </div>
             </div>
@@ -82,23 +108,30 @@ const RegisterPage = () => {
                             <p>Let's create your profile! Just fill in the fields below, and we’ll get a new account. </p>
                         </div>
                         <div className="main-content">
+                            {errorCode === 'ERR_NETWORK' &&
+                                <>
+                                    <h1>We have problem with server connection, please try again later =(</h1>
+                                    <a href={'/register'}><button className="default-btn reverse">Register</button> </a>
+                                </>
+                            }
+                            { errorCode !== 'ERR_NETWORK' &&
                             <form onSubmit={onSubmit}>
                                 <h4 className="content-title">Acount Details</h4>
                                 <div className="form-group">
                                     <label>Last name</label>
-                                    <input type="text" className="my-form-control" placeholder="Enter Your Last name" onChange={(e) => setLName(e.target.value)}/>
+                                    <input type="text" className="my-form-control" placeholder="Enter Your Last name" value="Last name" onChange={(e) => setLName(e.target.value)}/>
                                 </div>
                                 <div className="form-group">
                                     <label>First name</label>
-                                    <input type="text" className="my-form-control" placeholder="Enter Your First name" onChange={(e) => setFName(e.target.value)}/>
+                                    <input type="text" className="my-form-control" placeholder="Enter Your First name" value="First name" onChange={(e) => setFName(e.target.value)}/>
                                 </div>
                                 <div className="form-group">
                                     <label>Nickname</label>
-                                    <input type="text" className="my-form-control" placeholder="Enter Your Nickname" onChange={(e) => setNName(e.target.value)}/>
+                                    <input type="text" className="my-form-control" placeholder="Enter Your Nickname" value="Nickname" onChange={(e) => setNName(e.target.value)}/>
                                 </div>
                                 <div className="form-group">
                                     <label>Email</label>
-                                    <input type="email" className="my-form-control" placeholder="Enter Your Email" onChange={(e) => setEmail(e.target.value)}/>
+                                    <input type="email" className="my-form-control" placeholder="Enter Your Email" value="someEmail@gmail.com" onChange={(e) => setEmail(e.target.value)}/>
                                 </div>
                                 <div className="form-group">
                                     <label>Password</label>
@@ -114,7 +147,7 @@ const RegisterPage = () => {
                                     <label>Gender</label>
                                     <div className="banner__inputlist">
                                         <div className="s-input me-3">
-                                            <input type="radio" name="gender1" id="males1" onChange={() => setGender('Man')}/>
+                                            <input type="radio" name="gender1" id="males1" onChange={() => setGender('Man')} checked={true}/>
                                             <label htmlFor="males1">Man</label>
                                         </div>
                                         <div className="s-input">
@@ -125,11 +158,11 @@ const RegisterPage = () => {
                                 </div>
                                 <div className="form-group">
                                     <label>Tell about yourself</label>
-                                    <input type="text" className="my-form-control" placeholder="Tell about yourself" onChange={(e) => setAbout(e.target.value)}/>
+                                    <input type="text" className="my-form-control" placeholder="Tell about yourself" value="Hi! I use BeaverTinder!" onChange={(e) => setAbout(e.target.value)}/>
                                 </div>
                                 <button className="default-btn reverse" data-toggle="modal" data-target="#email-confirm"><span>Create Your Profile</span></button>
                             </form>
-                            {errForm}
+                            }
                         </div>
                     </div>
                 </div>
@@ -157,5 +190,6 @@ const RegisterPage = () => {
 </>
     )
 }
+
 
 export default RegisterPage;
