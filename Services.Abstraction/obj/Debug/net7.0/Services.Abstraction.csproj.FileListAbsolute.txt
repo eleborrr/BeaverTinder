@@ -1,0 +1,15 @@
+C:\Users\this_\Repos\BeaverTinder\Services.Abstraction\bin\Debug\net7.0\Services.Abstraction.deps.json
+C:\Users\this_\Repos\BeaverTinder\Services.Abstraction\bin\Debug\net7.0\Services.Abstraction.dll
+C:\Users\this_\Repos\BeaverTinder\Services.Abstraction\bin\Debug\net7.0\Services.Abstraction.pdb
+C:\Users\this_\Repos\BeaverTinder\Services.Abstraction\obj\Debug\net7.0\Services.Abstraction.csproj.AssemblyReference.cache
+C:\Users\this_\Repos\BeaverTinder\Services.Abstraction\obj\Debug\net7.0\Services.Abstraction.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\this_\Repos\BeaverTinder\Services.Abstraction\obj\Debug\net7.0\Services.Abstraction.AssemblyInfoInputs.cache
+C:\Users\this_\Repos\BeaverTinder\Services.Abstraction\obj\Debug\net7.0\Services.Abstraction.AssemblyInfo.cs
+C:\Users\this_\Repos\BeaverTinder\Services.Abstraction\obj\Debug\net7.0\Services.Abstraction.csproj.CoreCompileInputs.cache
+C:\Users\this_\Repos\BeaverTinder\Services.Abstraction\obj\Debug\net7.0\Services.Abstraction.dll
+C:\Users\this_\Repos\BeaverTinder\Services.Abstraction\obj\Debug\net7.0\refint\Services.Abstraction.dll
+C:\Users\this_\Repos\BeaverTinder\Services.Abstraction\obj\Debug\net7.0\Services.Abstraction.pdb
+C:\Users\this_\Repos\BeaverTinder\Services.Abstraction\obj\Debug\net7.0\ref\Services.Abstraction.dll
+C:\Users\this_\Repos\BeaverTinder\Services.Abstraction\bin\Debug\net7.0\Domain.dll
+C:\Users\this_\Repos\BeaverTinder\Services.Abstraction\bin\Debug\net7.0\Domain.pdb
+C:\Users\this_\Repos\BeaverTinder\Services.Abstraction\obj\Debug\net7.0\Services.Abstraction.csproj.CopyComplete
