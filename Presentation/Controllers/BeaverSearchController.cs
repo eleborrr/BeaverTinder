@@ -1,27 +1,33 @@
-﻿using Domain.Entities;
-using Microsoft.AspNetCore.Authorization;
+﻿using Contracts;
+using Contracts.ViewModels;
+using Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Services.Abstraction;
 
-namespace BeaverTinder.Controllers;
+namespace Presentation.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-[Authorize]
+// [Authorize]
 public class BeaverSearchController: Controller
 {
     private readonly UserManager<User> _userManager;
+    private readonly IServiceManager _serviceManager;
     
-    public BeaverSearchController(UserManager<User> userManager)
+    public BeaverSearchController(UserManager<User> userManager, IServiceManager serviceManager)
     {
+        _serviceManager = serviceManager;
         _userManager = userManager;
     }
 
-    // [HttpGet]
-    // public IActionResult Search()
-    // {
-    //     return View("../Search/Search");
-    // }
+    [HttpPost]
+    public async Task<User?> Search([FromBody] SearchDto searchDto)
+    {
+        var user = await _userManager.FindByIdAsync(searchDto.UserId);
+        return await _serviceManager.FindBeaverService.GetNextBeaver(user);
+        // return View("../Search/Search");
+    }
     //
     // [HttpGet]
     // public IActionResult GetRandom()
@@ -29,11 +35,11 @@ public class BeaverSearchController: Controller
     //     return View("../Search/Search");
     // }
     //
-    // [HttpPost("/like")]
-    // public async void Like()
-    // {
-    //     _userManager.User
-    // }
+    [HttpPost("/like")]
+    public async Task Like([FromBody] LikeViewModel likeViewModel)
+    {
+        await _serviceManager.FindBeaverService.Like(likeViewModel.UserId, likeViewModel.LikedUserId);
+    }
     //
     // [HttpPost("/dislike")]
     // public async void DisLike()

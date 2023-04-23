@@ -10,7 +10,7 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.2.9" />
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.4" />
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.1" />
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.4" />
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.4" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.4">
           <PrivateAssets>all</PrivateAssets>
@@ -29,8 +29,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <AdditionalFiles Include="Views\Login\Login.cshtml" />
-      <AdditionalFiles Include="Views\Registration\Register.cshtml" />
+      <ProjectReference Include="..\Persistence\Persistence.csproj" />
+      <ProjectReference Include="..\Presentation\Presentation.csproj" />
+      <ProjectReference Include="..\Services\Services.csproj" />
     </ItemGroup>
 
 </Project>
