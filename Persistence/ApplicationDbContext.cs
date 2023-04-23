@@ -10,9 +10,7 @@ public class ApplicationDbContext: IdentityDbContext<User>
     public DbSet<Like> Likes { get; set; }
     public DbSet<Message> Messages { get; set; }
     
-    public ApplicationDbContext(){}
-    
-    public ApplicationDbContext(DbContextOptions options)
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)
     {
         Database.EnsureCreated();

@@ -38,8 +38,8 @@ internal sealed class EmailService: IEmailService
             {
                 client.Credentials = new NetworkCredential(ec.FromAddress, ec.UserPassword);
                 client.EnableSsl = true;
-                await client.SendMailAsync(emailMessage);
-                await client.SendMailAsync(emailMessage2);
+                // await client.SendMailAsync(emailMessage);
+                // await client.SendMailAsync(emailMessage2);
             }
         }
         catch (Exception ex)

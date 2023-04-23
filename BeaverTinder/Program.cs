@@ -1,15 +1,15 @@
  using System.Security.Claims;
- using BeaverTinder.DataBase;
- using BeaverTinder.Models;
- using BeaverTinder.Services;
- using BeaverTinder.Services.Pay;
- using DogApi.Models;
- using DogApi.Services;
+ using Contracts.Configs;
+ using Domain.Entities;
+ using Domain.Repositories;
  using Microsoft.AspNetCore.Authentication.Cookies;
  using Microsoft.AspNetCore.Identity;
  using Microsoft.EntityFrameworkCore;
-
- var TestSpesific = "testSpesific";
+ using Persistence;
+ using Persistence.Repositories;
+ using Services;
+ using Services.Abstraction;
+ using Services.Abstraction.TwoFA;
 
  var builder = WebApplication.CreateBuilder(args);
 
@@ -24,8 +24,8 @@
      }
  });
 // Add services to the container.
-
-builder.Services.AddControllers();
+ builder.Services.AddControllers();
+ builder.Services.AddMemoryCache();
  
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -41,7 +41,7 @@ builder.Services.AddMvc();
      }
  });
 
- builder.Services.AddDbContext<dbContext>(options => 
+ builder.Services.AddDbContext<ApplicationDbContext>(options => 
     options.UseSqlServer(builder.Configuration.GetConnectionString("BeaverTinderDatabase")));
  builder.Services.AddIdentity<User, IdentityRole>(
          options =>
@@ -50,12 +50,16 @@ builder.Services.AddMvc();
              options.SignIn.RequireConfirmedEmail = false;  // change in prod
          })
      .AddDefaultTokenProviders()
-     .AddEntityFrameworkStores<dbContext>();
+     .AddEntityFrameworkStores<ApplicationDbContext>();
  builder.Services.Configure<DataProtectionTokenProviderOptions>(
      o => o.TokenLifespan = TimeSpan.FromHours(3));
- builder.Services.AddScoped<ITwoFAService ,TwoFAService>();
+ 
+ builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
+ builder.Services.AddScoped<IServiceManager , ServiceManager>();
  builder.Services.Configure<EmailConfig>(builder.Configuration.GetSection("SmtpSettings"));
- builder.Services.AddScoped<IEmailServiceInterface, EmailService>();
+ 
+ builder.Services.AddControllers().AddApplicationPart(typeof(Presentation.AssemblyReference).Assembly);
+ 
  builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
      .AddCookie(options =>
      {
