@@ -1,10 +1,7 @@
-﻿using System.Text;
-using System.Web;
-using Domain.Entities;
+﻿using Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.WebUtilities;
 using Services.Abstraction;
 using Services.Abstraction.TwoFA;
 

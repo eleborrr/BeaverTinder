@@ -9,9 +9,4 @@ public interface IGeolocationService
     public Task<UserGeolocation> GetByUserId(int userId);
 
     public Task<IEnumerable<UserGeolocation>> GetAllAsync();
-    // отображение геолокации по координатам
-
-    // установка геолокации (?)
-
-    // 
 }

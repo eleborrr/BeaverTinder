@@ -1,12 +1,8 @@
-﻿using System.Web;
-using Contracts;
+﻿using Contracts;
 using Domain.Entities;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.WebUtilities;
 using Services.Abstraction;
-using Services.Abstraction.Email;
 using Services.Abstraction.Geolocation;
 using Services.Abstraction.TwoFA;
 
@@ -18,13 +14,11 @@ namespace BeaverTinder.Controllers;
 public class RegistrationController : Controller
 {
     private readonly UserManager<User> _userManager;
-    private readonly SignInManager<User> _signInManager;
     private readonly IGeolocationService _geolocationService;
     private readonly ITwoFAService _faService;
     public RegistrationController(IServiceManager serviceManager, UserManager<User> userManager, SignInManager<User> signInManager)
     {
         _userManager = userManager;
-        _signInManager = signInManager;
         _faService = serviceManager.TwoFaService;
     }
 
@@ -56,6 +50,7 @@ public class RegistrationController : Controller
                     "Для завершения регистрации проверьте электронную почту и перейдите по ссылке, указанной в письме");
             }
 
+            // TODO протестить что норм работает
             await _geolocationService.AddAsync(userId: _userManager.FindByEmailAsync(user.Email).Id,
                 Latutide: 55.47, // geolocation from dto!
                 Longtitude: 49.6);
@@ -85,5 +80,4 @@ public class RegistrationController : Controller
     //     else
     //         return View("../EmptyPage");
     // }
-    
 }
