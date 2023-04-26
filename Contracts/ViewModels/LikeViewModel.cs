@@ -11,4 +11,8 @@ public class LikeViewModel
     [Required]
     [Display(Name = "LikedUserId")]
     public string LikedUserId { get; set; }
+    
+    [Required]
+    [Display(Name = "Sympathy")]
+    public bool Sympathy { get; set; }
 }

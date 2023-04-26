@@ -191,6 +191,10 @@ namespace Persistence.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -208,25 +212,9 @@ namespace Persistence.Migrations
 
                     b.ToTable("AspNetRoles", (string)null);
 
-                    b.HasData(
-                        new
-                        {
-                            Id = "1",
-                            Name = "Admin",
-                            NormalizedName = "ADMIN"
-                        },
-                        new
-                        {
-                            Id = "2",
-                            Name = "Moderator",
-                            NormalizedName = "MODERATOR"
-                        },
-                        new
-                        {
-                            Id = "3",
-                            Name = "USER",
-                            NormalizedName = "USER"
-                        });
+                    b.HasDiscriminator<string>("Discriminator").HasValue("IdentityRole");
+
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -333,6 +321,61 @@ namespace Persistence.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Entities.Role", b =>
+                {
+                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityRole");
+
+                    b.Property<int>("LikesCountAllowed")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("LocationViewAllowed")
+                        .HasColumnType("bit");
+
+                    b.HasDiscriminator().HasValue("Role");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "1",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN",
+                            LikesCountAllowed = 2147483647,
+                            LocationViewAllowed = true
+                        },
+                        new
+                        {
+                            Id = "2",
+                            Name = "Moderator",
+                            NormalizedName = "MODERATOR",
+                            LikesCountAllowed = 2147483647,
+                            LocationViewAllowed = true
+                        },
+                        new
+                        {
+                            Id = "3",
+                            Name = "StandartUser",
+                            NormalizedName = "STANDARTUSER",
+                            LikesCountAllowed = 20,
+                            LocationViewAllowed = false
+                        },
+                        new
+                        {
+                            Id = "4",
+                            Name = "UserMoreLikes",
+                            NormalizedName = "USERMORELIKES",
+                            LikesCountAllowed = 40,
+                            LocationViewAllowed = false
+                        },
+                        new
+                        {
+                            Id = "5",
+                            Name = "UserMoreLikesAndMap",
+                            NormalizedName = "USERMORELIKESANDMAP",
+                            LikesCountAllowed = 50,
+                            LocationViewAllowed = true
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

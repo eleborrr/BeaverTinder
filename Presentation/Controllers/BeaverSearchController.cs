@@ -38,12 +38,12 @@ public class BeaverSearchController: Controller
     [HttpPost("/like")]
     public async Task Like([FromBody] LikeViewModel likeViewModel)
     {
-        await _serviceManager.FindBeaverService.Like(likeViewModel.UserId, likeViewModel.LikedUserId);
+        await _serviceManager.FindBeaverService.AddSympathy(likeViewModel.UserId, likeViewModel.LikedUserId, sympathy:likeViewModel.Sympathy);
     }
     //
-    // [HttpPost("/dislike")]
-    // public async void DisLike()
-    // {
-    //     _userManager.User
-    // }
+    [HttpPost("/dislike")]
+    public async void DisLike([FromBody] LikeViewModel likeViewModel)
+    {
+        await _serviceManager.FindBeaverService.AddSympathy(likeViewModel.UserId, likeViewModel.LikedUserId, sympathy:likeViewModel.Sympathy);
+    }
 }
