@@ -4,6 +4,8 @@
     {
         ILikeRepository LikeRepository { get; }
         
+        IGeolocationRepository GeolocationRepository { get; }
+        
         IUnitOfWork UnitOfWork { get; }
     }
 }

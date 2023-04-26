@@ -9,7 +9,8 @@ public class ApplicationDbContext: IdentityDbContext<User>
 {
     public DbSet<Like> Likes { get; set; }
     public DbSet<Message> Messages { get; set; }
-    
+    public DbSet<UserGeolocation> Geolocations { get; set; }
+
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)
     {
