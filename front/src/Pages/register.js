@@ -12,12 +12,13 @@ const RegisterPage = () => {
     const [gender, setGender] = useState('')
     const [about, setAbout] = useState('Hi! I use BeaverTinder!')
     const [errMess, setErrMess] = useState('')
-    const [respStatus, setRespStatus] = useState(0)
+    const [respStatus, setRespStatus] = useState(false)
     const [errorCode, setErrorCode] = useState('') 
     const [respErrData, setRespErrData] = useState('')
     const navigate = useNavigate()
 
     const ValidatePass = (e) => {
+        setConfPass(e.target.value)
         if (e.target.value !== pass){
             setErrMess("Password doesn't match")
         } else {
@@ -28,7 +29,6 @@ const RegisterPage = () => {
 
     const onSubmit = (e) => {
         e.preventDefault();
-        console.log('start');
         try {
         axiosInstance
             .post('/registration', {
@@ -43,17 +43,16 @@ const RegisterPage = () => {
             })
             .then(function (res) {
                 console.log(res);
-                const token = res.data;
-                if(res.status == 204){
-                    localStorage.setItem('token', token);
+                const data = res.data;
+                if(data.successful === true){
+                    setRespStatus(true);
                 }
                 else{
-                    setRespErrData(res.data);
+                    setRespErrData(data.message);
                 }
-                
-                setRespStatus(res.status);
             })
             .catch(function(error) {
+                console.log('catch');
                 if (error.status){
                     setRespStatus(error.status);
                 }else{
@@ -66,6 +65,7 @@ const RegisterPage = () => {
         }
 
     };
+
     useEffect(() => {
         if (localStorage.getItem('token')){
             navigate('/home');
@@ -119,7 +119,13 @@ const RegisterPage = () => {
                                     <a href={'/register'}><button className="default-btn reverse">Register</button> </a>
                                 </>
                             }
-                            { errorCode !== 'ERR_NETWORK' &&
+                            {
+                                respStatus && 
+                                <>
+                                    <h1>Congratulation! We created your account, now you need to confirm your email address ;)</h1>
+                                </>
+                            }
+                            { errorCode !== 'ERR_NETWORK' && !respStatus &&
                             <form onSubmit={onSubmit}>
                                 <h4 className="content-title">Acount Details</h4>
                                 <div className="form-group">
