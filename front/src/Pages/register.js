@@ -1,19 +1,20 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { axiosInstance } from "../Components/axios_server";
 
 const RegisterPage = () => {
-    const [lName, setLName] = useState('')
-    const [fName, setFName] = useState('')
-    const [nName, setNName] = useState('')
-    const [email, setEmail] = useState('')
+    const [lName, setLName] = useState('Last name')
+    const [fName, setFName] = useState('First name')
+    const [nName, setNName] = useState('Nickname')
+    const [email, setEmail] = useState('someEmail@gmail.com')
     const [pass, setPass] = useState('')
     const [confPass, setConfPass] = useState('')
     const [gender, setGender] = useState('')
-    const [about, setAbout] = useState('')
+    const [about, setAbout] = useState('Hi! I use BeaverTinder!')
     const [errMess, setErrMess] = useState('')
     const [respStatus, setRespStatus] = useState(0)
     const [errorCode, setErrorCode] = useState('') 
+    const [respErrData, setRespErrData] = useState('')
     const navigate = useNavigate()
 
     const ValidatePass = (e) => {
@@ -30,7 +31,7 @@ const RegisterPage = () => {
         console.log('start');
         try {
         axiosInstance
-            .post('/Registration', {
+            .post('/registration', {
                 LastName: lName,
                 FirstName: fName,
                 UserName: nName,
@@ -43,7 +44,13 @@ const RegisterPage = () => {
             .then(function (res) {
                 console.log(res);
                 const token = res.data;
-                localStorage.setItem('token', token);
+                if(res.status == 204){
+                    localStorage.setItem('token', token);
+                }
+                else{
+                    setRespErrData(res.data);
+                }
+                
                 setRespStatus(res.status);
             })
             .catch(function(error) {
@@ -57,9 +64,7 @@ const RegisterPage = () => {
         catch(error){
             console.log(error);
         }
-        if(respStatus === 200 ){
-            navigate('/home')
-        }
+
     };
     useEffect(() => {
         if (localStorage.getItem('token')){
@@ -119,19 +124,19 @@ const RegisterPage = () => {
                                 <h4 className="content-title">Acount Details</h4>
                                 <div className="form-group">
                                     <label>Last name</label>
-                                    <input type="text" className="my-form-control" placeholder="Enter Your Last name" value="Last name" onChange={(e) => setLName(e.target.value)}/>
+                                    <input type="text" className="my-form-control" placeholder="Enter Your Last name" value={lName} onChange={(e) => setLName(e.target.value)}/>
                                 </div>
                                 <div className="form-group">
                                     <label>First name</label>
-                                    <input type="text" className="my-form-control" placeholder="Enter Your First name" value="First name" onChange={(e) => setFName(e.target.value)}/>
+                                    <input type="text" className="my-form-control" placeholder="Enter Your First name" value={fName} onChange={(e) => setFName(e.target.value)}/>
                                 </div>
                                 <div className="form-group">
                                     <label>Nickname</label>
-                                    <input type="text" className="my-form-control" placeholder="Enter Your Nickname" value="Nickname" onChange={(e) => setNName(e.target.value)}/>
+                                    <input type="text" className="my-form-control" placeholder="Enter Your Nickname" value={nName} onChange={(e) => setNName(e.target.value)}/>
                                 </div>
                                 <div className="form-group">
                                     <label>Email</label>
-                                    <input type="email" className="my-form-control" placeholder="Enter Your Email" value="someEmail@gmail.com" onChange={(e) => setEmail(e.target.value)}/>
+                                    <input type="email" className="my-form-control" placeholder="Enter Your Email" value={email} onChange={(e) => setEmail(e.target.value)}/>
                                 </div>
                                 <div className="form-group">
                                     <label>Password</label>
@@ -147,19 +152,20 @@ const RegisterPage = () => {
                                     <label>Gender</label>
                                     <div className="banner__inputlist">
                                         <div className="s-input me-3">
-                                            <input type="radio" name="gender1" id="males1" onChange={() => setGender('Man')} checked={true}/>
+                                            <input type="radio" name="gender1" id="males1" onClick={() => setGender('Man')} />
                                             <label htmlFor="males1">Man</label>
                                         </div>
-                                        <div className="s-input">
-                                            <input type="radio" name="gender1" id="females1" onChange={() => setLName('Woman')}/>
+                                        <div className="s-input me-3">
+                                            <input type="radio" name="gender1" id="females1" onClick={() => setGender('Woman')}/>
                                             <label htmlFor="females1">Woman</label>
                                         </div>
                                     </div>
                                 </div>
                                 <div className="form-group">
                                     <label>Tell about yourself</label>
-                                    <input type="text" className="my-form-control" placeholder="Tell about yourself" value="Hi! I use BeaverTinder!" onChange={(e) => setAbout(e.target.value)}/>
+                                    <input type="text" className="my-form-control" placeholder="Tell about yourself" value={about} onChange={(e) => setAbout(e.target.value)}/>
                                 </div>
+                                <span>{respErrData}</span>
                                 <button className="default-btn reverse" data-toggle="modal" data-target="#email-confirm"><span>Create Your Profile</span></button>
                             </form>
                             }
