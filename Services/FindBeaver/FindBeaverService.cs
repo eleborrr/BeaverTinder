@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Services.Abstraction;
 using Services.Abstraction.FindBeaver;
+using Services.Abstraction.Likes;
 
 namespace Services.FindBeaver;
 
@@ -14,15 +15,15 @@ public class FindBeaverService: IFindBeaverService
     private readonly IRepositoryManager _repositoryManager;
     private readonly IMemoryCache _memoryCache;
     private readonly RoleManager<Role> _roleManager;
-    private readonly IServiceManager _serviceManager;
+    private readonly ILikeService _likeService;
 
-    public FindBeaverService(UserManager<User> userManager, IRepositoryManager repositoryManager, IMemoryCache memoryCache, RoleManager<Role> roleManager, IServiceManager serviceManager)
+    public FindBeaverService(UserManager<User> userManager, IRepositoryManager repositoryManager, IMemoryCache memoryCache, RoleManager<Role> roleManager, ILikeService likeService)
     {
         _userManager = userManager;
         _repositoryManager = repositoryManager;
         _memoryCache = memoryCache;
         _roleManager = roleManager;
-        _serviceManager = serviceManager;
+        _likeService = likeService;
     }
 
     public async Task<User?> GetNextBeaver(User currentUser)
@@ -56,7 +57,7 @@ public class FindBeaverService: IFindBeaverService
     //TODO юзер будет приходить через жвт??
     public Task AddSympathy(string userId1, string userId2, bool sympathy)
     {
-        CheckSubscriptionLikePermission(_userManager.Users.Where(u => u.Id == userId1))
+        CheckSubscriptionLikePermission(_userManager.Users.Where(u => u.Id == userId1).FirstOrDefault());
         MemoryCacheUpdate(userId1);
 
         var newLike = new Like() { UserId = userId1, LikedUserId = userId2, LikeDate = DateTime.Now, Sympathy = sympathy};
@@ -82,7 +83,7 @@ public class FindBeaverService: IFindBeaverService
     {
         //TODO make checks
         var role = _roleManager.Roles.ToList().FirstOrDefault(r => r.Name == _userManager.GetRolesAsync(user).Result.FirstOrDefault()); //TODO поч ебаный Резалт, фиксить надо
-        if ((await _serviceManager.LikeService.GetAllAsync()).Where(l => l.LikeDate.Date.Day == DateTime.Today.Day)
+        if ((await _likeService.GetAllAsync()).Where(l => l.LikeDate.Date.Day == DateTime.Today.Day)
             .Count() > role.LikesCountAllowed)
         {
             return false; // TODO return custom Exception

@@ -26,13 +26,13 @@ public class ServiceManager: IServiceManager
     private readonly Lazy<IGeolocationService> _geolocationService;
     private readonly Lazy<IFindBeaverService> _findBeaverService;
 
-    public ServiceManager(UserManager<User> userManager, IOptions<EmailConfig> emailConfig, IRepositoryManager repositoryManager, IMemoryCache memoryCache)  // ,
+    public ServiceManager(UserManager<User> userManager, IOptions<EmailConfig> emailConfig, IRepositoryManager repositoryManager, IMemoryCache memoryCache, RoleManager<Role> roleManager)  // ,
     {
         _geolocationService = new Lazy<IGeolocationService>(() => new GeolocationService(repositoryManager));
-        _findBeaverService = new Lazy<IFindBeaverService>(() => new FindBeaverService(userManager, repositoryManager, memoryCache));
         _emailService = new Lazy<IEmailService>(() => new EmailService(emailConfig));
         _twoFaService = new Lazy<ITwoFAService>(() => new TwoFAService(userManager, _emailService.Value));
         _likeService = new Lazy<ILikeService>(() => new LikeService(repositoryManager));
+        _findBeaverService = new Lazy<IFindBeaverService>(() => new FindBeaverService(userManager, repositoryManager, memoryCache, roleManager , LikeService));
     }
 
     public IEmailService EmailService => _emailService.Value;
