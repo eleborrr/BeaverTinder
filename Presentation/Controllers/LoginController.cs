@@ -1,15 +1,11 @@
 using System.Security.Claims;
 using Contracts;
 using Domain.Entities;
-using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace BeaverTinder.Controllers;
-
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Identity;
-
+namespace Presentation.Controllers;
 
 [ApiController]
 [Route("[controller]")]
@@ -23,12 +19,6 @@ public class LoginController : Controller
         _context = ctx;
         _signInManager = signInManager;
     }
-
-    // [HttpGet]
-    // public IActionResult Login(string? returnUrl = null)
-    // {
-    //     return View(new LoginDto { ReturnUrl = returnUrl });
-    // }
 
     [HttpPost]
     public async Task<IActionResult> Login([FromBody]LoginDto model)
@@ -65,7 +55,6 @@ public class LoginController : Controller
     [HttpGet("/logout")]
     public async Task<IActionResult> Logout()
     {
-        //Refactor?
         await _signInManager.SignOutAsync();
         return RedirectToAction("Login", "Login");
     }
