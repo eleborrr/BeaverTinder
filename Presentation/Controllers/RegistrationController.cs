@@ -1,4 +1,6 @@
 ﻿using Contracts;
+using Contracts.Responses;
+using Contracts.Responses.Registration;
 using Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -6,7 +8,7 @@ using Services.Abstraction;
 using Services.Abstraction.Geolocation;
 using Services.Abstraction.TwoFA;
 
-namespace BeaverTinder.Controllers;
+namespace Presentation.Controllers;
 
 
 [ApiController]
@@ -23,7 +25,7 @@ public class RegistrationController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Register([FromBody]RegisterDto model)
+    public async Task<JsonResult> Register([FromBody]RegisterDto model)
     {
         // TODO перенести в сервис
         if (ModelState.IsValid)
@@ -46,23 +48,21 @@ public class RegistrationController : Controller
             if (result.Succeeded)
             {
                 await _faService.SendConfirmationEmailAsync(user.Id);
-                return Content(
-                    "Для завершения регистрации проверьте электронную почту и перейдите по ссылке, указанной в письме");
-            }
-
-            // TODO протестить что норм работает
+                return Json(new RegisterResponseDto(RegisterResponseStatus.Ok));
+                 // TODO протестить что норм работает
             await _geolocationService.AddAsync(userId: _userManager.FindByEmailAsync(user.Email).Id,
                 Latutide: 55.47, // geolocation from dto!
                 Longtitude: 49.6);
-            
-
-            foreach (var error in result.Errors)
+            }
+           
+            else
             {
-                ModelState.AddModelError("error_message", error.Description);
+                return Json(new RegisterResponseDto(RegisterResponseStatus.Fail,
+                    result.Errors.FirstOrDefault().Description));
             }
         }
 
-        return RedirectToAction("GetAllUsers", "Account"); // TODO возвращать json?
+        return Json(new RegisterResponseDto(RegisterResponseStatus.InvalidData));
     }
     
     // [HttpGet("/confirm")]
