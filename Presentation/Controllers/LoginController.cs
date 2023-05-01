@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
+using Persistence.Misc.Services.JwtGenerator;
 
 namespace Presentation.Controllers;
 
@@ -15,13 +16,16 @@ public class LoginController : Controller
 {
     private readonly SignInManager<User> _signInManager;
     private readonly ApplicationDbContext _context;
+    private readonly IJwtGenerator _jwtGenerator;
 
-    public LoginController(ApplicationDbContext ctx, SignInManager<User> signInManager)
+    public LoginController(ApplicationDbContext ctx, SignInManager<User> signInManager, IJwtGenerator jwtGenerator)
     {
         _context = ctx;
         _signInManager = signInManager;
+        _jwtGenerator = jwtGenerator;
     }
 
+    //TODO перенести логику в сервис
     [HttpPost]
     public async Task<JsonResult> Login([FromBody]LoginDto model)
     {
@@ -43,7 +47,7 @@ public class LoginController : Controller
                 if (await _signInManager.UserManager.IsInRoleAsync(signedUser, "Admin"))
                     await _signInManager.UserManager.AddClaimAsync(signedUser, new Claim(ClaimTypes.Role, "Admin"));
 
-                return Json(new LoginResponseDto(LoginResponseStatus.Ok));
+                return Json(new LoginResponseDto(LoginResponseStatus.Ok, await _jwtGenerator.GenerateJwtToken(signedUser.Id)));
             }
 
             // ModelState.AddModelError("error_message", "Invalid login attempt.");
