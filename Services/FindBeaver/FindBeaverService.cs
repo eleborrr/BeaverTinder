@@ -53,7 +53,6 @@ public class FindBeaverService: IFindBeaverService
         return returnUser;
     }
 
-    
     //TODO юзер будет приходить через жвт??
     public Task AddSympathy(string userId1, string userId2, bool sympathy)
     {
@@ -83,8 +82,8 @@ public class FindBeaverService: IFindBeaverService
     {
         //TODO make checks
         var role = _roleManager.Roles.ToList().FirstOrDefault(r => r.Name == _userManager.GetRolesAsync(user).Result.FirstOrDefault()); //TODO поч ебаный Резалт, фиксить надо
-        if ((await _likeService.GetAllAsync()).Where(l => l.LikeDate.Date.Day == DateTime.Today.Day)
-            .Count() > role.LikesCountAllowed)
+        if ((await _likeService.GetAllAsync())
+            .Count(l => l.LikeDate.Date.Day == DateTime.Today.Day) > role.LikesCountAllowed)
         {
             return false; // TODO return custom Exception
         }

@@ -26,15 +26,8 @@ public class BeaverSearchController: Controller
     {
         var user = await _userManager.FindByIdAsync(searchDto.UserId);
         return await _serviceManager.FindBeaverService.GetNextBeaver(user);
-        // return View("../Search/Search");
     }
-    //
-    // [HttpGet]
-    // public IActionResult GetRandom()
-    // {
-    //     return View("../Search/Search");
-    // }
-    //
+ 
     [HttpPost("/like")]
     public async Task Like([FromBody] LikeViewModel likeViewModel)
     {

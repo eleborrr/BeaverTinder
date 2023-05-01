@@ -11,6 +11,7 @@ public class RegisterResponseDto: ResponseBaseDto
         {RegisterResponseStatus.Fail, "Error"}
     };
     
+    //TODO разобраться какие коды лучше вставлять. мб есть способ лучше это делать? 
     private Dictionary<RegisterResponseStatus, int> Codes = new()
     {
         {RegisterResponseStatus.Ok, 200},
