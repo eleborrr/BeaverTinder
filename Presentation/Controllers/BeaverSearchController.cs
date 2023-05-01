@@ -1,6 +1,7 @@
 ﻿using Contracts;
 using Contracts.ViewModels;
 using Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Services.Abstraction;
@@ -9,7 +10,7 @@ namespace Presentation.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-// [Authorize]
+[Authorize]
 public class BeaverSearchController: Controller
 {
     private readonly UserManager<User> _userManager;
@@ -22,21 +23,26 @@ public class BeaverSearchController: Controller
     }
 
     [HttpPost]
-    public async Task<User?> Search([FromBody] SearchDto searchDto)
+    public async Task<JsonResult> Search()
     {
-        var user = await _userManager.FindByIdAsync(searchDto.UserId);
-        return await _serviceManager.FindBeaverService.GetNextBeaver(user);
+        var u = User.Identity.Name;
+        var user = await _userManager.FindByNameAsync(u);
+        return Json(await _serviceManager.FindBeaverService.GetNextBeaver(user));
     }
  
     [HttpPost("/like")]
     public async Task Like([FromBody] LikeViewModel likeViewModel)
     {
-        await _serviceManager.FindBeaverService.AddSympathy(likeViewModel.UserId, likeViewModel.LikedUserId, sympathy:likeViewModel.Sympathy);
+        var u = User.Identity.Name;
+        var user = await _userManager.FindByNameAsync(u);
+        await _serviceManager.FindBeaverService.AddSympathy(user.Id, likeViewModel.LikedUserId, sympathy:likeViewModel.Sympathy);
     }
     //
     [HttpPost("/dislike")]
     public async void DisLike([FromBody] LikeViewModel likeViewModel)
     {
-        await _serviceManager.FindBeaverService.AddSympathy(likeViewModel.UserId, likeViewModel.LikedUserId, sympathy:likeViewModel.Sympathy);
+        var u = User.Identity.Name;
+        var user = await _userManager.FindByNameAsync(u);
+        await _serviceManager.FindBeaverService.AddSympathy(user.Id, likeViewModel.LikedUserId, sympathy:likeViewModel.Sympathy);
     }
 }
