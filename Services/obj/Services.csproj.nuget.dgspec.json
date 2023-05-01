@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\this_\\Repos\\BeaverTinder\\Services\\Services.csproj": {}
+    "C:\\Users\\rafae\\OSNOVIRAZRABOTKI\\semwork3\\BeaverTinder\\Services\\Services.csproj": {}
   },
   "projects": {
-    "C:\\Users\\this_\\Repos\\BeaverTinder\\Contracts\\Contracts.csproj": {
+    "C:\\Users\\rafae\\OSNOVIRAZRABOTKI\\semwork3\\BeaverTinder\\Contracts\\Contracts.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\this_\\Repos\\BeaverTinder\\Contracts\\Contracts.csproj",
+        "projectUniqueName": "C:\\Users\\rafae\\OSNOVIRAZRABOTKI\\semwork3\\BeaverTinder\\Contracts\\Contracts.csproj",
         "projectName": "Contracts",
-        "projectPath": "C:\\Users\\this_\\Repos\\BeaverTinder\\Contracts\\Contracts.csproj",
-        "packagesPath": "C:\\Users\\this_\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\this_\\Repos\\BeaverTinder\\Contracts\\obj\\",
+        "projectPath": "C:\\Users\\rafae\\OSNOVIRAZRABOTKI\\semwork3\\BeaverTinder\\Contracts\\Contracts.csproj",
+        "packagesPath": "C:\\Users\\rafae\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\rafae\\OSNOVIRAZRABOTKI\\semwork3\\BeaverTinder\\Contracts\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\this_\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\rafae\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -26,7 +26,6 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {},
           "https://dotnet.myget.org/feed/dotnet-core/package/nuget/Microsoft.NET.Sdk.IL": {}
         },
@@ -61,24 +60,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.101\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.102\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\this_\\Repos\\BeaverTinder\\Domain\\Domain.csproj": {
+    "C:\\Users\\rafae\\OSNOVIRAZRABOTKI\\semwork3\\BeaverTinder\\Domain\\Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\this_\\Repos\\BeaverTinder\\Domain\\Domain.csproj",
+        "projectUniqueName": "C:\\Users\\rafae\\OSNOVIRAZRABOTKI\\semwork3\\BeaverTinder\\Domain\\Domain.csproj",
         "projectName": "Domain",
-        "projectPath": "C:\\Users\\this_\\Repos\\BeaverTinder\\Domain\\Domain.csproj",
-        "packagesPath": "C:\\Users\\this_\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\this_\\Repos\\BeaverTinder\\Domain\\obj\\",
+        "projectPath": "C:\\Users\\rafae\\OSNOVIRAZRABOTKI\\semwork3\\BeaverTinder\\Domain\\Domain.csproj",
+        "packagesPath": "C:\\Users\\rafae\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\rafae\\OSNOVIRAZRABOTKI\\semwork3\\BeaverTinder\\Domain\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\this_\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\rafae\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -87,7 +86,6 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {},
           "https://dotnet.myget.org/feed/dotnet-core/package/nuget/Microsoft.NET.Sdk.IL": {}
         },
@@ -128,24 +126,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.101\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.102\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\this_\\Repos\\BeaverTinder\\Services.Abstraction\\Services.Abstraction.csproj": {
+    "C:\\Users\\rafae\\OSNOVIRAZRABOTKI\\semwork3\\BeaverTinder\\Services.Abstraction\\Services.Abstraction.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\this_\\Repos\\BeaverTinder\\Services.Abstraction\\Services.Abstraction.csproj",
+        "projectUniqueName": "C:\\Users\\rafae\\OSNOVIRAZRABOTKI\\semwork3\\BeaverTinder\\Services.Abstraction\\Services.Abstraction.csproj",
         "projectName": "Services.Abstraction",
-        "projectPath": "C:\\Users\\this_\\Repos\\BeaverTinder\\Services.Abstraction\\Services.Abstraction.csproj",
-        "packagesPath": "C:\\Users\\this_\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\this_\\Repos\\BeaverTinder\\Services.Abstraction\\obj\\",
+        "projectPath": "C:\\Users\\rafae\\OSNOVIRAZRABOTKI\\semwork3\\BeaverTinder\\Services.Abstraction\\Services.Abstraction.csproj",
+        "packagesPath": "C:\\Users\\rafae\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\rafae\\OSNOVIRAZRABOTKI\\semwork3\\BeaverTinder\\Services.Abstraction\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\this_\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\rafae\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -154,7 +152,6 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {},
           "https://dotnet.myget.org/feed/dotnet-core/package/nuget/Microsoft.NET.Sdk.IL": {}
         },
@@ -162,8 +159,8 @@
           "net7.0": {
             "targetAlias": "net7.0",
             "projectReferences": {
-              "C:\\Users\\this_\\Repos\\BeaverTinder\\Domain\\Domain.csproj": {
-                "projectPath": "C:\\Users\\this_\\Repos\\BeaverTinder\\Domain\\Domain.csproj"
+              "C:\\Users\\rafae\\OSNOVIRAZRABOTKI\\semwork3\\BeaverTinder\\Domain\\Domain.csproj": {
+                "projectPath": "C:\\Users\\rafae\\OSNOVIRAZRABOTKI\\semwork3\\BeaverTinder\\Domain\\Domain.csproj"
               }
             }
           }
@@ -199,24 +196,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.101\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.102\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\this_\\Repos\\BeaverTinder\\Services\\Services.csproj": {
+    "C:\\Users\\rafae\\OSNOVIRAZRABOTKI\\semwork3\\BeaverTinder\\Services\\Services.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\this_\\Repos\\BeaverTinder\\Services\\Services.csproj",
+        "projectUniqueName": "C:\\Users\\rafae\\OSNOVIRAZRABOTKI\\semwork3\\BeaverTinder\\Services\\Services.csproj",
         "projectName": "Services",
-        "projectPath": "C:\\Users\\this_\\Repos\\BeaverTinder\\Services\\Services.csproj",
-        "packagesPath": "C:\\Users\\this_\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\this_\\Repos\\BeaverTinder\\Services\\obj\\",
+        "projectPath": "C:\\Users\\rafae\\OSNOVIRAZRABOTKI\\semwork3\\BeaverTinder\\Services\\Services.csproj",
+        "packagesPath": "C:\\Users\\rafae\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\rafae\\OSNOVIRAZRABOTKI\\semwork3\\BeaverTinder\\Services\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\this_\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\rafae\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -225,7 +222,6 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {},
           "https://dotnet.myget.org/feed/dotnet-core/package/nuget/Microsoft.NET.Sdk.IL": {}
         },
@@ -233,14 +229,14 @@
           "net7.0": {
             "targetAlias": "net7.0",
             "projectReferences": {
-              "C:\\Users\\this_\\Repos\\BeaverTinder\\Contracts\\Contracts.csproj": {
-                "projectPath": "C:\\Users\\this_\\Repos\\BeaverTinder\\Contracts\\Contracts.csproj"
+              "C:\\Users\\rafae\\OSNOVIRAZRABOTKI\\semwork3\\BeaverTinder\\Contracts\\Contracts.csproj": {
+                "projectPath": "C:\\Users\\rafae\\OSNOVIRAZRABOTKI\\semwork3\\BeaverTinder\\Contracts\\Contracts.csproj"
               },
-              "C:\\Users\\this_\\Repos\\BeaverTinder\\Domain\\Domain.csproj": {
-                "projectPath": "C:\\Users\\this_\\Repos\\BeaverTinder\\Domain\\Domain.csproj"
+              "C:\\Users\\rafae\\OSNOVIRAZRABOTKI\\semwork3\\BeaverTinder\\Domain\\Domain.csproj": {
+                "projectPath": "C:\\Users\\rafae\\OSNOVIRAZRABOTKI\\semwork3\\BeaverTinder\\Domain\\Domain.csproj"
               },
-              "C:\\Users\\this_\\Repos\\BeaverTinder\\Services.Abstraction\\Services.Abstraction.csproj": {
-                "projectPath": "C:\\Users\\this_\\Repos\\BeaverTinder\\Services.Abstraction\\Services.Abstraction.csproj"
+              "C:\\Users\\rafae\\OSNOVIRAZRABOTKI\\semwork3\\BeaverTinder\\Services.Abstraction\\Services.Abstraction.csproj": {
+                "projectPath": "C:\\Users\\rafae\\OSNOVIRAZRABOTKI\\semwork3\\BeaverTinder\\Services.Abstraction\\Services.Abstraction.csproj"
               }
             }
           }
@@ -302,7 +298,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.101\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.102\\RuntimeIdentifierGraph.json"
         }
       }
     }
