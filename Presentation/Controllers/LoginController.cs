@@ -39,6 +39,8 @@ public class LoginController : Controller
         if (ModelState.IsValid)
         {
             User? signedUser = await _signInManager.UserManager.FindByNameAsync(model.UserName);
+            if (signedUser is null)
+                return Json(new LoginResponseDto(LoginResponseStatus.Fail, "user not found"));
             var result = await _signInManager.PasswordSignInAsync(signedUser.UserName, model.Password, false, lockoutOnFailure: false);
 
             
