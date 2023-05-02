@@ -1,38 +1,47 @@
-import {axiosInstance} from "../Components/axios_server";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Cookies from 'js-cookie';
+import {axiosInstance} from "./../Components/axios_server";
+import './../assets/css/login.css'
 
 const LoginPage = () => {
 
     const [userName, setUserName] = useState('')
     const [password, setPassword] = useState('')
     const [rememberMe, setRememberMe] = useState(false)
-    const [isReady, setIsReady] = useState(false);
-
+    const [errMessage, setErrMessage] = useState('')
+    const [spanClass, setSpanClass] = useState('hide')
+    const navigate = useNavigate()
 
     const onSubmit = (e) => {
         e.preventDefault();
-        setIsReady(true);
-    };
-
-    useEffect(() => {
-        if(!isReady) {
-            return;
-        }
 
         axiosInstance.post('/login', {
-            UserName: userName,
-            Password: password,
-            RememberMe: rememberMe,
-            withCredentials: true
+            userName: userName,
+            password: password,
+            rememberMe: rememberMe,
+            returnUrl: ""
         })
         .then((res) => {
-            console.log(res);
-            setIsReady(false)
+            if (!res.data.successful){
+                setSpanClass('errorMessage');
+                setErrMessage(res.data.message);
+            }
+            else{
+                console.log(res.data);
+                Cookies.setItem('token', res.data.message);
+                navigate('/home');
+            }
         })
         .catch((err) => {
             console.log(err);
-            setIsReady(false);
         });
+    };
+
+    useEffect(() => {
+        if(Cookies.getItem('token')){
+            navigate('/home');
+        }
     })
 
     // function login() {
@@ -65,7 +74,7 @@ const LoginPage = () => {
     <a href="#" className="scrollToTop"><i className="fa-solid fa-angle-up"></i></a>
 
 
-    <section className="log-reg">d
+    <section className="log-reg">
         <div className="top-menu-area">
             <div className="container">
                 <div className="row">
@@ -91,14 +100,19 @@ const LoginPage = () => {
                         <div className="main-content inloginp">
                             <form>
                                 <div className="form-group">
-                                    <label >Your Address</label>
+                                    <label >Имя пользователя</label>
                                     <input type="text" className="my-form-control" name="UserName" onChange={(e) => setUserName(e.target.value)} placeholder="Enter Your Email" />
                                 </div>
                                 <div className="form-group">
-                                    <label >Password</label>
+                                    <label >Пароль</label>
                                     <input type="password" className="my-form-control" name="Password" onChange={(e) => setPassword(e.target.value)} placeholder="Enter Your Password" />
                                 </div>
+                                <div className="checkbox-form">
+                                    <label >Запомнить?</label>
+                                    <input type="checkbox" className="checkboxRemember" name="RememberMe" onChange={() => setRememberMe(!rememberMe)} />
+                                </div>
                                 <p className="f-pass">Forgot your password? <a href="#">recover password</a></p>
+                                <span className={spanClass}>{errMessage} Попробуйте ещё раз</span>
                                 <div className="text-center">
                                     <button type="submit" className="default-btn" onClick={onSubmit}><span>Sign IN</span></button>
                                 </div>
@@ -108,7 +122,7 @@ const LoginPage = () => {
                                 <div className="or-content">
                                     <p>Sign up with your email</p>
                                     <a href="#" className="default-btn reverse"><img src="assets/images/login/google.png" alt="google" /> <span>Sign Up with Google</span></a>
-                                    <p className="or-signup"> Don't have an account? <a href="register.html">Sign up here</a></p>
+                                    <p className="or-signup"> Don't have an account? <a href="/register">Sign up here</a></p>
                                 </div>
                             </form>
                         </div>
