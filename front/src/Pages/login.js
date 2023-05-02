@@ -29,7 +29,7 @@ const LoginPage = () => {
             }
             else{
                 console.log(res.data);
-                Cookies.setItem('token', res.data.message);
+                Cookies.set('token', res.data.message);
                 navigate('/home');
             }
         })
@@ -39,7 +39,7 @@ const LoginPage = () => {
     };
 
     useEffect(() => {
-        if(Cookies.getItem('token')){
+        if(Cookies.get('token')){
             navigate('/home');
         }
     })
