@@ -7,5 +7,5 @@ public class Like
     public string LikedUserId {get; set; }
     public DateTime LikeDate { get; set; }
     
-    //TODO добавить sympathy
+    public bool Sympathy { get; set; }
 }

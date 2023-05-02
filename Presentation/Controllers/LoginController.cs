@@ -1,37 +1,29 @@
 using System.Security.Claims;
 using Contracts;
+using Contracts.Responses.Login;
 using Domain.Entities;
-using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Persistence;
 
-namespace BeaverTinder.Controllers;
-
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Identity;
-
+namespace Presentation.Controllers;
 
 [ApiController]
 [Route("[controller]")]
 public class LoginController : Controller
 {
     private readonly SignInManager<User> _signInManager;
-    private readonly DbContext _context;
+    private readonly ApplicationDbContext _context;
 
-    public LoginController(DbContext ctx, SignInManager<User> signInManager)
+    public LoginController(ApplicationDbContext ctx, SignInManager<User> signInManager)
     {
         _context = ctx;
         _signInManager = signInManager;
     }
 
-    // [HttpGet]
-    // public IActionResult Login(string? returnUrl = null)
-    // {
-    //     return View(new LoginDto { ReturnUrl = returnUrl });
-    // }
-
     [HttpPost]
-    public async Task<IActionResult> Login([FromBody]LoginDto model)
+    public async Task<JsonResult> Login([FromBody]LoginDto model)
     {
         /*bool rememberMe = false;
         /*if (Request.Form.ContainsKey("RememberMe"))
@@ -43,7 +35,6 @@ public class LoginController : Controller
         if (ModelState.IsValid)
         {
             User? signedUser = await _signInManager.UserManager.FindByNameAsync(model.UserName);
-            var a = await _signInManager.CheckPasswordSignInAsync(signedUser, model.Password, false);
             var result = await _signInManager.PasswordSignInAsync(signedUser.UserName, model.Password, false, lockoutOnFailure: false);
 
             
@@ -52,20 +43,18 @@ public class LoginController : Controller
                 if (await _signInManager.UserManager.IsInRoleAsync(signedUser, "Admin"))
                     await _signInManager.UserManager.AddClaimAsync(signedUser, new Claim(ClaimTypes.Role, "Admin"));
 
-                return Ok("Success");
-                return RedirectToAction("GetAllUsers", "Account");
+                return Json(new LoginResponseDto(LoginResponseStatus.Ok));
             }
 
-            ModelState.AddModelError("error_message", "Invalid login attempt.");
+            // ModelState.AddModelError("error_message", "Invalid login attempt.");
         }
 
-        return Ok(model);
+        return Json(new LoginResponseDto(LoginResponseStatus.Fail));
     }
 
     [HttpGet("/logout")]
     public async Task<IActionResult> Logout()
     {
-        //Refactor?
         await _signInManager.SignOutAsync();
         return RedirectToAction("Login", "Login");
     }

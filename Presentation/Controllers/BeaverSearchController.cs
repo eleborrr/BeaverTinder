@@ -26,24 +26,17 @@ public class BeaverSearchController: Controller
     {
         var user = await _userManager.FindByIdAsync(searchDto.UserId);
         return await _serviceManager.FindBeaverService.GetNextBeaver(user);
-        // return View("../Search/Search");
     }
-    //
-    // [HttpGet]
-    // public IActionResult GetRandom()
-    // {
-    //     return View("../Search/Search");
-    // }
-    //
+ 
     [HttpPost("/like")]
     public async Task Like([FromBody] LikeViewModel likeViewModel)
     {
-        await _serviceManager.FindBeaverService.Like(likeViewModel.UserId, likeViewModel.LikedUserId);
+        await _serviceManager.FindBeaverService.AddSympathy(likeViewModel.UserId, likeViewModel.LikedUserId, sympathy:likeViewModel.Sympathy);
     }
     //
-    // [HttpPost("/dislike")]
-    // public async void DisLike()
-    // {
-    //     _userManager.User
-    // }
+    [HttpPost("/dislike")]
+    public async void DisLike([FromBody] LikeViewModel likeViewModel)
+    {
+        await _serviceManager.FindBeaverService.AddSympathy(likeViewModel.UserId, likeViewModel.LikedUserId, sympathy:likeViewModel.Sympathy);
+    }
 }

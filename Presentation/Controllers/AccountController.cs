@@ -1,14 +1,16 @@
-﻿using System.Text;
-using System.Web;
-using Domain.Entities;
+﻿using Domain.Entities;
+using Domain.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.WebUtilities;
 using Services.Abstraction;
+using Services.Abstraction.Geolocation;
 using Services.Abstraction.TwoFA;
 
 namespace Presentation.Controllers;
+
+
+//TODO методы для изменения информации об аккаунте
 
 
 [ApiController]
@@ -18,8 +20,9 @@ public class AccountController : Controller
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signInManager;
     private readonly ITwoFAService _faService;
+    private readonly IGeolocationService _geolocationService;
     
-    public AccountController(IServiceManager serviceManager, UserManager<User> userManager, SignInManager<User> signInManager)  //UserManager<User> userManager, SignInManager<User> signInManager, ITwoFAService twoFaService
+    public AccountController(IServiceManager serviceManager, UserManager<User> userManager, SignInManager<User> signInManager)
     {
         _userManager = userManager;
         _signInManager = signInManager;
@@ -27,8 +30,15 @@ public class AccountController : Controller
     }
 
     
+    //TODO исправить юрл
+    [HttpGet("/geolocation")] 
+    public async Task<UserGeolocation> GetUserGeolocation([FromBody] int userId)
+    {
+        return await _geolocationService.GetByUserId(userId);
+    }
+    
     [HttpGet("/all")]
-    public List<User> GetAllUsers()  //List<User>
+    public List<User> GetAllUsers()
     {
         return _userManager.Users.ToList();
     }
@@ -39,6 +49,4 @@ public class AccountController : Controller
     {
         return Ok("empty");
     }
-
-   
 }

@@ -43,7 +43,7 @@ builder.Services.AddMvc();
 
  builder.Services.AddDbContext<ApplicationDbContext>(options => 
     options.UseSqlServer(builder.Configuration.GetConnectionString("BeaverTinderDatabase")));
- builder.Services.AddIdentity<User, IdentityRole>(
+ builder.Services.AddIdentity<User, Role>(
          options =>
          {
              options.SignIn.RequireConfirmedAccount = false; // change in prod

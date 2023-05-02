@@ -5,26 +5,33 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Services.Abstraction;
 using Services.Abstraction.FindBeaver;
+using Services.Abstraction.Likes;
 
 namespace Services.FindBeaver;
 
 public class FindBeaverService: IFindBeaverService
 {
-    private UserManager<User> _userManager;
-    private IRepositoryManager _repositoryManager;
-    private IMemoryCache _memoryCache;
+    private readonly UserManager<User> _userManager;
+    private readonly IRepositoryManager _repositoryManager;
+    private readonly IMemoryCache _memoryCache;
+    private readonly RoleManager<Role> _roleManager;
+    private readonly ILikeService _likeService;
 
-    public FindBeaverService(UserManager<User> userManager, IRepositoryManager repositoryManager, IMemoryCache memoryCache)
+    public FindBeaverService(UserManager<User> userManager, IRepositoryManager repositoryManager, IMemoryCache memoryCache, RoleManager<Role> roleManager, ILikeService likeService)
     {
         _userManager = userManager;
         _repositoryManager = repositoryManager;
         _memoryCache = memoryCache;
+        _roleManager = roleManager;
+        _likeService = likeService;
     }
 
     public async Task<User?> GetNextBeaver(User currentUser)
     {
         // логика, где поиск идет так же по местоположению.
-        // TODO эффективный алгоритм выдачи пользователя!
+        // TODO учет расстояния, ограничение по подписке.
+        
+        
         
         _memoryCache.TryGetValue(currentUser.Id, out List<User>? likesCache);
         if (likesCache == null)
@@ -46,20 +53,47 @@ public class FindBeaverService: IFindBeaverService
         return returnUser;
     }
 
-    public Task Like(string userId1, string userId2)
+    //TODO юзер будет приходить через жвт??
+    public Task AddSympathy(string userId1, string userId2, bool sympathy)
     {
-        if (_memoryCache.TryGetValue(userId1, out List<User>? likesCache))
-        {
-            _memoryCache.Set(userId1, likesCache.Skip(1),
-                new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(10)));
-        }
+        CheckSubscriptionLikePermission(_userManager.Users.Where(u => u.Id == userId1).FirstOrDefault());
+        MemoryCacheUpdate(userId1);
 
-        var newLike = new Like() { UserId = userId1, LikedUserId = userId2, LikeDate = DateTime.Now };
+        var newLike = new Like() { UserId = userId1, LikedUserId = userId2, LikeDate = DateTime.Now, Sympathy = sympathy};
         return _repositoryManager.LikeRepository.AddAsync(newLike);
     }
 
-    public Task Dislike(string user1, string user2)
+    // public Task Dislike(string userId1, string userId2)
+    // {
+    //     MemoryCacheUpdate(userId1);
+    //     var newLike = new Like() { UserId = userId1, LikedUserId = userId2, LikeDate = DateTime.Now, Sympathy = false};
+    //     return _repositoryManager.LikeRepository.AddAsync(newLike);
+    // }
+
+    private void MemoryCacheUpdate(string userId)
     {
-        throw new NotImplementedException();
+        if (_memoryCache.TryGetValue(userId, out List<User>? likesCache))
+        {
+            _memoryCache.Set(userId, likesCache.Skip(1),
+                new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(10)));
+        }
+    }
+    private async Task<bool> CheckSubscriptionLikePermission(User user)
+    {
+        //TODO make checks
+        var role = _roleManager.Roles.ToList().FirstOrDefault(r => r.Name == _userManager.GetRolesAsync(user).Result.FirstOrDefault()); //TODO поч ебаный Резалт, фиксить надо
+        if ((await _likeService.GetAllAsync())
+            .Count(l => l.LikeDate.Date.Day == DateTime.Today.Day) > role.LikesCountAllowed)
+        {
+            return false; // TODO return custom Exception
+        }
+
+        return true;
+    }
+
+    private async Task<bool> CheckSubscriptionMapsPermission(User user)
+    {
+        var role = _roleManager.Roles.ToList().FirstOrDefault(r => r.Name == _userManager.GetRolesAsync(user).Result.FirstOrDefault());
+        return role.LocationViewAllowed;
     }
 }

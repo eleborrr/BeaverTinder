@@ -148,3 +148,20 @@ sftp-config.json
 # Visual Studio Code - https://code.visualstudio.com/
 .settings/
 .vscode/
+
+# Migrations #
+Persistence/Migrations
+
+# bin and obj folders #
+Services/bin
+Services/obj
+Services.Abstraction/obj
+Services.Abstraction/bin
+Presentation/obj
+Presentation/bin
+Persistence/obj
+Persistence/bin
+Domain/obj
+Domain/bin
+Contracts/bin
+Contracts/obj

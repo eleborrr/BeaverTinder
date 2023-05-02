@@ -1,15 +1,14 @@
-﻿using System.Web;
-using Contracts;
+﻿using Contracts;
+using Contracts.Responses;
+using Contracts.Responses.Registration;
 using Domain.Entities;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.WebUtilities;
 using Services.Abstraction;
-using Services.Abstraction.Email;
+using Services.Abstraction.Geolocation;
 using Services.Abstraction.TwoFA;
 
-namespace BeaverTinder.Controllers;
+namespace Presentation.Controllers;
 
 
 [ApiController]
@@ -17,27 +16,18 @@ namespace BeaverTinder.Controllers;
 public class RegistrationController : Controller
 {
     private readonly UserManager<User> _userManager;
-    private readonly SignInManager<User> _signInManager;
-    private readonly IEmailService _emailService;
+    private readonly IGeolocationService _geolocationService;
     private readonly ITwoFAService _faService;
     public RegistrationController(IServiceManager serviceManager, UserManager<User> userManager, SignInManager<User> signInManager)
     {
         _userManager = userManager;
-        _signInManager = signInManager;
-        _emailService = serviceManager.EmailService;
         _faService = serviceManager.TwoFaService;
     }
-    
-    // [HttpGet]
-    // public IActionResult Register()
-    // {
-    //     return View();
-    // }
 
     [HttpPost]
-    public async Task<IActionResult> Register([FromBody]RegisterDto model)
+    public async Task<JsonResult> Register([FromBody]RegisterDto model)
     {
-        // Need to refactor?
+        // TODO перенести в сервис
         if (ModelState.IsValid)
         {
             var user = new User
@@ -51,23 +41,28 @@ public class RegistrationController : Controller
                 Image = "TEST",
                 
             };
-
+            //TODO получение геолокации из дто
+            
             var result = await _userManager.CreateAsync(user, model.Password);
 
             if (result.Succeeded)
             {
                 await _faService.SendConfirmationEmailAsync(user.Id);
-                return Content(
-                    "Для завершения регистрации проверьте электронную почту и перейдите по ссылке, указанной в письме");
+                return Json(new RegisterResponseDto(RegisterResponseStatus.Ok));
+                 // TODO протестить что норм работает
+            await _geolocationService.AddAsync(userId: _userManager.FindByEmailAsync(user.Email).Id,
+                Latutide: 55.47, // geolocation from dto!
+                Longtitude: 49.6);
             }
-
-            foreach (var error in result.Errors)
+           
+            else
             {
-                ModelState.AddModelError("error_message", error.Description);
+                return Json(new RegisterResponseDto(RegisterResponseStatus.Fail,
+                    result.Errors.FirstOrDefault().Description));
             }
         }
 
-        return RedirectToAction("GetAllUsers", "Account");
+        return Json(new RegisterResponseDto(RegisterResponseStatus.InvalidData));
     }
     
     // [HttpGet("/confirm")]
@@ -85,5 +80,4 @@ public class RegistrationController : Controller
     //     else
     //         return View("../EmptyPage");
     // }
-    
 }

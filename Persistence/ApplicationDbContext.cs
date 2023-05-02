@@ -9,7 +9,9 @@ public class ApplicationDbContext: IdentityDbContext<User>
 {
     public DbSet<Like> Likes { get; set; }
     public DbSet<Message> Messages { get; set; }
-    
+    public DbSet<Role> Roles { get; set; }
+    public DbSet<UserGeolocation> Geolocations { get; set; }
+
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)
     {
@@ -21,25 +23,46 @@ public class ApplicationDbContext: IdentityDbContext<User>
         modelBuilder.Entity<User>()
             .Ignore(u => u.PhoneNumber)
             .Ignore(u => u.PhoneNumberConfirmed);
-        modelBuilder.Entity<IdentityRole>().HasData(
-            new IdentityRole
+        modelBuilder.Entity<Role>().HasData(
+            new Role
             {
                 Id = "1",
                 Name = "Admin",
-                NormalizedName = "ADMIN"
+                NormalizedName = "ADMIN",
+                LikesCountAllowed = int.MaxValue,
+                LocationViewAllowed = true
             },
-            new IdentityRole
+            new Role
             {
                 Id = "2",
                 Name = "Moderator",
-                NormalizedName = "MODERATOR"
+                NormalizedName = "MODERATOR",
+                LikesCountAllowed = int.MaxValue,
+                LocationViewAllowed = true
             },
-            new IdentityRole
+            new Role
             {
                 Id = "3",
-                Name = "USER",
-                NormalizedName = "USER"
-
+                Name = "StandartUser",
+                NormalizedName = "STANDARTUSER",
+                LikesCountAllowed = 20,
+                LocationViewAllowed = false
+            },
+            new Role()
+            {
+                Id = "4",
+                Name = "UserMoreLikes",
+                NormalizedName = "USERMORELIKES",
+                LikesCountAllowed = 40,
+                LocationViewAllowed = false
+            },
+            new Role()
+            {
+                Id = "5",
+                Name = "UserMoreLikesAndMap",
+                NormalizedName = "USERMORELIKESANDMAP",
+                LikesCountAllowed = 50,
+                LocationViewAllowed = true
             });
         
         base.OnModelCreating(modelBuilder);
