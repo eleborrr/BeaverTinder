@@ -7,8 +7,10 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import logo from './../assets/images/logo/logo.jpg'
+import Cookies from 'js-cookie';
 
 const HeaderApp = () => {
+	const [token, setToken] = useState(Cookies.get('token'));
 	const [homeClass, setHomeClass] = useState('')
 	const [pagesClass, setPagesClass] = useState('')
 	const [communityClass, setCommunityClass] = useState('')
@@ -33,6 +35,11 @@ const HeaderApp = () => {
 		}
 	}
 	)
+
+	function RemoveCookies() {
+		Cookies.remove('token');
+		Cookies.remove('.AspNetCore.Identity.Application');
+	}
 	
     return(
         <header className="header" id="navbar">
@@ -97,8 +104,14 @@ const HeaderApp = () => {
 						<div className="header__more">
                             <button className="default-btn dropdown-toggle" type="button" id="moreoption" data-bs-toggle="dropdown" aria-expanded="false">My Account</button>
                             <ul className="dropdown-menu" aria-labelledby="moreoption">
-                                <li><a className="dropdown-item" href="/login">Log In</a></li>
-                                <li><a className="dropdown-item" href="/register">Sign Up</a></li>
+                              {token? <div>
+											<li><a className="dropdown-item" href="/like">Like</a></li>
+											<li><a className="dropdown-item" onClick={RemoveCookies} href="/login">Log Out</a></li>
+									  </div>
+							   : <div>
+							  		<li><a className="dropdown-item" href="/login">Log In</a></li>
+                            		<li><a className="dropdown-item" href="/register">Sign Up</a></li>
+								</div>}
                             </ul>
 						</div>
 					</div>

@@ -8,7 +8,6 @@ const LikePage = () =>
 {
     const [token, setToken] = useState('');
     const [profile, setProfile] = useState();
-    const [alreadyliked, setAlreadyLiked] = useState(false);
 
     useEffect(() => {
         setToken(Cookies.get('token'))
@@ -18,13 +17,11 @@ const LikePage = () =>
     // С ГОНКАМИ БРАТ НОРМ ВСЕ ДА?
 
     function like () {
-        if(!alreadyliked)
-        {
         
         axiosInstance.post('/like',
         {
             headers: {
-                Authorization: `Bearer ${token}`,
+                Authorization: `Bearer ${Cookies.get('token')}`,
             },
             LikedUserId: profile.id
 
@@ -32,10 +29,6 @@ const LikePage = () =>
         .then(res => {
             GetNewBearer();
         })
-        }
-        else{
-            console.log ('you already liked')
-        }
     }
 
     function dislike () {

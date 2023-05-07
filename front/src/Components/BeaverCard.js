@@ -2,6 +2,8 @@ import React, { useState, useMemo, useRef } from 'react'
 import "../assets/css/beaverCard.css"
 
 const BeaverCard = ({profile, like, dislike}) => {
+
+  const [alreadyLiked, setAlreadyLiked] = useState(false);
 return (
   <div className='content'>
     <div className='beaverCard'>
@@ -11,10 +13,10 @@ return (
             <div className='name from'> 10km from you</div>
           </div>
           <div className='beaverCardButtons'>
-            <button className='dislike' onClick={dislike}> 
+            <button className='dislike' onClick={() => {setAlreadyLiked(true); dislike(); setAlreadyLiked(false)}} disabled = {alreadyLiked}> 
             <i className='fas fa-times'></i>
             </button>
-            <button className='like' onClick={like}>
+            <button className='like' onClick={() => {setAlreadyLiked(true); like(); setAlreadyLiked(false) }} disabled = {alreadyLiked}>
               <i className='fas fa-heart'> </i>
             </button>
           </div>

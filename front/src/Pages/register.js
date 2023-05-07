@@ -48,6 +48,7 @@ const RegisterPage = () => {
                     setRespStatus(true);
                 }
                 else{
+                    console.log(data.message);
                     setRespErrData(data.message);
                 }
             })
