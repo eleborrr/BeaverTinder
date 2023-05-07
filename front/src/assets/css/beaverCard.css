@@ -1,0 +1,69 @@
+.content {
+    width: 100%;
+    display: flex;
+    padding: 20px 0;
+    align-items: center;
+    flex-direction: column;
+}
+
+.content .beaverCard  {
+    position: relative;
+    width: 55%;
+    object-fit: cover;
+    border-radius: 10px;
+    box-shadow: 0 1px 10px 0 rgba(0,20,20,0,5);
+
+}
+
+.content .beaverCard .profile .name {
+    color: #f24570;
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-shadow: 1px 1px 3px #444;
+}
+
+
+.beaverCard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.beaverCardImg{
+    width: 80%;
+}
+.beaverCardButtons {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.content .beaverCardButtons .dislike i {
+    color: #fd2e79;
+    font-size: 33px;
+}
+
+.content .beaverCardButtons .like i {
+    color: #11e298;
+    font-size: 32px;;
+}
+
+.like, .dislike {
+    background-color: #fff;
+    width: 80px;
+    height: 80px;
+    box-shadow:  0 1px 10px 0 rgba(0,20,20,0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 70px;
+    margin: 0px 20px 0px 20px;
+    transition: 0.2s tranform;
+}
+
+@media screen and (max-width: 800px) {
+    .content .beaverCard {
+        width: 90%;
+    }
+    
+}

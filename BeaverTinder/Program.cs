@@ -17,17 +17,7 @@
  using Services.Abstraction.TwoFA;
 
  var builder = WebApplication.CreateBuilder(args);
-
-
- builder.Services.ConfigureApplicationCookie(options =>
- {
-     if (builder.Environment.IsDevelopment())
-     {
-         options.Cookie.SameSite = SameSiteMode.None;
-         options.Cookie.HttpOnly = true;
-         options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-     }
- });
+ 
 // Add services to the container.
  builder.Services.AddControllers();
  builder.Services.AddMemoryCache();
@@ -35,16 +25,7 @@
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(); 
-builder.Services.AddMvc(); 
- builder.Services.ConfigureApplicationCookie(options =>
- {
-     if (builder.Environment.IsDevelopment())
-     {
-         options.Cookie.SameSite = SameSiteMode.None;
-         options.Cookie.HttpOnly = true;
-         options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-     }
- });
+builder.Services.AddMvc();
 
  builder.Services.AddDbContext<ApplicationDbContext>(options => 
     options.UseSqlServer(builder.Configuration.GetConnectionString("BeaverTinderDatabase")));
@@ -170,14 +151,10 @@ if (app.Environment.IsDevelopment())
  
  app.UseCors(TestSpesific);
 
- app.UseCors(TestSpesific);
-
-app.UseHttpsRedirection();
+ app.UseHttpsRedirection();
  
  app.UseAuthentication(); 
  app.UseAuthorization();
-
- 
 
  app.MapControllers();
 

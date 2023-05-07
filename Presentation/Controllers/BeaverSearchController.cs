@@ -22,7 +22,8 @@ public class BeaverSearchController: Controller
         _userManager = userManager;
     }
 
-    [HttpPost]
+    //TODO: isSerching == false?? change searching algorithm
+    [HttpGet]
     public async Task<JsonResult> Search()
     {
         var u = User.Identity.Name;
@@ -30,8 +31,10 @@ public class BeaverSearchController: Controller
         return Json(await _serviceManager.FindBeaverService.GetNextBeaver(user));
     }
  
+    
+    //TODO: тут тоже с гонками все норм брат да(я постараюсь на фронте избежать но не обещаю(мб и обещаю))
     [HttpPost("/like")]
-    public async Task Like([FromBody] LikeViewModel likeViewModel)
+    public async Task Like([FromBody]  LikeViewModel likeViewModel)
     {
         var u = User.Identity.Name;
         var user = await _userManager.FindByNameAsync(u);
