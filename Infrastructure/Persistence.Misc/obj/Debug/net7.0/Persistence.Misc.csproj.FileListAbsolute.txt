@@ -1,0 +1,15 @@
+C:\Users\this_\Repos\BeaverTinder\Infrastructure\Persistence.Misc\bin\Debug\net7.0\Persistence.Misc.deps.json
+C:\Users\this_\Repos\BeaverTinder\Infrastructure\Persistence.Misc\bin\Debug\net7.0\Persistence.Misc.dll
+C:\Users\this_\Repos\BeaverTinder\Infrastructure\Persistence.Misc\bin\Debug\net7.0\Persistence.Misc.pdb
+C:\Users\this_\Repos\BeaverTinder\Infrastructure\Persistence.Misc\bin\Debug\net7.0\Domain.dll
+C:\Users\this_\Repos\BeaverTinder\Infrastructure\Persistence.Misc\bin\Debug\net7.0\Domain.pdb
+C:\Users\this_\Repos\BeaverTinder\Infrastructure\Persistence.Misc\obj\Debug\net7.0\Persistence.Misc.csproj.AssemblyReference.cache
+C:\Users\this_\Repos\BeaverTinder\Infrastructure\Persistence.Misc\obj\Debug\net7.0\Persistence.Misc.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\this_\Repos\BeaverTinder\Infrastructure\Persistence.Misc\obj\Debug\net7.0\Persistence.Misc.AssemblyInfoInputs.cache
+C:\Users\this_\Repos\BeaverTinder\Infrastructure\Persistence.Misc\obj\Debug\net7.0\Persistence.Misc.AssemblyInfo.cs
+C:\Users\this_\Repos\BeaverTinder\Infrastructure\Persistence.Misc\obj\Debug\net7.0\Persistence.Misc.csproj.CoreCompileInputs.cache
+C:\Users\this_\Repos\BeaverTinder\Infrastructure\Persistence.Misc\obj\Debug\net7.0\Persistence.Misc.csproj.CopyComplete
+C:\Users\this_\Repos\BeaverTinder\Infrastructure\Persistence.Misc\obj\Debug\net7.0\Persistence.Misc.dll
+C:\Users\this_\Repos\BeaverTinder\Infrastructure\Persistence.Misc\obj\Debug\net7.0\refint\Persistence.Misc.dll
+C:\Users\this_\Repos\BeaverTinder\Infrastructure\Persistence.Misc\obj\Debug\net7.0\Persistence.Misc.pdb
+C:\Users\this_\Repos\BeaverTinder\Infrastructure\Persistence.Misc\obj\Debug\net7.0\ref\Persistence.Misc.dll
