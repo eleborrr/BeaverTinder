@@ -1,5 +1,6 @@
 ﻿using Contracts;
 using Contracts.Responses.Login;
+using Contracts.Responses.Registration;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -10,6 +11,7 @@ public interface IAccountService
 {
     public Task SendConfirmationEmailAsync(string userId);
     public Task<IdentityResult> ConfirmEmailAsync(string userEmail, string token);
-    public Task<LoginResponseDto> Login(LoginDto model, ModelStateDictionary modelstate);
-    
+    public Task<LoginResponseDto> Login(LoginDto model, ModelStateDictionary modelState);
+
+    public Task<RegisterResponseDto> Register(RegisterDto model, ModelStateDictionary modelState);
 }
