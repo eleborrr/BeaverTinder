@@ -35,7 +35,7 @@ public class BeaverSearchController: Controller
     {
         var u = User.Identity.Name;
         var user = await _userManager.FindByNameAsync(u);
-        await _serviceManager.FindBeaverService.AddSympathy(user.Id, likeViewModel.LikedUserId, sympathy:likeViewModel.Sympathy);
+        await _serviceManager.FindBeaverService.AddSympathy(user.Id, likeViewModel.LikedUserId, sympathy:true);
     }
     //
     [HttpPost("/dislike")]
@@ -43,6 +43,6 @@ public class BeaverSearchController: Controller
     {
         var u = User.Identity.Name;
         var user = await _userManager.FindByNameAsync(u);
-        await _serviceManager.FindBeaverService.AddSympathy(user.Id, likeViewModel.LikedUserId, sympathy:likeViewModel.Sympathy);
+        await _serviceManager.FindBeaverService.AddSympathy(user.Id, likeViewModel.LikedUserId, sympathy:false);
     }
 }
