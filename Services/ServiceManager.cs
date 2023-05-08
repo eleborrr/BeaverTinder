@@ -4,6 +4,7 @@ using Domain.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
+using Persistence.Misc.Services.JwtGenerator;
 using Services.Abstraction;
 using Services.Abstraction.Account;
 using Services.Abstraction.Email;
@@ -29,7 +30,7 @@ public class ServiceManager: IServiceManager
     private readonly Lazy<IFindBeaverService> _findBeaverService;
     private readonly Lazy<IAccountService> _accountService;
 
-    public ServiceManager(UserManager<User> userManager, IOptions<EmailConfig> emailConfig, IRepositoryManager repositoryManager, IMemoryCache memoryCache, RoleManager<Role> roleManager, SignInManager<User> signInManager)  // ,
+    public ServiceManager(UserManager<User> userManager, IOptions<EmailConfig> emailConfig, IRepositoryManager repositoryManager, IMemoryCache memoryCache, RoleManager<Role> roleManager, SignInManager<User> signInManager, IJwtGenerator jwtGenerator)  // ,
     {
         _geolocationService = new Lazy<IGeolocationService>(() => new GeolocationService(repositoryManager));
         _emailService = new Lazy<IEmailService>(() => new EmailService(emailConfig));
@@ -37,7 +38,7 @@ public class ServiceManager: IServiceManager
         _likeService = new Lazy<ILikeService>(() => new LikeService(repositoryManager));
         _findBeaverService = new Lazy<IFindBeaverService>(() => new FindBeaverService(userManager, repositoryManager, memoryCache, roleManager , LikeService));
         _accountService =
-            new Lazy<IAccountService>(() => new AccountService(userManager, _emailService.Value, signInManager));
+            new Lazy<IAccountService>(() => new AccountService(userManager, _emailService.Value, signInManager, jwtGenerator));
     }
 
     public IEmailService EmailService => _emailService.Value;
