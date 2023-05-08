@@ -101,7 +101,7 @@ const LoginPage = () => {
                             <form>
                                 <div className="form-group">
                                     <label >Имя пользователя</label>
-                                    <input type="text" className="my-form-control" name="UserName" onChange={(e) => setUserName(e.target.value)} placeholder="Enter Your Email" />
+                                    <input type="text" className="my-form-control" name="UserName" onChange={(e) => setUserName(e.target.value)} placeholder="Enter Your Nickname" />
                                 </div>
                                 <div className="form-group">
                                     <label >Пароль</label>

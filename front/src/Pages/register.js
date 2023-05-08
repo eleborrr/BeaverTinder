@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { axiosInstance } from "../Components/axios_server";
+import Cookies from "js-cookie";
 
 const RegisterPage = () => {
     const [lName, setLName] = useState('Last name')
@@ -68,7 +69,7 @@ const RegisterPage = () => {
     };
 
     useEffect(() => {
-        if (localStorage.getItem('token')){
+        if (Cookies.get('token')){
             navigate('/home');
         }
     }, []);
