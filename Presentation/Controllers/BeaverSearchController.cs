@@ -28,8 +28,7 @@ public class BeaverSearchController: Controller
     [HttpGet]
     public async Task<JsonResult> Search()
     {
-        var s = User.Claims.Where(c => c.Type == "Id").FirstOrDefault();
-        var user = await _userManager.FindByIdAsync(s.Value);
+        var user = await GetUserFromJwt();
         return Json(await _serviceManager.FindBeaverService.GetNextBeaver(user));
     }
  
@@ -38,16 +37,23 @@ public class BeaverSearchController: Controller
     [HttpPost("/like")]
     public async Task Like([FromBody]  LikeViewModel likeViewModel)
     {
-        var u = User.Identity.Name;
-        var user = await _userManager.FindByNameAsync(u);
+        var user = await GetUserFromJwt();
         await _serviceManager.FindBeaverService.AddSympathy(user.Id, likeViewModel.LikedUserId, sympathy:true);
     }
     //
     [HttpPost("/dislike")]
     public async void DisLike([FromBody] LikeViewModel likeViewModel)
     {
-        var u = User.Identity.Name;
-        var user = await _userManager.FindByNameAsync(u);
+        var user = await GetUserFromJwt();
         await _serviceManager.FindBeaverService.AddSympathy(user.Id, likeViewModel.LikedUserId, sympathy:false);
+    }
+
+    private async Task<User> GetUserFromJwt()
+    {
+        var s = User.Claims.FirstOrDefault(c => c.Type == "Id");
+        var user = await _userManager.FindByIdAsync(s.Value);
+        if (user is null)
+            throw new Exception("user not found"); //TODO перенести в exception
+        return user;
     }
 }
