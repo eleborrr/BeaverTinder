@@ -6,11 +6,10 @@ import Cookies from 'js-cookie';
 
 const LikePage = () =>
 {
-    const [token, setToken] = useState('');
+    const [token, setToken] = useState(Cookies.get('token'));
     const [profile, setProfile] = useState();
 
     useEffect(() => {
-        setToken(Cookies.get('token'))
         GetNewBearer();
     }, [])
 
@@ -22,6 +21,7 @@ const LikePage = () =>
         {
             headers: {
                 Authorization: `Bearer ${Cookies.get('token')}`,
+                Accept: "application/json"
             },
             LikedUserId: profile.id
 
@@ -32,10 +32,12 @@ const LikePage = () =>
     }
 
     function dislike () {
+        console.log(token);
         axiosInstance.post('/dislike',
         {
             headers: {
                 Authorization: `Bearer ${token}`,
+                Accept : "application/json"
             },
             LikedUserId: profile.id
         })
@@ -50,6 +52,7 @@ const LikePage = () =>
         {
             headers: {
                 Authorization: `Bearer ${token}`,
+                Accept : "application/json"
             }
         })
         .then(res => {
