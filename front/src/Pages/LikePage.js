@@ -17,14 +17,13 @@ const LikePage = () =>
 
     function like () {
         
-        axiosInstance.post('/like',
-        {
-            headers: {
-                Authorization: `Bearer ${Cookies.get('token')}`,
-                Accept: "application/json"
-            },
-            LikedUserId: profile.id
-
+        axiosInstance.post('/like', { 
+            LikedUserId: profile.id 
+        }, {
+            headers:{
+                Authorization: `Bearer ${token}`,
+                Accept : "application/json"
+            }
         })
         .then(res => {
             GetNewBearer();
@@ -33,13 +32,13 @@ const LikePage = () =>
 
     function dislike () {
         console.log(token);
-        axiosInstance.post('/dislike',
-        {
-            headers: {
+        axiosInstance.post('/dislike', { 
+            LikedUserId: profile.id 
+        }, {
+            headers:{
                 Authorization: `Bearer ${token}`,
                 Accept : "application/json"
-            },
-            LikedUserId: profile.id
+            }
         })
         .then(res => {
             GetNewBearer();
