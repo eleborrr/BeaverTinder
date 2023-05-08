@@ -9,6 +9,7 @@ import CommunityPage from './Pages/community';
 import ShopsPage from './Pages/shops';
 import BlogsPage from './Pages/blogs';
 import ContactPage from './Pages/contact';
+import LikePage from './Pages/LikePage';
 
 function App() {
   return (
@@ -22,7 +23,9 @@ function App() {
         <Route path='/shops' element={<ShopsPage />} />
         <Route path='/blogs' element={<BlogsPage />} />
         <Route path='/contact' element={<ContactPage />} />
-        <Route path='*' element={<RegisterPage />} />
+        <Route path='/like' element= {<LikePage/>}/>
+        <Route path='*' element={<RegisterPage />} 
+        />
       </Routes>
     </>
   );
