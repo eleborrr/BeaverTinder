@@ -17,6 +17,8 @@ public class SubscriptionService : ISubscriptionService
         _userManager = userManager;
     }
     
+    //TODO сделать проверку Expires(Expires not valid => active=false, delete role)
+    //TODO самостоятельная деактивация подписки??
     public async Task AddSubscriptionToUser(int subsId, string userId)
     {
         var user = await _userManager.FindByIdAsync(userId);

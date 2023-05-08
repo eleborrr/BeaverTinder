@@ -1,5 +1,6 @@
 ﻿using Domain.Repositories;
 using Microsoft.AspNetCore.Identity;
+using Services.Abstraction.Account;
 using Services.Abstraction.Email;
 using Services.Abstraction.FindBeaver;
 using Services.Abstraction.Geolocation;
@@ -17,6 +18,7 @@ public interface IServiceManager
     ILikeService LikeService { get; }
     IGeolocationService GeolocationService { get; }
     IFindBeaverService FindBeaverService { get; }
+    IAccountService AccountService { get; }
     IPaymentService PaymentService { get; }
     ISubscriptionService SubscriptionService { get; }
 }
