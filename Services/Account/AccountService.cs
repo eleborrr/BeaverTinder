@@ -45,6 +45,26 @@ public class AccountService : IAccountService
 
     }
 
+    public async Task SendPasswordResetAsync(string userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user == null)
+            Console.WriteLine("USER FINDING ERROR");
+
+        var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+        if (token == null)
+            Console.WriteLine("TOKEN GENERATE ERROR");
+
+        byte[] tokenGeneratedBytes = Encoding.UTF8.GetBytes(token);
+        var codeEncoded = WebEncoders.Base64UrlEncode(tokenGeneratedBytes);
+
+        var link = $"https://localhost:7015/confirm?userEmail={user.Email}&token={codeEncoded}";
+
+        await _emailService.SendEmailAsync(user.Email, "Confirm your account",
+            $"Подтвердите регистрацию, перейдя по ссылке: <a href=\"{link}\">ссылка</a>");
+
+    }
+
     public async Task<IdentityResult> ConfirmEmailAsync(string userEmail, string token)
     {
         var codeDecodedBytes = WebEncoders.Base64UrlDecode(token);
@@ -56,6 +76,20 @@ public class AccountService : IAccountService
         }
 
         var res = await _userManager.ConfirmEmailAsync(user, codeDecoded);
+        return res;
+    }
+
+    public async Task<IdentityResult> ResetPasswordAsync(string userId, string token, string newPassword)
+    {
+        var codeDecodedBytes = WebEncoders.Base64UrlDecode(token);
+        var codeDecoded = Encoding.UTF8.GetString(codeDecodedBytes);
+        var user = await _userManager.FindByEmailAsync(userId);
+        if (user == null)
+        {
+            return IdentityResult.Failed();
+        }
+
+        var res = await _userManager.ResetPasswordAsync(user, codeDecoded, newPassword);
         return res;
     }
 
@@ -123,6 +157,5 @@ public class AccountService : IAccountService
                 result.Errors.FirstOrDefault().Description);
         }
         return new RegisterResponseDto(RegisterResponseStatus.InvalidData);
-
     }
 }

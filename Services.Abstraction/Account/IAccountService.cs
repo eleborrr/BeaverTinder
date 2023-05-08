@@ -14,4 +14,5 @@ public interface IAccountService
     public Task<LoginResponseDto> Login(LoginDto model, ModelStateDictionary modelState);
 
     public Task<RegisterResponseDto> Register(RegisterDto model, ModelStateDictionary modelState);
+    public Task<IdentityResult> ResetPasswordAsync(string userId, string token, string newPassword);
 }
