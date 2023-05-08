@@ -42,7 +42,7 @@ public class BeaverSearchController: Controller
     }
     //
     [HttpPost("/dislike")]
-    public async void DisLike([FromBody] LikeViewModel likeViewModel)
+    public async Task DisLike([FromBody] LikeViewModel likeViewModel)
     {
         var user = await GetUserFromJwt();
         await _serviceManager.FindBeaverService.AddSympathy(user.Id, likeViewModel.LikedUserId, sympathy:false);
