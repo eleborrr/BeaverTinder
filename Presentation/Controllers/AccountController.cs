@@ -17,16 +17,14 @@ namespace Presentation.Controllers;
 [Route("[controller]")]
 public class AccountController : Controller
 {
-    private readonly UserManager<User> _userManager;
-    private readonly SignInManager<User> _signInManager;
-    private readonly ITwoFAService _faService;
+    private readonly UserManager<User> _userManager; 
     private readonly IGeolocationService _geolocationService;
     
     public AccountController(IServiceManager serviceManager, UserManager<User> userManager, SignInManager<User> signInManager)
     {
         _userManager = userManager;
-        _signInManager = signInManager;
-        _faService = serviceManager.TwoFaService;
+        // _signInManager = signInManager;
+        // _faService = serviceManager.TwoFaService;
     }
 
     

@@ -161,6 +161,8 @@ Presentation/obj
 Presentation/bin
 Persistence/obj
 Persistence/bin
+Infrastructure/Persistence.Misc/obj
+Infrastructure/Persistence.Misc/bin
 Domain/obj
 Domain/bin
 Contracts/bin
