@@ -20,8 +20,8 @@ const LikePage = () =>
         axiosInstance.post('/like',
         {
             headers: {
-                Authorization: `Bearer ${Cookies.get('token')}`,
-                Accept: "application/json"
+                Authorization: `Bearer ${token}`,
+                Accept : "application/json"
             },
             LikedUserId: profile.id
 
