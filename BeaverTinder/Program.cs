@@ -152,7 +152,7 @@ if (app.Environment.IsDevelopment())
  app.UseCors(TestSpesific);
 
  app.UseHttpsRedirection();
- 
+
  app.UseAuthentication(); 
  app.UseAuthorization();
 
