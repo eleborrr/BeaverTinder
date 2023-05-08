@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "s2uBvOlXkIy6EGtsraV94YqTnJVYmeylxTa3f3a+IJQG0ozztj0/j28MfMXjaMGs9chPiciybe8+BTRCuJWDXA==",
+  "dgSpecHash": "7vKoQ6YxRd9ttrvDpgfnhU19yvw3rsnX4acLw3s4k99PlJTgjNxGiGLLxGQHAMu/ehOGUMBhu0/IYvNf4nyzzw==",
   "success": true,
   "projectFilePath": "C:\\Users\\rafae\\OSNOVIRAZRABOTKI\\semwork3\\BeaverTinder\\Services\\Services.csproj",
   "expectedPackageFiles": [
@@ -155,7 +155,7 @@
       "code": "NU1701",
       "level": "Warning",
       "warningLevel": 1,
-      "message": "Пакет \"Microsoft.AspNet.WebApi.Core 5.2.9\" был восстановлен с помощью \".NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1\", а не целевой платформы проекта \"net7.0\". Этот пакет может быть не полностью совместим с вашим проектом.",
+      "message": "Package 'Microsoft.AspNet.WebApi.Core 5.2.9' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net7.0'. This package may not be fully compatible with your project.",
       "libraryId": "Microsoft.AspNet.WebApi.Core",
       "targetGraphs": [
         "net7.0"
