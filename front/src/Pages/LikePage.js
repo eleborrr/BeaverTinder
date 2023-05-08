@@ -17,16 +17,6 @@ const LikePage = () =>
 
     function like () {
         
-<<<<<<< HEAD
-        axiosInstance.post('/like',
-        {
-            headers: {
-                Authorization: `Bearer ${token}`,
-                Accept : "application/json"
-            },
-            LikedUserId: profile.id
-
-=======
         axiosInstance.post('/like', { 
             LikedUserId: profile.id 
         }, {
@@ -34,7 +24,6 @@ const LikePage = () =>
                 Authorization: `Bearer ${token}`,
                 Accept : "application/json"
             }
->>>>>>> e041aad66d628fb73441a5deff4e42f7d1595772
         })
         .then(res => {
             GetNewBearer();
