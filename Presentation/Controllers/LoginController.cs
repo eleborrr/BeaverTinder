@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
+using Services.Abstraction;
+using Persistence.Misc.Services.JwtGenerator;
 
 namespace Presentation.Controllers;
 
@@ -13,43 +15,25 @@ namespace Presentation.Controllers;
 [Route("[controller]")]
 public class LoginController : Controller
 {
-    private readonly SignInManager<User> _signInManager;
+    private readonly IServiceManager _serviceManager;
     private readonly ApplicationDbContext _context;
+    private readonly SignInManager<User> _signInManager;
+    private readonly IJwtGenerator _jwtGenerator;
 
-    public LoginController(ApplicationDbContext ctx, SignInManager<User> signInManager)
+    public LoginController(ApplicationDbContext ctx, IServiceManager serviceManager, SignInManager<User> signInManager, IJwtGenerator jwtGenerator)
     {
         _context = ctx;
+        _serviceManager = serviceManager;
         _signInManager = signInManager;
+        _jwtGenerator = jwtGenerator;
     }
 
+    //TODO перенести логику в сервис
     [HttpPost]
     public async Task<JsonResult> Login([FromBody]LoginDto model)
     {
-        /*bool rememberMe = false;
-        /*if (Request.Form.ContainsKey("RememberMe"))
-        {
-            bool.TryParse(Request.Form["RememberMe"], out rememberMe);
-        }#1#
-        model.RememberMe = rememberMe;*/
-        
-        if (ModelState.IsValid)
-        {
-            User? signedUser = await _signInManager.UserManager.FindByNameAsync(model.UserName);
-            var result = await _signInManager.PasswordSignInAsync(signedUser.UserName, model.Password, false, lockoutOnFailure: false);
-
-            
-            if (result.Succeeded)
-            {
-                if (await _signInManager.UserManager.IsInRoleAsync(signedUser, "Admin"))
-                    await _signInManager.UserManager.AddClaimAsync(signedUser, new Claim(ClaimTypes.Role, "Admin"));
-
-                return Json(new LoginResponseDto(LoginResponseStatus.Ok));
-            }
-
-            // ModelState.AddModelError("error_message", "Invalid login attempt.");
-        }
-
-        return Json(new LoginResponseDto(LoginResponseStatus.Fail));
+        //TODO сделать чек?
+        return Json(await _serviceManager.AccountService.Login(model, ModelState));
     }
 
     [HttpGet("/logout")]

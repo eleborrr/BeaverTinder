@@ -1,0 +1,21 @@
+.checkboxRemember{
+    margin-left: 5px;
+    width: 25px;
+    height: 25px;
+}
+
+.checkbox-form{
+    display: flex;
+    align-items: center;
+    margin: 5%;
+}
+
+.errorMessage{
+    color: red;
+    font-style: oblique;
+    font-size: x-large;
+}
+
+.hide{
+    display: none;
+}
