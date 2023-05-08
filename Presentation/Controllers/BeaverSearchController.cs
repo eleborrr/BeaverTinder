@@ -1,6 +1,8 @@
-﻿using Contracts;
+﻿using System.Security.Claims;
+using Contracts;
 using Contracts.ViewModels;
 using Domain.Entities;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -10,7 +12,7 @@ namespace Presentation.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-[Authorize]
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 public class BeaverSearchController: Controller
 {
     private readonly UserManager<User> _userManager;
@@ -26,8 +28,8 @@ public class BeaverSearchController: Controller
     [HttpGet]
     public async Task<JsonResult> Search()
     {
-        var u = User.Identity.Name;
-        var user = await _userManager.FindByNameAsync(u);
+        var s = User.Claims.Where(c => c.Type == "Id").FirstOrDefault();
+        var user = await _userManager.FindByIdAsync(s.Value);
         return Json(await _serviceManager.FindBeaverService.GetNextBeaver(user));
     }
  
@@ -38,7 +40,7 @@ public class BeaverSearchController: Controller
     {
         var u = User.Identity.Name;
         var user = await _userManager.FindByNameAsync(u);
-        await _serviceManager.FindBeaverService.AddSympathy(user.Id, likeViewModel.LikedUserId, true);
+        await _serviceManager.FindBeaverService.AddSympathy(user.Id, likeViewModel.LikedUserId, sympathy:true);
     }
     //
     [HttpPost("/dislike")]
@@ -46,6 +48,6 @@ public class BeaverSearchController: Controller
     {
         var u = User.Identity.Name;
         var user = await _userManager.FindByNameAsync(u);
-        await _serviceManager.FindBeaverService.AddSympathy(user.Id, likeViewModel.LikedUserId, false);
+        await _serviceManager.FindBeaverService.AddSympathy(user.Id, likeViewModel.LikedUserId, sympathy:false);
     }
 }
