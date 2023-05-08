@@ -18,8 +18,6 @@ public class LoginController : Controller
     private readonly IServiceManager _serviceManager;
     private readonly ApplicationDbContext _context;
     private readonly SignInManager<User> _signInManager;
-
-    public LoginController(ApplicationDbContext ctx, IServiceManager serviceManager, SignInManager<User> signInManager)
     private readonly IJwtGenerator _jwtGenerator;
 
     public LoginController(ApplicationDbContext ctx, IServiceManager serviceManager, SignInManager<User> signInManager, IJwtGenerator jwtGenerator)
@@ -35,33 +33,7 @@ public class LoginController : Controller
     public async Task<JsonResult> Login([FromBody]LoginDto model)
     {
         //TODO сделать чек?
-        //return Json(await _serviceManager.AccountService.Login(model, ModelState));
-        /*bool rememberMe = false;
-        /*if (Request.Form.ContainsKey("RememberMe"))
-        {
-            bool.TryParse(Request.Form["RememberMe"], out rememberMe);
-        }#1#
-        model.RememberMe = rememberMe;*/
-        
-        if (ModelState.IsValid)
-        {
-            User? signedUser = await _signInManager.UserManager.FindByNameAsync(model.UserName);
-            if (signedUser is null)
-                return Json(new LoginResponseDto(LoginResponseStatus.Fail, "user not found"));
-            var result = await _signInManager.PasswordSignInAsync(signedUser.UserName, model.Password, false, lockoutOnFailure: false);
-
-            
-            if (result.Succeeded)
-            {
-                await _signInManager.UserManager.AddClaimAsync(signedUser, new Claim("Id", signedUser.Id));
-                if (await _signInManager.UserManager.IsInRoleAsync(signedUser, "Admin"))
-                    await _signInManager.UserManager.AddClaimAsync(signedUser, new Claim(ClaimTypes.Role, "Admin"));
-
-                return Json(new LoginResponseDto(LoginResponseStatus.Ok, await _jwtGenerator.GenerateJwtToken(signedUser.Id)));
-            }
-
-            // ModelState.AddModelError("error_message", "Invalid login attempt.");
-        }
+        return Json(await _serviceManager.AccountService.Login(model, ModelState));
     }
 
     [HttpGet("/logout")]

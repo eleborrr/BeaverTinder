@@ -111,6 +111,7 @@ public class AccountService : IAccountService
 
             if (result.Succeeded)
             {
+                await _signInManager.UserManager.AddClaimAsync(signedUser, new Claim("Id", signedUser.Id));
                 if (await _signInManager.UserManager.IsInRoleAsync(signedUser, "Admin"))
                     await _signInManager.UserManager.AddClaimAsync(signedUser, new Claim(ClaimTypes.Role, "Admin"));
 
