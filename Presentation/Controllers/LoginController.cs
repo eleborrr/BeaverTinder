@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
+using Services.Abstraction;
 using Persistence.Misc.Services.JwtGenerator;
 
 namespace Presentation.Controllers;
@@ -14,13 +15,17 @@ namespace Presentation.Controllers;
 [Route("[controller]")]
 public class LoginController : Controller
 {
-    private readonly SignInManager<User> _signInManager;
+    private readonly IServiceManager _serviceManager;
     private readonly ApplicationDbContext _context;
+    private readonly SignInManager<User> _signInManager;
+
+    public LoginController(ApplicationDbContext ctx, IServiceManager serviceManager, SignInManager<User> signInManager)
     private readonly IJwtGenerator _jwtGenerator;
 
-    public LoginController(ApplicationDbContext ctx, SignInManager<User> signInManager, IJwtGenerator jwtGenerator)
+    public LoginController(ApplicationDbContext ctx, IServiceManager serviceManager, SignInManager<User> signInManager, IJwtGenerator jwtGenerator)
     {
         _context = ctx;
+        _serviceManager = serviceManager;
         _signInManager = signInManager;
         _jwtGenerator = jwtGenerator;
     }
@@ -29,6 +34,8 @@ public class LoginController : Controller
     [HttpPost]
     public async Task<JsonResult> Login([FromBody]LoginDto model)
     {
+        //TODO сделать чек?
+        //return Json(await _serviceManager.AccountService.Login(model, ModelState));
         /*bool rememberMe = false;
         /*if (Request.Form.ContainsKey("RememberMe"))
         {
@@ -55,8 +62,6 @@ public class LoginController : Controller
 
             // ModelState.AddModelError("error_message", "Invalid login attempt.");
         }
-
-        return Json(new LoginResponseDto(LoginResponseStatus.Fail));
     }
 
     [HttpGet("/logout")]
