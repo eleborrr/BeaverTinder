@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
+import Cookies from 'js-cookie';
+import jwtDecode from "jwt-decode";
 import BeaverCard from "../Components/BeaverCard";
 import { axiosInstance } from "../Components/axios_server";
-import Cookies from 'js-cookie';
-
+import { GeoMap } from "../Components/geolocation_map";
+import './../assets/css/map_style.css'
 
 const LikePage = () =>
 {
@@ -55,12 +57,35 @@ const LikePage = () =>
             }
         })
         .then(res => {
-            setProfile(res.data)})
+            setProfile(res.data);
+            if (res.data){
+                // axiosInstance.get('/account/geolocation', {
+                //     headers: {
+                //         Authorization: `Bearer ${token}`,
+                //         Accept: 'application/json'
+                //     },
+                //     body: {
+                //         userId: 
+                //     }
+                // })
+                console.log(jwtDecode(token));
+            }
+        });
+   
     }
 
     return (<div>
         {/* <BeaverCard person={{name: 'Arun', url: 'https://cdn.hashnode.com/res/hashnode/image/upload/v1644176959380/tNxVpeCE0.png'}}> </BeaverCard> */}
-        {profile? <BeaverCard profile = {profile} like = {like} dislike = {dislike}></BeaverCard>: <h1>Downloading</h1>}
+        {profile
+        ? 
+        <div>
+            <BeaverCard profile = {profile} like = {like} dislike = {dislike}></BeaverCard>
+            <div className="div_map">
+                <GeoMap latitude={55.81441} longitude={49.12068} />
+            </div>
+        </div>
+        : 
+        <h1>Downloading</h1>}
     </div>
     )
 
