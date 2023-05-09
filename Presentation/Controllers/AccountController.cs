@@ -20,7 +20,6 @@ public class AccountController : Controller
 {
     private readonly UserManager<User> _userManager;
     private readonly IServiceManager _serviceManager;
-    private readonly IGeolocationService _geolocationService;
     
     public AccountController(IServiceManager serviceManager, UserManager<User> userManager, SignInManager<User> signInManager)
     {
@@ -31,7 +30,7 @@ public class AccountController : Controller
     [HttpPost("/geolocation")]
     public async Task<UserGeolocation> GetUserGeolocation([FromBody] GeolocationRequestViewModel model)
     {
-        return await _geolocationService.GetByUserId(model.UserId);
+        return await _serviceManager.GeolocationService.GetByUserId(model.UserId);
     }
     
     [HttpGet("/all")]
