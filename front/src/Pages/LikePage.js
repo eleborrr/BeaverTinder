@@ -10,6 +10,8 @@ const LikePage = () =>
 {
     const token = Cookies.get('token');
     const [profile, setProfile] = useState();
+    const [long, setLong] = useState();
+    const [lant, setLant] = useState();
 
     useEffect(() => {
         GetNewBearer();
@@ -59,7 +61,14 @@ const LikePage = () =>
             },
         })
         .then(res => {
-            console.log(res.data);
+            if (res.data){
+                if (res.data.longitude){
+                    setLong(res.data.longitude);
+                }
+                if (res.data.latitude){
+                    setLong(res.data.latitude);
+                }
+            }
         })
     }
 
@@ -88,7 +97,7 @@ const LikePage = () =>
         <div>
             <BeaverCard profile = {profile} like = {like} dislike = {dislike}></BeaverCard>
             <div className="div_map">
-                <GeoMap latitude={55.81441} longitude={49.12068} />
+                <GeoMap latitude={lant ? lant : 55.81441} longitude={long ? long : 49.12068} />
             </div>
         </div>
         : 
