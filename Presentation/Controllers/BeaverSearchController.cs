@@ -29,7 +29,17 @@ public class BeaverSearchController: Controller
     public async Task<JsonResult> Search()
     {
         var user = await GetUserFromJwt();
-        return Json(await _serviceManager.FindBeaverService.GetNextBeaver(user));
+        var userEntity = await _serviceManager.FindBeaverService.GetNextBeaver(user);
+        var result = new SearchUserResultDto()
+        {
+            Id = userEntity.Id,
+            About = userEntity.About,
+            FirstName = userEntity.FirstName,
+            LastName = userEntity.LastName,
+            Age = DateTime.Now.Year - userEntity.DateOfBirth.Year,
+            Gender = userEntity.Gender,
+        };
+        return Json(result);
     }
  
     
