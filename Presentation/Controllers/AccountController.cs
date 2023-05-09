@@ -27,10 +27,8 @@ public class AccountController : Controller
         _serviceManager = serviceManager;
     }
 
-    
-    //TODO исправить юрл
-    [HttpGet("/geolocation")] 
-    public async Task<UserGeolocation> GetUserGeolocation([FromQuery] string userId)
+    [HttpPost("/geolocation")] 
+    public async Task<UserGeolocation> GetUserGeolocation([FromBody] string userId)
     {
         return await _geolocationService.GetByUserId(userId);
     }
