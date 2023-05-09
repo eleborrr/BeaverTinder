@@ -68,6 +68,7 @@ const LikePage = () =>
                 //         userId: 
                 //     }
                 // })
+                console.log(res.data);
                 console.log(jwtDecode(token));
             }
         });
