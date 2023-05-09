@@ -30,7 +30,7 @@ public class AccountController : Controller
     
     //TODO исправить юрл
     [HttpGet("/geolocation")] 
-    public async Task<UserGeolocation> GetUserGeolocation([FromBody] int userId)
+    public async Task<UserGeolocation> GetUserGeolocation([FromQuery] string userId)
     {
         return await _geolocationService.GetByUserId(userId);
     }
