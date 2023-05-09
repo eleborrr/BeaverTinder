@@ -21,7 +21,7 @@ const RegisterPage = () => {
     const ValidatePass = (e) => {
         setConfPass(e.target.value)
         if (e.target.value !== pass){
-            setErrMess("Password doesn't match")
+            setErrMess("Пароли не совпадают!")
         } else {
             setErrMess('')
             setConfPass(e.target.value)
@@ -30,6 +30,11 @@ const RegisterPage = () => {
 
     const onSubmit = (e) => {
         e.preventDefault();
+        setRespErrData('');
+        if (pass !== confPass){
+            setErrMess('Пароли не совпадают!');
+            return;
+        }
         try {
         axiosInstance
             .post('/registration', {
@@ -49,7 +54,6 @@ const RegisterPage = () => {
                     setRespStatus(true);
                 }
                 else{
-                    console.log(data.message);
                     setRespErrData(data.message);
                 }
             })
@@ -148,7 +152,15 @@ const RegisterPage = () => {
                                 </div>
                                 <div className="form-group">
                                     <label>Password</label>
-                                    <input type="text" className="my-form-control" placeholder="Enter Your Password" onChange={(e) => setPass(e.target.value)}/>
+                                    <input type="text" className="my-form-control" placeholder="Enter Your Password" onChange={(e) => {
+                                        setPass(e.target.value);
+                                       
+                                        if (e.target.value !== confPass){
+                                            setErrMess('Пароли не совпадают!');
+                                        } else {
+                                            setErrMess('');
+                                        }
+                                     }}/>
                                 </div>
                                 <div className="form-group">
                                     <label>ConfirmPassword</label>
@@ -173,7 +185,7 @@ const RegisterPage = () => {
                                     <label>Tell about yourself</label>
                                     <input type="text" className="my-form-control" placeholder="Tell about yourself" value={about} onChange={(e) => setAbout(e.target.value)}/>
                                 </div>
-                                <span>{respErrData}</span>
+                                <span>{respErrData}</span><br />
                                 <button className="default-btn reverse" data-toggle="modal" data-target="#email-confirm"><span>Create Your Profile</span></button>
                             </form>
                             }
