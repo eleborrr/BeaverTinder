@@ -8,7 +8,7 @@ import './../assets/css/map_style.css'
 
 const LikePage = () =>
 {
-    const [token, setToken] = useState(Cookies.get('token'));
+    const token = Cookies.get('token');
     const [profile, setProfile] = useState();
 
     useEffect(() => {
@@ -48,6 +48,21 @@ const LikePage = () =>
 
     }
 
+    function GetGeolocation(prof) {
+        axiosInstance.post("/geolocation",{
+            userId : prof.id
+        },
+         {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                Accept: 'application/json'
+            },
+        })
+        .then(res => {
+            console.log(res.data);
+        })
+    }
+
     function GetNewBearer() {
     axiosInstance.get('/beaversearch',
         {
@@ -59,18 +74,9 @@ const LikePage = () =>
         .then(res => {
             setProfile(res.data);
             if (res.data){
-                // axiosInstance.get('/account/geolocation', {
-                //     headers: {
-                //         Authorization: `Bearer ${token}`,
-                //         Accept: 'application/json'
-                //     },
-                //     body: {
-                //         userId: 
-                //     }
-                // })
-                console.log(res.data);
-                console.log(jwtDecode(token));
+                GetGeolocation(res.data);
             }
+            console.log(jwtDecode(token));
         });
    
     }

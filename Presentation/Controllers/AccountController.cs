@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Contracts.ViewModels;
+using Domain.Entities;
 using Domain.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -26,11 +27,11 @@ public class AccountController : Controller
         _userManager = userManager;
         _serviceManager = serviceManager;
     }
-
-    [HttpPost("/geolocation")] 
-    public async Task<UserGeolocation> GetUserGeolocation([FromBody] string userId)
+    
+    [HttpPost("/geolocation")]
+    public async Task<UserGeolocation> GetUserGeolocation([FromBody] GeolocationRequestViewModel model)
     {
-        return await _geolocationService.GetByUserId(userId);
+        return await _geolocationService.GetByUserId(model.UserId);
     }
     
     [HttpGet("/all")]
