@@ -7,5 +7,9 @@
         IGeolocationRepository GeolocationRepository { get; }
         
         IUnitOfWork UnitOfWork { get; }
+        
+        IPaymentRepository PaymentRepository { get; }
+        ISubscriptionRepository SubscriptionRepository { get; }
+        IUserSubscriptionRepository UserSubscriptionRepository { get; }
     }
 }

@@ -8,5 +8,12 @@
       <jdbc-url>Server=LAPTOP-FGUJ2MHE\SQLEXPRESS;Database=BeaverTinderDatabase</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="LAPTOP-HI960CEE\SQLEXPRESS" uuid="28c90c80-4264-4b84-910f-ffede7b2e1df">
+      <driver-ref>sqlserver.jb</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>com.jetbrains.jdbc.sqlserver.SqlServerDriver</jdbc-driver>
+      <jdbc-url>Server=localhost</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>
