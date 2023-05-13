@@ -20,6 +20,13 @@ public class PaymentController : Controller
         _userManager = userManager;
         _serviceManager = serviceManager;
     }
+
+    [Authorize]
+    [HttpGet]
+    public async Task<JsonResult> GetSubscriptions()
+    {
+        return Json(await _serviceManager.SubscriptionService.GetAllAsync());
+    }
     // GET
     [Authorize]
     [HttpPost("pay")]
