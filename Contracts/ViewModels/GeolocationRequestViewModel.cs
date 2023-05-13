@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Contracts;
+namespace Contracts.ViewModels;
 
-public class SearchDto
+public class GeolocationRequestViewModel
 {
     [Required]
-    [Display(Name = "UserId")]
+    [Display(Name = "userId")]
     public string UserId { get; set; }
 }

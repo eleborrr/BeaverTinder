@@ -6,6 +6,8 @@ using Contracts.Responses.Registration;
 using Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
+using Persistence.Misc.Services.JwtGenerator;
+using Services.Abstraction;
 using Services.Abstraction.Account;
 using Services.Abstraction.Email;
 using ModelStateDictionary = Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary;
@@ -17,12 +19,14 @@ public class AccountService : IAccountService
     private readonly UserManager<User> _userManager;
     private readonly IEmailService _emailService;
     private readonly SignInManager<User> _signInManager;
+    private readonly IJwtGenerator _jwtGenerator;
 
-    public AccountService(UserManager<User> userManager, IEmailService emailService, SignInManager<User> signInManager)
+    public AccountService(UserManager<User> userManager, IEmailService emailService, SignInManager<User> signInManager, IJwtGenerator jwtGenerator)
     {
         _userManager = userManager;
         _emailService = emailService;
         _signInManager = signInManager;
+        _jwtGenerator = jwtGenerator;
     }
 
     public async Task SendConfirmationEmailAsync(string userId)
@@ -115,7 +119,7 @@ public class AccountService : IAccountService
                 if (await _signInManager.UserManager.IsInRoleAsync(signedUser, "Admin"))
                     await _signInManager.UserManager.AddClaimAsync(signedUser, new Claim(ClaimTypes.Role, "Admin"));
 
-                return new LoginResponseDto(LoginResponseStatus.Ok);
+                return new LoginResponseDto(LoginResponseStatus.Ok, await _jwtGenerator.GenerateJwtToken(signedUser.Id));
             }
 
             // ModelState.AddModelError("error_message", "Invalid login attempt.");

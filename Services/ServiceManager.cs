@@ -5,6 +5,7 @@ using Domain.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
+using Persistence.Misc.Services.JwtGenerator;
 using Services.Abstraction;
 using Services.Abstraction.Account;
 using Services.Abstraction.Email;
@@ -35,8 +36,7 @@ public class ServiceManager: IServiceManager
     private readonly Lazy<ISubscriptionService> _subscriptionService;
     private readonly Lazy<IAccountService> _accountService;
 
-    public ServiceManager(UserManager<User> userManager, IOptions<EmailConfig> emailConfig, IRepositoryManager repositoryManager, 
-        IMemoryCache memoryCache, RoleManager<Role> roleManager, SignInManager<User> signInManager)  // ,
+    public ServiceManager(UserManager<User> userManager, IOptions<EmailConfig> emailConfig, IRepositoryManager repositoryManager, IMemoryCache memoryCache, RoleManager<Role> roleManager, SignInManager<User> signInManager, IJwtGenerator jwtGenerator)  // ,
     {
         _geolocationService = new Lazy<IGeolocationService>(() => new GeolocationService(repositoryManager));
         _emailService = new Lazy<IEmailService>(() => new EmailService(emailConfig));
@@ -46,7 +46,7 @@ public class ServiceManager: IServiceManager
         _paymentService = new Lazy<IPaymentService>(() => new PaymentService.PaymentService(repositoryManager));
         _subscriptionService = new Lazy<ISubscriptionService>(() => new SubscriptionService(repositoryManager, userManager));
         _accountService =
-            new Lazy<IAccountService>(() => new AccountService(userManager, _emailService.Value, signInManager));
+            new Lazy<IAccountService>(() => new AccountService(userManager, _emailService.Value, signInManager, jwtGenerator));
     }
 
     public IEmailService EmailService => _emailService.Value;
