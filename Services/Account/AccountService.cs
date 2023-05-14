@@ -123,7 +123,7 @@ public class AccountService : IAccountService
                     await _signInManager.UserManager.AddClaimAsync(signedUser, new Claim(ClaimTypes.Role, "Moderator"));
 
                 else
-                    await _userManager.AddClaimAsync(signedUser, new Claim(ClaimTypes.Role, "USER"));
+                    await _userManager.AddClaimAsync(signedUser, new Claim(ClaimTypes.Role, "StandartUser"));
 
                 return new LoginResponseDto(LoginResponseStatus.Ok, await _jwtGenerator.GenerateJwtToken(signedUser.Id));
             }
