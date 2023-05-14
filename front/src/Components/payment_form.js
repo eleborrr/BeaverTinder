@@ -1,26 +1,60 @@
+import Cookies from 'js-cookie'
 import { useState } from 'react'
 import { axiosInstance } from './axios_server'
 import './../assets/css/payment_form.css'
 
 export const PaymentForm = ({onClose, userId, subsId, amount}) => {
 
+    const token = Cookies.get('token');
     const [cardNumber, setCardNumber] = useState();
     const [month, setMonth] = useState();
     const [year, setYear] = useState();
     const [code, setCode] = useState();
+    const [err, setErr] = useState();
 
     function handleClick() {
-        Validate();
+        if(!Validate()){
+            alert('Форма заполнена неверно - ' + err);
+        } else {
+            axiosInstance.post('/payment/pay',{ 
+                userId: userId,
+                cardNumber: cardNumber,
+                month: month,
+                amount: amount,
+                year: year,
+                code: code,
+                subsId: subsId
+            }, {
+                headers:{
+                    Authorization: `Bearer ${token}`,
+                    Accept : "application/json"
+                }
+            })
+        }
     }
 
     function Validate() {
         if (!/[0-9]{13,16}/.test(cardNumber)){
             console.log('Card is not valid!');
+            setErr('неверный номер карты: пишите без пробелов, номер карты от 13 до 16 символов');
+            return false;
         }
-        else{
-            console.log('Card is Valid))))');
+        if (!/[0-9]{3}/.test(code)){
+            setErr('неверный код карты: код карты с обратной стороны, 3 символа');
+            return false;
         }
-        console.log(cardNumber);
+        if (month < 1 || month > 12){
+            setErr('неверный указан месяц: от 1 до 12');
+            return false;
+        }
+        const endDate = new Date(`${year}-${month}-01`);
+        const now = new Date(); 
+        if (endDate <= now){
+            setErr('срок действия карты истёк');
+            return false;
+        }
+        
+        return true;
     }
     return (
     <div className="container p-0">
@@ -37,9 +71,9 @@ export const PaymentForm = ({onClose, userId, subsId, amount}) => {
                 <div className="col-6">
                     <p className="text mb-1">Действует до</p>
                     <div className="d-flex">
-                        <input className="form-control mb-3" type="number" placeholder="мм" /> 
+                        <input className="form-control mb-3" type="number" placeholder="мм" onChange={(e) => setMonth(e.target.value)}/> 
                         <p className="big-slash">/</p>
-                        <input className="form-control mb-3" type="number" placeholder="гггг" />
+                        <input className="form-control mb-3" type="number" placeholder="гггг" onChange={(e) => setYear(e.target.value)}/>
                     </div>
                 </div>
                 <div className="col-6">

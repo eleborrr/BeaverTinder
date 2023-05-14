@@ -10,6 +10,7 @@ import ShopsPage from './Pages/shops';
 import BlogsPage from './Pages/blogs';
 import ContactPage from './Pages/contact';
 import LikePage from './Pages/LikePage';
+import PageNotFound from './Pages/404';
 
 function App() {
   return (
@@ -24,7 +25,8 @@ function App() {
         <Route path='/blogs' element={<BlogsPage />} />
         <Route path='/contact' element={<ContactPage />} />
         <Route path='/like' element= {<LikePage/>}/>
-        <Route path='*' element={<RegisterPage />} 
+        <Route path='/register' element={<RegisterPage />} />
+        <Route path='*' element={<PageNotFound />}
         />
       </Routes>
     </>
