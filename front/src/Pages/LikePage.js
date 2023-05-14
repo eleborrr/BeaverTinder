@@ -66,7 +66,7 @@ const LikePage = () =>
                     setLong(res.data.longitude);
                 }
                 if (res.data.latitude){
-                    setLong(res.data.latitude);
+                    setLant(res.data.latitude);
                 }
             }
         })

@@ -57,20 +57,9 @@ const HeaderApp = () => {
 							<ul>
 								<li className={homeClass}>
 									<a href="/home">Home</a>
-									<ul>
-										<li><a href="index.html" className="active">Home Page One</a></li>
-										<li><a href="index-2.html">Home Page Two</a></li>
-										<li><a href="index-3.html">Home Page Three</a></li>
-									</ul>
 								</li>
 								<li className={pagesClass}>
 									<a href="/pages">Pages</a>
-									<ul>
-										<li><a href="about.html">About Us</a></li>
-                                        <li><a href="membership.html">Membership</a></li>
-                                        <li><a href="comingsoon.html">comingsoon</a></li>
-                                        <li><a href="404.html">404</a></li>
-									</ul>
 								</li>
 								<li className={communityClass}>
 									<a href="/community">Community</a>
@@ -79,26 +68,17 @@ const HeaderApp = () => {
 										<li><a href="group.html">All Group</a></li>
 										<li><a href="members.html">All Members</a></li>
 										<li><a href="activity.html">Activity</a></li>
-
 									</ul>
 								</li>
 								<li className={shopsClass}>
 									<a href="/shops">Shops</a>
-									<ul>
-										<li><a href="shop.html">Product</a></li>
-										<li><a href="shop-single.html">Product Details</a></li>
-										<li><a href="shop-cart.html">Product Cart</a></li>
-									</ul>
 								</li>
 								<li className={blogsClass}>
 									<a href="/blogs">Blogs</a>
-									<ul>
-										<li><a href="blog.html">Blog</a></li>
-										<li><a href="blog-2.html">Blog Style Two</a></li>
-										<li><a href="blog-single.html">Blog Details</a></li>
-									</ul>
 								</li>
-								<li className={contactClass}><a href="/contact">contact</a></li>
+								<li className={contactClass}>
+									<a href="/contact">contact</a>
+								</li>
 							</ul>
 						</div>
 						<div className="header__more">
