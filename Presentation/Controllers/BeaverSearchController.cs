@@ -1,5 +1,4 @@
 ﻿using System.Security.Claims;
-using Contracts;
 using Contracts.Responses.Search;
 using Contracts.ViewModels;
 using Domain.Entities;
@@ -83,7 +82,7 @@ public class BeaverSearchController: Controller
     private async Task<Role> GetRoleFromJwt()
     {
         var s = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role);
-        var role = await _roleManager.FindByIdAsync(s.Value);
+        var role = await _roleManager.FindByNameAsync(s.Value);
         if (role is null)
             throw new Exception("role not found"); //TODO перенести в exception
         return role;

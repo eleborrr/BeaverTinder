@@ -5,7 +5,6 @@ import BeaverCard from "../Components/BeaverCard";
 import { axiosInstance } from "../Components/axios_server";
 import { GeoMap } from "../Components/geolocation_map";
 import './../assets/css/map_style.css'
-import { to } from "@react-spring/web";
 
 const LikePage = () =>
 {
@@ -56,7 +55,7 @@ const LikePage = () =>
             }
         })
         .then(res => {
-            if(res.data.message == "Like limit!")
+            if(res.data.message === "Like limit!")
             {
                 setLikeLimit(true);
             }
@@ -124,7 +123,7 @@ const LikePage = () =>
     {
         if (Array.isArray(array)) {
             array.some(element => {
-                if (element == "UserMoreLikesAndMap")
+                if (element === "UserMoreLikesAndMap" || element === "Admin" || element === "Moderator")
                 {
                     setGeolocationAvailable(true);
                 }
