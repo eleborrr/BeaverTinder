@@ -30,6 +30,9 @@ export const PaymentForm = ({onClose, userId, subsId, amount}) => {
                     Accept : "application/json"
                 }
             })
+            .then(res => {
+                alert("Для получения дополнительных свойств подписки просим перезайти на аккаунт")
+            })
         }
     }
 

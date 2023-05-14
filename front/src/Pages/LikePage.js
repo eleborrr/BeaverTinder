@@ -10,17 +10,17 @@ import { to } from "@react-spring/web";
 const LikePage = () =>
 {
     const token = Cookies.get('token');
-    const [error, setError] = useState('');
+    const [likeLimit, setLikeLimit] = useState(false);
+    const [userLimit, setUserLimit] = useState(false);
+    const [geolocationAvailable, setGeolocationAvailable] = useState(false);
     const [profile, setProfile] = useState();
     const [long, setLong] = useState();
     const [lant, setLant] = useState();
-    const [geolocationNotAvailable, setGeolocationNotAvailable] = useState(true);
 
     useEffect(() => {
         GetNewBearer();
     }, [])
 
-    // С ГОНКАМИ БРАТ НОРМ ВСЕ ДА?
 
     function like () {
         
@@ -33,9 +33,17 @@ const LikePage = () =>
             }
         })
         .then(res => {
-            GetNewBearer();
+            if(res.data.message === "Like limit!")
+            {
+                setLikeLimit(true);
+            }
+            else
+            {
+                GetNewBearer();
+            }
+            
         })
-        .catch(error => setError(error));
+        .catch();
     }
 
     function dislike () {
@@ -48,9 +56,16 @@ const LikePage = () =>
             }
         })
         .then(res => {
-            GetNewBearer();
+            if(res.data.message == "Like limit!")
+            {
+                setLikeLimit(true);
+            }
+            else
+            {
+                GetNewBearer();
+            }
         })
-        .catch(error => setError(error));
+        .catch();
 
     }
 
@@ -86,51 +101,73 @@ const LikePage = () =>
             }
         })
         .then(res => {
+            if(res.data.message === "Beaver queue error")
+            {
+                setUserLimit(true);
+            }
+            else
+            {
             setProfile(res.data);
+
             if (res.data){
+                setGeolocationAvailable(false);
+                CheckGeolocationAvailable(jwtDecode(token)["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"]);
                 GetGeolocation(res.data);
             }
+        }
         })
-        .catch(error => setError(error));
+        .catch();
    
     }
 
-    function CheckGeolocation(){
-        console.log(jwtDecode(token))
+    function CheckGeolocationAvailable(array)
+    {
+        if (Array.isArray(array)) {
+            array.some(element => {
+                if (element == "UserMoreLikesAndMap")
+                {
+                    setGeolocationAvailable(true);
+                }
+            })
+        }
+        
     }
 
-    return (<div>
-        {/* <BeaverCard person={{name: 'Arun', url: 'https://cdn.hashnode.com/res/hashnode/image/upload/v1644176959380/tNxVpeCE0.png'}}> </BeaverCard> */}
-        {error == ''
-        ? 
+    return (
+    <div>
+        { userLimit? 
+        <div> 
+            Пользователи закончились, ждите новых
+        </div>
+        :
+        <div>
+        {likeLimit? <p>У вас закончились лайки</p>:
         <div>
             {profile ? 
             <div>
                 <BeaverCard profile = {profile} like = {like} dislike = {dislike}></BeaverCard>
-                {geolocationNotAvailable? 
-                <div> 
-
-                </div>
-                : 
+                {geolocationAvailable?
                 <div className="div_map">
                     <GeoMap latitude={lant ? lant : 55.81441} longitude={long ? long : 49.12068} />
+                </div>
+                :
+                <div>
+                    Купите подписку чтобы увидеть геолокацию
                 </div>
                 }
             
             </div>:
             <h1>Downloading</h1>
             }
-            
-        </div>
-        : 
-        <div>
-            <p>У Вас закончились лайки или же вы проставили лайки всем</p>
+
         </div>
         }
-        <button onClick={CheckGeolocation}>Check geolocation</button>
+        </div>
+    }
+
     </div>
     )
-
+    
 }
 
 
