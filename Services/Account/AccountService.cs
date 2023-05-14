@@ -118,6 +118,12 @@ public class AccountService : IAccountService
                 await _signInManager.UserManager.AddClaimAsync(signedUser, new Claim("Id", signedUser.Id));
                 if (await _signInManager.UserManager.IsInRoleAsync(signedUser, "Admin"))
                     await _signInManager.UserManager.AddClaimAsync(signedUser, new Claim(ClaimTypes.Role, "Admin"));
+                
+                else if (await _signInManager.UserManager.IsInRoleAsync(signedUser, "Moderator"))
+                    await _signInManager.UserManager.AddClaimAsync(signedUser, new Claim(ClaimTypes.Role, "Moderator"));
+
+                else
+                    await _userManager.AddClaimAsync(signedUser, new Claim(ClaimTypes.Role, "User"));
 
                 return new LoginResponseDto(LoginResponseStatus.Ok, await _jwtGenerator.GenerateJwtToken(signedUser.Id));
             }
@@ -151,9 +157,11 @@ public class AccountService : IAccountService
             if (result.Succeeded)
             {
                 // await SendConfirmationEmailAsync(user.Id);
+                var userDb = await _userManager.FindByEmailAsync(user.Email);
+                await _userManager.AddClaimAsync(userDb, new Claim(ClaimTypes.Role, "User"));
                 return new RegisterResponseDto(RegisterResponseStatus.Ok);
                 // TODO протестить что норм работает
-                // await _geolocationService.AddAsync(userId:(await _userManager.FindByEmailAsync(user.Email)).Id,
+                // await _geolocationService.AddAsync(userId:(Id,
                 //     Latutide: 55.47, // geolocation from dto!
                 //     Longtitude: 49.6);
             }
