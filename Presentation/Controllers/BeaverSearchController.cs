@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using Contracts;
+using Contracts.Responses.Search;
 using Contracts.ViewModels;
 using Domain.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -30,18 +31,26 @@ public class BeaverSearchController: Controller
     [HttpGet]
     public async Task<JsonResult> Search()
     {
-        var user = await GetUserFromJwt();
-        var role = await GetRoleFromJwt();
         //TODO исправить 500 ошибку если не найдено
-        var userEntity = await _serviceManager.FindBeaverService.GetNextBeaver(user, role);
-        var result = new SearchUserResultDto()
+        var result = await _serviceManager.FindBeaverService.GetNextBeaver(await GetUserFromJwt(), await GetRoleFromJwt());
+        if (!result.Successful)
         {
-            Id = userEntity.Id,
-            About = userEntity.About,
-            FirstName = userEntity.FirstName,
-            LastName = userEntity.LastName,
-            Age = DateTime.Now.Year - userEntity.DateOfBirth.Year,
-            Gender = userEntity.Gender,
+            return Json(new SearchUserFailedResponse()
+            {
+                Message = result.Message,
+                Successful = result.Successful,
+                StatusCode = result.StatusCode
+            });
+        }
+        
+        var user = new SearchUserResultDto()
+        {
+            Id = result.Id,
+            About = result.About,
+            FirstName = result.FirstName,
+            LastName = result.LastName,
+            Age = DateTime.Now.Year - result.Age,
+            Gender = result.Gender,
         };
         return Json(result);
     }
@@ -49,27 +58,25 @@ public class BeaverSearchController: Controller
     
     //TODO: тут тоже с гонками все норм брат да(я постараюсь на фронте избежать но не обещаю(мб и обещаю))
     [HttpPost("/like")]
-    public async Task Like([FromBody]  LikeViewModel likeViewModel)
+    public async Task<JsonResult> Like([FromBody]  LikeViewModel likeViewModel)
     {
-        var user = await GetUserFromJwt();
-        var role = await GetRoleFromJwt();
-        await _serviceManager.FindBeaverService.AddSympathy(user, likeViewModel.LikedUserId, sympathy:true, role);
+        return Json(await _serviceManager.FindBeaverService.
+            AddSympathy(await GetUserFromJwt(), likeViewModel.LikedUserId, sympathy:true, await GetRoleFromJwt()));
     }
     //
     [HttpPost("/dislike")]
-    public async Task DisLike([FromBody] LikeViewModel likeViewModel)
+    public async Task<JsonResult> DisLike([FromBody] LikeViewModel likeViewModel)
     {
-        var user = await GetUserFromJwt();
-        var role = await GetRoleFromJwt();
-        await _serviceManager.FindBeaverService.AddSympathy(user, likeViewModel.LikedUserId, sympathy:false, role);
+        return Json(await _serviceManager.FindBeaverService.
+            AddSympathy(await GetUserFromJwt(), likeViewModel.LikedUserId, sympathy:false, await GetRoleFromJwt()));
     }
 
-    private async Task<User> GetUserFromJwt()
+    private async Task<User?> GetUserFromJwt()
     {
         var s = User.Claims.FirstOrDefault(c => c.Type == "Id");
         var user = await _userManager.FindByIdAsync(s.Value);
-        if (user is null)
-            throw new Exception("user not found"); //TODO перенести в exception
+        // if (user is null)
+        //     throw new Exception("user not found"); //TODO перенести в exception
         return user;
     }
     

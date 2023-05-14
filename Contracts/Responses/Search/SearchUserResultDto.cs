@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Contracts;
+﻿namespace Contracts.Responses.Search;
 
 public class SearchUserResultDto
 {
@@ -10,4 +8,7 @@ public class SearchUserResultDto
     public int Age { get; set; }
     public string Gender { get; set; }
     public string About { get; set; }
+    public bool Successful { get; set; }
+    public string Message { get; set; }
+    public int StatusCode { get; set; }
 }
