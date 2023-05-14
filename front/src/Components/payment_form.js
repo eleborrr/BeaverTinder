@@ -79,7 +79,7 @@ export const PaymentForm = ({onClose, userId, subsId, amount}) => {
                 <div className="col-6">
                     <div className="d-flex flex-column">
                         <p className="text mb-1">CVV/CVC</p>
-                        <input className="form-control mb-3 pt-2 " type="password" placeholder="***" />
+                        <input className="form-control mb-3 pt-2 " type="password" placeholder="***" onChange={(e) => setCode(e.target.value)} />
                     </div>
                 </div>
                 <div className="col-12">

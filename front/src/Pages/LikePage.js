@@ -5,13 +5,16 @@ import BeaverCard from "../Components/BeaverCard";
 import { axiosInstance } from "../Components/axios_server";
 import { GeoMap } from "../Components/geolocation_map";
 import './../assets/css/map_style.css'
+import { to } from "@react-spring/web";
 
 const LikePage = () =>
 {
     const token = Cookies.get('token');
+    const [error, setError] = useState('');
     const [profile, setProfile] = useState();
     const [long, setLong] = useState();
     const [lant, setLant] = useState();
+    const [geolocationNotAvailable, setGeolocationNotAvailable] = useState(true);
 
     useEffect(() => {
         GetNewBearer();
@@ -32,10 +35,10 @@ const LikePage = () =>
         .then(res => {
             GetNewBearer();
         })
+        .catch(error => setError(error));
     }
 
     function dislike () {
-        console.log(token);
         axiosInstance.post('/dislike', { 
             LikedUserId: profile.id 
         }, {
@@ -47,6 +50,7 @@ const LikePage = () =>
         .then(res => {
             GetNewBearer();
         })
+        .catch(error => setError(error));
 
     }
 
@@ -70,8 +74,9 @@ const LikePage = () =>
                 }
             }
         })
+        .catch()
     }
-
+    
     function GetNewBearer() {
     axiosInstance.get('/beaversearch',
         {
@@ -85,23 +90,44 @@ const LikePage = () =>
             if (res.data){
                 GetGeolocation(res.data);
             }
-            console.log(jwtDecode(token));
-        });
+        })
+        .catch(error => setError(error));
    
+    }
+
+    function CheckGeolocation(){
+        console.log(jwtDecode(token))
     }
 
     return (<div>
         {/* <BeaverCard person={{name: 'Arun', url: 'https://cdn.hashnode.com/res/hashnode/image/upload/v1644176959380/tNxVpeCE0.png'}}> </BeaverCard> */}
-        {profile
+        {error == ''
         ? 
         <div>
-            <BeaverCard profile = {profile} like = {like} dislike = {dislike}></BeaverCard>
-            <div className="div_map">
-                <GeoMap latitude={lant ? lant : 55.81441} longitude={long ? long : 49.12068} />
-            </div>
+            {profile ? 
+            <div>
+                <BeaverCard profile = {profile} like = {like} dislike = {dislike}></BeaverCard>
+                {geolocationNotAvailable? 
+                <div> 
+
+                </div>
+                : 
+                <div className="div_map">
+                    <GeoMap latitude={lant ? lant : 55.81441} longitude={long ? long : 49.12068} />
+                </div>
+                }
+            
+            </div>:
+            <h1>Downloading</h1>
+            }
+            
         </div>
         : 
-        <h1>Downloading</h1>}
+        <div>
+            <p>У Вас закончились лайки или же вы проставили лайки всем</p>
+        </div>
+        }
+        <button onClick={CheckGeolocation}>Check geolocation</button>
     </div>
     )
 
