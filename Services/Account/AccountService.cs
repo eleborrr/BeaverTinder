@@ -170,6 +170,10 @@ public class AccountService : IAccountService
             };
             //TODO получение геолокации из дто
 
+            var emailCollision = _userManager.Users.FirstOrDefault(u => u.Email == user.Email);
+            if (emailCollision is not null)
+                return new RegisterResponseDto(RegisterResponseStatus.Fail, "User with that email already exists");
+            
             var result = await _userManager.CreateAsync(user, model.Password);
 
             if (result.Succeeded)
