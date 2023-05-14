@@ -54,22 +54,15 @@ public class FindBeaverService: IFindBeaverService
     }
 
     //TODO юзер будет приходить через жвт??
-    public Task AddSympathy(string userId1, string userId2, bool sympathy)
+    public async Task AddSympathy(string userId1, string userId2, bool sympathy)
     {
-        CheckSubscriptionLikePermission(_userManager.Users.Where(u => u.Id == userId1).FirstOrDefault());
+        var res = await CheckSubscriptionLikePermission(_userManager.Users.FirstOrDefault(u => u.Id == userId1));
         MemoryCacheUpdate(userId1);
 
         var newLike = new Like() { UserId = userId1, LikedUserId = userId2, LikeDate = DateTime.Now, Sympathy = sympathy};
-        return _repositoryManager.LikeRepository.AddAsync(newLike);
+        await _repositoryManager.LikeRepository.AddAsync(newLike);
     }
-
-    // public Task Dislike(string userId1, string userId2)
-    // {
-    //     MemoryCacheUpdate(userId1);
-    //     var newLike = new Like() { UserId = userId1, LikedUserId = userId2, LikeDate = DateTime.Now, Sympathy = false};
-    //     return _repositoryManager.LikeRepository.AddAsync(newLike);
-    // }
-
+    
     private void MemoryCacheUpdate(string userId)
     {
         if (_memoryCache.TryGetValue(userId, out List<User>? likesCache))
@@ -78,10 +71,13 @@ public class FindBeaverService: IFindBeaverService
                 new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(10)));
         }
     }
-    private async Task<bool> CheckSubscriptionLikePermission(User user)
+    private async Task<bool> CheckSubscriptionLikePermission(User? user)
     {
+        if (user is null)
+            return false;
         //TODO make checks
-        var role = _roleManager.Roles.ToList().FirstOrDefault(r => r.Name == _userManager.GetRolesAsync(user).Result.FirstOrDefault()); //TODO поч ебаный Резалт, фиксить надо
+        var role = _roleManager.Roles.ToList().FirstOrDefault(r => 
+            r.Name == _userManager.GetRolesAsync(user).Result.FirstOrDefault()); //TODO поч ебаный Резалт, фиксить надо
         if ((await _likeService.GetAllAsync())
             .Count(l => l.LikeDate.Date.Day == DateTime.Today.Day) > role.LikesCountAllowed)
         {

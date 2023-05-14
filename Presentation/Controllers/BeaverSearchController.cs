@@ -17,11 +17,13 @@ public class BeaverSearchController: Controller
 {
     private readonly UserManager<User> _userManager;
     private readonly IServiceManager _serviceManager;
-    
-    public BeaverSearchController(UserManager<User> userManager, IServiceManager serviceManager)
+    private readonly RoleManager<Role> _roleManager;
+
+    public BeaverSearchController(UserManager<User> userManager, IServiceManager serviceManager, RoleManager<Role> roleManager)
     {
         _serviceManager = serviceManager;
         _userManager = userManager;
+        _roleManager = roleManager;
     }
 
     //TODO: isSerching == false?? change searching algorithm
@@ -29,6 +31,7 @@ public class BeaverSearchController: Controller
     public async Task<JsonResult> Search()
     {
         var user = await GetUserFromJwt();
+        //TODO исправить 500 ошибку если не найдено
         var userEntity = await _serviceManager.FindBeaverService.GetNextBeaver(user);
         var result = new SearchUserResultDto()
         {
@@ -65,5 +68,21 @@ public class BeaverSearchController: Controller
         if (user is null)
             throw new Exception("user not found"); //TODO перенести в exception
         return user;
+    }
+
+    // не оч эффективно
+    private async Task<bool> CheckUsersLikesCount(User user)
+    {
+        var userRoleName = User.Claims.FirstOrDefault(c => c.Type == "Role")?.Value;
+        if (userRoleName is null)
+            throw new Exception("now rolename claim found");
+        
+        var userRole = _roleManager.Roles.FirstOrDefault(r => r.Name == userRoleName);
+        if (userRole is null)
+            throw new Exception("can't find role with that name");
+
+        return (await _serviceManager.LikeService.GetAllAsync())
+            .Count(l => DateTime.Now.Day == l.LikeDate.Day && l.UserId == user.Id)
+            > userRole.LikesCountAllowed;
     }
 }

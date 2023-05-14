@@ -47,10 +47,10 @@ public class RegistrationController : Controller
 
             if (result.Succeeded)
             {
-                //await _faService.SendConfirmationEmailAsync(user.Id);
+                // await _faService.SendConfirmationEmailAsync(user.Id);
                 return Json(new RegisterResponseDto(RegisterResponseStatus.Ok));
                  // TODO протестить что норм работает
-            await _geolocationService.AddAsync(userId: _userManager.FindByEmailAsync(user.Email).Id,
+            await _geolocationService.AddAsync(userId: (await _userManager.FindByEmailAsync(user.Email)).Id,
                 Latutide: 55.47, // geolocation from dto!
                 Longtitude: 49.6);
             }
