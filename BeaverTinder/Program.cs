@@ -78,11 +78,11 @@ builder.Services.AddMvc();
  {
      options.AddPolicy("OnlyMapSubs", policy =>
      {
-         policy.RequireClaim("Subscription", "Map");
+         policy.RequireClaim(ClaimTypes.Role, "UserMoreLikesAndMap");
      });
      options.AddPolicy("OnlyLikeSubs", policy =>
      {
-         policy.RequireClaim("Subscription", "Like");
+         policy.RequireClaim(ClaimTypes.Role, "UserMoreLikes");
      });
      options.AddPolicy("OnlyForAdmins", policy => {
          policy.RequireClaim(ClaimTypes.Role, "Admin");
