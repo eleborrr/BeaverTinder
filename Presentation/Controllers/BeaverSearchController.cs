@@ -82,7 +82,7 @@ public class BeaverSearchController: Controller
     
     private async Task<Role> GetRoleFromJwt()
     {
-        var s = User.Claims.FirstOrDefault(c => c.Type == "Role");
+        var s = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role);
         var role = await _roleManager.FindByIdAsync(s.Value);
         if (role is null)
             throw new Exception("role not found"); //TODO перенести в exception
