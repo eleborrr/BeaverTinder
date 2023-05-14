@@ -146,7 +146,7 @@ public class FindBeaverService: IFindBeaverService
             return false;
         //TODO make checks
         return (await _likeService.GetAllAsync())
-            .Count(l => l.LikeDate.Date.Day == DateTime.Today.Day) <= role.LikesCountAllowed;
+            .Count(l => l.LikeDate.Date.Day == DateTime.Today.Day && l.UserId == user.Id) <= role.LikesCountAllowed;
         // TODO return custom Exception
     }
 }
