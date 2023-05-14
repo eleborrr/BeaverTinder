@@ -31,8 +31,9 @@ public class BeaverSearchController: Controller
     public async Task<JsonResult> Search()
     {
         var user = await GetUserFromJwt();
+        var role = await GetRoleFromJwt();
         //TODO исправить 500 ошибку если не найдено
-        var userEntity = await _serviceManager.FindBeaverService.GetNextBeaver(user);
+        var userEntity = await _serviceManager.FindBeaverService.GetNextBeaver(user, role);
         var result = new SearchUserResultDto()
         {
             Id = userEntity.Id,
@@ -51,14 +52,16 @@ public class BeaverSearchController: Controller
     public async Task Like([FromBody]  LikeViewModel likeViewModel)
     {
         var user = await GetUserFromJwt();
-        await _serviceManager.FindBeaverService.AddSympathy(user.Id, likeViewModel.LikedUserId, sympathy:true);
+        var role = await GetRoleFromJwt();
+        await _serviceManager.FindBeaverService.AddSympathy(user, likeViewModel.LikedUserId, sympathy:true, role);
     }
     //
     [HttpPost("/dislike")]
     public async Task DisLike([FromBody] LikeViewModel likeViewModel)
     {
         var user = await GetUserFromJwt();
-        await _serviceManager.FindBeaverService.AddSympathy(user.Id, likeViewModel.LikedUserId, sympathy:false);
+        var role = await GetRoleFromJwt();
+        await _serviceManager.FindBeaverService.AddSympathy(user, likeViewModel.LikedUserId, sympathy:false, role);
     }
 
     private async Task<User> GetUserFromJwt()
@@ -69,20 +72,13 @@ public class BeaverSearchController: Controller
             throw new Exception("user not found"); //TODO перенести в exception
         return user;
     }
-
-    // не оч эффективно
-    private async Task<bool> CheckUsersLikesCount(User user)
+    
+    private async Task<Role> GetRoleFromJwt()
     {
-        var userRoleName = User.Claims.FirstOrDefault(c => c.Type == "Role")?.Value;
-        if (userRoleName is null)
-            throw new Exception("now rolename claim found");
-        
-        var userRole = _roleManager.Roles.FirstOrDefault(r => r.Name == userRoleName);
-        if (userRole is null)
-            throw new Exception("can't find role with that name");
-
-        return (await _serviceManager.LikeService.GetAllAsync())
-            .Count(l => DateTime.Now.Day == l.LikeDate.Day && l.UserId == user.Id)
-            > userRole.LikesCountAllowed;
+        var s = User.Claims.FirstOrDefault(c => c.Type == "Role");
+        var role = await _roleManager.FindByIdAsync(s.Value);
+        if (role is null)
+            throw new Exception("role not found"); //TODO перенести в exception
+        return role;
     }
 }

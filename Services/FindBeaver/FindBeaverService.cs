@@ -26,13 +26,11 @@ public class FindBeaverService: IFindBeaverService
         _likeService = likeService;
     }
 
-    public async Task<User?> GetNextBeaver(User currentUser)
+    public async Task<User?> GetNextBeaver(User currentUser, Role userRole)
     {
         // логика, где поиск идет так же по местоположению.
         // TODO учет расстояния, ограничение по подписке.
-        
-        
-        
+
         _memoryCache.TryGetValue(currentUser.Id, out List<User>? likesCache);
         if (likesCache == null)
         {
@@ -54,12 +52,13 @@ public class FindBeaverService: IFindBeaverService
     }
 
     //TODO юзер будет приходить через жвт??
-    public async Task AddSympathy(string userId1, string userId2, bool sympathy)
+    public async Task AddSympathy(User user1, string userId2, bool sympathy, Role userRole)
     {
-        var res = await CheckSubscriptionLikePermission(_userManager.Users.FirstOrDefault(u => u.Id == userId1));
-        MemoryCacheUpdate(userId1);
+        if (!await CheckSubscriptionLikePermission(user1, userRole))
+            throw new Exception("Like limit!");
+        MemoryCacheUpdate(user1.Id);
 
-        var newLike = new Like() { UserId = userId1, LikedUserId = userId2, LikeDate = DateTime.Now, Sympathy = sympathy};
+        var newLike = new Like() { UserId = user1.Id, LikedUserId = userId2, LikeDate = DateTime.Now, Sympathy = sympathy};
         await _repositoryManager.LikeRepository.AddAsync(newLike);
     }
     
@@ -71,25 +70,13 @@ public class FindBeaverService: IFindBeaverService
                 new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(10)));
         }
     }
-    private async Task<bool> CheckSubscriptionLikePermission(User? user)
+    private async Task<bool> CheckSubscriptionLikePermission(User? user, Role role)
     {
         if (user is null)
             return false;
         //TODO make checks
-        var role = _roleManager.Roles.ToList().FirstOrDefault(r => 
-            r.Name == _userManager.GetRolesAsync(user).Result.FirstOrDefault()); //TODO поч ебаный Резалт, фиксить надо
-        if ((await _likeService.GetAllAsync())
-            .Count(l => l.LikeDate.Date.Day == DateTime.Today.Day) > role.LikesCountAllowed)
-        {
-            return false; // TODO return custom Exception
-        }
-
-        return true;
-    }
-
-    private async Task<bool> CheckSubscriptionMapsPermission(User user)
-    {
-        var role = _roleManager.Roles.ToList().FirstOrDefault(r => r.Name == _userManager.GetRolesAsync(user).Result.FirstOrDefault());
-        return role.LocationViewAllowed;
+        return (await _likeService.GetAllAsync())
+            .Count(l => l.LikeDate.Date.Day == DateTime.Today.Day) <= role.LikesCountAllowed;
+        // TODO return custom Exception
     }
 }
