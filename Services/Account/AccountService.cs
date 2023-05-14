@@ -150,10 +150,10 @@ public class AccountService : IAccountService
 
             if (result.Succeeded)
             {
-                await SendConfirmationEmailAsync(user.Id);
+                // await SendConfirmationEmailAsync(user.Id);
                 return new RegisterResponseDto(RegisterResponseStatus.Ok);
                 // TODO протестить что норм работает
-                // await _geolocationService.AddAsync(userId: _userManager.FindByEmailAsync(user.Email).Id,
+                // await _geolocationService.AddAsync(userId:(await _userManager.FindByEmailAsync(user.Email)).Id,
                 //     Latutide: 55.47, // geolocation from dto!
                 //     Longtitude: 49.6);
             }

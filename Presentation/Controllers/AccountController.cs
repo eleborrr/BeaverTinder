@@ -4,6 +4,7 @@ using Domain.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Services.Abstraction;
 using Services.Abstraction.Geolocation;
 using Services.Abstraction.TwoFA;
@@ -12,7 +13,7 @@ namespace Presentation.Controllers;
 
 
 //TODO методы для изменения информации об аккаунте
-
+//TODO Authorize 
 
 [ApiController]
 [Route("[controller]")]
@@ -34,16 +35,9 @@ public class AccountController : Controller
     }
     
     [HttpGet("/all")]
-    public List<User> GetAllUsers()
+    public async Task<JsonResult> GetAllUsers()
     {
-        return _userManager.Users.ToList();
-    }
-
-    [HttpGet("/empty")]
-    [Authorize]
-    public IActionResult EmptyPage()
-    {
-        return Ok("empty");
+        return Json(await _userManager.Users.ToListAsync());
     }
 
     [HttpGet("/confirm")]
