@@ -1,6 +1,7 @@
 ﻿using Contracts.ViewModels;
 using Domain.Entities;
 using Domain.Repositories;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -13,8 +14,8 @@ namespace Presentation.Controllers;
 
 
 //TODO методы для изменения информации об аккаунте
-//TODO Authorize 
 
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 [ApiController]
 [Route("[controller]")]
 public class AccountController : Controller
@@ -28,6 +29,7 @@ public class AccountController : Controller
         _serviceManager = serviceManager;
     }
     
+    [Authorize(Policy = "OnlyMapSubs")]
     [HttpPost("/geolocation")]
     public async Task<UserGeolocation> GetUserGeolocation([FromBody] GeolocationRequestViewModel model)
     {

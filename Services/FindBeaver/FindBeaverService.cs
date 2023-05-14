@@ -77,7 +77,7 @@ public class FindBeaverService: IFindBeaverService
                 FirstName = returnUserCache.FirstName,
                 LastName = returnUserCache.LastName,
                 Gender = returnUserCache.Gender,
-                Age = returnUserCache.DateOfBirth.Year - DateTime.Now.Year,
+                Age = DateTime.Now.Year - returnUserCache.DateOfBirth.Year,
                 Message = "ok",
                 StatusCode = 200,
                 Successful = true
