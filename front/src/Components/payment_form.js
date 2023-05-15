@@ -14,7 +14,12 @@ export const PaymentForm = ({onClose, userId, subsId, amount}) => {
 
     function handleClick() {
         if(!Validate()){
-            alert('Форма заполнена неверно - ' + err);
+            if (err){
+                alert('Форма заполнена неверно - ' + err);
+            } else{
+                alert('Форма заполнена неверно, попробуйте ещё раз');
+            }
+            
         } else {
             axiosInstance.post('/payment/pay',{ 
                 userId: userId,
@@ -38,7 +43,6 @@ export const PaymentForm = ({onClose, userId, subsId, amount}) => {
 
     function Validate() {
         if (!/[0-9]{13,16}/.test(cardNumber)){
-            console.log('Card is not valid!');
             setErr('неверный номер карты: пишите без пробелов, номер карты от 13 до 16 символов');
             return false;
         }
@@ -52,7 +56,7 @@ export const PaymentForm = ({onClose, userId, subsId, amount}) => {
         }
         const endDate = new Date(`${year}-${month}-01`);
         const now = new Date(); 
-        if (endDate <= now){
+        if (endDate <= now || now.getFullYear() - year > 5){
             setErr('срок действия карты истёк');
             return false;
         }
