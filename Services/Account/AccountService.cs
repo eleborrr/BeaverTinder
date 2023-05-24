@@ -115,9 +115,33 @@ public class AccountService : IAccountService
 
             if (result.Succeeded)
             {
+                //TODO instead of remove check for having??
+                try
+                {
+                    await _userManager.RemoveClaimAsync(signedUser, new Claim("Id", signedUser.Id));
+                    await _userManager.RemoveClaimAsync(signedUser, new Claim(ClaimTypes.Role, "Admin"));
+                    await _userManager.RemoveClaimAsync(signedUser, new Claim(ClaimTypes.Role, "User"));
+                    await _userManager.RemoveClaimAsync(signedUser, new Claim(ClaimTypes.Role, "Moderator"));
+                }
+                catch (Exception exception)
+                {
+                    // ignored
+                }
+
+                var claims = await _userManager.GetClaimsAsync(signedUser);
+                
                 await _signInManager.UserManager.AddClaimAsync(signedUser, new Claim("Id", signedUser.Id));
                 if (await _signInManager.UserManager.IsInRoleAsync(signedUser, "Admin"))
+                {
+                    
                     await _signInManager.UserManager.AddClaimAsync(signedUser, new Claim(ClaimTypes.Role, "Admin"));
+                }
+
+                else if (await _signInManager.UserManager.IsInRoleAsync(signedUser, "Moderator"))
+                    await _signInManager.UserManager.AddClaimAsync(signedUser, new Claim(ClaimTypes.Role, "Moderator"));
+
+                else
+                    await _userManager.AddClaimAsync(signedUser, new Claim(ClaimTypes.Role, "StandartUser"));
 
                 return new LoginResponseDto(LoginResponseStatus.Ok, await _jwtGenerator.GenerateJwtToken(signedUser.Id));
             }
@@ -146,14 +170,20 @@ public class AccountService : IAccountService
             };
             //TODO получение геолокации из дто
 
+            var emailCollision = _userManager.Users.FirstOrDefault(u => u.Email == user.Email);
+            if (emailCollision is not null)
+                return new RegisterResponseDto(RegisterResponseStatus.Fail, "User with that email already exists");
+            
             var result = await _userManager.CreateAsync(user, model.Password);
 
             if (result.Succeeded)
             {
-                await SendConfirmationEmailAsync(user.Id);
+                // await SendConfirmationEmailAsync(user.Id);
+                var userDb = await _userManager.FindByEmailAsync(user.Email);
+                await _userManager.AddClaimAsync(userDb, new Claim(ClaimTypes.Role, "User"));
                 return new RegisterResponseDto(RegisterResponseStatus.Ok);
                 // TODO протестить что норм работает
-                // await _geolocationService.AddAsync(userId: _userManager.FindByEmailAsync(user.Email).Id,
+                // await _geolocationService.AddAsync(userId:(Id,
                 //     Latutide: 55.47, // geolocation from dto!
                 //     Longtitude: 49.6);
             }
