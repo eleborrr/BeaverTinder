@@ -1,10 +1,13 @@
  using System.Security.Claims;
  using System.Text;
  using Contracts.Configs;
+ using Digillect.AspNetCore.Authentication.VKontakte;
  using Domain.Entities;
  using Domain.Repositories;
+ using Microsoft.AspNetCore.Authentication;
  using Microsoft.AspNetCore.Authentication.Cookies;
  using Microsoft.AspNetCore.Authentication.JwtBearer;
+ using Microsoft.AspNetCore.Authentication.OAuth;
  using Microsoft.AspNetCore.Identity;
  using Microsoft.EntityFrameworkCore;
  using Microsoft.IdentityModel.Tokens;
@@ -55,7 +58,7 @@ builder.Services.AddMvc();
  //         options.LoginPath = "/login";
  //         options.AccessDeniedPath = "../login";
  //     });
- builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme) 
      .AddJwtBearer(options =>
      {
          /*options.RequireHttpsMetadata = false;*/
@@ -70,10 +73,24 @@ builder.Services.AddMvc();
              IssuerSigningKey = new SymmetricSecurityKey(
                  Encoding.UTF8.GetBytes(builder.Configuration["JWTTokenSettings:KEY"]))
          };
+     })
+     .AddOAuth("VK", "VK", options =>
+     {
+         options.ClientId = builder.Configuration["VKAuthSettings:CLIENTID"];
+         options.ClientSecret = builder.Configuration["VKAuthSettings:CLIENTSECRET"];
+         options.CallbackPath = "/login/oauthcallback"; // Путь обратного вызова после аутентификации VK
+         options.AuthorizationEndpoint = "https://oauth.vk.com/authorize";
+         options.TokenEndpoint = "https://oauth.vk.com/access_token";
+         options.SaveTokens = true;
+         /*options.Events = new OAuthEvents
+         {
+             OnCreatingTicket = async context =>
+             {
+                 string accessToken = context.AccessToken;
+             }
+         };*/
      });
- 
- 
- 
+
  builder.Services.AddAuthorization(options =>
  {
      options.AddPolicy("OnlyMapSubs", policy =>
@@ -137,7 +154,16 @@ builder.Services.AddMvc();
              .AllowAnyHeader()
              .AllowCredentials()
              .AllowAnyMethod();
+         policyBuilder.WithOrigins("https://oauth.vk.com")
+             .AllowAnyHeader()
+             .AllowCredentials()
+             .AllowAnyMethod();
+         policyBuilder.WithOrigins("https://localhost:7015")
+             .AllowAnyHeader()
+             .AllowCredentials()
+             .AllowAnyMethod();
      });
+
  });
 
  var app = builder.Build();

@@ -8,7 +8,8 @@
     ".NETCoreApp,Version=v7.0": {
       "Domain/1.0.0": {
         "dependencies": {
-          "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "7.0.4"
+          "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "7.0.4",
+          "Microsoft.EntityFrameworkCore.Analyzers": "7.0.4"
         },
         "runtime": {
           "Domain.dll": {}

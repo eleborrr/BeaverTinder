@@ -10,7 +10,6 @@ using Services.Abstraction.TwoFA;
 
 namespace Presentation.Controllers;
 
-
 [ApiController]
 [Route("[controller]")]
 public class RegistrationController : Controller
@@ -50,9 +49,9 @@ public class RegistrationController : Controller
                 //await _faService.SendConfirmationEmailAsync(user.Id);
                 return Json(new RegisterResponseDto(RegisterResponseStatus.Ok));
                  // TODO протестить что норм работает
-            await _geolocationService.AddAsync(userId: _userManager.FindByEmailAsync(user.Email).Id,
+            /*await _geolocationService.AddAsync(userId: _userManager.FindByEmailAsync(user.Email).Id,
                 Latutide: 55.47, // geolocation from dto!
-                Longtitude: 49.6);
+                Longtitude: 49.6);*/
             }
            
             else

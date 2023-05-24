@@ -19,3 +19,5 @@ C:\Users\rafae\OSNOVIRAZRABOTKI\semwork3\BeaverTinder\Services\obj\Debug\net7.0\
 C:\Users\rafae\OSNOVIRAZRABOTKI\semwork3\BeaverTinder\Services\obj\Debug\net7.0\Services.pdb
 C:\Users\rafae\OSNOVIRAZRABOTKI\semwork3\BeaverTinder\Services\obj\Debug\net7.0\Services.genruntimeconfig.cache
 C:\Users\rafae\OSNOVIRAZRABOTKI\semwork3\BeaverTinder\Services\obj\Debug\net7.0\ref\Services.dll
+C:\Users\rafae\OSNOVIRAZRABOTKI\semwork3\BeaverTinder\Services\bin\Debug\net7.0\Persistence.Misc.dll
+C:\Users\rafae\OSNOVIRAZRABOTKI\semwork3\BeaverTinder\Services\bin\Debug\net7.0\Persistence.Misc.pdb

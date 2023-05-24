@@ -2600,6 +2600,21 @@
           "bin/placeholder/Domain.dll": {}
         }
       },
+      "Persistence.Misc/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v7.0",
+        "dependencies": {
+          "Domain": "1.0.0",
+          "Microsoft.Extensions.Identity.Core": "7.0.4",
+          "System.IdentityModel.Tokens.Jwt": "6.21.0"
+        },
+        "compile": {
+          "bin/placeholder/Persistence.Misc.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Persistence.Misc.dll": {}
+        }
+      },
       "Services.Abstraction/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v7.0",
@@ -8146,6 +8161,11 @@
       "path": "../Domain/Domain.csproj",
       "msbuildProject": "../Domain/Domain.csproj"
     },
+    "Persistence.Misc/1.0.0": {
+      "type": "project",
+      "path": "../Infrastructure/Persistence.Misc/Persistence.Misc.csproj",
+      "msbuildProject": "../Infrastructure/Persistence.Misc/Persistence.Misc.csproj"
+    },
     "Services.Abstraction/1.0.0": {
       "type": "project",
       "path": "../Services.Abstraction/Services.Abstraction.csproj",
@@ -8163,6 +8183,7 @@
       "Microsoft.EntityFrameworkCore.Design >= 7.0.4",
       "Microsoft.EntityFrameworkCore.Relational >= 7.0.4",
       "Microsoft.EntityFrameworkCore.SqlServer >= 7.0.4",
+      "Persistence.Misc >= 1.0.0",
       "Services.Abstraction >= 1.0.0"
     ]
   },
@@ -8204,6 +8225,9 @@
             },
             "C:\\Users\\rafae\\OSNOVIRAZRABOTKI\\semwork3\\BeaverTinder\\Domain\\Domain.csproj": {
               "projectPath": "C:\\Users\\rafae\\OSNOVIRAZRABOTKI\\semwork3\\BeaverTinder\\Domain\\Domain.csproj"
+            },
+            "C:\\Users\\rafae\\OSNOVIRAZRABOTKI\\semwork3\\BeaverTinder\\Infrastructure\\Persistence.Misc\\Persistence.Misc.csproj": {
+              "projectPath": "C:\\Users\\rafae\\OSNOVIRAZRABOTKI\\semwork3\\BeaverTinder\\Infrastructure\\Persistence.Misc\\Persistence.Misc.csproj"
             },
             "C:\\Users\\rafae\\OSNOVIRAZRABOTKI\\semwork3\\BeaverTinder\\Services.Abstraction\\Services.Abstraction.csproj": {
               "projectPath": "C:\\Users\\rafae\\OSNOVIRAZRABOTKI\\semwork3\\BeaverTinder\\Services.Abstraction\\Services.Abstraction.csproj"

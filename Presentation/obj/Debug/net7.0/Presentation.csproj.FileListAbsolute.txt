@@ -21,3 +21,5 @@ C:\Users\rafae\OSNOVIRAZRABOTKI\semwork3\BeaverTinder\Presentation\obj\Debug\net
 C:\Users\rafae\OSNOVIRAZRABOTKI\semwork3\BeaverTinder\Presentation\obj\Debug\net7.0\Presentation.pdb
 C:\Users\rafae\OSNOVIRAZRABOTKI\semwork3\BeaverTinder\Presentation\obj\Debug\net7.0\Presentation.genruntimeconfig.cache
 C:\Users\rafae\OSNOVIRAZRABOTKI\semwork3\BeaverTinder\Presentation\obj\Debug\net7.0\ref\Presentation.dll
+C:\Users\rafae\OSNOVIRAZRABOTKI\semwork3\BeaverTinder\Presentation\bin\Debug\net7.0\Persistence.Misc.dll
+C:\Users\rafae\OSNOVIRAZRABOTKI\semwork3\BeaverTinder\Presentation\bin\Debug\net7.0\Persistence.Misc.pdb

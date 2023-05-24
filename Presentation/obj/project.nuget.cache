@@ -1,11 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "9IK0SRnv7/f3JiUQuRzXbp5b4hVsPUOPeK7s/7HXcHs9hq8JamGDd11PPH+gkVXp5WKB+9QPCw5Kro3kw8Eyfw==",
+  "dgSpecHash": "DleJl5UV63PzXOKxO3jfAqGjsD7LTr56A9ExmrABNxFYICmAeRD8d+fUtU3MusAS8LLUlBk/tkBMv/w+0ElzBg==",
   "success": true,
   "projectFilePath": "C:\\Users\\rafae\\OSNOVIRAZRABOTKI\\semwork3\\BeaverTinder\\Presentation\\Presentation.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\rafae\\.nuget\\packages\\azure.core\\1.24.0\\azure.core.1.24.0.nupkg.sha512",
     "C:\\Users\\rafae\\.nuget\\packages\\azure.identity\\1.6.0\\azure.identity.1.6.0.nupkg.sha512",
+    "C:\\Users\\rafae\\.nuget\\packages\\digillect.aspnetcore.authentication.vkontakte\\3.0.0\\digillect.aspnetcore.authentication.vkontakte.3.0.0.nupkg.sha512",
     "C:\\Users\\rafae\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\rafae\\.nuget\\packages\\microsoft.aspnet.webapi.client\\5.2.9\\microsoft.aspnet.webapi.client.5.2.9.nupkg.sha512",
     "C:\\Users\\rafae\\.nuget\\packages\\microsoft.aspnet.webapi.core\\5.2.9\\microsoft.aspnet.webapi.core.5.2.9.nupkg.sha512",
