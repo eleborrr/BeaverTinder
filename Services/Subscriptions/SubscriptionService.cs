@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using System.Security.Claims;
+using Domain.Entities;
 using Domain.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Services.Abstraction;
@@ -29,6 +30,7 @@ public class SubscriptionService : ISubscriptionService
         {
             await _repositoryManager.UserSubscriptionRepository.AddUserSubscriptionAsync(subsId, userId);
             await _userManager.AddToRoleAsync(user, sub.RoleName);
+            await _userManager.AddClaimAsync(user, new Claim(ClaimTypes.Role, sub.RoleName));
             return;
         }
         if (userSub.Active)
