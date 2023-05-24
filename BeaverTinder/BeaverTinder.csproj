@@ -8,10 +8,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.0" />
-<!--        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.4" />-->
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.1" />
+        <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.2.9" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.4" />
+        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.4" />
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.4" />
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.4" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Analyzers" Version="7.0.4" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.4">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -19,6 +21,7 @@
         <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.4" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.4" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+        <PackageReference Include="Yandex.Checkout.V3" Version="1.7.0" />
     </ItemGroup>
 
     <ItemGroup>
@@ -28,8 +31,10 @@
     </ItemGroup>
 
     <ItemGroup>
-      <AdditionalFiles Include="Views\Login\Login.cshtml" />
-      <AdditionalFiles Include="Views\Registration\Register.cshtml" />
+      <ProjectReference Include="..\Infrastructure\Persistence.Misc\Persistence.Misc.csproj" />
+      <ProjectReference Include="..\Persistence\Persistence.csproj" />
+      <ProjectReference Include="..\Presentation\Presentation.csproj" />
+      <ProjectReference Include="..\Services\Services.csproj" />
     </ItemGroup>
 
 </Project>
