@@ -12,26 +12,23 @@ import Cookies from 'js-cookie';
 const HeaderApp = () => {
 	const [token, setToken] = useState(Cookies.get('token'));
 	const [homeClass, setHomeClass] = useState('')
-	const [pagesClass, setPagesClass] = useState('')
-	const [communityClass, setCommunityClass] = useState('')
+	const [chatsClass, setChatsClass] = useState('')
 	const [shopsClass, setShopsClass] = useState('')
-	const [blogsClass, setBlogsClass] = useState('')
+	const [likeClass, setLikeClass] = useState('')
 	const [contactClass, setContactClass] = useState('')
 	const location = useLocation();
 
 	useEffect(
 		function() {if (location.pathname === '/home'){
 			setHomeClass("active");
-		}else if (location.pathname === '/pages'){
-			setPagesClass("active");
-		}else if (location.pathname === '/community'){
-			setCommunityClass("active");
 		}else if (location.pathname === '/shops'){
 			setShopsClass("active");
-		}else if (location.pathname === '/blogs'){
-			setBlogsClass("active");
 		}else if (location.pathname === '/contact'){
 			setContactClass("active");
+		}else if (location.pathname === '/chats'){
+			setChatsClass("active");
+		}else if (location.pathname === '/like'){
+			setLikeClass("active");
 		}
 	}
 	)
@@ -58,34 +55,30 @@ const HeaderApp = () => {
 								<li className={homeClass}>
 									<a href="/home">Home</a>
 								</li>
-								<li className={pagesClass}>
-									<a href="/pages">Pages</a>
-								</li>
-								<li className={communityClass}>
-									<a href="/community">Community</a>
-									<ul>
-										<li><a href="community.html">Community</a></li>
-										<li><a href="group.html">All Group</a></li>
-										<li><a href="members.html">All Members</a></li>
-										<li><a href="activity.html">Activity</a></li>
-									</ul>
+								<li className={chatsClass}>
+									<a href="/chats">Chats</a>
 								</li>
 								<li className={shopsClass}>
 									<a href="/shops">Shops</a>
 								</li>
-								<li className={blogsClass}>
-									<a href="/blogs">Blogs</a>
-								</li>
 								<li className={contactClass}>
-									<a href="/contact">contact</a>
+									<a href="/contact">Contact</a>
 								</li>
+								{
+									token? 
+									<li className={likeClass}>
+										<a href="/like">Like</a>
+									</li>
+									:
+									<></>
+								}
+								
 							</ul>
 						</div>
 						<div className="header__more">
                             <button className="default-btn dropdown-toggle" type="button" id="moreoption" data-bs-toggle="dropdown" aria-expanded="false">My Account</button>
                             <ul className="dropdown-menu" aria-labelledby="moreoption">
                               {token? <div>
-											<li><a className="dropdown-item" href="/like">Like</a></li>
 											<li><a className="dropdown-item" onClick={RemoveCookies} href="/login">Log Out</a></li>
 									  </div>
 							   : <div>
