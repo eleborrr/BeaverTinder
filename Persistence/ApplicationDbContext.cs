@@ -10,6 +10,7 @@ public class ApplicationDbContext: IdentityDbContext<User>
 {
     public DbSet<Like> Likes { get; set; }
     public DbSet<Message> Messages { get; set; }
+    public DbSet<Room> Rooms { get; set; }
     public DbSet<Role> Roles { get; set; }
     public DbSet<Payment> Payments {get; set; }
     public DbSet<Subscription> Subscriptions { get; set; }

@@ -6,6 +6,7 @@ using Contracts.Responses.Registration;
 using Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 using Persistence.Misc.Services.JwtGenerator;
 using Services.Abstraction;
 using Services.Abstraction.Account;
@@ -192,5 +193,10 @@ public class AccountService : IAccountService
                 result.Errors.FirstOrDefault().Description);
         }
         return new RegisterResponseDto(RegisterResponseStatus.InvalidData);
+    }
+
+    public async Task<IEnumerable<User>> GetAllMappedUsers()
+    {
+        return await _userManager.Users.ToListAsync();
     }
 }
