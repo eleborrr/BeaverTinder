@@ -2,7 +2,7 @@
 
 public class SingleChatGetResponse
 {
-    public string SenderId { get; set; }
-    public string RecieverId { get; set; }
+    public string SenderName { get; set; }
+    public string RecieverName { get; set; }
     public string RoomName { get; set; }
 }

@@ -27,7 +27,7 @@ const ChatForTwoPage = () => {
 
     useEffect(() => {
         let room;
-        var response = axiosInstance.get(`/im/chat?id=${nickname}`,
+        var response = axiosInstance.get(`/im/chat?username=${nickname}`,
         {
            headers:{
                Authorization: `Bearer ${token}`,
@@ -45,6 +45,7 @@ const ChatForTwoPage = () => {
     }, [])
 
     function callbackSignalR(roomData){
+        console.log(roomData);
 
         let connection = new signalR.HubConnectionBuilder().withUrl("https://localhost:7015/chatHub").build();
 
@@ -75,14 +76,14 @@ const ChatForTwoPage = () => {
         });
 
 
-        connection.start().then(res => {connection.invoke("GetGroupMessages", `${roomData.roomName}`, `${roomData.senderId}`)
+        connection.start().then(res => {connection.invoke("GetGroupMessages", `${roomData.roomName}`)
             .catch(function (err) {
                 return console.error(err.toString());
             })});
 
         document.getElementById("sendButton").addEventListener("click", function (event) { 
             var message = document.getElementById("messageInput").value;
-            connection.invoke("SendPrivateMessage", `${roomData.senderId}`, message, `${roomData.receiverId}`, `${roomData.roomName}`).catch(function (err) { 
+            connection.invoke("SendPrivateMessage", `${roomData.senderName}`, message, `${roomData.recieverName}`, `${roomData.roomName}`).catch(function (err) { 
                 return console.error(err.toString());
             });
             event.preventDefault();

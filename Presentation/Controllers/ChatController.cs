@@ -45,16 +45,18 @@ public class ChatController: Controller
     }
     
     [HttpGet("/im/chat")]
-    public async Task<JsonResult> Chat([FromQuery] string id)
+    public async Task<JsonResult> Chat([FromQuery] string username)
     {
         var curUserId = User.Claims.FirstOrDefault(c => c.Type == "Id").Value;
+        var receiver = await _userManager.FindByNameAsync(username);
+        var sender = await _userManager.FindByIdAsync(curUserId);
         
         //TODO check for curUserId null
-        var res = await _serviceManager.ChatService.GetChatById(curUserId, id);
+        var res = await _serviceManager.ChatService.GetChatById(curUserId, receiver.Id);
         var model = new SingleChatGetResponse()
         {
-            RecieverId = id,
-            SenderId = curUserId,
+            RecieverName = username,
+            SenderName = sender.UserName,
             RoomName = res.Name
         };
         return Json(model);
