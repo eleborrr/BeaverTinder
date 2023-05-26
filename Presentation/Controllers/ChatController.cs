@@ -1,6 +1,8 @@
-﻿using Contracts.Responses.Chat;
+﻿using System.Security.Claims;
+using Contracts.Responses.Chat;
 using Contracts.ViewModels;
 using Domain.Entities;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -11,7 +13,7 @@ using Services.Abstraction.Chat;
 
 namespace Presentation.Controllers;
 
-[Authorize]
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 [ApiController]
 [Route("[controller]")]
 public class ChatController: Controller
@@ -33,7 +35,7 @@ public class ChatController: Controller
         {
             return new AllChatsResponse
             {
-                Id = x.Id,
+                UserName = x.UserName,
                 FirstName = x.FirstName,
                 LastName = x.LastName,
                 Image = x.Image
@@ -45,10 +47,10 @@ public class ChatController: Controller
     [HttpGet("/im/chat")]
     public async Task<JsonResult> Chat([FromQuery] string id)
     {
-        var curUserId = (await _userManager.FindByNameAsync(User.Identity.Name)).Id;
+        var curUserId = User.Claims.FirstOrDefault(c => c.Type == "Id").Value;
         
         //TODO check for curUserId null
-        
-        return Json(await _serviceManager.ChatService.GetChatById(curUserId, id));
+        var res = await _serviceManager.ChatService.GetChatById(curUserId, id);
+        return Json(res);
     }
 }

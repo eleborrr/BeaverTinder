@@ -12,6 +12,7 @@
  using Persistence;
  using Persistence.Misc.Services.JwtGenerator;
  using Persistence.Repositories;
+ using Presentation.Hubs;
  using Services;
  using Services.Abstraction;
  using Services.Abstraction.TwoFA;
@@ -21,6 +22,8 @@
 // Add services to the container.
  builder.Services.AddControllers();
  builder.Services.AddMemoryCache();
+ builder.Services.AddSignalR();
+
  
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -148,7 +151,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
- 
+ app.MapHub<ChatHub>("/chatHub");
+
  app.UseCors(TestSpesific);
 
  app.UseHttpsRedirection();
