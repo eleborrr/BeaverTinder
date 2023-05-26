@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { axiosInstance } from "../Components/axios_server";
 import jwtDecode from "jwt-decode";
@@ -19,36 +19,46 @@ const ChatForTwoPage = () => {
         }
     }, [])
 
-
-    const fetchData = useCallback(() => {
-        axiosInstance.get(`/im/chat?id=${nickname}`,
-        {
-           headers:{
-               Authorization: `Bearer ${token}`,
-               Accept : "application/json"
-           }
-       })
-       .then(roomData => setRoomData(roomData))
-    }, []);
-        
-
-    const [roomData, setRoomData] = useState([]);
     const [messages, setMessages] = useState(null); 
     const [interval, setInterval] = useState(null); 
     const [message, setMessage] = useState('');
 
 
     useEffect(() => {
-        fetchData();
+        let room;
+        var response = axiosInstance.get(`/im/chat?id=${nickname}`,
+        {
+           headers:{
+               Authorization: `Bearer ${token}`,
+               Accept : "application/json"
+           }
+        }) 
+        .then(response => {
+            console.log(response.data);
+            room = response.data; // выводим данные, полученные из сервера
+            callbackSignalR(room);
+        })
+        .catch(error => {
+            console.log(error); // обработка ошибок
+        }); 
+    }, [])
+
+    function callbackSignalR(roomData){
+
         let connection = new signalR.HubConnectionBuilder().withUrl("https://localhost:7015/chatHub").build();
 
-        console.log(roomData.secondUserId);
-
-
         connection.on("ReceivePrivateMessage", function (user, message){
-            var li = document.createElement("li");
-            li.textContent = user + " (private): " + message;
-            document.getElementById("messagesList").appendChild(li);
+            console.log(user);
+            var elem = document.createElement("div");
+            elem.className="message-from";
+
+            var content = document.createElement("span");
+            content.className = "message-text";
+            content.textContent = user + " (private): " + message;
+
+            elem.appendChild(content);
+
+            document.getElementById("messagesList").appendChild(elem);
         });
 
 
@@ -59,13 +69,12 @@ const ChatForTwoPage = () => {
 
         document.getElementById("sendButton").addEventListener("click", function (event) { 
             var message = document.getElementById("messageInput").value;
-            // var toUser = document.getElementById("toUserInput").value;
-            connection.invoke("SendPrivateMessage", `${roomData.secondUserId}`, message, `${roomData.firstUserId}`, `${roomData.Name}`).catch(function (err) { 
+            connection.invoke("SendPrivateMessage", `${roomData.secondUserId}`, message, `${roomData.firstUserId}`, `${roomData.name}`).catch(function (err) { 
                 return console.error(err.toString());
             });
             event.preventDefault();
         });
-    }, [fetchData])
+    }
     
 
     return(
@@ -75,8 +84,8 @@ const ChatForTwoPage = () => {
             </div>
             <div className='chat-messages'>
 
-                <div className='chat-messages__content' id='messages'>
-                    <ul id="messagesList">
+                <div id="messagesList" className='chat-messages__content'>
+                    {/* <ul id="messagesList"> */}
                     {/* <div className="message-from">
                         <span className="message-from">Глеб: </span>
                         <span className="message-text">Первое сообщение</span>
@@ -85,13 +94,13 @@ const ChatForTwoPage = () => {
                         <span className="message-from">Глеб: </span>
                         <span className="message-text">Первое сообщение</span>
                     </div> */}
-                    </ul>
+                   {/*  </ul> */}
                 </div>
             </div>
             <div className='chat-input'>
 {/*                 <form method='post' id='chat-form' className="form-input">
  */}                    <input type='text' hidden={true} value={uid} readOnly={true} />
-                    <input type='text' autoComplete="off" id='message-text' className='chat-form__input' placeholder='Введите сообщение' value={message} onChange={(e) => setMessage(e.target.value)} />
+                    <input type='text' autoComplete="off" id='messageInput' className='chat-form__input' placeholder='Введите сообщение' value={message} onChange={(e) => setMessage(e.target.value)} />
                     <input type='submit' id="sendButton" className='chat-form__submit' value='Send' />
 {/*                 </form>
  */}            </div>

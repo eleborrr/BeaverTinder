@@ -38,6 +38,7 @@ namespace Presentation.Hubs
             
             _dbContext.Messages.Add(new Message()
             {
+                Id = Guid.NewGuid().ToString(),
                 Content = message,
                 Timestamp = DateTime.Today,
                 SenderId = author,
