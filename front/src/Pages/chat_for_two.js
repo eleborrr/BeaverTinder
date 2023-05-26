@@ -6,6 +6,7 @@ import Cookies from "js-cookie";
 import './../assets/css/chat_for_two.css';
 import 'https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js';
 import * as signalR from "@microsoft/signalr";
+import { a } from "@react-spring/web";
 
 const ChatForTwoPage = () => {
     const navigate = useNavigate();
@@ -48,28 +49,40 @@ const ChatForTwoPage = () => {
         let connection = new signalR.HubConnectionBuilder().withUrl("https://localhost:7015/chatHub").build();
 
         connection.on("ReceivePrivateMessage", function (user, message){
-            console.log(user);
             var elem = document.createElement("div");
-            elem.className="message-from";
-
+            var author = document.createElement("span");
             var content = document.createElement("span");
-            content.className = "message-text";
-            content.textContent = user + " (private): " + message;
+            if(user === nickname){
+                elem.className="message-from";
 
+                author.className = "message-from";
+            }
+            else{
+                elem.className="message-to";
+
+                author.className = "message-to";
+            }
+            author.textContent = user + ":";
+
+            content.className = "message-text";
+            content.textContent = message;
+
+            elem.appendChild(author);
             elem.appendChild(content);
 
             document.getElementById("messagesList").appendChild(elem);
+
         });
 
 
-        connection.start().then(res => {connection.invoke("GetGroupMessages", `${roomData.name}`, `${roomData.secondUserId}`)
+        connection.start().then(res => {connection.invoke("GetGroupMessages", `${roomData.roomName}`, `${roomData.senderId}`)
             .catch(function (err) {
                 return console.error(err.toString());
             })});
 
         document.getElementById("sendButton").addEventListener("click", function (event) { 
             var message = document.getElementById("messageInput").value;
-            connection.invoke("SendPrivateMessage", `${roomData.secondUserId}`, message, `${roomData.firstUserId}`, `${roomData.name}`).catch(function (err) { 
+            connection.invoke("SendPrivateMessage", `${roomData.senderId}`, message, `${roomData.receiverId}`, `${roomData.roomName}`).catch(function (err) { 
                 return console.error(err.toString());
             });
             event.preventDefault();

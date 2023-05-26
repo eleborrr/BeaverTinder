@@ -51,6 +51,12 @@ public class ChatController: Controller
         
         //TODO check for curUserId null
         var res = await _serviceManager.ChatService.GetChatById(curUserId, id);
-        return Json(res);
+        var model = new SingleChatGetResponse()
+        {
+            RecieverId = id,
+            SenderId = curUserId,
+            RoomName = res.Name
+        };
+        return Json(model);
     }
 }

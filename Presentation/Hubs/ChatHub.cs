@@ -32,7 +32,7 @@ namespace Presentation.Hubs
             }
         }
 
-        public async Task SendPrivateMessage(string author, string message, string recieverId, string groupName)
+        public async Task SendPrivateMessage(string senderId, string message, string receiverId, string groupName)
         {
             var room = _dbContext.Rooms.FirstOrDefault(r => r.Name == groupName);
             
@@ -41,12 +41,12 @@ namespace Presentation.Hubs
                 Id = Guid.NewGuid().ToString(),
                 Content = message,
                 Timestamp = DateTime.Today,
-                SenderId = author,
-                ReceiverId = recieverId,
+                SenderId = senderId,
+                ReceiverId = receiverId,
                 RoomId = room.Id
             });
             await _dbContext.SaveChangesAsync();
-            await Clients.Group(groupName).SendAsync("ReceivePrivateMessage", author, message);
+            await Clients.Group(groupName).SendAsync("ReceivePrivateMessage", senderId, message);
         }
         
         
