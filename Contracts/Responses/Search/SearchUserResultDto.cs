@@ -10,5 +10,6 @@ public class SearchUserResultDto
     public string About { get; set; }
     public bool Successful { get; set; }
     public string Message { get; set; }
+    public int DistanceInKm { get; set; }
     public int StatusCode { get; set; }
 }

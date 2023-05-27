@@ -15,16 +15,14 @@ public class FindBeaverService: IFindBeaverService
     private readonly UserManager<User> _userManager;
     private readonly IRepositoryManager _repositoryManager;
     private readonly IMemoryCache _memoryCache;
-    private readonly RoleManager<Role> _roleManager;
-    private readonly ILikeService _likeService;
+    private readonly IServiceManager _serviceManager;
 
-    public FindBeaverService(UserManager<User> userManager, IRepositoryManager repositoryManager, IMemoryCache memoryCache, RoleManager<Role> roleManager, ILikeService likeService)
+    public FindBeaverService(UserManager<User> userManager, IRepositoryManager repositoryManager, IMemoryCache memoryCache, RoleManager<Role> roleManager, IServiceManager serviceManager)
     {
         _userManager = userManager;
         _repositoryManager = repositoryManager;
         _memoryCache = memoryCache;
-        _roleManager = roleManager;
-        _likeService = likeService;
+        _serviceManager = serviceManager;
     }
 
     public async Task<SearchUserResultDto> GetNextBeaver(User? currentUser, Role? userRole)
@@ -69,7 +67,14 @@ public class FindBeaverService: IFindBeaverService
                     Message = "Beaver queue error",
                     StatusCode = 500
                 };
-            
+
+            var curUserGeoloc = await _serviceManager.GeolocationService.GetByUserId(currentUser.Id);
+            var likedUserGeoloc = await _serviceManager.GeolocationService.GetByUserId(returnUserCache.Id);
+
+            var distanceInKm = Convert.ToInt32(
+                System.Math.Ceiling(
+                    await _serviceManager.GeolocationService.GetDistance(curUserGeoloc, likedUserGeoloc)));
+
             return new SearchUserResultDto
             {
                 Id = returnUserCache.Id,
@@ -78,6 +83,7 @@ public class FindBeaverService: IFindBeaverService
                 LastName = returnUserCache.LastName,
                 Gender = returnUserCache.Gender,
                 Age = DateTime.Now.Year - returnUserCache.DateOfBirth.Year,
+                DistanceInKm = distanceInKm,
                 Message = "ok",
                 StatusCode = 200,
                 Successful = true
@@ -181,7 +187,7 @@ public class FindBeaverService: IFindBeaverService
         if (user is null)
             return false;
         //TODO make checks
-        return (await _likeService.GetAllAsync())
+        return (await _serviceManager.LikeService.GetAllAsync())
             .Count(l => l.LikeDate.Date.Day == DateTime.Today.Day && l.UserId == user.Id) <= role.LikesCountAllowed;
         // TODO return custom Exception
     }

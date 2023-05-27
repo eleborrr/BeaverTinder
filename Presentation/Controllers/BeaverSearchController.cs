@@ -33,7 +33,7 @@ public class BeaverSearchController: Controller
         var result = await _serviceManager.FindBeaverService.GetNextBeaver(await GetUserFromJwt(), await GetRoleFromJwt());
         if (!result.Successful)
         {
-            return Json(new SearchUserFailedResponse()
+            return Json(new SearchUserFailedResponse
             {
                 Message = result.Message,
                 Successful = result.Successful,
@@ -41,13 +41,14 @@ public class BeaverSearchController: Controller
             });
         }
         
-        var user = new SearchUserResultDto()
+        var user = new SearchUserResultDto
         {
             Id = result.Id,
             About = result.About,
             FirstName = result.FirstName,
             LastName = result.LastName,
             Age = DateTime.Now.Year - result.Age,
+            DistanceInKm = result.DistanceInKm,
             Gender = result.Gender,
         };
         return Json(user);
