@@ -52,7 +52,7 @@ public class FindBeaverService: IFindBeaverService
         {
             var likes = await _repositoryManager.LikeRepository.GetAllAsync(default); // ???
 
-            var filtredBeavers = _userManager.Users.AsEnumerable()
+            var filtredBeavers = _userManager.Users.AsQueryable()
                 .Where(u => likes.Count(l => l.UserId == currentUser.Id && l.LikedUserId == u.Id ) == 0 && u.Id != currentUser.Id) // проверяем чтобы не попадались лайкнутые
                 .OrderBy(u => Math.Abs(currentUser.DateOfBirth.Year - u.DateOfBirth.Year))
                 .Take(10)
@@ -108,6 +108,42 @@ public class FindBeaverService: IFindBeaverService
             StatusCode = 200,
             Successful = true
         };
+    }
+
+    
+    //TODO memory cache
+    public async Task<SearchUserResultDto> GetNextSympathy(User? currentUser)
+    {
+        if (currentUser is null)
+            return new SearchUserResultDto
+            {
+                Successful = false,
+                Message = "Logged in user error",
+                StatusCode = 400
+            };
+        var likes = await _repositoryManager.LikeRepository.GetAllAsync(default); // ???
+
+        var filtredBeavers = _userManager.Users.AsQueryable()
+            .Where(u => likes.Count(l => l.UserId ==  u.Id && l.LikedUserId ==currentUser.Id ) != 0 
+                        && likes.Count(l => l.UserId == currentUser.Id && l.LikedUserId ==  u.Id) == 0
+                        && u.Id != currentUser.Id) // проверяем чтобы попадались лайкнутые
+            .OrderBy(u => Math.Abs(currentUser.DateOfBirth.Year - u.DateOfBirth.Year))
+            .Take(10)
+            .ToList();
+        
+        var returnUserCache = filtredBeavers.FirstOrDefault();
+        return new SearchUserResultDto
+        {
+            Id = returnUserCache.Id,
+            About = returnUserCache.About,
+            FirstName = returnUserCache.FirstName,
+            LastName = returnUserCache.LastName,
+            Gender = returnUserCache.Gender,
+            Age = DateTime.Now.Year - returnUserCache.DateOfBirth.Year,
+            Message = "ok",
+            StatusCode = 200,
+            Successful = true
+        }; 
     }
 
     //TODO юзер будет приходить через жвт??

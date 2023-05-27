@@ -42,7 +42,6 @@ namespace Presentation.Hubs
 
             var sender = await _userManager.FindByNameAsync(senderUserName);
             var receiver = await _userManager.FindByNameAsync(receiverUserName);
-            //TODO get id from user manager, expect users name
             
             _dbContext.Messages.Add(new Message()
             {

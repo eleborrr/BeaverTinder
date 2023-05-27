@@ -30,7 +30,6 @@ public class BeaverSearchController: Controller
     [HttpGet]
     public async Task<JsonResult> Search()
     {
-        //TODO исправить 500 ошибку если не найдено
         var result = await _serviceManager.FindBeaverService.GetNextBeaver(await GetUserFromJwt(), await GetRoleFromJwt());
         if (!result.Successful)
         {
@@ -51,10 +50,36 @@ public class BeaverSearchController: Controller
             Age = DateTime.Now.Year - result.Age,
             Gender = result.Gender,
         };
-        return Json(result);
+        return Json(user);
     }
- 
-    
+
+    [HttpGet("/mylikes")]
+    public async Task<JsonResult> Likes()
+    {
+        var result = await _serviceManager.FindBeaverService.GetNextBeaver(await GetUserFromJwt(), await GetRoleFromJwt());
+        if (!result.Successful)
+        {
+            return Json(new SearchUserFailedResponse()
+            {
+                Message = result.Message,
+                Successful = result.Successful,
+                StatusCode = result.StatusCode
+            });
+        }
+        
+        var user = new SearchUserResultDto()
+        {
+            Id = result.Id,
+            About = result.About,
+            FirstName = result.FirstName,
+            LastName = result.LastName,
+            Age = DateTime.Now.Year - result.Age,
+            Gender = result.Gender,
+        };
+        return Json(user);
+    }
+
+
     //TODO: тут тоже с гонками все норм брат да(я постараюсь на фронте избежать но не обещаю(мб и обещаю))
     [HttpPost("/like")]
     public async Task<JsonResult> Like([FromBody]  LikeViewModel likeViewModel)
@@ -62,7 +87,7 @@ public class BeaverSearchController: Controller
         return Json(await _serviceManager.FindBeaverService.
             AddSympathy(await GetUserFromJwt(), likeViewModel.LikedUserId, sympathy:true, await GetRoleFromJwt()));
     }
-    //
+    
     [HttpPost("/dislike")]
     public async Task<JsonResult> DisLike([FromBody] LikeViewModel likeViewModel)
     {
