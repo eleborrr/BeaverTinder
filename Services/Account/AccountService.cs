@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using System.Text;
 using Contracts;
+using Contracts.Responses.Account;
 using Contracts.Responses.Login;
 using Contracts.Responses.Registration;
 using Domain.Entities;
@@ -145,8 +146,6 @@ public class AccountService : IAccountService
 
                 return new LoginResponseDto(LoginResponseStatus.Ok, await _jwtGenerator.GenerateJwtToken(signedUser.Id));
             }
-
-            // ModelState.AddModelError("error_message", "Invalid login attempt.");
         }
 
         return new LoginResponseDto(LoginResponseStatus.Fail);
@@ -168,6 +167,7 @@ public class AccountService : IAccountService
                 Image = "TEST",
 
             };
+            
             //TODO получение геолокации из дто
 
             var emailCollision = _userManager.Users.FirstOrDefault(u => u.Email == user.Email);
@@ -192,5 +192,42 @@ public class AccountService : IAccountService
                 result.Errors.FirstOrDefault().Description);
         }
         return new RegisterResponseDto(RegisterResponseStatus.InvalidData);
+    }
+
+    public async Task<EditUserResponseDto> EditAccount(User userToEdit, EditUserDto model, ModelStateDictionary modelstate)
+    {
+        if (modelstate.IsValid)
+        {
+            var user = new User
+            {
+                LastName = model.LastName,
+                FirstName = model.FirstName,
+                UserName = model.UserName,
+                Email = userToEdit.Email,
+                Gender = model.Gender,
+                About = model.About,
+                Image = "TEST",
+            };
+            
+            //TODO получение геолокации из дто
+
+            var result = await _userManager.CreateAsync(user, model.Password);
+
+            if (result.Succeeded)
+            {
+                // await SendConfirmationEmailAsync(user.Id);
+                var userDb = await _userManager.FindByEmailAsync(user.Email);
+                await _userManager.AddClaimAsync(userDb, new Claim(ClaimTypes.Role, "User"));
+                return new EditUserResponseDto(EditResponseStatus.Ok);
+                // TODO протестить что норм работает
+                // await _geolocationService.AddAsync(userId:(Id,
+                //     Latutide: 55.47, // geolocation from dto!
+                //     Longtitude: 49.6);
+            }
+
+            return new EditUserResponseDto(EditResponseStatus.Fail,
+                result.Errors.FirstOrDefault().Description);
+        }
+        return new EditUserResponseDto(EditResponseStatus.InvalidData);
     }
 }
