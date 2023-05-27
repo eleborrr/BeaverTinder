@@ -4,7 +4,7 @@ namespace Services.Abstraction.Geolocation;
 
 public interface IGeolocationService
 {
-    public Task AddAsync(string userId, double Latutide, double Longtitude);
+    public Task AddAsync(string userId, double Latitude, double Longtitude);
 
     public Task<UserGeolocation> GetByUserId(string userId);
 

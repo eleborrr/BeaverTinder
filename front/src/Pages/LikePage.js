@@ -80,8 +80,10 @@ const LikePage = () =>
         })
         .then(res => {
             if (res.data){
+                console.log(res.data.latitude);
                 if (res.data.longitude){
-                    setLong(res.data.longitude);
+                    console.log(res.data.longitude)
+                    setLong(res.data.longtitude);
                 }
                 if (res.data.latitude){
                     setLant(res.data.latitude);

@@ -16,14 +16,14 @@ public class GeolocationService: IGeolocationService
         _userManager = userManager;
     }
 
-    public async Task AddAsync(string userId, double Latutide, double Longtitude)
+    public async Task AddAsync(string userId, double Latitude, double Longtitude)
     {
         //TODO валидность проверять
         var geolocation = new UserGeolocation()
         {
             Id = userId,
             Longtitude = Longtitude,
-            Latutide = Latutide
+            Latitude = Latitude
         };
         await _repositoryManager.GeolocationRepository.AddAsync(geolocation);
     }
@@ -41,8 +41,8 @@ public class GeolocationService: IGeolocationService
     public async Task<double> GetDistance(UserGeolocation geolocation1, UserGeolocation geolocation2)
     {
         const int R = 6371;
-        return 2 * R * Math.Asin(Math.Sqrt(Math.Pow(Math.Sin(geolocation2.Latutide - geolocation1.Latutide), 2)/2) +
-                                           Math.Cos(geolocation1.Latutide) * Math.Cos(geolocation2.Latutide) *
+        return 2 * R * Math.Asin(Math.Sqrt(Math.Pow(Math.Sin(geolocation2.Latitude - geolocation1.Latitude), 2)/2) +
+                                           Math.Cos(geolocation1.Latitude) * Math.Cos(geolocation2.Latitude) *
                                            Math.Pow(Math.Sin(geolocation2.Longtitude - geolocation1.Longtitude), 2) / 2)
             ;
     }

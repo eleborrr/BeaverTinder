@@ -76,6 +76,7 @@ public class BeaverSearchController: Controller
             LastName = result.LastName,
             Age = DateTime.Now.Year - result.Age,
             Gender = result.Gender,
+            DistanceInKm = result.DistanceInKm
         };
         return Json(user);
     }

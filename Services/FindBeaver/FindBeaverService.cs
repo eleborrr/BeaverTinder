@@ -52,9 +52,9 @@ public class FindBeaverService: IFindBeaverService
         {
             var likes = await _repositoryManager.LikeRepository.GetAllAsync(default); // ???
 
-            var filtredBeavers = _userManager.Users.AsQueryable()
-                .Where(u => likes.Count(l => l.UserId == currentUser.Id && l.LikedUserId == u.Id ) == 0 && u.Id != currentUser.Id).AsEnumerable() // проверяем чтобы не попадались лайкнутые
-                .OrderBy(async u => Math.Abs(await _geolocationService.GetDistance(currentUser, u)))
+            var filtredBeavers = _userManager.Users.AsEnumerable()
+                .Where(u => likes.Count(l => l.UserId == currentUser.Id && l.LikedUserId == u.Id ) == 0 && u.Id != currentUser.Id) // проверяем чтобы не попадались лайкнутые
+                .OrderBy(u => Math.Abs(_geolocationService.GetDistance(currentUser, u).Result))
                 .ThenBy(u => currentUser.DateOfBirth.Year - u.DateOfBirth.Year)
                 .Take(10)
                 .ToList();
