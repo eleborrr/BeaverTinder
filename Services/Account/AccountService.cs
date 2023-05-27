@@ -200,6 +200,7 @@ public class AccountService : IAccountService
         {
             var user = new User
             {
+                Id = userToEdit.Id,
                 LastName = model.LastName,
                 FirstName = model.FirstName,
                 UserName = model.UserName,
@@ -211,7 +212,7 @@ public class AccountService : IAccountService
             
             //TODO получение геолокации из дто
 
-            var result = await _userManager.CreateAsync(user, model.Password);
+            var result = await _userManager.UpdateAsync(user);
 
             if (result.Succeeded)
             {
