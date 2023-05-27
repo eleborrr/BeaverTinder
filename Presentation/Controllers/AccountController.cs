@@ -1,4 +1,5 @@
-﻿using Contracts.ViewModels;
+﻿using Contracts;
+using Contracts.ViewModels;
 using Domain.Entities;
 using Domain.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -34,6 +35,14 @@ public class AccountController : Controller
     public async Task<UserGeolocation> GetUserGeolocation([FromBody] GeolocationRequestViewModel model)
     {
         return await _serviceManager.GeolocationService.GetByUserId(model.UserId);
+    }
+
+    [HttpPost("/edit")]
+    public async Task<JsonResult> EditAccount([FromBody] EditUserDto model)
+    {
+        var userName = User.Identity.Name;
+        var user = await _userManager.FindByNameAsync(userName);
+        return Json(await _serviceManager.AccountService.EditAccount(user, model, ModelState));
     }
     
     [HttpGet("/all")]
