@@ -10,4 +10,5 @@ public interface IGeolocationService
 
     public Task<IEnumerable<UserGeolocation>> GetAllAsync();
     public Task<double> GetDistance(UserGeolocation geolocation1, UserGeolocation geolocation2);
+    public Task<double> GetDistance(User user1, User user2);
 }

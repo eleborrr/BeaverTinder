@@ -1,5 +1,6 @@
 ﻿using Domain.Entities;
 using Domain.Repositories;
+using Microsoft.AspNetCore.Identity;
 using Services.Abstraction.Geolocation;
 
 namespace Services.Geolocation;
@@ -7,10 +8,12 @@ namespace Services.Geolocation;
 public class GeolocationService: IGeolocationService
 {
     private readonly IRepositoryManager _repositoryManager;
+    private readonly UserManager<User> _userManager;
 
-    public GeolocationService(IRepositoryManager repositoryManager)
+    public GeolocationService(IRepositoryManager repositoryManager, UserManager<User> userManager)
     {
         _repositoryManager = repositoryManager;
+        _userManager = userManager;
     }
 
     public async Task AddAsync(string userId, double Latutide, double Longtitude)
@@ -42,5 +45,12 @@ public class GeolocationService: IGeolocationService
                                            Math.Cos(geolocation1.Latutide) * Math.Cos(geolocation2.Latutide) *
                                            Math.Pow(Math.Sin(geolocation2.Longtitude - geolocation1.Longtitude), 2) / 2)
             ;
+    }
+
+    public async Task<double> GetDistance(User user1, User user2)
+    {
+        var geoloc1 = await GetByUserId(user1.Id);
+        var geoloc2 = await GetByUserId(user2.Id);
+        return await GetDistance(geoloc1, geoloc2);
     }
 }

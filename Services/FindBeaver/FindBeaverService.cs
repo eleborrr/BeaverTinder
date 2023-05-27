@@ -2,10 +2,10 @@
 using Domain.Entities;
 using Domain.Repositories;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Services.Abstraction;
 using Services.Abstraction.FindBeaver;
+using Services.Abstraction.Geolocation;
 using Services.Abstraction.Likes;
 
 namespace Services.FindBeaver;
@@ -15,14 +15,16 @@ public class FindBeaverService: IFindBeaverService
     private readonly UserManager<User> _userManager;
     private readonly IRepositoryManager _repositoryManager;
     private readonly IMemoryCache _memoryCache;
-    private readonly IServiceManager _serviceManager;
+    private readonly ILikeService _likeService;
+    private readonly IGeolocationService _geolocationService;
 
-    public FindBeaverService(UserManager<User> userManager, IRepositoryManager repositoryManager, IMemoryCache memoryCache, RoleManager<Role> roleManager, IServiceManager serviceManager)
+    public FindBeaverService(UserManager<User> userManager, IRepositoryManager repositoryManager, IMemoryCache memoryCache, RoleManager<Role> roleManager, ILikeService likeService, IGeolocationService geolocationService)
     {
         _userManager = userManager;
         _repositoryManager = repositoryManager;
         _memoryCache = memoryCache;
-        _serviceManager = serviceManager;
+        _likeService = likeService;
+        _geolocationService = geolocationService;
     }
 
     public async Task<SearchUserResultDto> GetNextBeaver(User? currentUser, Role? userRole)
@@ -51,8 +53,9 @@ public class FindBeaverService: IFindBeaverService
             var likes = await _repositoryManager.LikeRepository.GetAllAsync(default); // ???
 
             var filtredBeavers = _userManager.Users.AsQueryable()
-                .Where(u => likes.Count(l => l.UserId == currentUser.Id && l.LikedUserId == u.Id ) == 0 && u.Id != currentUser.Id) // проверяем чтобы не попадались лайкнутые
-                .OrderBy(u => Math.Abs(currentUser.DateOfBirth.Year - u.DateOfBirth.Year))
+                .Where(u => likes.Count(l => l.UserId == currentUser.Id && l.LikedUserId == u.Id ) == 0 && u.Id != currentUser.Id).AsEnumerable() // проверяем чтобы не попадались лайкнутые
+                .OrderBy(async u => Math.Abs(await _geolocationService.GetDistance(currentUser, u)))
+                .ThenBy(u => currentUser.DateOfBirth.Year - u.DateOfBirth.Year)
                 .Take(10)
                 .ToList();
                 _memoryCache.Set(currentUser.Id, filtredBeavers,
@@ -68,12 +71,12 @@ public class FindBeaverService: IFindBeaverService
                     StatusCode = 500
                 };
 
-            var curUserGeoloc = await _serviceManager.GeolocationService.GetByUserId(currentUser.Id);
-            var likedUserGeoloc = await _serviceManager.GeolocationService.GetByUserId(returnUserCache.Id);
+            var curUserGeoloc = await _geolocationService.GetByUserId(currentUser.Id);
+            var likedUserGeoloc = await _geolocationService.GetByUserId(returnUserCache.Id);
 
             var distanceInKm = Convert.ToInt32(
-                System.Math.Ceiling(
-                    await _serviceManager.GeolocationService.GetDistance(curUserGeoloc, likedUserGeoloc)));
+                Math.Ceiling(
+                    await _geolocationService.GetDistance(curUserGeoloc, likedUserGeoloc)));
 
             return new SearchUserResultDto
             {
@@ -187,7 +190,7 @@ public class FindBeaverService: IFindBeaverService
         if (user is null)
             return false;
         //TODO make checks
-        return (await _serviceManager.LikeService.GetAllAsync())
+        return (await _likeService.GetAllAsync())
             .Count(l => l.LikeDate.Date.Day == DateTime.Today.Day && l.UserId == user.Id) <= role.LikesCountAllowed;
         // TODO return custom Exception
     }

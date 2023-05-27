@@ -41,11 +41,11 @@ public class ServiceManager: IServiceManager
 
     public ServiceManager(UserManager<User> userManager, IOptions<EmailConfig> emailConfig, IRepositoryManager repositoryManager, IMemoryCache memoryCache, RoleManager<Role> roleManager, SignInManager<User> signInManager, IJwtGenerator jwtGenerator)  // ,
     {
-        _geolocationService = new Lazy<IGeolocationService>(() => new GeolocationService(repositoryManager));
+        _geolocationService = new Lazy<IGeolocationService>(() => new GeolocationService(repositoryManager, userManager));
         _emailService = new Lazy<IEmailService>(() => new EmailService(emailConfig));
         _twoFaService = new Lazy<ITwoFAService>(() => new TwoFAService(userManager, _emailService.Value));
         _likeService = new Lazy<ILikeService>(() => new LikeService(repositoryManager));
-        _findBeaverService = new Lazy<IFindBeaverService>(() => new FindBeaverService(userManager, repositoryManager, memoryCache, roleManager , LikeService));
+        _findBeaverService = new Lazy<IFindBeaverService>(() => new FindBeaverService(userManager, repositoryManager, memoryCache, roleManager , LikeService, GeolocationService));
         _paymentService = new Lazy<IPaymentService>(() => new PaymentService.PaymentService(repositoryManager));
         _subscriptionService = new Lazy<ISubscriptionService>(() => new SubscriptionService(repositoryManager, userManager));
         _accountService =
