@@ -12,7 +12,15 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\Contracts\Contracts.csproj" />
       <ProjectReference Include="..\..\Domain\Domain.csproj" />
+      <ProjectReference Include="..\..\Persistence\Persistence.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="Microsoft.AspNetCore.Hosting.Abstractions">
+        <HintPath>..\..\..\..\..\..\Program Files\dotnet\shared\Microsoft.AspNetCore.App\7.0.1\Microsoft.AspNetCore.Hosting.Abstractions.dll</HintPath>
+      </Reference>
     </ItemGroup>
 
 </Project>
