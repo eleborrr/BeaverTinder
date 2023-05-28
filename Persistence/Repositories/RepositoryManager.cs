@@ -1,4 +1,5 @@
 ﻿using System;
+using Domain.Entities;
 using Domain.Repositories;
 
 namespace Persistence.Repositories;
@@ -12,6 +13,8 @@ public sealed class RepositoryManager : IRepositoryManager
     private readonly Lazy<ISubscriptionRepository> _lazySubscriptionRepository;
     private readonly Lazy<IUserSubscriptionRepository> _lazyUserSubscriptionRepository;
     private readonly Lazy<IUserToVkRepository> _lazyUserToVkRepository;
+    private readonly Lazy<IRoomRepository> _lazyRoomRepository;
+    private readonly Lazy<IMessageRepository> _lazyMessageRepository;
     public RepositoryManager(ApplicationDbContext dbContext)
     {
         _lazyGeolocationRepository = new Lazy<IGeolocationRepository>(() => new GeolocationRepository(dbContext));
@@ -22,6 +25,8 @@ public sealed class RepositoryManager : IRepositoryManager
         _lazyUserSubscriptionRepository =
             new Lazy<IUserSubscriptionRepository>(() => new UserSubscriptionRepository(dbContext));
         _lazyUserToVkRepository = new Lazy<IUserToVkRepository>(() => new UserToVkRepository(dbContext));
+        _lazyMessageRepository = new Lazy<IMessageRepository>(() => new MessageRepository(dbContext));
+        _lazyRoomRepository = new Lazy<IRoomRepository>(() => new RoomRepository(dbContext));
     }
 
     public ILikeRepository LikeRepository => _lazyLikeRepository.Value;
@@ -31,5 +36,7 @@ public sealed class RepositoryManager : IRepositoryManager
     public ISubscriptionRepository SubscriptionRepository => _lazySubscriptionRepository.Value;
     public IUserSubscriptionRepository UserSubscriptionRepository => _lazyUserSubscriptionRepository.Value;
     public IUserToVkRepository UserToVkRepository => _lazyUserToVkRepository.Value;
+    public IRoomRepository RoomRepository => _lazyRoomRepository.Value;
+    public IMessageRepository MessageRepository => _lazyMessageRepository.Value;
 }
 

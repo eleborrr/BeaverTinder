@@ -1,20 +1,17 @@
 import React, { useEffect, useState } from "react";
-import ReactDOM from "react-dom";
-import { Admin, Resource } from "react-admin";
-import { axiosInstance } from "../../Components/axios_server";
+import Cookies from "js-cookie";
+import jwtDecode from "jwt-decode";
 import { Input, Button } from "@mui/material";
-
-import users from "../../Components/users"
-
+import { axiosInstance } from "../../Components/axios_server";
+import PageNotFound from './../404';
 import "../../assets/css/admin.css"
-import axios from "axios";
-
 
 const AdminPage = () => {
-     const [isAvailable, setIsAvailable] = useState(false);
+    const [isAvailable, setIsAvailable] = useState(false);
     const [userId, setUserId] = useState('');
     const [func, setFunc] = useState('');
     const [isReady,setReady] = useState(false);
+    const token = Cookies.get('token');
 
     const onSubmit = (e, func) => {
         setFunc(func);
@@ -23,16 +20,13 @@ const AdminPage = () => {
     };
 
     useEffect( () => {
-        axiosInstance
-        .get('/ban')
-        .then(function(response) {
-            setIsAvailable(true);
+       jwtDecode(token)["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"].some(element => {
+            if (element === "Admin")
+            {
+                setIsAvailable(true);
+            }
         })
-        .catch(function(err) {
-            setIsAvailable(false);
-        })
-    }, []
-    )
+    }, [])
 
     useEffect(() => {
         if(!isReady) {
@@ -72,7 +66,7 @@ const AdminPage = () => {
             {/* <p/>
             <Button color="error" onClick={(e) => onSubmit(e,'add_admin')}>Add Admin</Button> */}
 
-        </div> : <div> not available</div>}
+        </div> : <PageNotFound />}
         
         
         </div>

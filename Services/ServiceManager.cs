@@ -8,6 +8,7 @@ using Microsoft.Extensions.Options;
 using Persistence.Misc.Services.JwtGenerator;
 using Services.Abstraction;
 using Services.Abstraction.Account;
+using Services.Abstraction.Chat;
 using Services.Abstraction.Email;
 using Services.Abstraction.FindBeaver;
 using Services.Abstraction.Geolocation;
@@ -17,6 +18,7 @@ using Services.Abstraction.PaymentService;
 using Services.Abstraction.Subscriptions;
 using Services.Abstraction.TwoFA;
 using Services.Account;
+using Services.Chat;
 using Services.Email;
 using Services.FindBeaver;
 using Services.Geolocation;
@@ -38,19 +40,22 @@ public class ServiceManager: IServiceManager
     private readonly Lazy<ISubscriptionService> _subscriptionService;
     private readonly Lazy<IAccountService> _accountService;
     private readonly Lazy<IVkOAuthService> _vkOAuthService;
+    private readonly Lazy<IChatService> _chatService;
 
     public ServiceManager(UserManager<User> userManager, IOptions<EmailConfig> emailConfig, IRepositoryManager repositoryManager, IMemoryCache memoryCache, RoleManager<Role> roleManager, SignInManager<User> signInManager, IJwtGenerator jwtGenerator)  // ,
     {
-        _geolocationService = new Lazy<IGeolocationService>(() => new GeolocationService(repositoryManager));
+        _geolocationService = new Lazy<IGeolocationService>(() => new GeolocationService(repositoryManager, userManager));
         _emailService = new Lazy<IEmailService>(() => new EmailService(emailConfig));
         _twoFaService = new Lazy<ITwoFAService>(() => new TwoFAService(userManager, _emailService.Value));
         _likeService = new Lazy<ILikeService>(() => new LikeService(repositoryManager));
-        _findBeaverService = new Lazy<IFindBeaverService>(() => new FindBeaverService(userManager, repositoryManager, memoryCache, roleManager , LikeService));
+        _findBeaverService = new Lazy<IFindBeaverService>(() => new FindBeaverService(userManager, repositoryManager, memoryCache, roleManager , LikeService, GeolocationService));
         _paymentService = new Lazy<IPaymentService>(() => new PaymentService.PaymentService(repositoryManager));
         _subscriptionService = new Lazy<ISubscriptionService>(() => new SubscriptionService(repositoryManager, userManager));
         _accountService =
             new Lazy<IAccountService>(() => new AccountService(userManager, _emailService.Value, signInManager, jwtGenerator));
         _vkOAuthService = new Lazy<IVkOAuthService>(() => new VkOAuthService(repositoryManager, userManager, signInManager, jwtGenerator));
+            new Lazy<IAccountService>(() => new AccountService(userManager, _emailService.Value, signInManager, jwtGenerator, GeolocationService));
+        _chatService = new Lazy<IChatService>(() => new ChatService(userManager, repositoryManager));
     }
 
     public IEmailService EmailService => _emailService.Value;
@@ -62,4 +67,5 @@ public class ServiceManager: IServiceManager
     public ISubscriptionService SubscriptionService => _subscriptionService.Value;
     public IAccountService AccountService => _accountService.Value;
     public IVkOAuthService VkOAuthService => _vkOAuthService.Value;
+    public IChatService ChatService => _chatService.Value;
 }

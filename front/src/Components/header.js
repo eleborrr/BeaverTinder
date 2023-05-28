@@ -8,30 +8,31 @@ import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import logo from './../assets/images/logo/logo.jpg'
 import Cookies from 'js-cookie';
+import './../assets/css/header.css'
 
 const HeaderApp = () => {
 	const [token, setToken] = useState(Cookies.get('token'));
-	const [homeClass, setHomeClass] = useState('')
-	const [pagesClass, setPagesClass] = useState('')
-	const [communityClass, setCommunityClass] = useState('')
-	const [shopsClass, setShopsClass] = useState('')
-	const [blogsClass, setBlogsClass] = useState('')
-	const [contactClass, setContactClass] = useState('')
+	const [homeClass, setHomeClass] = useState('');
+	const [chatsClass, setChatsClass] = useState('');
+	const [shopsClass, setShopsClass] = useState('');
+	const [searchClass, setSearchClass] = useState('');
+	const [contactClass, setContactClass] = useState('');
+	const [myLikesClass, setMyLikesClass] = useState('');
 	const location = useLocation();
 
 	useEffect(
 		function() {if (location.pathname === '/home'){
 			setHomeClass("active");
-		}else if (location.pathname === '/pages'){
-			setPagesClass("active");
-		}else if (location.pathname === '/community'){
-			setCommunityClass("active");
 		}else if (location.pathname === '/shops'){
 			setShopsClass("active");
-		}else if (location.pathname === '/blogs'){
-			setBlogsClass("active");
 		}else if (location.pathname === '/contact'){
 			setContactClass("active");
+		}else if (location.pathname === '/chats'){
+			setChatsClass("active");
+		}else if (location.pathname === '/search'){
+			setSearchClass("active");
+		}else if (location.pathname === '/myLikes'){
+			setMyLikesClass("active");
 		}
 	}
 	)
@@ -46,7 +47,7 @@ const HeaderApp = () => {
 		<div className="header__bottom">
 			<div className="container">
 				<nav className="navbar navbar-expand-lg">
-					<a className="navbar-brand" href="http://localhost:3000/main"><img src={logo} alt="logo" /></a>
+					<a className="navbar-brand" href="http://localhost:3000/home"><img src={logo} alt="logo" className='logo-img'/></a>
 					<button className="navbar-toggler collapsed" type="button" data-bs-toggle="collapse"
 						data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false"
 						aria-label="Toggle navigation">
@@ -57,56 +58,38 @@ const HeaderApp = () => {
 							<ul>
 								<li className={homeClass}>
 									<a href="/home">Home</a>
-									<ul>
-										<li><a href="index.html" className="active">Home Page One</a></li>
-										<li><a href="index-2.html">Home Page Two</a></li>
-										<li><a href="index-3.html">Home Page Three</a></li>
-									</ul>
 								</li>
-								<li className={pagesClass}>
-									<a href="/pages">Pages</a>
-									<ul>
-										<li><a href="about.html">About Us</a></li>
-                                        <li><a href="membership.html">Membership</a></li>
-                                        <li><a href="comingsoon.html">comingsoon</a></li>
-                                        <li><a href="404.html">404</a></li>
-									</ul>
-								</li>
-								<li className={communityClass}>
-									<a href="/community">Community</a>
-									<ul>
-										<li><a href="community.html">Community</a></li>
-										<li><a href="group.html">All Group</a></li>
-										<li><a href="members.html">All Members</a></li>
-										<li><a href="activity.html">Activity</a></li>
-
-									</ul>
+								<li className={chatsClass}>
+									<a href="/chats">Chats</a>
 								</li>
 								<li className={shopsClass}>
 									<a href="/shops">Shops</a>
-									<ul>
-										<li><a href="shop.html">Product</a></li>
-										<li><a href="shop-single.html">Product Details</a></li>
-										<li><a href="shop-cart.html">Product Cart</a></li>
-									</ul>
 								</li>
-								<li className={blogsClass}>
-									<a href="/blogs">Blogs</a>
-									<ul>
-										<li><a href="blog.html">Blog</a></li>
-										<li><a href="blog-2.html">Blog Style Two</a></li>
-										<li><a href="blog-single.html">Blog Details</a></li>
-									</ul>
+								<li className={contactClass}>
+									<a href="/contact">Contact</a>
 								</li>
-								<li className={contactClass}><a href="/contact">contact</a></li>
+								{
+									token? 
+									<>
+										<li className={searchClass}>
+											<a href="/search">search</a>
+										</li>
+										<li className={myLikesClass}>
+											<a href="/myLikes">My Likes</a>
+										</li>
+									</>
+									:
+									<></>
+								}
+								
 							</ul>
 						</div>
 						<div className="header__more">
                             <button className="default-btn dropdown-toggle" type="button" id="moreoption" data-bs-toggle="dropdown" aria-expanded="false">My Account</button>
                             <ul className="dropdown-menu" aria-labelledby="moreoption">
                               {token? <div>
-											<li><a className="dropdown-item" href="/like">Like</a></li>
 											<li><a className="dropdown-item" onClick={RemoveCookies} href="/login">Log Out</a></li>
+											<li><a className="dropdown-item" href="/profile">Profile</a></li>
 									  </div>
 							   : <div>
 							  		<li><a className="dropdown-item" href="/login">Log In</a></li>

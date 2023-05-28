@@ -22,6 +22,7 @@ using AspNetCore.Security.OAuth;
  using System.Security.Claims;
  using static AspNet.Security.OAuth.Vkontakte.VkontakteAuthenticationConstants;
  using Presentation.Controllers;
+ using Presentation.Hubs;
  using Services;
  using Services.Abstraction;
  using Services.Abstraction.TwoFA;
@@ -31,6 +32,8 @@ using AspNetCore.Security.OAuth;
 // Add services to the container.
  builder.Services.AddControllers();
  builder.Services.AddMemoryCache();
+ builder.Services.AddSignalR();
+
  
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -146,11 +149,11 @@ builder.Services.AddMvc();
  {
      options.AddPolicy("OnlyMapSubs", policy =>
      {
-         policy.RequireClaim("Subscription", "Map");
+         policy.RequireClaim(ClaimTypes.Role, "UserMoreLikesAndMap");
      });
      options.AddPolicy("OnlyLikeSubs", policy =>
      {
-         policy.RequireClaim("Subscription", "Like");
+         policy.RequireClaim(ClaimTypes.Role, "UserMoreLikes");
      });
      options.AddPolicy("OnlyForAdmins", policy => {
          policy.RequireClaim(ClaimTypes.Role, "Admin");
@@ -224,7 +227,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
- 
+ app.MapHub<ChatHub>("/chatHub");
+
  app.UseCors(TestSpesific);
 
  app.UseHttpsRedirection();

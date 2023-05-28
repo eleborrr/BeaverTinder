@@ -1,6 +1,7 @@
 ﻿using Domain.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Services.Abstraction.Account;
+using Services.Abstraction.Chat;
 using Services.Abstraction.Email;
 using Services.Abstraction.FindBeaver;
 using Services.Abstraction.Geolocation;
@@ -23,4 +24,5 @@ public interface IServiceManager
     IPaymentService PaymentService { get; }
     ISubscriptionService SubscriptionService { get; }
     IVkOAuthService VkOAuthService { get; }
+    IChatService ChatService { get; }
 }

@@ -28,11 +28,4 @@ public class RegisterResponseDto: ResponseBaseDto
         Successful = status == RegisterResponseStatus.Ok;
         StatusCode = Codes[status];
     }
-    
-    // public RegisterResponseDto(RegisterResponseStatus status, string message)
-    // {
-    //     Message = message;
-    //     Successful = status == RegisterResponseStatus.Ok;
-    //     StatusCode = (int)status;
-    // }
 }

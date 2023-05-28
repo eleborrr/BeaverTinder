@@ -31,7 +31,20 @@ public class RegisterDto
     [DataType(DataType.Password)]
     [Display(Name = "ConfirmPassword")]
     public string ConfirmPassword { get; set; }
-
+    
+    [Required]
+    [DataType(DataType.Date)]
+    [Display(Name = "Date of birth")]
+    public DateTime DateOfBirth { get; set; }
+    
+    
+    //TODO checks for valid values?
+    [Required]
+    public double Latitude { get; set; }
+    
+    [Required]
+    public double Longitude { get; set; }
+    
     [Required] [Display(Name = "Gender")] public string Gender { get; set; }
 
     [Display(Name = "Tell about yourself")]

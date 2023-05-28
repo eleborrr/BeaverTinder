@@ -2,6 +2,7 @@
 using Contracts.Responses.Payment;
 using Domain.Entities;
 using Domain.Repositories;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -20,14 +21,15 @@ public class PaymentController : Controller
         _userManager = userManager;
         _serviceManager = serviceManager;
     }
+    
     // GET
-    [Authorize]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [HttpPost("pay")]
     public async Task<JsonResult> Pay([FromBody] PaymentRequestDto model)
     {
         if (!ModelState.IsValid)
             return Json(new PaymentResponseDto(PaymentResponseStatus.InvalidData));
-        var user = await _userManager.FindByNameAsync(User.Identity.Name);
+        var user = await GetUserFromJwt();
         model.UserId = user.Id;
         var payment = await _serviceManager.PaymentService.ProcessPayment(model);
         if (payment.StatusCode == PaymentResponseStatus.InvalidData)
@@ -37,4 +39,13 @@ public class PaymentController : Controller
         await _serviceManager.SubscriptionService.AddSubscriptionToUser(payment.SubsId, payment.UserId);
         return Json(new PaymentResponseDto(PaymentResponseStatus.Ok));
     }
-}
+    
+    private async Task<User> GetUserFromJwt()
+    {
+        var s = User.Claims.FirstOrDefault(c => c.Type == "Id");
+        var user = await _userManager.FindByIdAsync(s.Value);
+        if (user is null)
+            throw new Exception("user not found"); //TODO перенести в exception
+        return user;
+    }
+}   

@@ -39,11 +39,9 @@ public class LoginController : Controller
         _jwtGenerator = jwtGenerator;
     }
 
-    //TODO перенести логику в сервис
     [HttpPost]
     public async Task<JsonResult> Login([FromBody] LoginDto model)
     {
-        //TODO сделать чек?
         return Json(await _serviceManager.AccountService.Login(model, ModelState));
     }
 
