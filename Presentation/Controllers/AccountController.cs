@@ -41,7 +41,20 @@ public class AccountController : Controller
     [HttpGet("/userinfo")]
     public async Task<JsonResult> GetAccountInformation([FromQuery] string id)
     {
-        return Json(await _userManager.FindByIdAsync(id));
+        var user = await _userManager.FindByIdAsync(id);
+        var geoloc = await _serviceManager.GeolocationService.GetByUserId(id);
+        var model = new EditUserViewModel()
+        {
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            UserName = user.UserName,
+            Image = user.Image,
+            About = user.About,
+            Gender = user.Gender,
+            Latitude = geoloc.Latitude,
+            Longitude = geoloc.Longtitude
+        };
+        return Json(model);
     }
 
     [HttpPost("/edit")]
