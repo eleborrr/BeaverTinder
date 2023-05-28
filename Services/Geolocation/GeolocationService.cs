@@ -58,8 +58,22 @@ public class GeolocationService: IGeolocationService
     public async Task Update(string userId, double Latitude, double Longitude)
     {
         var geoloc = await GetByUserId(userId);
-        geoloc.Longtitude = Longitude;
-        geoloc.Latitude = Latitude;
-        await _repositoryManager.GeolocationRepository.UpdateAsync(geoloc);
+        if (geoloc is not null)
+        {
+            geoloc.Longtitude = Longitude;
+            geoloc.Latitude = Latitude;
+            await _repositoryManager.GeolocationRepository.UpdateAsync(geoloc);
+        }
+        else
+        {
+            geoloc = new UserGeolocation
+            {
+                Id = Guid.NewGuid().ToString(),
+                Longtitude = Longitude,
+                Latitude = Latitude,
+                UserId = userId
+            };
+            await _repositoryManager.GeolocationRepository.AddAsync(geoloc);
+        }
     }
 }
