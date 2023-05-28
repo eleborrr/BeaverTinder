@@ -1,18 +1,23 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Runtime.InteropServices.JavaScript;
 using System.Security.Claims;
+using AspNet.Security.OAuth.Vkontakte;
 using Contracts;
 using Contracts.Responses.Login;
-using Digillect.AspNetCore.Authentication.VKontakte;
 using Domain.Entities;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Net.Http.Headers;
+using Newtonsoft.Json;
 using Persistence;
 using Services.Abstraction;
 using Persistence.Misc.Services.JwtGenerator;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Presentation.Controllers;
 
@@ -25,7 +30,8 @@ public class LoginController : Controller
     private readonly SignInManager<User> _signInManager;
     private readonly IJwtGenerator _jwtGenerator;
 
-    public LoginController(ApplicationDbContext ctx, IServiceManager serviceManager, SignInManager<User> signInManager, IJwtGenerator jwtGenerator)
+    public LoginController(ApplicationDbContext ctx, IServiceManager serviceManager, SignInManager<User> signInManager,
+        IJwtGenerator jwtGenerator)
     {
         _context = ctx;
         _serviceManager = serviceManager;
@@ -35,40 +41,62 @@ public class LoginController : Controller
 
     //TODO перенести логику в сервис
     [HttpPost]
-    public async Task<JsonResult> Login([FromBody]LoginDto model)
+    public async Task<JsonResult> Login([FromBody] LoginDto model)
     {
         //TODO сделать чек?
         return Json(await _serviceManager.AccountService.Login(model, ModelState));
     }
-    
+
     [HttpGet("oauth")]
-    public async Task<IActionResult> GetOAuthToken()
+    public async Task<IActionResult> OAuth()
     {
-        var props = new AuthenticationProperties()
+        var redirectUrl = Url.Action("OAuthCallback", "Login", null, Request.Scheme);
+        var properties = new AuthenticationProperties
         {
-            RedirectUri = "https://localhost:7015/login/oauthcallback"
+            RedirectUri = redirectUrl
         };
-        return Challenge(props, "VK");
+        var res = Challenge(properties, VkontakteAuthenticationDefaults.AuthenticationScheme);
+        return res;
     }
     
-    //TODO перенести логику в сервис
-    //TODO тут вроде надо залогинитться с нашим методом логин, но там нужны данные пользовтеля, так что либо нужен метод с авторизацией без LoginModel, либо брать какие то данные с VK и по ним находить
+    //TODO обработка скрытой даты рождения
     [HttpGet("oauthcallback")]
     public async Task<IActionResult> OAuthCallback()
     {
-        var result = await HttpContext.AuthenticateAsync("VK");
+        /*var client = new HttpClient();*/
+        var result = await HttpContext.AuthenticateAsync(VkontakteAuthenticationDefaults.AuthenticationScheme);
         if (result.Succeeded)
         {
-            //_serviceManager.AccountService.Login();
-            return Ok("залогинился)");
-        }
-        else
-        {
-            // Аутентификация не удалась
-            Unauthorized("не залогнинился(");
+            var vkId = result.Principal.FindFirstValue(ClaimTypes.NameIdentifier);
+            var name = result.Principal.FindFirstValue(ClaimTypes.GivenName);
+            var surname = result.Principal.FindFirstValue(ClaimTypes.Surname);
+            var email = result.Principal.FindFirstValue(ClaimTypes.Email);
+            var sex = result.Principal.FindFirstValue(ClaimTypes.Gender);
+            var about = result.Principal.FindFirstValue("about");
+            var nickname = result.Principal.FindFirstValue(ClaimTypes.Name);
+            var bdate = result.Principal.FindFirstValue(ClaimTypes.DateOfBirth);
+            DateTime parsedDate;
+            if (!DateTime.TryParse(bdate, out parsedDate))
+            {
+                parsedDate = DateTime.Parse("2.1.1999");
+            }
+
+            var registerDto = new VkAuthDto()
+            {
+                VkId = vkId,
+                About = about,
+                Email = email,
+                FirstName = name,
+                Gender = sex,
+                LastName = surname,
+                UserName = nickname,
+                DateOfBirth = parsedDate
+            };
+            var authRes = await _serviceManager.VkOAuthService.AuthAsync(registerDto);
+            return Ok(authRes.Message);
         }
 
-        return Ok();
+        return Unauthorized(result.Failure.Message);
     }
 
     [HttpGet("/logout")]

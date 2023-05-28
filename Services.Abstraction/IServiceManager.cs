@@ -5,6 +5,7 @@ using Services.Abstraction.Email;
 using Services.Abstraction.FindBeaver;
 using Services.Abstraction.Geolocation;
 using Services.Abstraction.Likes;
+using Services.Abstraction.OAuth;
 using Services.Abstraction.PaymentService;
 using Services.Abstraction.Subscriptions;
 using Services.Abstraction.TwoFA;
@@ -21,4 +22,5 @@ public interface IServiceManager
     IAccountService AccountService { get; }
     IPaymentService PaymentService { get; }
     ISubscriptionService SubscriptionService { get; }
+    IVkOAuthService VkOAuthService { get; }
 }

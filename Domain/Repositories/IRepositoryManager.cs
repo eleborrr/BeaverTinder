@@ -11,5 +11,6 @@
         IPaymentRepository PaymentRepository { get; }
         ISubscriptionRepository SubscriptionRepository { get; }
         IUserSubscriptionRepository UserSubscriptionRepository { get; }
+        IUserToVkRepository UserToVkRepository { get; }
     }
 }

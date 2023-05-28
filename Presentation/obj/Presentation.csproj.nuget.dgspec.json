@@ -360,9 +360,13 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "dependencies": {
-            "Digillect.AspNetCore.Authentication.VKontakte": {
+            "AspNet.Security.OAuth.Vkontakte": {
               "target": "Package",
-              "version": "[3.0.0, )"
+              "version": "[7.0.2, )"
+            },
+            "AspNetCore.Security.OAuth.Vkontakte": {
+              "target": "Package",
+              "version": "[1.0.1, )"
             },
             "Microsoft.AspNetCore.Authentication.JwtBearer": {
               "target": "Package",

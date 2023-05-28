@@ -11,6 +11,7 @@ public sealed class RepositoryManager : IRepositoryManager
     private readonly Lazy<IPaymentRepository> _lazyPaymentRepository;
     private readonly Lazy<ISubscriptionRepository> _lazySubscriptionRepository;
     private readonly Lazy<IUserSubscriptionRepository> _lazyUserSubscriptionRepository;
+    private readonly Lazy<IUserToVkRepository> _lazyUserToVkRepository;
     public RepositoryManager(ApplicationDbContext dbContext)
     {
         _lazyGeolocationRepository = new Lazy<IGeolocationRepository>(() => new GeolocationRepository(dbContext));
@@ -20,6 +21,7 @@ public sealed class RepositoryManager : IRepositoryManager
         _lazySubscriptionRepository = new Lazy<ISubscriptionRepository>(() => new SubscriptionRepository(dbContext));
         _lazyUserSubscriptionRepository =
             new Lazy<IUserSubscriptionRepository>(() => new UserSubscriptionRepository(dbContext));
+        _lazyUserToVkRepository = new Lazy<IUserToVkRepository>(() => new UserToVkRepository(dbContext));
     }
 
     public ILikeRepository LikeRepository => _lazyLikeRepository.Value;
@@ -28,5 +30,6 @@ public sealed class RepositoryManager : IRepositoryManager
     public IPaymentRepository PaymentRepository => _lazyPaymentRepository.Value;
     public ISubscriptionRepository SubscriptionRepository => _lazySubscriptionRepository.Value;
     public IUserSubscriptionRepository UserSubscriptionRepository => _lazyUserSubscriptionRepository.Value;
+    public IUserToVkRepository UserToVkRepository => _lazyUserToVkRepository.Value;
 }
 
