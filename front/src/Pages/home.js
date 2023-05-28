@@ -18,60 +18,60 @@ const HomePage = () => {
     }, [])
 
     return(
-    <div class="about padding-top padding-bottom main-container">
-		<div class="container">
-			<div class="section__header style-2 text-center wow fadeInUp" data-wow-duration="1.5s">
+    <div className="about padding-top padding-bottom main-container">
+		<div className="container">
+			<div className="section__header style-2 text-center wow fadeInUp" data-wow-duration="1.5s">
 				<h2>Beaver Tinder Super Powers</h2>
 				<p>Our dating platform is like a breath of fresh air. Clean and trendy design with ready to use features we are sure you will love.</p>
 			</div>
-			<div class="section__wrapper">
-				<div class="row g-4 justify-content-center row-cols-xl-4 row-cols-lg-3 row-cols-sm-2 row-cols-1">
-					<div class="col wow fadeInUp" data-wow-duration="1.5s">
-						<div class="about__item text-center">
-							<div class="about__inner">
-								<div class="about__thumb">
+			<div className="section__wrapper">
+				<div className="row g-4 justify-content-center row-cols-xl-4 row-cols-lg-3 row-cols-sm-2 row-cols-1">
+					<div className="col wow fadeInUp" data-wow-duration="1.5s">
+						<div className="about__item text-center">
+							<div className="about__inner">
+								<div className="about__thumb">
 									<img src={firstPicture} alt="dating thumb" />
 								</div>
-								<div class="about__content">
+								<div className="about__content">
 									<h4>Simple To Use</h4>
 									<p>Nothing useless.</p>
 								</div>
 							</div>
 						</div>
 					</div>
-					<div class="col wow fadeInUp" data-wow-duration="1.5s">
-						<div class="about__item text-center">
-							<div class="about__inner">
-								<div class="about__thumb">
+					<div className="col wow fadeInUp" data-wow-duration="1.5s">
+						<div className="about__item text-center">
+							<div className="about__inner">
+								<div className="about__thumb">
 									<img src={secondPicture} alt="dating thumb" />
 								</div>
-								<div class="about__content">
+								<div className="about__content">
 									<h4>Without VPN</h4>
 									<p>Use our site and don't mind about VPN ;).</p>
 								</div>
 							</div>
 						</div>
 					</div>
-					<div class="col wow fadeInUp" data-wow-duration="1.5s">
-						<div class="about__item text-center">
-							<div class="about__inner">
-								<div class="about__thumb">
+					<div className="col wow fadeInUp" data-wow-duration="1.5s">
+						<div className="about__item text-center">
+							<div className="about__inner">
+								<div className="about__thumb">
 									<img src={thirdPicture} alt="dating thumb" />
 								</div>
-								<div class="about__content">
+								<div className="about__content">
 									<h4>Very Fast</h4>
 									<p>Don’t waste your time! Begin communicate right now!</p>
 								</div>
 							</div>
 						</div>
 					</div>
-					<div class="col wow fadeInUp" data-wow-duration="1.5.5s">
-						<div class="about__item text-center">
-							<div class="about__inner">
-								<div class="about__thumb">
+					<div className="col wow fadeInUp" data-wow-duration="1.5.5s">
+						<div className="about__item text-center">
+							<div className="about__inner">
+								<div className="about__thumb">
 									<img src={fourthPicture} alt="dating thumb" />
 								</div>
-								<div class="about__content">
+								<div className="about__content">
 									<h4>Find your love</h4>
 									<p>There is nothing irreplaceable!</p>
 								</div>

@@ -7,4 +7,5 @@ public interface IGeolocationRepository
     public Task<IEnumerable<UserGeolocation>> GetAllAsync(CancellationToken cancellationToken);
     public Task AddAsync(UserGeolocation geolocation);
     public Task<UserGeolocation> GetByUserIdAsync(string userId);
+    public Task UpdateAsync(UserGeolocation geolocation);
 }

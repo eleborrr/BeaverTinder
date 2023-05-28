@@ -12,4 +12,5 @@ public class SearchUserResultDto
     public string Message { get; set; }
     public string DistanceInKm { get; set; }
     public int StatusCode { get; set; }
+    public string Image { get; set; }
 }

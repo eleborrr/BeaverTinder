@@ -1,0 +1,16 @@
+version: '3.9'
+services:
+  web:
+    build: 
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - "4040:4040"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+  react:
+    build: 
+      context: /front
+      dockerfile: DockerFile
+    ports:
+      - "3000:3000"

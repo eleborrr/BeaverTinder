@@ -33,7 +33,12 @@ public class ChatController: Controller
     {
         try
         {
-            var users = await _userManager.Users.ToListAsync();
+            // var users = await _userManager.Users.ToListAsync();
+
+            var s = User.Claims.FirstOrDefault(c => c.Type == "Id");
+            var curUser = await _userManager.FindByIdAsync(s.Value);
+            var users = _userManager.Users.AsEnumerable()
+                .Where(u => _serviceManager.LikeService.IsMutualSympathy(curUser, u).Result);
             var model = users.Select(x =>
             {
                 return new AllChatsResponse

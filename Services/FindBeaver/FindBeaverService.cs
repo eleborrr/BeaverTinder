@@ -89,7 +89,8 @@ public class FindBeaverService: IFindBeaverService
                 DistanceInKm = distanceInKm,
                 Message = "ok",
                 StatusCode = 200,
-                Successful = true
+                Successful = true,
+                Image = returnUserCache.Image,
             }; 
         }
 
@@ -115,7 +116,8 @@ public class FindBeaverService: IFindBeaverService
             Age = returnUser.DateOfBirth.Year - DateTime.Now.Year,
             Message = "ok",
             StatusCode = 200,
-            Successful = true
+            Successful = true,
+            Image = returnUser.Image,
         };
     }
 
@@ -132,7 +134,7 @@ public class FindBeaverService: IFindBeaverService
             };
         var likes = await _repositoryManager.LikeRepository.GetAllAsync(default); // ???
 
-        var filtredBeavers = _userManager.Users.AsQueryable()
+            var filtredBeavers = _userManager.Users.AsEnumerable()
             .Where(u => likes.Count(l => l.UserId ==  u.Id && l.LikedUserId ==currentUser.Id ) != 0 
                         && likes.Count(l => l.UserId == currentUser.Id && l.LikedUserId ==  u.Id) == 0
                         && u.Id != currentUser.Id) // проверяем чтобы попадались лайкнутые
@@ -141,6 +143,13 @@ public class FindBeaverService: IFindBeaverService
             .ToList();
         
         var returnUserCache = filtredBeavers.FirstOrDefault();
+        if (returnUserCache is null)
+            return new SearchUserResultDto()
+            {
+                Successful = false,
+                Message = "Beaver queue error",
+                StatusCode = 500
+            };
         return new SearchUserResultDto
         {
             Id = returnUserCache.Id,
@@ -151,7 +160,8 @@ public class FindBeaverService: IFindBeaverService
             Age = DateTime.Now.Year - returnUserCache.DateOfBirth.Year,
             Message = "ok",
             StatusCode = 200,
-            Successful = true
+            Successful = true,
+            Image = returnUserCache.Image,
         }; 
     }
 

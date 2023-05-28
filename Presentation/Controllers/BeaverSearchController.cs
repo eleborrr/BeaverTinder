@@ -51,6 +51,7 @@ public class BeaverSearchController: Controller
             Age = DateTime.Now.Year - result.Age,
             DistanceInKm = result.DistanceInKm,
             Gender = result.Gender,
+            Image = result.Image,
         };
         return Json(user);
     }
@@ -58,7 +59,7 @@ public class BeaverSearchController: Controller
     [HttpGet("/mylikes")]
     public async Task<JsonResult> Likes()
     {
-        var result = await _serviceManager.FindBeaverService.GetNextBeaver(await GetUserFromJwt(), await GetRoleFromJwt());
+        var result = await _serviceManager.FindBeaverService.GetNextSympathy(await GetUserFromJwt());
         if (!result.Successful)
         {
             return Json(new SearchUserFailedResponse()
@@ -77,7 +78,8 @@ public class BeaverSearchController: Controller
             LastName = result.LastName,
             Age = DateTime.Now.Year - result.Age,
             Gender = result.Gender,
-            DistanceInKm = result.DistanceInKm
+            DistanceInKm = result.DistanceInKm,
+            Image = result.Image,
         };
         return Json(user);
     }

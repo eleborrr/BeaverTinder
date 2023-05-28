@@ -22,6 +22,12 @@ internal sealed class GeolocationRepository: IGeolocationRepository
         await _applicationDbContext.SaveChangesAsync();
     }
 
-    public void Remove(Like like) => _applicationDbContext.Likes.Remove(like);
-    
+    public async Task UpdateAsync(UserGeolocation geolocation)
+    {
+        var geolocDb = _applicationDbContext.Geolocations.FirstOrDefault(g => g.Id == geolocation.Id);
+        if (geolocDb is null)
+            throw new Exception("geolocation not found");
+        _applicationDbContext.Entry(geolocDb).CurrentValues.SetValues(geolocation);
+        await _applicationDbContext.SaveChangesAsync();
+    }
 }

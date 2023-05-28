@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Contracts;
+namespace Contracts.ViewModels;
 
-public class EditUserDto
+public class EditUserViewModel
 {
     [Required]
     [Display(Name = "Last name")]
@@ -16,11 +16,6 @@ public class EditUserDto
     [Display(Name = "Nickname")]
     public string UserName { get; set; }
 
-    // [Required]
-    // [Display(Name = "Email")]
-    // [EmailAddress]
-    // public string Email { get; set; }
-
     [Required]
     public double Latitude { get; set; }
     
@@ -30,20 +25,9 @@ public class EditUserDto
     [Required]
     [Display(Name = "Image")]
     public string Image { get; set; }
-    
-    
-    // [Required]
-    [Display(Name = "Password")]
-    [DataType(DataType.Password)]
-    public string Password { get; set; }
 
-    // [Required]
-    [Compare("Password", ErrorMessage = "Пароли не совпадают")]
-    [DataType(DataType.Password)]
-    [Display(Name = "ConfirmPassword")]
-    public string ConfirmPassword { get; set; }
-
-    [Required] [Display(Name = "Gender")] public string Gender { get; set; }
+    [Required] [Display(Name = "Gender")]
+    public string Gender { get; set; }
 
     [Display(Name = "Tell about yourself")]
     public string About { get; set; }
