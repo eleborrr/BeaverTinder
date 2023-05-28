@@ -167,3 +167,6 @@ Domain/obj
 Domain/bin
 Contracts/bin
 Contracts/obj
+.vs
+BeaverTinder/obj
+BeaverTinder/bin
