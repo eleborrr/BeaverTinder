@@ -38,7 +38,7 @@ public class RegisterDto
     public DateTime DateOfBirth { get; set; }
     
     
-    //TODO checks for valid?
+    //TODO checks for valid values?
     [Required]
     public double Latitude { get; set; }
     

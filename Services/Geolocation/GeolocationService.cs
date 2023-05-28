@@ -21,7 +21,8 @@ public class GeolocationService: IGeolocationService
         //TODO валидность проверять
         var geolocation = new UserGeolocation()
         {
-            Id = userId,
+            Id = Guid.NewGuid().ToString(),
+            UserId = userId,
             Longtitude = Longitude,
             Latitude = Latitude
         };
