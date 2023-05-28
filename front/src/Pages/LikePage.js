@@ -101,6 +101,7 @@ const LikePage = () =>
             }
         })
         .then(res => {
+            console.log(res.data)
             if(res.data.message === "Beaver queue error")
             {
                 setUserLimit(true);

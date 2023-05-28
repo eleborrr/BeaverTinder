@@ -89,7 +89,8 @@ public class FindBeaverService: IFindBeaverService
                 DistanceInKm = distanceInKm,
                 Message = "ok",
                 StatusCode = 200,
-                Successful = true
+                Successful = true,
+                Image = returnUserCache.Image,
             }; 
         }
 
@@ -115,7 +116,8 @@ public class FindBeaverService: IFindBeaverService
             Age = returnUser.DateOfBirth.Year - DateTime.Now.Year,
             Message = "ok",
             StatusCode = 200,
-            Successful = true
+            Successful = true,
+            Image = returnUser.Image,
         };
     }
 
@@ -151,7 +153,8 @@ public class FindBeaverService: IFindBeaverService
             Age = DateTime.Now.Year - returnUserCache.DateOfBirth.Year,
             Message = "ok",
             StatusCode = 200,
-            Successful = true
+            Successful = true,
+            Image = returnUserCache.Image,
         }; 
     }
 

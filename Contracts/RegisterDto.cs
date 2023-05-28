@@ -50,5 +50,6 @@ public class RegisterDto
     [Display(Name = "Tell about yourself")]
     public string About { get; set; }
     
-    //TODO получение геолокации пользователя
+    [Required]
+    public string Image { get; set; }
 }
