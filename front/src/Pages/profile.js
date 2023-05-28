@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Dropzone from 'react-dropzone';
 import { YMaps, Map, Placemark } from '@pbe/react-yandex-maps';
+import { axiosInstance } from "../Components/axios_server";
 import './../assets/css/profile.css'
 
 const Profile = () => {
@@ -15,15 +16,15 @@ const Profile = () => {
 
   useEffect(() => {
     // Запрос на сервер для получения текущей информации о пользователе
-    // axios.get('/api/user').then((response) => {
-    //   const { firstName, lastName, email, password, photo, location } =
-    //     response.data;
-    //   setFirstName(firstName);
-    //   setLastName(lastName);
-    //   setEmail(email);
-    //   setPhoto(photo);
-    //   setLocation(location);
-    // });
+    axiosInstance.get('/api/user').then((response) => {
+       const { firstName, lastName, email, password, photo, location } =
+         response.data;
+       setFirstName(firstName);
+       setLastName(lastName);
+       setEmail(email);
+       setPhoto(photo);
+       setLocation(location);
+     });
   }, []);
 
   function handleMapClick(event) {
@@ -36,19 +37,19 @@ const Profile = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // Отправка данных на сервер
-    // const formData = new FormData();
-    // formData.append('firstName', firstName);
-    // formData.append('lastName', lastName);
-    // formData.append('email', email);
-    // if (photo) {
-    //   formData.append('photo', photo);
-    // }
-    // formData.append('location', location);
-    // formData.append('latitude', latitude);
-    // formData.append('longitude', longitude);
-    // axios.post('/api/user', formData).then((response) => {
-    //   console.log(response.data);
-    // });
+    const formData = new FormData();
+    formData.append('firstName', firstName);
+    formData.append('lastName', lastName);
+    formData.append('email', email);
+    if (photo) {
+       formData.append('photo', photo);
+     }
+    formData.append('location', location);
+    formData.append('latitude', latitude);
+    formData.append('longitude', longitude);
+    axiosInstance.post('/api/user', formData).then((response) => {
+        console.log(response.data);
+    });
   };
 
   return (

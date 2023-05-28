@@ -37,6 +37,13 @@ public class AccountController : Controller
         return await _serviceManager.GeolocationService.GetByUserId(model.UserId);
     }
 
+    //TODO уменьшить количество выдаваемых данных
+    [HttpGet("/userinfo")]
+    public async Task<JsonResult> GetAccountInformation([FromQuery] string id)
+    {
+        return Json(await _userManager.FindByIdAsync(id));
+    }
+
     [HttpPost("/edit")]
     public async Task<JsonResult> EditAccount([FromBody] EditUserDto model)
     {
