@@ -1,0 +1,12 @@
+C:\Users\rafae\OSNOVIRAZRABOTKI\semwork3\BeaverTinder\Contracts\bin\Debug\net7.0\Contracts.deps.json
+C:\Users\rafae\OSNOVIRAZRABOTKI\semwork3\BeaverTinder\Contracts\bin\Debug\net7.0\Contracts.dll
+C:\Users\rafae\OSNOVIRAZRABOTKI\semwork3\BeaverTinder\Contracts\bin\Debug\net7.0\Contracts.pdb
+C:\Users\rafae\OSNOVIRAZRABOTKI\semwork3\BeaverTinder\Contracts\obj\Debug\net7.0\Contracts.csproj.AssemblyReference.cache
+C:\Users\rafae\OSNOVIRAZRABOTKI\semwork3\BeaverTinder\Contracts\obj\Debug\net7.0\Contracts.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\rafae\OSNOVIRAZRABOTKI\semwork3\BeaverTinder\Contracts\obj\Debug\net7.0\Contracts.AssemblyInfoInputs.cache
+C:\Users\rafae\OSNOVIRAZRABOTKI\semwork3\BeaverTinder\Contracts\obj\Debug\net7.0\Contracts.AssemblyInfo.cs
+C:\Users\rafae\OSNOVIRAZRABOTKI\semwork3\BeaverTinder\Contracts\obj\Debug\net7.0\Contracts.csproj.CoreCompileInputs.cache
+C:\Users\rafae\OSNOVIRAZRABOTKI\semwork3\BeaverTinder\Contracts\obj\Debug\net7.0\Contracts.dll
+C:\Users\rafae\OSNOVIRAZRABOTKI\semwork3\BeaverTinder\Contracts\obj\Debug\net7.0\refint\Contracts.dll
+C:\Users\rafae\OSNOVIRAZRABOTKI\semwork3\BeaverTinder\Contracts\obj\Debug\net7.0\Contracts.pdb
+C:\Users\rafae\OSNOVIRAZRABOTKI\semwork3\BeaverTinder\Contracts\obj\Debug\net7.0\ref\Contracts.dll
