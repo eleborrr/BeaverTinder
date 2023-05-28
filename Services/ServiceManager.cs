@@ -53,8 +53,8 @@ public class ServiceManager: IServiceManager
         _findBeaverService = new Lazy<IFindBeaverService>(() => new FindBeaverService(userManager, repositoryManager, memoryCache, roleManager , LikeService, GeolocationService));
         _paymentService = new Lazy<IPaymentService>(() => new PaymentService.PaymentService(repositoryManager));
         _subscriptionService = new Lazy<ISubscriptionService>(() => new SubscriptionService(repositoryManager, userManager));
+        _vkOAuthService = new Lazy<IVkOAuthService>(() => new VkOAuthService(repositoryManager, userManager, signInManager, jwtGenerator, client));
         _accountService = new Lazy<IAccountService>(() => new AccountService(userManager, _emailService.Value, signInManager, jwtGenerator, GeolocationService, passwordHasher));
-        _vkOAuthService = new Lazy<IVkOAuthService>(() => new VkOAuthService(repositoryManager, userManager, signInManager, jwtGenerator));
         _chatService = new Lazy<IChatService>(() => new ChatService(userManager, repositoryManager));
     }
 

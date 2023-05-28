@@ -15,6 +15,7 @@ const LoginPage = () => {
     const navigate = useNavigate() 
  
     const handleOauth = () => { 
+
         document.location.replace('https://oauth.vk.com/authorize?client_id=51656119&redirect_uri=http://localhost:3000/afterCallback&display=page&scope=4195332&state=huipenis');
     } 
     const onSubmit = (e) => { 

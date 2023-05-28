@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Runtime.InteropServices.JavaScript;
 using System.Security.Claims;
+using System.Text.Json.Serialization;
 using AspNet.Security.OAuth.Vkontakte;
 using Contracts;
 using Contracts.Responses.Login;
@@ -11,7 +12,9 @@ using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
 using Persistence;
@@ -29,14 +32,18 @@ public class LoginController : Controller
     private readonly ApplicationDbContext _context;
     private readonly SignInManager<User> _signInManager;
     private readonly IJwtGenerator _jwtGenerator;
+    private readonly IConfiguration _config;
+    private readonly HttpClient _client;
 
     public LoginController(ApplicationDbContext ctx, IServiceManager serviceManager, SignInManager<User> signInManager,
-        IJwtGenerator jwtGenerator)
+        IJwtGenerator jwtGenerator, IConfiguration configuration, HttpClient client)
     {
         _context = ctx;
         _serviceManager = serviceManager;
         _signInManager = signInManager;
         _jwtGenerator = jwtGenerator;
+        _config = configuration;
+        _client = client;
     }
 
     [HttpPost]
@@ -44,58 +51,33 @@ public class LoginController : Controller
     {
         return Json(await _serviceManager.AccountService.Login(model, ModelState));
     }
-
-    [HttpGet("oauth")]
-    public async Task<IActionResult> OAuth()
-    {
-        var redirectUrl = Url.Action("OAuthCallback", "Login", null, Request.Scheme);
-        var properties = new AuthenticationProperties
-        {
-            RedirectUri = redirectUrl
-        };
-        var res = Challenge(properties, VkontakteAuthenticationDefaults.AuthenticationScheme);
-        return res;
-    }
     
-    //TODO обработка скрытой даты рождения
-    [HttpGet("oauthcallback")]
-    public async Task<IActionResult> OAuthCallback()
+    [HttpGet("getAccessToken")]
+    public async Task<IActionResult> GetAccessToken([FromQuery] string code)
     {
-        /*var client = new HttpClient();*/
-        var result = await HttpContext.AuthenticateAsync(VkontakteAuthenticationDefaults.AuthenticationScheme);
-        if (result.Succeeded)
+        var query = new Dictionary<string, string>()
         {
-            var vkId = result.Principal.FindFirstValue(ClaimTypes.NameIdentifier);
-            var name = result.Principal.FindFirstValue(ClaimTypes.GivenName);
-            var surname = result.Principal.FindFirstValue(ClaimTypes.Surname);
-            var email = result.Principal.FindFirstValue(ClaimTypes.Email);
-            var sex = result.Principal.FindFirstValue(ClaimTypes.Gender);
-            var about = result.Principal.FindFirstValue("about");
-            var nickname = result.Principal.FindFirstValue(ClaimTypes.Name);
-            var bdate = result.Principal.FindFirstValue(ClaimTypes.DateOfBirth);
-            DateTime parsedDate;
-            if (!DateTime.TryParse(bdate, out parsedDate))
-            {
-                parsedDate = DateTime.Parse("2.1.1999");
-            }
-
-            var registerDto = new VkAuthDto()
-            {
-                VkId = vkId,
-                About = about,
-                Email = email,
-                FirstName = name,
-                Gender = sex,
-                LastName = surname,
-                UserName = nickname,
-                DateOfBirth = parsedDate
-            };
-            var authRes = await _serviceManager.VkOAuthService.AuthAsync(registerDto);
-            return Ok(authRes.Message);
+            ["client_id"] = _config["VKAuthSettings:CLIENTID"],
+            ["client_secret"] = _config["VKAuthSettings:CLIENTSECRET"],
+            ["redirect_uri"] = "http://localhost:3000/afterCallback",
+            ["code"] = code
+        };
+        var uri = QueryHelpers.AddQueryString(VkontakteAuthenticationDefaults.TokenEndpoint, query);
+        var res = await _client.GetAsync(uri);
+        var resultTokenString = await res.Content.ReadAsStringAsync();
+        if (resultTokenString == null)
+            return BadRequest();
+        var accessToken = JsonSerializer.Deserialize<VkAccessTokenDto>(resultTokenString);
+        var vkUser = await _serviceManager.VkOAuthService.GetVkUserInfoAsync(accessToken);
+        var authResult = await _serviceManager.VkOAuthService.OAuthCallback(vkUser);
+        if (authResult.Successful)
+        {
+            return Ok(authResult.Message);
         }
-
-        return Unauthorized(result.Failure.Message);
+        return BadRequest(authResult.Message);
     }
+
+    
 
     [HttpGet("/logout")]
     public async Task<IActionResult> Logout()
@@ -104,3 +86,6 @@ public class LoginController : Controller
         return RedirectToAction("Login", "Login");
     }
 }
+
+
+

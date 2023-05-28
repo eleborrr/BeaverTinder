@@ -61,6 +61,7 @@ builder.Services.AddMvc();
  builder.Services.AddScoped<IJwtGenerator, JwtGenerator>();
  builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
  builder.Services.AddScoped<IServiceManager , ServiceManager>();
+ builder.Services.AddScoped<HttpClient>();
  builder.Services.Configure<EmailConfig>(builder.Configuration.GetSection("SmtpSettings"));
  
  builder.Services.AddControllers().AddApplicationPart(typeof(Presentation.AssemblyReference).Assembly);
@@ -86,7 +87,7 @@ builder.Services.AddMvc();
              IssuerSigningKey = new SymmetricSecurityKey(
                  Encoding.UTF8.GetBytes(builder.Configuration["JWTTokenSettings:KEY"]))
          };
-     }).AddVkontakte(options =>
+     });/*.AddVkontakte(options =>
      {
          options.ClientId = builder.Configuration["VKAuthSettings:CLIENTID"];
          options.ClientSecret = builder.Configuration["VKAuthSettings:CLIENTSECRET"];
@@ -102,7 +103,7 @@ builder.Services.AddMvc();
          options.ClaimActions.MapJsonKey(ClaimTypes.Name, "screen_name");
          options.ClaimActions.MapJsonKey(ClaimTypes.DateOfBirth, "bdate");
          options.ClaimActions.MapJsonKey("about", "status");
-     });
+     });*/
  /*.AddOAuth("VK", "VK", options =>
  {
      options.ClientId = builder.Configuration["VKAuthSettings:CLIENTID"];
