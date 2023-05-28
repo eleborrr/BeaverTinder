@@ -42,7 +42,7 @@ public class ServiceManager: IServiceManager
     private readonly Lazy<IVkOAuthService> _vkOAuthService;
     private readonly Lazy<IChatService> _chatService;
 
-    public ServiceManager(UserManager<User> userManager, IOptions<EmailConfig> emailConfig, IRepositoryManager repositoryManager, IMemoryCache memoryCache, RoleManager<Role> roleManager, SignInManager<User> signInManager, IJwtGenerator jwtGenerator)  // ,
+    public ServiceManager(UserManager<User> userManager, IOptions<EmailConfig> emailConfig, IRepositoryManager repositoryManager, IMemoryCache memoryCache, RoleManager<Role> roleManager, SignInManager<User> signInManager, IJwtGenerator jwtGenerator, HttpClient client)  // ,
     {
         _geolocationService = new Lazy<IGeolocationService>(() => new GeolocationService(repositoryManager, userManager));
         _emailService = new Lazy<IEmailService>(() => new EmailService(emailConfig));
@@ -53,7 +53,7 @@ public class ServiceManager: IServiceManager
         _subscriptionService = new Lazy<ISubscriptionService>(() => new SubscriptionService(repositoryManager, userManager));
         _accountService =
             new Lazy<IAccountService>(() => new AccountService(userManager, _emailService.Value, signInManager, jwtGenerator, GeolocationService));
-        _vkOAuthService = new Lazy<IVkOAuthService>(() => new VkOAuthService(repositoryManager, userManager, signInManager, jwtGenerator));
+        _vkOAuthService = new Lazy<IVkOAuthService>(() => new VkOAuthService(repositoryManager, userManager, signInManager, jwtGenerator, client));
             new Lazy<IAccountService>(() => new AccountService(userManager, _emailService.Value, signInManager, jwtGenerator, GeolocationService));
         _chatService = new Lazy<IChatService>(() => new ChatService(userManager, repositoryManager));
     }

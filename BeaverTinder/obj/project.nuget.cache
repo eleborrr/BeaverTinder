@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "RTbCLaq91mOUq2/gBvxMAzFVhE0ws2e225ub9AP8hyLkp9G18THdHB8Gkr+cPVYndgS/XgbCPfB6M1Q2SpvJPw==",
+  "dgSpecHash": "bceIVWr2fz+4sCYU9Cpe1kVROjsA6vRnOOxvJYtVgYAjorZhMTb+NiLFZKpAWL5dreLsBFXXy0anlZhTzD+hsQ==",
   "success": true,
   "projectFilePath": "C:\\Users\\rafae\\OSNOVIRAZRABOTKI\\semwork3\\BeaverTinder\\BeaverTinder\\BeaverTinder.csproj",
   "expectedPackageFiles": [
@@ -128,6 +128,7 @@
     "C:\\Users\\rafae\\.nuget\\packages\\system.net.sockets\\4.3.0\\system.net.sockets.4.3.0.nupkg.sha512",
     "C:\\Users\\rafae\\.nuget\\packages\\system.numerics.vectors\\4.5.0\\system.numerics.vectors.4.5.0.nupkg.sha512",
     "C:\\Users\\rafae\\.nuget\\packages\\system.objectmodel\\4.3.0\\system.objectmodel.4.3.0.nupkg.sha512",
+    "C:\\Users\\rafae\\.nuget\\packages\\system.private.datacontractserialization\\4.3.0\\system.private.datacontractserialization.4.3.0.nupkg.sha512",
     "C:\\Users\\rafae\\.nuget\\packages\\system.reflection\\4.3.0\\system.reflection.4.3.0.nupkg.sha512",
     "C:\\Users\\rafae\\.nuget\\packages\\system.reflection.emit\\4.3.0\\system.reflection.emit.4.3.0.nupkg.sha512",
     "C:\\Users\\rafae\\.nuget\\packages\\system.reflection.emit.ilgeneration\\4.3.0\\system.reflection.emit.ilgeneration.4.3.0.nupkg.sha512",
@@ -143,7 +144,8 @@
     "C:\\Users\\rafae\\.nuget\\packages\\system.runtime.interopservices\\4.3.0\\system.runtime.interopservices.4.3.0.nupkg.sha512",
     "C:\\Users\\rafae\\.nuget\\packages\\system.runtime.interopservices.runtimeinformation\\4.3.0\\system.runtime.interopservices.runtimeinformation.4.3.0.nupkg.sha512",
     "C:\\Users\\rafae\\.nuget\\packages\\system.runtime.numerics\\4.3.0\\system.runtime.numerics.4.3.0.nupkg.sha512",
-    "C:\\Users\\rafae\\.nuget\\packages\\system.runtime.serialization.primitives\\4.1.1\\system.runtime.serialization.primitives.4.1.1.nupkg.sha512",
+    "C:\\Users\\rafae\\.nuget\\packages\\system.runtime.serialization.json\\4.3.0\\system.runtime.serialization.json.4.3.0.nupkg.sha512",
+    "C:\\Users\\rafae\\.nuget\\packages\\system.runtime.serialization.primitives\\4.3.0\\system.runtime.serialization.primitives.4.3.0.nupkg.sha512",
     "C:\\Users\\rafae\\.nuget\\packages\\system.security.accesscontrol\\5.0.0\\system.security.accesscontrol.5.0.0.nupkg.sha512",
     "C:\\Users\\rafae\\.nuget\\packages\\system.security.claims\\4.0.1\\system.security.claims.4.0.1.nupkg.sha512",
     "C:\\Users\\rafae\\.nuget\\packages\\system.security.cryptography.algorithms\\4.3.0\\system.security.cryptography.algorithms.4.3.0.nupkg.sha512",
@@ -170,6 +172,8 @@
     "C:\\Users\\rafae\\.nuget\\packages\\system.windows.extensions\\5.0.0\\system.windows.extensions.5.0.0.nupkg.sha512",
     "C:\\Users\\rafae\\.nuget\\packages\\system.xml.readerwriter\\4.3.0\\system.xml.readerwriter.4.3.0.nupkg.sha512",
     "C:\\Users\\rafae\\.nuget\\packages\\system.xml.xdocument\\4.3.0\\system.xml.xdocument.4.3.0.nupkg.sha512",
+    "C:\\Users\\rafae\\.nuget\\packages\\system.xml.xmldocument\\4.3.0\\system.xml.xmldocument.4.3.0.nupkg.sha512",
+    "C:\\Users\\rafae\\.nuget\\packages\\system.xml.xmlserializer\\4.3.0\\system.xml.xmlserializer.4.3.0.nupkg.sha512",
     "C:\\Users\\rafae\\.nuget\\packages\\yandex.checkout.v3\\1.7.0\\yandex.checkout.v3.1.7.0.nupkg.sha512"
   ],
   "logs": [

@@ -5,6 +5,8 @@ namespace Services.Abstraction.OAuth;
 
 public interface IVkOAuthService
 {
-    public Task<LoginResponseDto> AuthAsync(VkAuthDto authDto);
+    public Task<LoginResponseDto> OAuthCallback(VkUserDto vkUserDto);
+    public Task<VkUserDto?> GetVkUserInfoAsync(VkAccessTokenDto accessToken);
+
 
 }
