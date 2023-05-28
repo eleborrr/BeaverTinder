@@ -92,7 +92,7 @@ const MyLikesPage = () =>
     }
     
     function GetNewBearer() {
-    axiosInstance.get('',
+    axiosInstance.get('/mylikes',
         {
             headers: {
                 Authorization: `Bearer ${token}`,
