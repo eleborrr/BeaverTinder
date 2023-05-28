@@ -15,6 +15,7 @@ const token = Cookies.get('token');
   const [lastName, setLastName] = useState('');
   const [username, setUsername] = useState('');
   const [about, setAbout] = useState('');
+  const [modelGender, setModelGender] = useState('');
   const [gender, setGender] = useState('');
   const [password, setPassword] = useState('');
   const [confPass, setConfPass] = useState('');
@@ -51,7 +52,7 @@ const token = Cookies.get('token');
             setPhoto(res.data.image);
             setAbout(res.data.about);
             setGender(res.data.gender);
-            console.log(res.data);
+            setModelGender(res.data.gender);
         })
   }, []);
 
@@ -63,7 +64,6 @@ const token = Cookies.get('token');
   };
 
   const handleSubmit = (e) => {
-    console.log(firstName, lastName, username, gender, about, photo, password, confPass, longitude, latitude);
     axiosInstance.post('/edit', {
         FirstName: firstName,
         LastName: lastName,
@@ -82,21 +82,9 @@ const token = Cookies.get('token');
             Accept : "application/json"
         },
     })
+    .then(res => setChanging(false))
+    
     e.preventDefault();
-    // Отправка данных на сервер
-    // const formData = new FormData();
-    // formData.append('firstName', firstName);
-    // formData.append('lastName', lastName);
-    // formData.append('email', email);
-    // if (photo) {
-    //   formData.append('photo', photo);
-    // }
-    // formData.append('location', location);
-    // formData.append('latitude', latitude);
-    // formData.append('longitude', longitude);
-    // axios.post('/api/user', formData).then((response) => {
-    //   console.log(response.data);
-    // });
   };
 
   return (
@@ -154,18 +142,29 @@ const token = Cookies.get('token');
                                     disabled = {!changing}
                                     type="text"
                                     name="gender"
-                                    value={gender}
+                                    value={modelGender}
                                     onChange={(e) => setGender(e.target.value)}
                                     className="my-form-control"
                                 />
                             </div> : 
                             
-                            <div className='form-group'>
-                                <select name= "gender" onChange={(e) => setGender(e.target.value)}> 
-                                    <option value="Man">Man</option> 
-                                    <option value="Woman">Woman</option>
-                                </select>
+                            <div>
+                                {modelGender == "Man"?
+                                 <div className='form-group'>
+                                    <select name= "gender" onChange={(e) => setGender(e.target.value)}> 
+                                         <option value="Man">Man</option> 
+                                         <option value="Woman">Woman</option>
+                                     </select>
+                                </div>
+                            :
+                                <div className='form-group'>
+                                    <select name= "gender" onChange={(e) => setGender(e.target.value)}> 
+                                         <option value="Woman">Woman</option> 
+                                        <option value="Man">Man</option>
+                                    </select>
+                                </div>}
                             </div>
+                            
                             }
                             
                             <div className="form-group">

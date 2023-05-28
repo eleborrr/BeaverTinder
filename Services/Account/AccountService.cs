@@ -171,7 +171,7 @@ public class AccountService : IAccountService
                 Gender = model.Gender,
                 About = model.About,
                 DateOfBirth = model.DateOfBirth,
-                Image = model.Image,
+                Image = "https://w7.pngwing.com/pngs/831/88/png-transparent-user-profile-computer-icons-user-interface-mystique-miscellaneous-user-interface-design-smile.png",
 
             };
 
@@ -227,7 +227,7 @@ public class AccountService : IAccountService
 
             if (result.Succeeded)
             {
-                var userDb = await _userManager.FindByEmailAsync(user.Email);
+                var userDb = await _userManager.FindByEmailAsync(userToEdit.Email);
                 return new EditUserResponseDto(EditResponseStatus.Ok);
             }
 
