@@ -19,3 +19,14 @@
 .hide{
     display: none;
 }
+
+.vk-logo{
+    width: 50px;
+}
+
+.image-log{
+    background-image: url('./../images/login/log.jpg');
+    background-size: 50px 50px;
+    background-repeat: no-repeat;
+    background-position: end;
+}

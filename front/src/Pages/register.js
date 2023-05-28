@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import Cookies from "js-cookie";
 import { axiosInstance } from "../Components/axios_server";
+import './../assets/css/register.css'
 
 const RegisterPage = () => {
     const [lName, setLName] = useState('Last name');
@@ -215,7 +216,7 @@ const RegisterPage = () => {
         </div>
         <div className="container">
             <div className="row">
-                <div className="image">
+                <div className="image image-log-reg">
                 </div>
                 <div className="col-lg-7">
                     <div className="log-reg-inner">

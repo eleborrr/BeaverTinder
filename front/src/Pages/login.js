@@ -121,7 +121,7 @@ const LoginPage = () => {
                                 </div> 
                                 <div className="or-content"> 
                                     <p>Sign up with your vk</p> 
-                                        <a onClick={() => handleOauth()} className="default-btn reverse"><img src={vk} alt="vk" /> <span>Sign Up with VK</span></a> 
+                                        <a onClick={() => handleOauth()} className="default-btn reverse"><img src={vk} alt="vk" className="vk-logo"/> <span>Sign Up with VK</span></a> 
                                     <p className="or-signup"> Don't have an account? <a href="/register">Sign up here</a></p> 
                                 </div> 
                             </form> 

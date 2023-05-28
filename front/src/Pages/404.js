@@ -4,6 +4,7 @@ import './../assets/css/all.min.css';
 import './../assets/css/swiper.min.css';
 import './../assets/css/lightcase.css';
 import './../assets/css/style.css';
+import './../assets/css/404.css'
 import E404 from './../assets/images/404.png'
 
 const PageNotFound = () => {
@@ -18,7 +19,7 @@ const PageNotFound = () => {
     <section className="log-reg forezero">
         <div className="container">
             <div className="row justify-content-end">
-                <div className="image image-404"></div>
+                <div className="image-404-my image"></div>
                 <div className="col-lg-7 ">
                     <div className="log-reg-inner">
                         <div className="main-thumb mb-5">
@@ -27,7 +28,6 @@ const PageNotFound = () => {
                         <div className="main-content inloginp">
                             <div className="text-content text-center">
                                 <h2>Ops! This Page Not Found</h2>
-                                <p>We are Really Sorry But the Page you Requested is Missing :( </p>
                                 <a href="/home" className="default-btn reverse"><span>Back to Home</span></a>
                             </div>
                         </div>
