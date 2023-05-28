@@ -10,4 +10,5 @@ public class VkAuthDto
     public string Email { get; set; }
     public string Gender { get; set; }
     public string About { get; set; }
+    public string PhotoUrl { get; set; }
 }
