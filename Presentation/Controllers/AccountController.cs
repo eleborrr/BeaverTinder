@@ -1,4 +1,5 @@
-﻿using Contracts;
+﻿using System.Security.Claims;
+using Contracts;
 using Contracts.ViewModels;
 using Domain.Entities;
 using Domain.Repositories;
@@ -60,9 +61,10 @@ public class AccountController : Controller
     [HttpPost("/edit")]
     public async Task<JsonResult> EditAccount([FromBody] EditUserDto model)
     {
-        var userName = User.Identity.Name;
-        var user = await _userManager.FindByNameAsync(userName);
-        return Json(await _serviceManager.AccountService.EditAccount(user, model, ModelState));
+        var s = User.Claims.FirstOrDefault(c => c.Type == "Id");
+        var user = await _userManager.FindByIdAsync(s.Value);
+        var b = await _serviceManager.AccountService.EditAccount(user, model, ModelState);
+        return Json(b);
     }
     
     [HttpGet("/all")]
