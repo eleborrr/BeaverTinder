@@ -40,7 +40,8 @@ public class BeaverSearchController: Controller
                 StatusCode = result.StatusCode
             });
         }
-        
+
+        Console.WriteLine(result.DistanceInKm);
         var user = new SearchUserResultDto
         {
             Id = result.Id,

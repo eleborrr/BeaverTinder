@@ -67,7 +67,7 @@ public class ChatController: Controller
             var sender = await _userManager.FindByIdAsync(curUserId);
 
             //TODO check for curUserId null
-            var res = await _serviceManager.ChatService.GetChatById(curUserId, receiver.Id);
+            var res = await _serviceManager.ChatService.GetChatById(sender.Id, receiver.Id);
             var model = new SingleChatGetResponse()
             {
                 RecieverName = username,

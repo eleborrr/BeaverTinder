@@ -76,7 +76,7 @@ public class FindBeaverService: IFindBeaverService
 
             var distanceInKm = Convert.ToInt32(
                 Math.Ceiling(
-                    await _geolocationService.GetDistance(curUserGeoloc, likedUserGeoloc)));
+                    await _geolocationService.GetDistance(curUserGeoloc, likedUserGeoloc))).ToString();
 
             return new SearchUserResultDto
             {

@@ -22,9 +22,9 @@ public class ChatService: IChatService
     public async Task<Room> GetChatById(string curUserId, string userId)
     {
         var room = (await _repositoryManager.RoomRepository.GetAllAsync(default))
-            .FirstOrDefault(r => (r.FirstUserId == curUserId || r.FirstUserId == userId)
-                &&
-                (r.SecondUserId == curUserId || r.SecondUserId == userId));
+            .FirstOrDefault(r => (r.FirstUserId == curUserId && r.SecondUserId == userId)
+                ||
+                (r.SecondUserId == curUserId && r.FirstUserId == userId));
         if (room is null)
         {
             room = new Room()
