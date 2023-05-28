@@ -12,6 +12,7 @@ public sealed class RepositoryManager : IRepositoryManager
     private readonly Lazy<IPaymentRepository> _lazyPaymentRepository;
     private readonly Lazy<ISubscriptionRepository> _lazySubscriptionRepository;
     private readonly Lazy<IUserSubscriptionRepository> _lazyUserSubscriptionRepository;
+    private readonly Lazy<IUserToVkRepository> _lazyUserToVkRepository;
     private readonly Lazy<IRoomRepository> _lazyRoomRepository;
     private readonly Lazy<IMessageRepository> _lazyMessageRepository;
     public RepositoryManager(ApplicationDbContext dbContext)
@@ -23,6 +24,7 @@ public sealed class RepositoryManager : IRepositoryManager
         _lazySubscriptionRepository = new Lazy<ISubscriptionRepository>(() => new SubscriptionRepository(dbContext));
         _lazyUserSubscriptionRepository =
             new Lazy<IUserSubscriptionRepository>(() => new UserSubscriptionRepository(dbContext));
+        _lazyUserToVkRepository = new Lazy<IUserToVkRepository>(() => new UserToVkRepository(dbContext));
         _lazyMessageRepository = new Lazy<IMessageRepository>(() => new MessageRepository(dbContext));
         _lazyRoomRepository = new Lazy<IRoomRepository>(() => new RoomRepository(dbContext));
     }
@@ -33,6 +35,7 @@ public sealed class RepositoryManager : IRepositoryManager
     public IPaymentRepository PaymentRepository => _lazyPaymentRepository.Value;
     public ISubscriptionRepository SubscriptionRepository => _lazySubscriptionRepository.Value;
     public IUserSubscriptionRepository UserSubscriptionRepository => _lazyUserSubscriptionRepository.Value;
+    public IUserToVkRepository UserToVkRepository => _lazyUserToVkRepository.Value;
     public IRoomRepository RoomRepository => _lazyRoomRepository.Value;
     public IMessageRepository MessageRepository => _lazyMessageRepository.Value;
 }

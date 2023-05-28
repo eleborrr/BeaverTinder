@@ -10,7 +10,6 @@ using Services.Abstraction.TwoFA;
 
 namespace Presentation.Controllers;
 
-
 [ApiController]
 [Route("[controller]")]
 public class RegistrationController : Controller

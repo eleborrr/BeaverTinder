@@ -17,6 +17,7 @@ public class ApplicationDbContext: IdentityDbContext<User>
     public DbSet<Subscription> Subscriptions { get; set; }
     public DbSet<UserSubscription> UserSubscriptions { get; set; }
     public DbSet<UserGeolocation> Geolocations { get; set; }
+    public DbSet<UserToVk> UserToVks { get; set; }
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)
@@ -91,6 +92,9 @@ public class ApplicationDbContext: IdentityDbContext<User>
             }
         );
         modelBuilder.Entity<UserSubscription>().HasKey(u => new { u.UserId, u.SubsId});
+        modelBuilder.Entity<UserToVk>().HasKey(x => new { Id = x.UserId, x.VkId });
         base.OnModelCreating(modelBuilder);
+        
+        
     }
 }

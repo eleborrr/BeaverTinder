@@ -8,6 +8,7 @@
         IPaymentRepository PaymentRepository { get; }
         ISubscriptionRepository SubscriptionRepository { get; }
         IUserSubscriptionRepository UserSubscriptionRepository { get; }
+        IUserToVkRepository UserToVkRepository { get; }
         IRoomRepository RoomRepository { get; }
         IMessageRepository MessageRepository { get; }
     }
