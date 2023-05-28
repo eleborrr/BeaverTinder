@@ -12,6 +12,7 @@ public class ApplicationDbContext: IdentityDbContext<User>
     public DbSet<Message> Messages { get; set; }
     public DbSet<Room> Rooms { get; set; }
     public DbSet<Role> Roles { get; set; }
+    public DbSet<Image> Images { get; set; }
     public DbSet<Payment> Payments {get; set; }
     public DbSet<Subscription> Subscriptions { get; set; }
     public DbSet<UserSubscription> UserSubscriptions { get; set; }
