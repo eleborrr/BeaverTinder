@@ -135,8 +135,6 @@ public class AccountService : IAccountService
                 {
                     // ignored
                 }
-
-                var claims = await _userManager.GetClaimsAsync(signedUser);
                 
                 await _signInManager.UserManager.AddClaimAsync(signedUser, new Claim("Id", signedUser.Id));
                 if (await _signInManager.UserManager.IsInRoleAsync(signedUser, "Admin"))
@@ -184,7 +182,9 @@ public class AccountService : IAccountService
             if (result.Succeeded)
             {
                 await SendConfirmationEmailAsync(user.Id);
+                
                 var userDb = await _userManager.FindByEmailAsync(user.Email);
+                
                 await _userManager.AddClaimAsync(userDb, new Claim(ClaimTypes.Role, "User"));
                 await _geolocationService.AddAsync(userId:userDb.Id,
                     Latitude: model.Latitude,

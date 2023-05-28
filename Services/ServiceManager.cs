@@ -44,7 +44,7 @@ public class ServiceManager: IServiceManager
 
     public ServiceManager(UserManager<User> userManager, IOptions<EmailConfig> emailConfig, IRepositoryManager repositoryManager, IMemoryCache memoryCache,
         RoleManager<Role> roleManager, SignInManager<User> signInManager, IJwtGenerator jwtGenerator,
-        IPasswordHasher<User> passwordHasher) 
+        IPasswordHasher<User> passwordHasher, HttpClient client) 
     {
         _geolocationService = new Lazy<IGeolocationService>(() => new GeolocationService(repositoryManager, userManager));
         _emailService = new Lazy<IEmailService>(() => new EmailService(emailConfig));
@@ -53,7 +53,7 @@ public class ServiceManager: IServiceManager
         _findBeaverService = new Lazy<IFindBeaverService>(() => new FindBeaverService(userManager, repositoryManager, memoryCache, roleManager , LikeService, GeolocationService));
         _paymentService = new Lazy<IPaymentService>(() => new PaymentService.PaymentService(repositoryManager));
         _subscriptionService = new Lazy<ISubscriptionService>(() => new SubscriptionService(repositoryManager, userManager));
-        _vkOAuthService = new Lazy<IVkOAuthService>(() => new VkOAuthService(repositoryManager, userManager, signInManager, jwtGenerator, client));
+        _vkOAuthService = new Lazy<IVkOAuthService>(() => new VkOAuthService(repositoryManager, userManager, signInManager, jwtGenerator, client, GeolocationService));
         _accountService = new Lazy<IAccountService>(() => new AccountService(userManager, _emailService.Value, signInManager, jwtGenerator, GeolocationService, passwordHasher));
         _chatService = new Lazy<IChatService>(() => new ChatService(userManager, repositoryManager));
     }

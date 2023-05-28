@@ -10,7 +10,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json;
 using Persistence.Misc.Services.JwtGenerator;
+using Services.Abstraction;
 using Services.Abstraction.Email;
+using Services.Abstraction.Geolocation;
 using Services.Abstraction.OAuth;
 using static System.Enum;
 using JsonSerializer = System.Text.Json.JsonSerializer;
@@ -24,14 +26,18 @@ public class VkOAuthService : IVkOAuthService
     private readonly SignInManager<User> _signInManager;
     private readonly IJwtGenerator _jwtGenerator;
     private readonly HttpClient _client;
+    private readonly IGeolocationService _geolocationService;
 
-    public VkOAuthService(IRepositoryManager repositoryManager, UserManager<User> userManager, SignInManager<User> signInManager, IJwtGenerator jwtGenerator, HttpClient client)
+    public VkOAuthService(IRepositoryManager repositoryManager, UserManager<User> userManager,
+        SignInManager<User> signInManager, IJwtGenerator jwtGenerator, HttpClient client,
+        IGeolocationService geolocationService)
     {
         _repositoryManager = repositoryManager;
         _userManager = userManager;
         _signInManager = signInManager;
         _jwtGenerator = jwtGenerator;
         _client = client;
+        _geolocationService = geolocationService;
     }
 
     public async Task<LoginResponseDto> AuthAsync(VkAuthDto userDto)
@@ -52,8 +58,6 @@ public class VkOAuthService : IVkOAuthService
         var userId = await _repositoryManager.UserToVkRepository.GetByIdAsync(userDto.VkId);
         var signedUser = await _signInManager.UserManager.FindByIdAsync(userId.UserId);
         return await Login(signedUser);
-
-        // ModelState.AddModelError("error_message", "Invalid login attempt.");
     }
 
     public async Task<RegisterResponseDto> Register(VkAuthDto userDto)
@@ -71,15 +75,22 @@ public class VkOAuthService : IVkOAuthService
             Image = "TEST",
             DateOfBirth = userDto.DateOfBirth
         };
+        
+        var emailCollision = _userManager.Users.FirstOrDefault(u => u.Email == user.Email);
+        if (emailCollision is not null)
+            return new RegisterResponseDto(RegisterResponseStatus.Fail, "User with that email already exists");
+
             
         var result = await _userManager.CreateAsync(user);
         if (result.Succeeded)
         {
+            var userDb = await _userManager.FindByEmailAsync(user.Email);
+                
+            await _userManager.AddClaimAsync(userDb, new Claim(ClaimTypes.Role, "User"));
+            await _geolocationService.AddAsync(userId:userDb.Id,
+                Latitude: 55.558741,
+                Longitude: 37.378847);
             return new RegisterResponseDto(RegisterResponseStatus.Ok);
-            // TODO протестить что норм работает
-            // await _geolocationService.AddAsync(userId: _userManager.FindByEmailAsync(user.Email).Id,
-            //     Latutide: 55.47, // geolocation from dto!
-            //     Longtitude: 49.6);
         }
 
         return new RegisterResponseDto(RegisterResponseStatus.Fail,
@@ -90,8 +101,32 @@ public class VkOAuthService : IVkOAuthService
     {
         await _signInManager.SignInAsync(signedUser, false);
         await _signInManager.UserManager.AddClaimAsync(signedUser, new Claim("Id", signedUser.Id));
+        
+        try
+        {
+            await _userManager.RemoveClaimAsync(signedUser, new Claim("Id", signedUser.Id));
+            await _userManager.RemoveClaimAsync(signedUser, new Claim(ClaimTypes.Role, "Admin"));
+            await _userManager.RemoveClaimAsync(signedUser, new Claim(ClaimTypes.Role, "User"));
+            await _userManager.RemoveClaimAsync(signedUser, new Claim(ClaimTypes.Role, "Moderator"));
+        }
+        catch (Exception exception)
+        {
+            // ignored
+        }
+        
+        await _signInManager.UserManager.AddClaimAsync(signedUser, new Claim("Id", signedUser.Id));
         if (await _signInManager.UserManager.IsInRoleAsync(signedUser, "Admin"))
+        {
+                    
             await _signInManager.UserManager.AddClaimAsync(signedUser, new Claim(ClaimTypes.Role, "Admin"));
+        }
+
+        else if (await _signInManager.UserManager.IsInRoleAsync(signedUser, "Moderator"))
+            await _signInManager.UserManager.AddClaimAsync(signedUser, new Claim(ClaimTypes.Role, "Moderator"));
+
+        else
+            await _userManager.AddClaimAsync(signedUser, new Claim(ClaimTypes.Role, "StandartUser"));
+        
         return new LoginResponseDto(LoginResponseStatus.Ok, await _jwtGenerator.GenerateJwtToken(signedUser.Id));
     }
     
