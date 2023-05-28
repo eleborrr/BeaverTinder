@@ -78,11 +78,6 @@ const LoginPage = () => {
         <div className="top-menu-area">
             <div className="container">
                 <div className="row">
-                    <div className="col-lg-8 col-7">
-                        <div className="logo">
-                            <a href="index.html"><img src="assets/images/logo/logo.png" alt="logo" /></a>
-                        </div>
-                    </div>
                     <div className="col-lg-4 col-5">
                         <a href="index.html" className="backto-home"><i className="fas fa-chevron-left"></i> Back to Home</a>
                     </div>
@@ -95,7 +90,7 @@ const LoginPage = () => {
                 <div className="col-lg-7">
                     <div className="log-reg-inner">
                         <div className="section-header inloginp">
-                            <h2 className="title">Welcome to Ollya</h2>
+                            <h3 className="title">Welcome to BeaverTinder!</h3>
                         </div>
                         <div className="main-content inloginp">
                             <form>

@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
+import { axiosInstance } from "../Components/axios_server";
 import './../assets/css/chats.css';
+import { to } from "@react-spring/web";
 
 const ChatsPage = () => {
 
@@ -10,11 +12,23 @@ const ChatsPage = () => {
     
     const [searchInput, setSearchInput] = useState('');
     const [searchNone, setSearchNone] = useState(true);
+    const [chats, setChats] = useState([]);
 
     useEffect(() => {
         if (!token){
             navigate("/login");
         }
+    }, [])
+
+    useEffect(() => {
+        axiosInstance.get('/im',
+         {
+            headers:{
+                Authorization: `Bearer ${token}`,
+                Accept : "application/json"
+            }
+        })
+        .then(chats => setChats(chats.data))
     }, [])
 
     const onPressEnter = (e) => {
@@ -42,12 +56,13 @@ const ChatsPage = () => {
                         <input placeholder='Search...' type='text' value={searchInput} onChange={(e) => setSearchInput(e.target.value)} onKeyPress={(e) => onPressEnter(e)}/>
                     </div>
                     <ul>
-                    <li onClick={() => navigate('nickname')}>
+                    {chats.map(chat => (
+                        <li onClick={() => navigate(`${chat.userName}`)}>
                         <a className='thumbnail'>
-                        NR
+                        image?
                         </a>
                         <div className='content'>
-                        <h3>Nick Roach</h3>
+                        <h3>{chat.firstName} {chat.lastName}</h3>
                         <span className='preview'>hey how are things going on the...</span>
                         <span className='meta'>
                             2h ago &middot;
@@ -57,81 +72,8 @@ const ChatsPage = () => {
                         </span>
                         </div>
                     </li>
-                    <li>
-                        <a className='thumbnail' href='#'>
-                        KS
-                        </a>
-                        <div className='content'>
-                        <h3>Kenny Sing</h3>
-                        <span className='preview'>make sure you take a look at the...</span>
-                        <span className='meta'>
-                            3h ago &middot;
-                            <a href='#'>Category</a>
-                            &middot;
-                            <a href='#'>Reply</a>
-                        </span>
-                        </div>
-                    </li>
-                    <li>
-                        <a className='thumbnail' href='#'>
-                        MS
-                        </a>
-                        <div className='content'>
-                        <h3>Mitch Skolnik</h3>
-                        <span className='preview'>i love wood grain things!</span>
-                        <span className='meta'>
-                            6h ago &middot;
-                            <a href='#'>Category</a>
-                            &middot;
-                            <a href='#'>Reply</a>
-                        </span>
-                        </div>
-                    </li>
-                    <li>
-                        <a className='thumbnail' href='#'>
-                        YP
-                        </a>
-                        <div className='content'>
-                        <h3>Yuriy Portnykh</h3>
-                        <span className='preview'>check issues for the latest version...</span>
-                        <span className='meta'>
-                            10h ago &middot;
-                            <a href='#'>Category</a>
-                            &middot;
-                            <a href='#'>Reply</a>
-                        </span>
-                        </div>
-                    </li>
-                    <li>
-                        <a className='thumbnail' href='#'>
-                        JR
-                        </a>
-                        <div className='content'>
-                        <h3>Josh Ronk</h3>
-                        <span className='preview'>make sure to do the following by...</span>
-                        <span className='meta'>
-                            2d ago &middot;
-                            <a href='#'>Category</a>
-                            &middot;
-                            <a href='#'>Reply</a>
-                        </span>
-                        </div>
-                    </li>
-                    <li>
-                        <a className='thumbnail' href='#'>
-                        BM
-                        </a>
-                        <div className='content'>
-                        <h3>Benjamin Mueller</h3>
-                        <span className='preview'>Hi nice to meet you!</span>
-                        <span className='meta'>
-                            1w ago &middot;
-                            <a href='#'>Category</a>
-                            &middot;
-                            <a href='#'>Reply</a>
-                        </span>
-                        </div>
-                    </li>
+                    ))}    
+                    
                     </ul>
                 </div>
             </div>
