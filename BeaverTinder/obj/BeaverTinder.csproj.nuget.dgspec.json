@@ -164,7 +164,11 @@
         "frameworks": {
           "net7.0": {
             "targetAlias": "net7.0",
-            "projectReferences": {}
+            "projectReferences": {
+              "C:\\Users\\rafae\\OSNOVIRAZRABOTKI\\semwork3\\BeaverTinder\\Domain\\Domain.csproj": {
+                "projectPath": "C:\\Users\\rafae\\OSNOVIRAZRABOTKI\\semwork3\\BeaverTinder\\Domain\\Domain.csproj"
+              }
+            }
           }
         },
         "warningProperties": {
@@ -241,6 +245,10 @@
               "target": "Package",
               "version": "[7.0.4, )"
             },
+            "Microsoft.AspNetCore.Mvc.Abstractions": {
+              "target": "Package",
+              "version": "[2.2.0, )"
+            },
             "Microsoft.EntityFrameworkCore.Analyzers": {
               "target": "Package",
               "version": "[7.0.4, )"
@@ -295,8 +303,14 @@
           "net7.0": {
             "targetAlias": "net7.0",
             "projectReferences": {
+              "C:\\Users\\rafae\\OSNOVIRAZRABOTKI\\semwork3\\BeaverTinder\\Contracts\\Contracts.csproj": {
+                "projectPath": "C:\\Users\\rafae\\OSNOVIRAZRABOTKI\\semwork3\\BeaverTinder\\Contracts\\Contracts.csproj"
+              },
               "C:\\Users\\rafae\\OSNOVIRAZRABOTKI\\semwork3\\BeaverTinder\\Domain\\Domain.csproj": {
                 "projectPath": "C:\\Users\\rafae\\OSNOVIRAZRABOTKI\\semwork3\\BeaverTinder\\Domain\\Domain.csproj"
+              },
+              "C:\\Users\\rafae\\OSNOVIRAZRABOTKI\\semwork3\\BeaverTinder\\Persistence\\Persistence.csproj": {
+                "projectPath": "C:\\Users\\rafae\\OSNOVIRAZRABOTKI\\semwork3\\BeaverTinder\\Persistence\\Persistence.csproj"
               }
             }
           }
@@ -669,6 +683,9 @@
               },
               "C:\\Users\\rafae\\OSNOVIRAZRABOTKI\\semwork3\\BeaverTinder\\Infrastructure\\Persistence.Misc\\Persistence.Misc.csproj": {
                 "projectPath": "C:\\Users\\rafae\\OSNOVIRAZRABOTKI\\semwork3\\BeaverTinder\\Infrastructure\\Persistence.Misc\\Persistence.Misc.csproj"
+              },
+              "C:\\Users\\rafae\\OSNOVIRAZRABOTKI\\semwork3\\BeaverTinder\\Persistence\\Persistence.csproj": {
+                "projectPath": "C:\\Users\\rafae\\OSNOVIRAZRABOTKI\\semwork3\\BeaverTinder\\Persistence\\Persistence.csproj"
               },
               "C:\\Users\\rafae\\OSNOVIRAZRABOTKI\\semwork3\\BeaverTinder\\Services.Abstraction\\Services.Abstraction.csproj": {
                 "projectPath": "C:\\Users\\rafae\\OSNOVIRAZRABOTKI\\semwork3\\BeaverTinder\\Services.Abstraction\\Services.Abstraction.csproj"

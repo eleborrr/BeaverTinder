@@ -32,7 +32,11 @@
         "frameworks": {
           "net7.0": {
             "targetAlias": "net7.0",
-            "projectReferences": {}
+            "projectReferences": {
+              "C:\\Users\\rafae\\OSNOVIRAZRABOTKI\\semwork3\\BeaverTinder\\Domain\\Domain.csproj": {
+                "projectPath": "C:\\Users\\rafae\\OSNOVIRAZRABOTKI\\semwork3\\BeaverTinder\\Domain\\Domain.csproj"
+              }
+            }
           }
         },
         "warningProperties": {
@@ -108,6 +112,10 @@
             "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
               "target": "Package",
               "version": "[7.0.4, )"
+            },
+            "Microsoft.AspNetCore.Mvc.Abstractions": {
+              "target": "Package",
+              "version": "[2.2.0, )"
             },
             "Microsoft.EntityFrameworkCore.Analyzers": {
               "target": "Package",

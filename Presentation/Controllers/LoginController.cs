@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Runtime.InteropServices.JavaScript;
 using System.Security.Claims;
+using System.Text.Json.Serialization;
 using AspNet.Security.OAuth.Vkontakte;
 using Contracts;
 using Contracts.Responses.Login;
@@ -54,7 +55,9 @@ public class LoginController : Controller
             RedirectUri = redirectUrl
         };
         var res = Challenge(properties, VkontakteAuthenticationDefaults.AuthenticationScheme);
+        //await res.ExecuteResultAsync(new ActionContext() {HttpContext = HttpContext});
         return res;
+        /*return Redirect()*/
     }
     
     //TODO обработка скрытой даты рождения
@@ -97,10 +100,53 @@ public class LoginController : Controller
         return Unauthorized(result.Failure.Message);
     }
 
+    [HttpGet("getAccessToken")]
+    public async Task<IActionResult> GetAccessToken([FromQuery] string code)
+    {
+        var _client = new HttpClient();
+        var accessToken = JsonSerializer.Serialize(new OAuthAccessTokenDto()
+        {
+            ClientId = "51656119",
+            ClientSecret = "xXuSz8DrSkgaWkdQls9J",
+            Code = code
+        });
+        var res = await _client.PostAsync(VkontakteAuthenticationDefaults.TokenEndpoint, new StringContent(accessToken, null, "application/json"));
+        var resultTokenString = await res.Content.ReadAsStringAsync();
+        if (resultTokenString == null)
+            return BadRequest();
+        var accessTokenObj = JsonSerializer.Deserialize<AccessToken>(resultTokenString);
+        
+        
+        /*var userInfo = await GetUserInfo(accessTokenObj.Token); */
+        return Ok();
+    }
+
     [HttpGet("/logout")]
     public async Task<IActionResult> Logout()
     {
         await _signInManager.SignOutAsync();
         return RedirectToAction("Login", "Login");
     }
+}
+
+public class OAuthAccessTokenDto
+{
+    [JsonPropertyName("client_id")]
+    public string ClientId { get; set; }
+        
+    [JsonPropertyName("client_secret")]
+    public string ClientSecret { get; set; }
+        
+    [JsonPropertyName("code")]
+    public string Code { get; set; }
+}
+
+public class AccessToken
+{
+    [JsonPropertyName("access_token")]
+    public string Token { get; set; }
+    [JsonPropertyName("expires_in")]
+    public string Expires { get; set; }
+    [JsonPropertyName("user_id")]
+    public string Id { get; set; }
 }

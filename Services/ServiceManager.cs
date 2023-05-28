@@ -52,7 +52,7 @@ public class ServiceManager: IServiceManager
         _paymentService = new Lazy<IPaymentService>(() => new PaymentService.PaymentService(repositoryManager));
         _subscriptionService = new Lazy<ISubscriptionService>(() => new SubscriptionService(repositoryManager, userManager));
         _accountService =
-            new Lazy<IAccountService>(() => new AccountService(userManager, _emailService.Value, signInManager, jwtGenerator));
+            new Lazy<IAccountService>(() => new AccountService(userManager, _emailService.Value, signInManager, jwtGenerator, GeolocationService));
         _vkOAuthService = new Lazy<IVkOAuthService>(() => new VkOAuthService(repositoryManager, userManager, signInManager, jwtGenerator));
             new Lazy<IAccountService>(() => new AccountService(userManager, _emailService.Value, signInManager, jwtGenerator, GeolocationService));
         _chatService = new Lazy<IChatService>(() => new ChatService(userManager, repositoryManager));

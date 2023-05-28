@@ -15,9 +15,7 @@ const LoginPage = () => {
     const navigate = useNavigate() 
  
     const handleOauth = () => { 
-        axiosInstance 
-        .get('/login/oauth') 
-        .then(res => console.log(res)); 
+        window.location.href = 'https://localhost:7015/login/oauth'
     } 
     const onSubmit = (e) => { 
         e.preventDefault(); 
