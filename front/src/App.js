@@ -3,6 +3,7 @@ import ChatForTwoPage from './Pages/chat_for_two';
 import PageNotFound from './Pages/404';
 import RegisterPage from './Pages/register';
 import ContactPage from './Pages/contact';
+import MyLikesPage from './Pages/my-likes';
 import HeaderApp from './Components/header';
 import LoginPage from './Pages/login';
 import AdminPage from './Pages/admin/admin';
@@ -11,6 +12,7 @@ import ChatsPage from './Pages/chats';
 import HomePage from './Pages/home';
 import LikePage from './Pages/LikePage';
 import './assets/css/App.css';
+import ProfilePage from './Pages/profile';
 
 function App() {
   return (
@@ -24,8 +26,10 @@ function App() {
         <Route path='/chats/:nickname' element={<ChatForTwoPage />} />
         <Route path='/shops' element={<ShopsPage />} />
         <Route path='/contact' element={<ContactPage />} />
-        <Route path='/like' element= {<LikePage/>}/>
+        <Route path='/search' element= {<LikePage/>}/>
+        <Route path='/myLikes' element= {<MyLikesPage/>}/>
         <Route path='/register' element={<RegisterPage />} />
+        <Route path='/profile' element={<ProfilePage />} />
         <Route path='*' element={<PageNotFound />}
         />
       </Routes>
