@@ -74,9 +74,9 @@ public class FindBeaverService: IFindBeaverService
             var curUserGeoloc = await _geolocationService.GetByUserId(currentUser.Id);
             var likedUserGeoloc = await _geolocationService.GetByUserId(returnUserCache.Id);
 
-            var distanceInKm = Convert.ToInt32(
+            var distanceInKm = 
                 Math.Ceiling(
-                    await _geolocationService.GetDistance(curUserGeoloc, likedUserGeoloc))).ToString();
+                    await _geolocationService.GetDistance(curUserGeoloc, likedUserGeoloc)).ToString();
 
             return new SearchUserResultDto
             {

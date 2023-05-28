@@ -16,13 +16,13 @@ public class GeolocationService: IGeolocationService
         _userManager = userManager;
     }
 
-    public async Task AddAsync(string userId, double Latitude, double Longtitude)
+    public async Task AddAsync(string userId, double Latitude, double Longitude)
     {
         //TODO валидность проверять
         var geolocation = new UserGeolocation()
         {
             Id = userId,
-            Longtitude = Longtitude,
+            Longtitude = Longitude,
             Latitude = Latitude
         };
         await _repositoryManager.GeolocationRepository.AddAsync(geolocation);

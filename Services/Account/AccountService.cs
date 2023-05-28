@@ -11,6 +11,7 @@ using Persistence.Misc.Services.JwtGenerator;
 using Services.Abstraction;
 using Services.Abstraction.Account;
 using Services.Abstraction.Email;
+using Services.Abstraction.Geolocation;
 using ModelStateDictionary = Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary;
 
 namespace Services.Account;
@@ -21,13 +22,15 @@ public class AccountService : IAccountService
     private readonly IEmailService _emailService;
     private readonly SignInManager<User> _signInManager;
     private readonly IJwtGenerator _jwtGenerator;
+    private readonly IGeolocationService _geolocationService;
 
-    public AccountService(UserManager<User> userManager, IEmailService emailService, SignInManager<User> signInManager, IJwtGenerator jwtGenerator)
+    public AccountService(UserManager<User> userManager, IEmailService emailService, SignInManager<User> signInManager, IJwtGenerator jwtGenerator, IGeolocationService geolocationService)
     {
         _userManager = userManager;
         _emailService = emailService;
         _signInManager = signInManager;
         _jwtGenerator = jwtGenerator;
+        _geolocationService = geolocationService;
     }
 
     public async Task SendConfirmationEmailAsync(string userId)
@@ -155,7 +158,6 @@ public class AccountService : IAccountService
 
     public async Task<RegisterResponseDto> Register(RegisterDto model, ModelStateDictionary modelstate)
     {
-        // TODO перенести в сервис
         if (modelstate.IsValid)
         {
             var user = new User
@@ -169,7 +171,6 @@ public class AccountService : IAccountService
                 Image = "TEST",
 
             };
-            //TODO получение геолокации из дто
 
             var emailCollision = _userManager.Users.FirstOrDefault(u => u.Email == user.Email);
             if (emailCollision is not null)
@@ -182,11 +183,11 @@ public class AccountService : IAccountService
                 // await SendConfirmationEmailAsync(user.Id);
                 var userDb = await _userManager.FindByEmailAsync(user.Email);
                 await _userManager.AddClaimAsync(userDb, new Claim(ClaimTypes.Role, "User"));
+                await _geolocationService.AddAsync(userId:userDb.Id,
+                    Latitude: model.Latitude,
+                    Longitude: model.Longitude);
                 return new RegisterResponseDto(RegisterResponseStatus.Ok);
-                // TODO протестить что норм работает
-                // await _geolocationService.AddAsync(userId:(Id,
-                //     Latutide: 55.47, // geolocation from dto!
-                //     Longtitude: 49.6);
+               
             }
 
             return new RegisterResponseDto(RegisterResponseStatus.Fail,

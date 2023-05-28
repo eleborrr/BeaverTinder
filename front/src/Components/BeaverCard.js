@@ -3,6 +3,7 @@ import "../assets/css/beaverCard.css"
 
 const BeaverCard = ({profile, like, dislike, distance}) => {
 
+  console.log(distance);
   const [alreadyLiked, setAlreadyLiked] = useState(false);
   const CorrectWord = (age) => {
     if (age % 10 === 1){

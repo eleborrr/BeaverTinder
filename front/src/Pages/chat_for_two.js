@@ -99,25 +99,14 @@ const ChatForTwoPage = () => {
             <div className='chat-messages'>
 
                 <div id="messagesList" className='chat-messages__content'>
-                    {/* <ul id="messagesList"> */}
-                    {/* <div className="message-from">
-                        <span className="message-from">Глеб: </span>
-                        <span className="message-text">Первое сообщение</span>
-                    </div> */}
-                    {/* <div className="message-to">
-                        <span className="message-from">Глеб: </span>
-                        <span className="message-text">Первое сообщение</span>
-                    </div> */}
-                   {/*  </ul> */}
+                    
                 </div>
             </div>
             <div className='chat-input'>
-{/*                 <form method='post' id='chat-form' className="form-input">
- */}                    <input type='text' hidden={true} value={uid} readOnly={true} />
+                    <input type='text' hidden={true} value={uid} readOnly={true} />
                     <input type='text' autoComplete="off" id='messageInput' className='chat-form__input' placeholder='Введите сообщение' value={message} onChange={(e) => setMessage(e.target.value)} />
                     <input type='submit' id="sendButton" className='chat-form__submit' value='Send' />
-{/*                 </form>
- */}            </div>
+            </div>
 
         </div>
     )
