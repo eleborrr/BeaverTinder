@@ -24,14 +24,17 @@ public class AccountService : IAccountService
     private readonly SignInManager<User> _signInManager;
     private readonly IJwtGenerator _jwtGenerator;
     private readonly IGeolocationService _geolocationService;
+    private readonly IPasswordHasher<User> _passwordHasher;
 
-    public AccountService(UserManager<User> userManager, IEmailService emailService, SignInManager<User> signInManager, IJwtGenerator jwtGenerator, IGeolocationService geolocationService)
+    public AccountService(UserManager<User> userManager, IEmailService emailService, SignInManager<User> signInManager, IJwtGenerator jwtGenerator, 
+        IGeolocationService geolocationService, IPasswordHasher<User> passwordHasher)
     {
         _userManager = userManager;
         _emailService = emailService;
         _signInManager = signInManager;
         _jwtGenerator = jwtGenerator;
         _geolocationService = geolocationService;
+        _passwordHasher = passwordHasher;
     }
 
     public async Task SendConfirmationEmailAsync(string userId)
@@ -168,7 +171,7 @@ public class AccountService : IAccountService
                 Gender = model.Gender,
                 About = model.About,
                 DateOfBirth = model.DateOfBirth,
-                Image = "TEST",
+                Image = model.Image,
 
             };
 
@@ -200,32 +203,32 @@ public class AccountService : IAccountService
     {
         if (modelstate.IsValid)
         {
-            var user = new User
+            string passwordHash;
+            if (model.Password == "")
+                passwordHash = userToEdit.PasswordHash;
+            else
             {
-                Id = userToEdit.Id,
-                LastName = model.LastName,
-                FirstName = model.FirstName,
-                UserName = model.UserName,
-                Email = userToEdit.Email,
-                Gender = model.Gender,
-                About = model.About,
-                Image = "TEST",
-            };
+                passwordHash = _passwordHasher.HashPassword(userToEdit, model.Password);
+            }
             
-            //TODO получение геолокации из дто
 
-            var result = await _userManager.UpdateAsync(user);
+            userToEdit.LastName = model.LastName;
+            userToEdit.FirstName = model.FirstName;
+            userToEdit.UserName = model.UserName;
+            userToEdit.Gender = model.Gender;
+            userToEdit.About = model.About;
+            userToEdit.Image = model.Image;
+            userToEdit.PasswordHash = passwordHash;
+            
+            
+            var result = await _userManager.UpdateAsync(userToEdit);
+
+            await _geolocationService.Update(userToEdit.Id, model.Latitude, model.Longitude);
 
             if (result.Succeeded)
             {
-                // await SendConfirmationEmailAsync(user.Id);
                 var userDb = await _userManager.FindByEmailAsync(user.Email);
-                await _userManager.AddClaimAsync(userDb, new Claim(ClaimTypes.Role, "User"));
                 return new EditUserResponseDto(EditResponseStatus.Ok);
-                // TODO протестить что норм работает
-                // await _geolocationService.AddAsync(userId:(Id,
-                //     Latutide: 55.47, // geolocation from dto!
-                //     Longtitude: 49.6);
             }
 
             return new EditUserResponseDto(EditResponseStatus.Fail,

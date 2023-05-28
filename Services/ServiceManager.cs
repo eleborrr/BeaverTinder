@@ -39,7 +39,9 @@ public class ServiceManager: IServiceManager
     private readonly Lazy<IAccountService> _accountService;
     private readonly Lazy<IChatService> _chatService;
 
-    public ServiceManager(UserManager<User> userManager, IOptions<EmailConfig> emailConfig, IRepositoryManager repositoryManager, IMemoryCache memoryCache, RoleManager<Role> roleManager, SignInManager<User> signInManager, IJwtGenerator jwtGenerator)  // ,
+    public ServiceManager(UserManager<User> userManager, IOptions<EmailConfig> emailConfig, IRepositoryManager repositoryManager, IMemoryCache memoryCache,
+        RoleManager<Role> roleManager, SignInManager<User> signInManager, IJwtGenerator jwtGenerator,
+        IPasswordHasher<User> passwordHasher) 
     {
         _geolocationService = new Lazy<IGeolocationService>(() => new GeolocationService(repositoryManager, userManager));
         _emailService = new Lazy<IEmailService>(() => new EmailService(emailConfig));
@@ -49,7 +51,7 @@ public class ServiceManager: IServiceManager
         _paymentService = new Lazy<IPaymentService>(() => new PaymentService.PaymentService(repositoryManager));
         _subscriptionService = new Lazy<ISubscriptionService>(() => new SubscriptionService(repositoryManager, userManager));
         _accountService =
-            new Lazy<IAccountService>(() => new AccountService(userManager, _emailService.Value, signInManager, jwtGenerator, GeolocationService));
+            new Lazy<IAccountService>(() => new AccountService(userManager, _emailService.Value, signInManager, jwtGenerator, GeolocationService, passwordHasher));
         _chatService = new Lazy<IChatService>(() => new ChatService(userManager, repositoryManager));
     }
 

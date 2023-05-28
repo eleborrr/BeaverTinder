@@ -30,8 +30,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(); 
 builder.Services.AddMvc();
 
- builder.Services.AddDbContext<ApplicationDbContext>(options => 
-    options.UseSqlServer(builder.Configuration.GetConnectionString("BeaverTinderDatabase")));
+ builder.Services.AddDbContext<ApplicationDbContext>(options =>
+ {
+     options.UseSqlServer(builder.Configuration.GetConnectionString("BeaverTinderDatabase"));
+     options.EnableSensitiveDataLogging();
+ });
  builder.Services.AddIdentity<User, Role>(
          options =>
          {

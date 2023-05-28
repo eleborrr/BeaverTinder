@@ -7,6 +7,8 @@ public interface IGeolocationService
     public Task AddAsync(string userId, double Latitude, double Longitude);
 
     public Task<UserGeolocation> GetByUserId(string userId);
+    
+    public Task Update(string userId, double Latitude, double Longitude);
 
     public Task<IEnumerable<UserGeolocation>> GetAllAsync();
     public Task<double> GetDistance(UserGeolocation geolocation1, UserGeolocation geolocation2);

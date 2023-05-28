@@ -54,4 +54,12 @@ public class GeolocationService: IGeolocationService
         var geoloc2 = await GetByUserId(user2.Id);
         return await GetDistance(geoloc1, geoloc2);
     }
+
+    public async Task Update(string userId, double Latitude, double Longitude)
+    {
+        var geoloc = await GetByUserId(userId);
+        geoloc.Longtitude = Longitude;
+        geoloc.Latitude = Latitude;
+        await _repositoryManager.GeolocationRepository.UpdateAsync(geoloc);
+    }
 }

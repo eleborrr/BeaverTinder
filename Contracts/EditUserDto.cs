@@ -32,12 +32,12 @@ public class EditUserDto
     public string Image { get; set; }
     
     
-    [Required]
+    // [Required]
     [Display(Name = "Password")]
     [DataType(DataType.Password)]
     public string Password { get; set; }
 
-    [Required]
+    // [Required]
     [Compare("Password", ErrorMessage = "Пароли не совпадают")]
     [DataType(DataType.Password)]
     [Display(Name = "ConfirmPassword")]
