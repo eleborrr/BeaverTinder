@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
+import Cookies from 'js-cookie';
+import jwt from 'jwt-decode'
 import Dropzone from 'react-dropzone';
 import { YMaps, Map, Placemark } from '@pbe/react-yandex-maps';
-import { axiosInstance } from "../Components/axios_server";
 import './../assets/css/profile.css'
+import { axiosInstance } from '../Components/axios_server';
 
 const Profile = () => {
+const token = Cookies.get('token');
   const [changing, setChanging] = useState(false);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [photo, setPhoto] = useState(null);
   const [location, setLocation] = useState('');
   const [latitude, setLatitude] = useState(null);
@@ -16,15 +19,31 @@ const Profile = () => {
 
   useEffect(() => {
     // Запрос на сервер для получения текущей информации о пользователе
-    axiosInstance.get('/api/user').then((response) => {
-       const { firstName, lastName, email, password, photo, location } =
-         response.data;
-       setFirstName(firstName);
-       setLastName(lastName);
-       setEmail(email);
-       setPhoto(photo);
-       setLocation(location);
-     });
+    // axios.get('/api/user').then((response) => {
+    //   const { firstName, lastName, email, password, photo, location } =
+    //     response.data;
+    //   setFirstName(firstName);
+    //   setLastName(lastName);
+    //   setEmail(email);
+    //   setPhoto(photo);
+    //   setLocation(location);
+    const decodedToken = jwt(token);
+    console.log(decodedToken);
+    const userId = decodedToken.Id;
+    console.log(userId);
+    axiosInstance.get('/userinfo?id='+userId,
+        {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                Accept : "application/json"
+            }
+        })
+        .then(res => {
+            setFirstName(res.data.firstName);
+            setLastName(res.data.lastName);
+            setUsername(res.data.userName)
+            console.log(res.data);
+        })
   }, []);
 
   function handleMapClick(event) {
@@ -34,22 +53,38 @@ const Profile = () => {
     setLocation(coords.join(', '));
   };
 
+  function Save() {
+    axiosInstance.post('/save', {
+        FirstName: firstName,
+        Lastname: lastName,
+        UserName: username,
+        Photo: photo,
+        Longitude: longitude,
+        Latitude: latitude,
+    }, {
+        headers:{
+            Authorization: `Bearer ${token}`,
+            Accept : "application/json"
+        }
+    })
+}
+
   const handleSubmit = (e) => {
     e.preventDefault();
     // Отправка данных на сервер
-    const formData = new FormData();
-    formData.append('firstName', firstName);
-    formData.append('lastName', lastName);
-    formData.append('email', email);
-    if (photo) {
-       formData.append('photo', photo);
-     }
-    formData.append('location', location);
-    formData.append('latitude', latitude);
-    formData.append('longitude', longitude);
-    axiosInstance.post('/api/user', formData).then((response) => {
-        console.log(response.data);
-    });
+    // const formData = new FormData();
+    // formData.append('firstName', firstName);
+    // formData.append('lastName', lastName);
+    // formData.append('email', email);
+    // if (photo) {
+    //   formData.append('photo', photo);
+    // }
+    // formData.append('location', location);
+    // formData.append('latitude', latitude);
+    // formData.append('longitude', longitude);
+    // axios.post('/api/user', formData).then((response) => {
+    //   console.log(response.data);
+    // });
   };
 
   return (
@@ -67,6 +102,7 @@ const Profile = () => {
                             <div className="form-group">
                                 <label htmlFor="firstName">First Name</label>
                                 <input
+                                disabled = {!changing}
                                 type="text"
                                 name="firstName"
                                 value={firstName}
@@ -78,6 +114,7 @@ const Profile = () => {
                             <div className="form-group">
                                 <label htmlFor="lastName">Last Name</label>
                                 <input
+                                disabled = {!changing}
                                 type="text"
                                 name="lastName"
                                 value={lastName}
@@ -87,19 +124,20 @@ const Profile = () => {
                             </div>
 
                             <div className="form-group">
-                                <label htmlFor="email">Email</label>
+                                <label htmlFor="email">UserName</label>
                                 <input
-                                type="email"
-                                name="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
+                                disabled = {!changing}
+                                type="text"
+                                name="username"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
                                 className="my-form-control"
                                 />
                             </div>
 
                             <div className="form-group">
                                 <label htmlFor="photo">Photo</label>
-                                <Dropzone onDrop={(acceptedFiles) => setPhoto(acceptedFiles[0])}>
+                                <Dropzone disabled = {!changing} onDrop={(acceptedFiles) => setPhoto(acceptedFiles[0])}>
                                 {({ getRootProps, getInputProps }) => (
                                     <div {...getRootProps()}>
                                     <input {...getInputProps()} />
@@ -128,7 +166,7 @@ const Profile = () => {
                             </div>
                             {
                                 changing?
-                                <button className="default-btn reverse" data-toggle="modal" data-target="#email-confirm">
+                                <button className="default-btn reverse" data-toggle="modal" data-target="#email-confirm" onClick={Save}>
                                     <span>Save</span>
                                 </button>
                                 :
