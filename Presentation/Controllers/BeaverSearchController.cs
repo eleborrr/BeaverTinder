@@ -58,7 +58,7 @@ public class BeaverSearchController: Controller
     [HttpGet("/mylikes")]
     public async Task<JsonResult> Likes()
     {
-        var result = await _serviceManager.FindBeaverService.GetNextBeaver(await GetUserFromJwt(), await GetRoleFromJwt());
+        var result = await _serviceManager.FindBeaverService.GetNextSympathy(await GetUserFromJwt());
         if (!result.Successful)
         {
             return Json(new SearchUserFailedResponse()
