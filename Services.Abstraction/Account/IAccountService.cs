@@ -1,4 +1,5 @@
 ﻿using Contracts;
+using Contracts.Responses.Account;
 using Contracts.Responses.Login;
 using Contracts.Responses.Registration;
 using Domain.Entities;
@@ -16,5 +17,6 @@ public interface IAccountService
 
     public Task<RegisterResponseDto> Register(RegisterDto model, ModelStateDictionary modelState);
     public Task<IdentityResult> ResetPasswordAsync(string userId, string token, string newPassword);
+    public Task<EditUserResponseDto> EditAccount(User currentUser, EditUserDto model, ModelStateDictionary modelState);
     public Task<IEnumerable<User>> GetAllMappedUsers();
 }
