@@ -1,4 +1,5 @@
 import { Routes, Route } from 'react-router-dom';
+import { OAuthAfterCallback } from './Components/after_call_back';
 import ChatForTwoPage from './Pages/chat_for_two';
 import PageNotFound from './Pages/404';
 import RegisterPage from './Pages/register';
@@ -30,6 +31,7 @@ function App() {
         <Route path='/myLikes' element= {<MyLikesPage/>}/>
         <Route path='/register' element={<RegisterPage />} />
         <Route path='/profile' element={<ProfilePage />} />
+        <Route path='/afterCallback' element={<OAuthAfterCallback />} />
         <Route path='*' element={<PageNotFound />}
         />
       </Routes>
