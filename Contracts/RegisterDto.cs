@@ -49,7 +49,4 @@ public class RegisterDto
 
     [Display(Name = "Tell about yourself")]
     public string About { get; set; }
-    
-    [Required]
-    public string Image { get; set; }
 }

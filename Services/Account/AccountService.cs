@@ -183,7 +183,7 @@ public class AccountService : IAccountService
 
             if (result.Succeeded)
             {
-                // await SendConfirmationEmailAsync(user.Id);
+                await SendConfirmationEmailAsync(user.Id);
                 var userDb = await _userManager.FindByEmailAsync(user.Email);
                 await _userManager.AddClaimAsync(userDb, new Claim(ClaimTypes.Role, "User"));
                 await _geolocationService.AddAsync(userId:userDb.Id,
