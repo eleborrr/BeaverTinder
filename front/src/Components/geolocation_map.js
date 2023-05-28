@@ -7,7 +7,7 @@ export const GeoMap = ({latitude, longitude}) => {
         <>
             <YMaps>
                 <div>
-                    <Map defaultState={{ center: [55.81441, 49.12068], zoom: 9 }} >
+                <Map state={{ center: [latitude, longitude], zoom: 9, }} >
                         <FullscreenControl options={{float: 'right'}} />
                         <Placemark geometry={[latitude, longitude]} />
                     </Map>

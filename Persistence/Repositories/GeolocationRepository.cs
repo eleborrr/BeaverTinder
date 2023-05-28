@@ -14,7 +14,7 @@ internal sealed class GeolocationRepository: IGeolocationRepository
         await _applicationDbContext.Geolocations.ToListAsync(cancellationToken);
     
     public async Task<UserGeolocation>? GetByUserIdAsync(string userId) =>
-        await _applicationDbContext.Geolocations.FirstOrDefaultAsync(x => x.Id == userId);
+        await _applicationDbContext.Geolocations.FirstOrDefaultAsync(x => x.UserId == userId);
 
     public async Task AddAsync(UserGeolocation geolocation)
     {

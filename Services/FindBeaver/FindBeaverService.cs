@@ -2,10 +2,10 @@
 using Domain.Entities;
 using Domain.Repositories;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Services.Abstraction;
 using Services.Abstraction.FindBeaver;
+using Services.Abstraction.Geolocation;
 using Services.Abstraction.Likes;
 
 namespace Services.FindBeaver;
@@ -15,16 +15,16 @@ public class FindBeaverService: IFindBeaverService
     private readonly UserManager<User> _userManager;
     private readonly IRepositoryManager _repositoryManager;
     private readonly IMemoryCache _memoryCache;
-    private readonly RoleManager<Role> _roleManager;
     private readonly ILikeService _likeService;
+    private readonly IGeolocationService _geolocationService;
 
-    public FindBeaverService(UserManager<User> userManager, IRepositoryManager repositoryManager, IMemoryCache memoryCache, RoleManager<Role> roleManager, ILikeService likeService)
+    public FindBeaverService(UserManager<User> userManager, IRepositoryManager repositoryManager, IMemoryCache memoryCache, RoleManager<Role> roleManager, ILikeService likeService, IGeolocationService geolocationService)
     {
         _userManager = userManager;
         _repositoryManager = repositoryManager;
         _memoryCache = memoryCache;
-        _roleManager = roleManager;
         _likeService = likeService;
+        _geolocationService = geolocationService;
     }
 
     public async Task<SearchUserResultDto> GetNextBeaver(User? currentUser, Role? userRole)
@@ -54,7 +54,8 @@ public class FindBeaverService: IFindBeaverService
 
             var filtredBeavers = _userManager.Users.AsEnumerable()
                 .Where(u => likes.Count(l => l.UserId == currentUser.Id && l.LikedUserId == u.Id ) == 0 && u.Id != currentUser.Id) // проверяем чтобы не попадались лайкнутые
-                .OrderBy(u => Math.Abs(currentUser.DateOfBirth.Year - u.DateOfBirth.Year))
+                .OrderBy(u => Math.Abs(_geolocationService.GetDistance(currentUser, u).Result))
+                .ThenBy(u => currentUser.DateOfBirth.Year - u.DateOfBirth.Year)
                 .Take(10)
                 .ToList();
                 _memoryCache.Set(currentUser.Id, filtredBeavers,
@@ -69,7 +70,14 @@ public class FindBeaverService: IFindBeaverService
                     Message = "Beaver queue error",
                     StatusCode = 500
                 };
-            
+
+            var curUserGeoloc = await _geolocationService.GetByUserId(currentUser.Id);
+            var likedUserGeoloc = await _geolocationService.GetByUserId(returnUserCache.Id);
+
+            var distanceInKm = 
+                Math.Ceiling(
+                    await _geolocationService.GetDistance(curUserGeoloc, likedUserGeoloc)).ToString();
+
             return new SearchUserResultDto
             {
                 Id = returnUserCache.Id,
@@ -78,6 +86,7 @@ public class FindBeaverService: IFindBeaverService
                 LastName = returnUserCache.LastName,
                 Gender = returnUserCache.Gender,
                 Age = DateTime.Now.Year - returnUserCache.DateOfBirth.Year,
+                DistanceInKm = distanceInKm,
                 Message = "ok",
                 StatusCode = 200,
                 Successful = true
@@ -108,6 +117,42 @@ public class FindBeaverService: IFindBeaverService
             StatusCode = 200,
             Successful = true
         };
+    }
+
+    
+    //TODO memory cache
+    public async Task<SearchUserResultDto> GetNextSympathy(User? currentUser)
+    {
+        if (currentUser is null)
+            return new SearchUserResultDto
+            {
+                Successful = false,
+                Message = "Logged in user error",
+                StatusCode = 400
+            };
+        var likes = await _repositoryManager.LikeRepository.GetAllAsync(default); // ???
+
+        var filtredBeavers = _userManager.Users.AsQueryable()
+            .Where(u => likes.Count(l => l.UserId ==  u.Id && l.LikedUserId ==currentUser.Id ) != 0 
+                        && likes.Count(l => l.UserId == currentUser.Id && l.LikedUserId ==  u.Id) == 0
+                        && u.Id != currentUser.Id) // проверяем чтобы попадались лайкнутые
+            .OrderBy(u => Math.Abs(currentUser.DateOfBirth.Year - u.DateOfBirth.Year))
+            .Take(10)
+            .ToList();
+        
+        var returnUserCache = filtredBeavers.FirstOrDefault();
+        return new SearchUserResultDto
+        {
+            Id = returnUserCache.Id,
+            About = returnUserCache.About,
+            FirstName = returnUserCache.FirstName,
+            LastName = returnUserCache.LastName,
+            Gender = returnUserCache.Gender,
+            Age = DateTime.Now.Year - returnUserCache.DateOfBirth.Year,
+            Message = "ok",
+            StatusCode = 200,
+            Successful = true
+        }; 
     }
 
     //TODO юзер будет приходить через жвт??

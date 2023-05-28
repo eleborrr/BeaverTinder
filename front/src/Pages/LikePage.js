@@ -15,6 +15,7 @@ const LikePage = () =>
     const [profile, setProfile] = useState();
     const [long, setLong] = useState();
     const [lant, setLant] = useState();
+    const [distance, setDistance] = useState('');
 
     useEffect(() => {
         GetNewBearer();
@@ -80,8 +81,8 @@ const LikePage = () =>
         })
         .then(res => {
             if (res.data){
-                if (res.data.longitude){
-                    setLong(res.data.longitude);
+                if (res.data.longtitude){
+                    setLong(res.data.longtitude);
                 }
                 if (res.data.latitude){
                     setLant(res.data.latitude);
@@ -112,6 +113,7 @@ const LikePage = () =>
                 setGeolocationAvailable(false);
                 CheckGeolocationAvailable(jwtDecode(token)["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"]);
                 GetGeolocation(res.data);
+                setDistance(res.data.distance);
             }
         }
         })
@@ -144,7 +146,7 @@ const LikePage = () =>
         <div>
             {profile ? 
             <div>
-                <BeaverCard profile = {profile} like = {like} dislike = {dislike}></BeaverCard>
+                <BeaverCard profile = {profile} like = {like} dislike = {dislike} distance={distance}></BeaverCard>
                 {geolocationAvailable?
                 <div className="div_map">
                     <GeoMap latitude={lant ? lant : 55.81441} longitude={long ? long : 49.12068} />
