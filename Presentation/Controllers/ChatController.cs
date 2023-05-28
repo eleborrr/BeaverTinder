@@ -33,7 +33,8 @@ public class ChatController: Controller
     {
         try
         {
-            var users = await _userManager.Users.ToListAsync();
+            var users = await _userManager.Users
+                .Where(u => _serviceManager.LikeService.).ToListAsync();
             var model = users.Select(x =>
             {
                 return new AllChatsResponse
