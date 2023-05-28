@@ -168,6 +168,7 @@ public class AccountService : IAccountService
                 Email = model.Email,
                 Gender = model.Gender,
                 About = model.About,
+                DateOfBirth = model.DateOfBirth,
                 Image = "TEST",
 
             };

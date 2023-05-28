@@ -151,6 +151,9 @@ const RegisterPage = () => {
                 ConfirmPassword: confPass,
                 Gender: gender,
                 About: about,
+                Longitude: long,
+                Latitude: lant,
+                DateOfBirth: birthdate
                 // Geolocation: location,
                 // BirthDate: birthdate 
             })
