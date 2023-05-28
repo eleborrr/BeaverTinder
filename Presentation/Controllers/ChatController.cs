@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using Contracts.Responses;
 using Contracts.Responses.Chat;
 using Contracts.ViewModels;
 using Domain.Entities;
@@ -30,35 +31,59 @@ public class ChatController: Controller
     [HttpGet("/im")]
     public async Task<JsonResult> Chats()
     {
-        var users = await _userManager.Users.ToListAsync();
-        var model = users.Select(x =>
+        try
         {
-            return new AllChatsResponse
+            var users = await _userManager.Users.ToListAsync();
+            var model = users.Select(x =>
             {
-                UserName = x.UserName,
-                FirstName = x.FirstName,
-                LastName = x.LastName,
-                Image = x.Image
-            };
-        });
-        return Json(model);
+                return new AllChatsResponse
+                {
+                    UserName = x.UserName,
+                    FirstName = x.FirstName,
+                    LastName = x.LastName,
+                    Image = x.Image
+                };
+            });
+            return Json(model);
+        }
+        catch (Exception exception)
+        {
+            return Json(new FailResponse()
+            {
+                Message = exception.Message,
+                StatusCode = 400,
+                Successful = false
+            });
+        }
     }
     
     [HttpGet("/im/chat")]
     public async Task<JsonResult> Chat([FromQuery] string username)
     {
-        var curUserId = User.Claims.FirstOrDefault(c => c.Type == "Id").Value;
-        var receiver = await _userManager.FindByNameAsync(username);
-        var sender = await _userManager.FindByIdAsync(curUserId);
-        
-        //TODO check for curUserId null
-        var res = await _serviceManager.ChatService.GetChatById(curUserId, receiver.Id);
-        var model = new SingleChatGetResponse()
+        try
         {
-            RecieverName = username,
-            SenderName = sender.UserName,
-            RoomName = res.Name
-        };
-        return Json(model);
+            var curUserId = User.Claims.FirstOrDefault(c => c.Type == "Id").Value;
+            var receiver = await _userManager.FindByNameAsync(username);
+            var sender = await _userManager.FindByIdAsync(curUserId);
+
+            //TODO check for curUserId null
+            var res = await _serviceManager.ChatService.GetChatById(curUserId, receiver.Id);
+            var model = new SingleChatGetResponse()
+            {
+                RecieverName = username,
+                SenderName = sender.UserName,
+                RoomName = res.Name
+            };
+            return Json(model);
+        }
+        catch (Exception exception)
+        {
+            return Json(new FailResponse()
+            {
+                Message = exception.Message,
+                StatusCode = 400,
+                Successful = false
+            });
+        }
     }
 }
