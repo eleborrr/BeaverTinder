@@ -81,23 +81,22 @@ public class AccountController : Controller
         {
 
         }
-
         var res = await _serviceManager.AccountService.ConfirmEmailAsync(userEmail, token);
         return Json(res);
     }
     
-    [HttpGet("/resetPassword")]
-    [AllowAnonymous]
-    public async Task<JsonResult> ResetPassword([FromQuery] string userEmail, [FromQuery] string token)
-    {
-        //TODO где получать пароль?
-        
-        if (userEmail == null || token == null)
-        {
-
-        }
-
-        var res = await _serviceManager.AccountService.ResetPasswordAsync(userEmail, token, "123");
-        return Json(res);
-    }
+    // [HttpGet("/resetPassword")]
+    // [AllowAnonymous]
+    // public async Task<JsonResult> ResetPassword([FromQuery] string userEmail, [FromQuery] string token)
+    // {
+    //     //TODO где получать пароль?
+    //     
+    //     if (userEmail == null || token == null)
+    //     {
+    //
+    //     }
+    //
+    //     var res = await _serviceManager.AccountService.ResetPasswordAsync(userEmail, token, "123");
+    //     return Json(res);
+    // }
 }

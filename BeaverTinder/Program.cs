@@ -49,12 +49,12 @@ builder.Services.AddMvc();
          options =>
          {
              options.SignIn.RequireConfirmedAccount = false; // change in prod
-             options.SignIn.RequireConfirmedEmail = false;  // change in prod
+             options.SignIn.RequireConfirmedEmail = true;  // change in prod
          })
      .AddDefaultTokenProviders()
      .AddEntityFrameworkStores<ApplicationDbContext>();
  builder.Services.Configure<DataProtectionTokenProviderOptions>(
-     o => o.TokenLifespan = TimeSpan.FromHours(3));
+     o => o.TokenLifespan = TimeSpan.FromHours(24));
 
 
 
