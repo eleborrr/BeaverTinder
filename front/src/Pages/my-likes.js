@@ -80,8 +80,8 @@ const MyLikesPage = () =>
         })
         .then(res => {
             if (res.data){
-                if (res.data.longitude){
-                    setLong(res.data.longitude);
+                if (res.data.longtitude){
+                    setLong(res.data.longtitude);
                 }
                 if (res.data.latitude){
                     setLant(res.data.latitude);
