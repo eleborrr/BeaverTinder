@@ -92,23 +92,22 @@ public class AccountController : Controller
     {
         var users = _userManager.Users;
         
-        //TODO убрать костыль с четырьмя резалтами)
-        var list = from user in users
-            select new EditUserDto()
+        var result = new List<AdminUserDto>();
+        foreach (var user in users)
+        {
+            var subscription = await _serviceManager.SubscriptionService.GetUserActiveSubscription(user.Id);
+            result.Add(new ()
             {
-                FirstName = user.FirstName,
-                LastName = user.LastName,
                 UserName = user.UserName,
-                Image = user.Image,
-                About = user.About,
-                Gender = user.Gender,
-                Latitude = (_serviceManager.GeolocationService.GetByUserId(user.Id)).Result.Latitude,
-                Longitude = (_serviceManager.GeolocationService.GetByUserId(user.Id)).Result.Longtitude,
-                SubName = _serviceManager.SubscriptionService.GetUserActiveSubscription(user.Id).Result.Name,
-                SubExpiresDateTime = _serviceManager.SubscriptionService.GetUserActiveSubscription(user.Id).Result
-                    .Expires,
-            };
-        return Json(list);
+                SubName = subscription.Name,
+                SubExpiresDateTime = subscription.Expires,
+                Id = user.Id,
+                IsBlocked = user.IsBlocked,
+                IsSearching = user.IsSearching,
+                
+            });
+        }
+        return Json(result);
     }
 
     [HttpGet("/confirm")]

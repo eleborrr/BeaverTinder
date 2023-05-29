@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using System.Net;
+using System.Security.Claims;
 using Contracts;
 using Domain.Entities;
 using Domain.Repositories;
@@ -47,8 +48,34 @@ public class SubscriptionService : ISubscriptionService
 
     public async Task<SubInfoDto> GetUserActiveSubscription(string userId)
     {
+        var user = await _userManager.FindByIdAsync(userId);
+        var roles = await _userManager.GetRolesAsync(user);
+        if (roles.Any(c => c == "Admin"))
+        {
+            return new SubInfoDto()
+            {
+                Name = "Admin",
+                Expires = new DateTime(10, 10, 10)
+            };
+        }
+        if (roles.Any(c => c == "Moderator"))
+        {
+            return new SubInfoDto()
+            {
+                Name = "Moderator",
+                Expires = new DateTime(10, 10, 10)
+            };
+        }
         var userSub = (await _repositoryManager.UserSubscriptionRepository.GetActiveSubscriptionsByUserIdAsync(userId))
             .FirstOrDefault();
+        if (userSub == null)
+        {
+            return new SubInfoDto()
+            {
+                Name = "User",
+                Expires = new DateTime(10, 10, 10)
+            };
+        }
         var sub = await _repositoryManager.SubscriptionRepository.GetBySubscriptionIdAsync(userSub.SubsId);
         return new SubInfoDto()
         {

@@ -49,8 +49,9 @@ public class EditUserDto
     public string About { get; set; }
     
     [Required]
+    [Display(Name = "Subscription Name")]
     public string SubName { get; set; }
-    
     [Required]
+    [Display(Name = "Subscription Expires Date Time")]
     public DateTime SubExpiresDateTime { get; set; }
 }

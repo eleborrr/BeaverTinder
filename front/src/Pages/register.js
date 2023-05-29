@@ -254,7 +254,7 @@ const RegisterPage = () => {
                                 </div>
                                 <div className="form-group">
                                     <label>Password</label>
-                                    <input type="text" className="my-form-control" placeholder="Enter Your Password" onChange={(e) => {
+                                    <input type="password" className="my-form-control" placeholder="Enter Your Password" onChange={(e) => {
                                         setPass(e.target.value);
                                        
                                         if (e.target.value !== confPass){
@@ -266,7 +266,7 @@ const RegisterPage = () => {
                                 </div>
                                 <div className="form-group">
                                     <label>ConfirmPassword</label>
-                                    <input type="text" className="my-form-control" placeholder="Confirm Your Password" onChange={(e) => ValidatePass(e)}/>
+                                    <input type="password" className="my-form-control" placeholder="Confirm Your Password" onChange={(e) => ValidatePass(e)}/>
                                     <span>{passError}</span>
                                 </div>
                                 <h4 className="content-title mt-5">Profile Details</h4>

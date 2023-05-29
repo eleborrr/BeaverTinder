@@ -88,6 +88,7 @@ const AdminPage = () => {
             }
         })
         .then(res => {
+            console.log(res.data);
             setUsers(res.data)
             setViewUsers(res.data)
         })
@@ -120,7 +121,7 @@ const AdminPage = () => {
                         <tr key={user.id}>
                             <td>{user.userName}</td>
                             {/* <td>{user.subInfo}</td> */}
-                            <td>roleInfo</td>
+                            <td>{user.subName}</td>
                             <td>{user.isBlocked.toString()}</td>
                             <td>{user.isSearching.toString()}</td>
                             <td>

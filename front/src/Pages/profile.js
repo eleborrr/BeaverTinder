@@ -23,6 +23,8 @@ const token = Cookies.get('token');
   const [location, setLocation] = useState('');
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
+  const [subName, setSubName] = useState('');
+  const [subExpires, setSubExpires] = useState('');
 
   useEffect(() => {
     const decodedToken = jwt(token);
@@ -35,6 +37,9 @@ const token = Cookies.get('token');
             }
         })
         .then(res => {
+            console.log(res.data);
+            setSubName(res.data.subName);
+            setSubExpires(res.data.subExpiresDateTime);
             setFirstName(res.data.firstName);
             setLastName(res.data.lastName);
             setUsername(res.data.userName);
@@ -66,6 +71,8 @@ const token = Cookies.get('token');
         ConfirmPassword: confPass,
         Longitude: longitude,
         Latitude: latitude,
+        SubName: 'subName',
+        subExpiresDateTime: '2023-06-28T13:44:00.7989673',
     }, 
     {
         headers:{
@@ -85,8 +92,8 @@ const token = Cookies.get('token');
                 <div className="col-lg-7">
                     <div className="log-reg-inner">
                         <div className="section-header">
-                            <h2 className="title">Info about subscription? </h2>
-                            <p>Info? </p>
+                            <h2 className="title">subname: {subName} </h2>
+                            <p>expires: {subExpires} </p>
                         </div>
                         <div className="main-content">
                             <form onSubmit={handleSubmit}>
