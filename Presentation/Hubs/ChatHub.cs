@@ -23,7 +23,7 @@ namespace Presentation.Hubs
 
             var room = _dbContext.Rooms.FirstOrDefault(r => r.Name == roomName);
 
-            var messages = await _dbContext.Messages.Where(m => m.RoomId == room.Id).ToListAsync();
+            var messages = await _dbContext.Messages.Where(m => m.RoomId == room.Id).OrderBy(m => m.Timestamp).ToListAsync();
             
             foreach (var message in messages)
             {
@@ -47,7 +47,7 @@ namespace Presentation.Hubs
             {
                 Id = Guid.NewGuid().ToString(),
                 Content = message,
-                Timestamp = DateTime.Today,
+                Timestamp = DateTime.Now,
                 SenderId = sender.Id,
                 ReceiverId = receiver.Id,
                 RoomId = room.Id
