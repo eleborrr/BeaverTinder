@@ -155,11 +155,8 @@ const RegisterPage = () => {
                 Longitude: long,
                 Latitude: lant,
                 DateOfBirth: birthdate
-                // Geolocation: location,
-                // BirthDate: birthdate 
             })
             .then(function (res) {
-                console.log(res);
                 const data = res.data;
                 if(data.successful === true){
                     setRespStatus(true);
@@ -169,7 +166,6 @@ const RegisterPage = () => {
                 }
             })
             .catch(function(error) {
-                console.log('catch');
                 if (error.status){
                     setRespStatus(error.status);
                 }else{
@@ -178,7 +174,6 @@ const RegisterPage = () => {
             })
         }
         catch(error){
-            console.log(error);
         }
 
     };
@@ -193,14 +188,6 @@ const RegisterPage = () => {
 
     return (
         <>
-    {/* <div className="preloader">
-        <div className="preloader-inner">
-            <div className="preloader-icon">
-                <span></span>
-                <span></span>
-            </div>
-        </div>
-    </div> */}
 
     <a href="#" className="scrollToTop"><i className="fa-solid fa-angle-up"></i></a>
 

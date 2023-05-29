@@ -136,11 +136,11 @@ const MyLikesPage = () =>
     <div>
         { userLimit? 
         <div> 
-            Пользователи закончились, ждите новых
+            <h1>Not Found users which liked you :( </h1>
         </div>
         :
         <div>
-        {likeLimit? <p>У вас закончились лайки</p>:
+        {likeLimit? <p>You'r days limit ends</p>:
         <div>
             {profile ? 
             <div>
@@ -151,12 +151,12 @@ const MyLikesPage = () =>
                 </div>
                 :
                 <div>
-                    Купите подписку чтобы увидеть геолокацию
+                    <h1>Buy subscription to get access to geolocation</h1>
                 </div>
                 }
             
             </div>:
-            <h1>Not Found users witch liked you :(</h1>
+            <h1>Not Found users which liked you :(</h1>
             }
 
         </div>

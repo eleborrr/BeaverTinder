@@ -25,15 +25,6 @@ const token = Cookies.get('token');
   const [longitude, setLongitude] = useState(null);
 
   useEffect(() => {
-    // Запрос на сервер для получения текущей информации о пользователе
-    // axios.get('/api/user').then((response) => {
-    //   const { firstName, lastName, email, password, photo, location } =
-    //     response.data;
-    //   setFirstName(firstName);
-    //   setLastName(lastName);
-    //   setEmail(email);
-    //   setPhoto(photo);
-    //   setLocation(location);
     const decodedToken = jwt(token);
     const userId = decodedToken.Id;
     axiosInstance.get('/userinfo?id='+userId,
@@ -221,20 +212,6 @@ const token = Cookies.get('token');
                                 />
                             </div>
 
-
-                            {/* <div className="form-group">
-                                <label htmlFor="photo">Photo</label>
-                                <Dropzone disabled = {!changing} onDrop={(acceptedFiles) => setPhoto(acceptedFiles[0])}>
-                                {({ getRootProps, getInputProps }) => (
-                                    <div {...getRootProps()}>
-                                    <input {...getInputProps()} />
-                                    <img src={photo}></img>
-                                    <p>Drag and drop a file here, or click to select a file</p>
-                                    </div>
-                                )}
-                                </Dropzone>
-                            </div> */}
-
                             <div className="form-group">
                                 <label htmlFor="location">Location</label>
                                 <input type="text" className="my-form-control" value={location} disabled={true}/>
@@ -256,9 +233,6 @@ const token = Cookies.get('token');
                             </div>
                             {
                                 changing?
-                                // <button className="default-btn reverse" data-toggle="modal" data-target="#email-confirm">
-                                //     <span>Save</span>
-                                // </button>
                                 <input type="submit" value="Save" style={{width:'21%', height: '3%'}} className='default-btn reverse'></input>
                                 :
                                 <button className="default-btn reverse" data-toggle="modal" data-target="#email-confirm" onClick={() => setChanging(true)}>
@@ -270,7 +244,7 @@ const token = Cookies.get('token');
                         </div>
                     </div>
                 </div>
-                <div className='profile-img' style={{width:'42%'}}>
+                <div className='profile-img' style={{width:'40%'}}>
                     <img src={photo}/>
                 </div>
             </div>

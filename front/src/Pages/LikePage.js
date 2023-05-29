@@ -101,7 +101,6 @@ const LikePage = () =>
             }
         })
         .then(res => {
-            console.log(res.data)
             if(res.data.message === "Beaver queue error")
             {
                 setUserLimit(true);
@@ -139,11 +138,11 @@ const LikePage = () =>
     <div>
         { userLimit? 
         <div> 
-            Пользователи закончились, ждите новых
+            <h1>Wait for new Users. </h1>
         </div>
         :
         <div>
-        {likeLimit? <p>У вас закончились лайки</p>:
+        {likeLimit? <h1>You'r days limit ends</h1>:
         <div>
             {profile ? 
             <div>
@@ -154,7 +153,7 @@ const LikePage = () =>
                 </div>
                 :
                 <div>
-                    Купите подписку чтобы увидеть геолокацию
+                    <h1>Buy subscription to get access to geolocation</h1>
                 </div>
                 }
             

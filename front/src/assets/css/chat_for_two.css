@@ -12,6 +12,7 @@
 	max-height:93%;
 	overflow:auto;
 	width: 50%;
+	margin-bottom: 10%;
 }
 
 .chat-messages__content {

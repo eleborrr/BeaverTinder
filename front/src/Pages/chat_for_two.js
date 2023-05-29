@@ -35,17 +35,14 @@ const ChatForTwoPage = () => {
            }
         }) 
         .then(response => {
-            console.log(response.data);
             room = response.data; // выводим данные, полученные из сервера
             callbackSignalR(room);
         })
         .catch(error => {
-            console.log(error); // обработка ошибок
         }); 
     }, [])
 
     function callbackSignalR(roomData){
-        console.log(roomData);
 
         let connection = new signalR.HubConnectionBuilder().withUrl("https://localhost:7015/chatHub").build();
 

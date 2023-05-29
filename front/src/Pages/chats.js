@@ -28,12 +28,11 @@ const ChatsPage = () => {
                 Accept : "application/json"
             }
         })
-        .then(chats => setChats(chats.data))
+        .then(chats => {setChats(chats.data)})
     }, [])
 
     const onPressEnter = (e) => {
         if (e.key === 'Enter'){
-            console.log('activate search');
             setSearchInput('');
         }
     }
@@ -59,17 +58,10 @@ const ChatsPage = () => {
                     {chats.map(chat => (
                         <li onClick={() => navigate(`${chat.userName}`)}>
                         <a className='thumbnail'>
-                        image?
+                        <img src = {chat.image}/>
                         </a>
                         <div className='content'>
                         <h3>{chat.firstName} {chat.lastName}</h3>
-                        <span className='preview'>hey how are things going on the...</span>
-                        <span className='meta'>
-                            2h ago &middot;
-                            <a href='#'>Category</a>
-                            &middot;
-                            <a href='#'>Reply</a>
-                        </span>
                         </div>
                     </li>
                     ))}    

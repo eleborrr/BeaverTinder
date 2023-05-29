@@ -33,13 +33,11 @@ const LoginPage = () => {
                 setErrMessage(res.data.message); 
             } 
             else{ 
-                console.log(res.data); 
                 Cookies.set('token', res.data.message); 
                 navigate('/home'); 
             } 
         }) 
         .catch((err) => { 
-            console.log(err); 
         }); 
     }; 
  
@@ -48,33 +46,9 @@ const LoginPage = () => {
             navigate('/home'); 
         } 
     }) 
- 
-    // function login() { 
-    //     alert() 
-    //     axiosInstance 
-    //     .post('/login', { 
-    //         UserName: userName, 
-    //         Password: password, 
-    //         RememberMe: rememberMe 
-    //     }) 
-    //     .then(function (response) { 
-    //         console.log(response); 
-    //     }) 
-    //     .catch(function(error) { 
-    //         console.log(error); 
-    //     }) 
- 
-    // } 
+    
     return( 
         <> 
-    {/* <div className="preloader"> 
-        <div className="preloader-inner"> 
-            <div className="preloader-icon"> 
-                <span></span> 
-                <span></span> 
-            </div> 
-        </div> 
-    </div> */} 
  
     <a href="#" className="scrollToTop"><i className="fa-solid fa-angle-up"></i></a> 
  

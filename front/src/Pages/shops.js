@@ -40,7 +40,6 @@ const ShopsPage = () => {
             .then(res => setPaymentArr(res.data));
         }
         catch(e){
-            console.log(e);
         }
     }, [])
     return(

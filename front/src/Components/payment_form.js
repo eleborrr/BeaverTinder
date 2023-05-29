@@ -2,6 +2,8 @@ import Cookies from 'js-cookie'
 import { useState } from 'react'
 import { axiosInstance } from './axios_server'
 import './../assets/css/payment_form.css'
+import jwtDecode from "jwt-decode";
+import { useEffect } from 'react';
 
 export const PaymentForm = ({onClose, userId, subsId, amount}) => {
 
@@ -11,6 +13,8 @@ export const PaymentForm = ({onClose, userId, subsId, amount}) => {
     const [year, setYear] = useState();
     const [code, setCode] = useState();
     const [err, setErr] = useState();
+    const [downloading, setDownloading] = useState(false);
+
 
     function handleClick() {
         if(!Validate()){
@@ -21,6 +25,7 @@ export const PaymentForm = ({onClose, userId, subsId, amount}) => {
             }
             
         } else {
+            setDownloading(true);
             axiosInstance.post('/payment/pay',{ 
                 userId: userId,
                 cardNumber: cardNumber,
@@ -36,7 +41,8 @@ export const PaymentForm = ({onClose, userId, subsId, amount}) => {
                 }
             })
             .then(res => {
-                alert("Для получения дополнительных свойств подписки просим перезайти на аккаунт")
+                alert("Для получения дополнительных свойств подписки просим перезайти на аккаунт");
+                setDownloading(false);
             })
         }
     }
@@ -64,8 +70,9 @@ export const PaymentForm = ({onClose, userId, subsId, amount}) => {
         return true;
     }
     return (
-    <div className="container p-0">
-        <div className="card px-4">
+
+        <div className="container p-0">
+            {downloading? <div> <h1>Paying wait please</h1> </div> : <div className="card px-4">
             <p className="h8 py-3">Детали оплаты</p>
             <p onClick={() => onClose()} className="close" />
             <div className="row gx-3">
@@ -96,7 +103,9 @@ export const PaymentForm = ({onClose, userId, subsId, amount}) => {
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+        </div>}
+        
+    </div> 
+    
     )
 }
