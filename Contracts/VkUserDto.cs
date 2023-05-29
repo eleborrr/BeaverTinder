@@ -21,4 +21,6 @@ public class VkUserDto
     public int Gender { get; set; }
     [JsonPropertyName("status")]
     public string About { get; set; }
+    [JsonPropertyName("photo_max_orig")]
+    public string PhotoUrl { get; set; }
 }

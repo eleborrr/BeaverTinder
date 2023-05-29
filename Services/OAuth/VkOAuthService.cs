@@ -72,8 +72,8 @@ public class VkOAuthService : IVkOAuthService
             Email = userDto.Email,
             Gender = gender.ToString(),
             About = userDto.About,
-            Image = "TEST",
-            DateOfBirth = userDto.DateOfBirth
+            Image = userDto.PhotoUrl,
+            DateOfBirth = userDto.DateOfBirth,
         };
         
         var emailCollision = _userManager.Users.FirstOrDefault(u => u.Email == user.Email);
@@ -148,7 +148,8 @@ public class VkOAuthService : IVkOAuthService
             Gender = vkUserDto.Gender.ToString(),
             LastName = vkUserDto.LastName,
             UserName = vkUserDto.UserName,
-            DateOfBirth = parsedDate
+            DateOfBirth = parsedDate,
+            PhotoUrl = vkUserDto.PhotoUrl
         };
         var authRes = await AuthAsync(registerDto);
         return authRes;
@@ -158,7 +159,7 @@ public class VkOAuthService : IVkOAuthService
     {
         var query = new Dictionary<string, string>()
         {
-            ["fields"] = "screen_name, bdate, sex, status, about",
+            ["fields"] = "screen_name, bdate, sex, status, about, photo_max_orig",
             ["access_token"] = accessToken.Token,
             ["v"] = "5.131",
         };
