@@ -34,7 +34,7 @@ const LoginPage = () => {
             } 
             else{ 
                 Cookies.set('token', res.data.message); 
-                navigate('/home'); 
+                document.location.replace(`/home`);
             } 
         }) 
         .catch((err) => { 

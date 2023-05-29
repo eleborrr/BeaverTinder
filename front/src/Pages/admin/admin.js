@@ -133,17 +133,6 @@ const AdminPage = () => {
                             <Button variant="secondary" onClick={(e) => onSubmit(e, user.id, 'deactivate')}>Deactivate search</Button>{' '}
                             <Button color="error" onClick={(e) => onSubmit(e, user.id, 'add_moderator')}>Add Moderator</Button>{' '}
                             {isAdmin? <div><Button color="error" onClick={(e) => onSubmit(e, user.id, 'add_admin')}>Add Admin</Button>{' '}</div>: <div></div>}
-                            <Dropdown>
-                                <Dropdown.Toggle variant="info" id="subscription-dropdown">
-                                Give subscription
-                                </Dropdown.Toggle>
-
-                                <Dropdown.Menu>
-                                <Dropdown.Item onClick={() => handleGiveSubscription(user.id, 'user-more-likes')}>More Likes</Dropdown.Item>
-                                <Dropdown.Item onClick={() => handleGiveSubscription(user.id, 'user-more-likes-and-map')}>More Likes and Map</Dropdown.Item>
-                                </Dropdown.Menu>
-                            </Dropdown>{' '}
-                            <Button variant="warning" onClick={() => handleDeleteSubscription(user.id)}>Delete subscription</Button>
                             </td>
                         </tr>
                         ))}
