@@ -25,6 +25,7 @@ const token = Cookies.get('token');
   const [longitude, setLongitude] = useState(null);
   const [subName, setSubName] = useState('');
   const [subExpires, setSubExpires] = useState('');
+  const [passChange, setPassChange] = useState(false);
 
   useEffect(() => {
     const decodedToken = jwt(token);
@@ -178,7 +179,7 @@ const token = Cookies.get('token');
                             </div>
 
                             
-                            {!changing? <div></div> : 
+                            {!passChange? <div></div> : 
                             <div>
 
                                 <div className="form-group">
@@ -245,7 +246,11 @@ const token = Cookies.get('token');
                                 <button className="default-btn reverse" data-toggle="modal" data-target="#email-confirm" onClick={() => setChanging(true)}>
                                     <span>Change</span>
                                 </button>
+                                
                             }
+                                <button className="default-btn reverse" data-toggle="modal" data-target="#email-confirm" onClick={(e) => setPassChange(!passChange)}>
+                                    <span>ChangePassoword</span>
+                                </button>
                             
                             </form>
                         </div>

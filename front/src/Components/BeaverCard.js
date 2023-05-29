@@ -3,7 +3,7 @@ import "../assets/css/beaverCard.css"
 
 const BeaverCard = ({profile, like, dislike, distance}) => {
 
-  console.log(distance);
+  console.log(profile);
   const [alreadyLiked, setAlreadyLiked] = useState(false);
   const CorrectWord = (age) => {
     if (age % 10 === 1){
@@ -21,7 +21,7 @@ return (
           <img className='beaverCardImg' src={profile.image}></img>
           <div className='profile'>
             <div className='name'>{`${profile.firstName} ${profile.lastName},`} <span>{profile.age} {CorrectWord(profile.age)}</span></div>
-            <div className='name from'> {distance}km from you</div>
+            {/* <div className='name from'> {profile.distanceInKm}km from you</div> */}
             <div className='name'>Пол: {profile.gender === 'Woman' ? 'жен' : 'муж'}</div>
             <div className='name'>О себе: {profile.about}</div>
           </div>
