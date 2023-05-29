@@ -63,6 +63,7 @@ public class AccountController : Controller
         return Json(model);
     }
 
+    [HttpGet("/usersubinfo")]
     public async Task<JsonResult> GetUserSubInformation([FromQuery] string userId)
     {
         //todo ограничение, тип чтобы не каждый мог вызывать этот метод
