@@ -31,4 +31,12 @@ public class EditUserViewModel
 
     [Display(Name = "Tell about yourself")]
     public string About { get; set; }
+    
+    [Required]
+    [Display(Name = "Subscription name")]
+    public string SubName { get; set; }
+    
+    [Required]
+    [Display(Name = "Subscription Date")]
+    public DateTime SubExpiresDateTime { get; set; }
 }

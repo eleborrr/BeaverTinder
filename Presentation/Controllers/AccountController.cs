@@ -44,6 +44,9 @@ public class AccountController : Controller
     {
         var user = await _userManager.FindByIdAsync(id);
         var geoloc = await _serviceManager.GeolocationService.GetByUserId(id);
+        
+        //todo ограничение, тип чтобы не каждый мог вызывать этот метод
+        var subInfo = await _serviceManager.SubscriptionService.GetUserActiveSubscription(id);
         var model = new EditUserViewModel()
         {
             FirstName = user.FirstName,
@@ -53,7 +56,22 @@ public class AccountController : Controller
             About = user.About,
             Gender = user.Gender,
             Latitude = geoloc.Latitude,
-            Longitude = geoloc.Longtitude
+            Longitude = geoloc.Longtitude,
+            SubName = subInfo.Name,
+            SubExpiresDateTime = subInfo.Expires
+        };
+        return Json(model);
+    }
+
+    public async Task<JsonResult> GetUserSubInformation([FromQuery] string userId)
+    {
+        //todo ограничение, тип чтобы не каждый мог вызывать этот метод
+        var subInfo = await _serviceManager.SubscriptionService.GetUserActiveSubscription(userId);
+
+        var model = new SubInfoDto()
+        {
+            Name = subInfo.Name,
+            Expires = subInfo.Expires
         };
         return Json(model);
     }

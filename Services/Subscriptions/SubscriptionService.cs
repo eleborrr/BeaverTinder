@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using Contracts;
 using Domain.Entities;
 using Domain.Repositories;
 using Microsoft.AspNetCore.Identity;
@@ -42,6 +43,18 @@ public class SubscriptionService : ISubscriptionService
         }
         await _repositoryManager.UserSubscriptionRepository.UpdateUserSubAsync(subsId, userId);
         await _userManager.AddToRoleAsync(user, sub.RoleName);
+    }
+
+    public async Task<SubInfoDto> GetUserActiveSubscription(string userId)
+    {
+        var userSub = (await _repositoryManager.UserSubscriptionRepository.GetActiveSubscriptionsByUserIdAsync(userId))
+            .FirstOrDefault();
+        var sub = await _repositoryManager.SubscriptionRepository.GetBySubscriptionIdAsync(userSub.SubsId);
+        return new SubInfoDto()
+        {
+            Name = sub.Name,
+            Expires = userSub.Expires
+        };
     }
 
     public async Task<IEnumerable<Subscription>> GetAllAsync()
