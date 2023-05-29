@@ -113,7 +113,7 @@ public class FindBeaverService: IFindBeaverService
             FirstName = returnUser.FirstName,
             LastName = returnUser.LastName,
             Gender = returnUser.Gender,
-            Age = returnUser.DateOfBirth.Year - DateTime.Now.Year,
+            Age = DateTime.Now.Year - returnUser.DateOfBirth.Year ,
             Message = "ok",
             StatusCode = 200,
             Successful = true,

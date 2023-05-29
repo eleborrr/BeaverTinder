@@ -48,7 +48,7 @@ public class BeaverSearchController: Controller
             About = result.About,
             FirstName = result.FirstName,
             LastName = result.LastName,
-            Age = DateTime.Now.Year - result.Age,
+            Age = result.Age,
             DistanceInKm = result.DistanceInKm,
             Gender = result.Gender,
             Image = result.Image,
