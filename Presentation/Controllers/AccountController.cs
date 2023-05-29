@@ -89,7 +89,25 @@ public class AccountController : Controller
     [HttpGet("/all")]
     public async Task<JsonResult> GetAllUsers()
     {
-        return Json(await _userManager.Users.ToListAsync());
+        var users = _userManager.Users;
+        
+        //TODO убрать костыль с четырьмя резалтами)
+        var list = from user in users
+            select new EditUserDto()
+            {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                UserName = user.UserName,
+                Image = user.Image,
+                About = user.About,
+                Gender = user.Gender,
+                Latitude = (_serviceManager.GeolocationService.GetByUserId(user.Id)).Result.Latitude,
+                Longitude = (_serviceManager.GeolocationService.GetByUserId(user.Id)).Result.Longtitude,
+                SubName = _serviceManager.SubscriptionService.GetUserActiveSubscription(user.Id).Result.Name,
+                SubExpiresDateTime = _serviceManager.SubscriptionService.GetUserActiveSubscription(user.Id).Result
+                    .Expires,
+            };
+        return Json(list);
     }
 
     [HttpGet("/confirm")]

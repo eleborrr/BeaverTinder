@@ -39,11 +39,5 @@ public class ChatService: IChatService
         }
 
         return room;
-        // var model = new ChatModel
-        // {
-        //     UserId = curUserId,
-        //     RecieverId = id,
-        //     RoomName = room.Name
-        // };
     }
 }

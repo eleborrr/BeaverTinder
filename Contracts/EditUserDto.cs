@@ -47,4 +47,10 @@ public class EditUserDto
 
     [Display(Name = "Tell about yourself")]
     public string About { get; set; }
+    
+    [Required]
+    public string SubName { get; set; }
+    
+    [Required]
+    public DateTime SubExpiresDateTime { get; set; }
 }
