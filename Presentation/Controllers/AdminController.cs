@@ -1,5 +1,6 @@
 ﻿using Contracts;
 using Domain.Entities;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -8,6 +9,7 @@ namespace Presentation.Controllers;
 
 [ApiController]
 [Route("[controller]")]
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 public class AdminController: Controller
 {
     private readonly UserManager<User> _userManager;
@@ -17,7 +19,7 @@ public class AdminController: Controller
         _userManager = userManager;
     }
 
-    [Authorize(Policy = "OnlyForAdmins")]
+    [Authorize(Policy = "OnlyForModerators")]
     [HttpGet("/ban")]
     public IActionResult BanUser()
     {
@@ -28,7 +30,7 @@ public class AdminController: Controller
     [HttpPost("/ban")]
     public async Task<IActionResult> BanUser([FromBody] AdminPageUserIdDto adminPageUserId)  //List<User>
     {
-        var user = await _userManager.FindByNameAsync(adminPageUserId.UserId);
+        var user = await _userManager.FindByIdAsync(adminPageUserId.UserId);
         
         if (user == null)
         {
@@ -93,7 +95,7 @@ public class AdminController: Controller
         return RedirectToAction("GetAllUsers", "Account");
     }
     
-    [Authorize(Policy = "OnlyForAdmins")]
+    [Authorize(Policy = "OnlyForModerators")]
     [HttpPost("/activate")]
     public async Task<IActionResult> ActivateSearch([FromBody] AdminPageUserIdDto userIdId)  //List<User>
     {
@@ -115,9 +117,8 @@ public class AdminController: Controller
         
         return RedirectToAction("GetAllUsers", "Account");
     }
-
-    //[Authorize(Policy = "OnlyForAdmins")]
-    [Authorize]
+    
+    [Authorize(Policy = "OnlyForAdmins")]
     [HttpPost("/add_moderator")]
     public async Task<IActionResult> AddModerator([FromBody] AdminPageUserIdDto userIdId)
     {
@@ -136,8 +137,28 @@ public class AdminController: Controller
 
         return RedirectToAction("GetAllUsers", "Account");
     }
-
+    
     [Authorize(Policy = "OnlyForAdmins")]
+    [HttpPost("/add_admin")]
+    public async Task<IActionResult> AddAdmin([FromBody] AdminPageUserIdDto userIdId)
+    {
+        var user = await _userManager.FindByIdAsync(userIdId.UserId);
+        if (user == null)
+        {
+            return NotFound();
+        }
+
+        var result = await _userManager.AddToRoleAsync(user, "Admin");
+        if (!result.Succeeded)
+        {
+            return BadRequest(result.Errors);
+            // обработка ошибок добавления роли
+        }
+
+        return RedirectToAction("GetAllUsers", "Account");
+    }
+
+    [Authorize(Policy = "OnlyForModerators")]
     [HttpGet("page")]
     public bool GetAdminPage()
     {

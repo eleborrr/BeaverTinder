@@ -153,17 +153,18 @@ builder.Services.AddMvc();
  {
      options.AddPolicy("OnlyMapSubs", policy =>
      {
-         policy.RequireClaim(ClaimTypes.Role, "UserMoreLikesAndMap");
+         policy.RequireClaim(ClaimTypes.Role, "UserMoreLikesAndMap", "Moderator", "Admin");
      });
      options.AddPolicy("OnlyLikeSubs", policy =>
      {
-         policy.RequireClaim(ClaimTypes.Role, "UserMoreLikes");
+         policy.RequireClaim(ClaimTypes.Role, "UserMoreLikes", "Moderator", "Admin");
      });
      options.AddPolicy("OnlyForAdmins", policy => {
          policy.RequireClaim(ClaimTypes.Role, "Admin");
      });
      options.AddPolicy("OnlyForModerators", policy => {
-         policy.RequireClaim(ClaimTypes.Role, "Moderator");
+         policy.RequireClaim(ClaimTypes.Role, "Moderator", "Admin");
+         
      });
  });
 

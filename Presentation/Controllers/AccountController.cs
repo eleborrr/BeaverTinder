@@ -67,6 +67,7 @@ public class AccountController : Controller
         return Json(b);
     }
     
+    [Authorize(Policy = "OnlyForModerators")]
     [HttpGet("/all")]
     public async Task<JsonResult> GetAllUsers()
     {
