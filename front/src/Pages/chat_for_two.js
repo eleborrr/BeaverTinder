@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { axiosInstance } from "../Components/axios_server";
 import jwtDecode from "jwt-decode";
@@ -6,7 +6,6 @@ import Cookies from "js-cookie";
 import './../assets/css/chat_for_two.css';
 import 'https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js';
 import * as signalR from "@microsoft/signalr";
-import { a } from "@react-spring/web";
 
 const ChatForTwoPage = () => {
     const navigate = useNavigate();
@@ -18,31 +17,10 @@ const ChatForTwoPage = () => {
         if (!token){
             navigate("/login");
         }
-    }, [])
+    }, [navigate, token])
 
-    const [messages, setMessages] = useState(null); 
-    const [interval, setInterval] = useState(null); 
     const [message, setMessage] = useState('');
-
-
-    useEffect(() => {
-        let room;
-        var response = axiosInstance.get(`/im/chat?username=${nickname}`,
-        {
-           headers:{
-               Authorization: `Bearer ${token}`,
-               Accept : "application/json"
-           }
-        }) 
-        .then(response => {
-            room = response.data; // выводим данные, полученные из сервера
-            callbackSignalR(room);
-        })
-        .catch(error => {
-        }); 
-    }, [])
-
-    function callbackSignalR(roomData){
+    const callbackSignalR = useCallback((roomData) => {
 
         let connection = new signalR.HubConnectionBuilder().withUrl("https://localhost:7015/chatHub").build();
 
@@ -85,7 +63,25 @@ const ChatForTwoPage = () => {
             });
             event.preventDefault();
         });
-    }
+    }, [nickname])
+
+    useEffect(() => {
+        let room;
+        axiosInstance.get(`/im/chat?username=${nickname}`,
+        {
+           headers:{
+               Authorization: `Bearer ${token}`,
+               Accept : "application/json"
+           }
+        }) 
+        .then(response => {
+            room = response.data; // выводим данные, полученные из сервера
+            callbackSignalR(room);
+        })
+        .catch(); 
+    }, [callbackSignalR, nickname, token])
+
+    
     
 
     return(

@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from "react-router-dom"; 
+import { useEffect } from 'react';
 import { axiosInstance } from './axios_server';
 import Cookies from 'js-cookie';
 
@@ -8,7 +7,6 @@ export const OAuthAfterCallback = () => {
     const query = window.location.search;
     const queryParams = new URLSearchParams(query);
     const code = queryParams.get('code');
-    const navigate = useNavigate() 
 
     useEffect(() => {
         axiosInstance.get(`/login/getAccessToken?code=${code}`)
@@ -20,7 +18,7 @@ export const OAuthAfterCallback = () => {
             setTimeout(() => {
                 document.location.replace(`/home`);
               }, 1000);
-    }, [])
+    }, [code])
     return(
         <>
         </>

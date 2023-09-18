@@ -57,7 +57,7 @@ const RegisterPage = () => {
       };    
 
     const handleEmailChange = (event) => {
-        const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+        const emailRegex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
         const newEmail = event.target.value;
         if(!emailRegex.test(newEmail)){
             setEmailError('Введен неверный формат почты');
@@ -182,14 +182,14 @@ const RegisterPage = () => {
         if (Cookies.get('token')){
             navigate('/home');
         }
-    }, []);
+    }, [navigate]);
     
     
 
     return (
         <>
 
-    <a href="#" className="scrollToTop"><i className="fa-solid fa-angle-up"></i></a>
+    <a href="/" className="scrollToTop"><i className="fa-solid fa-angle-up"></i></a>
 
     <section className="log-reg">
         <div className="top-menu-area">

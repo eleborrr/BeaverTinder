@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import { axiosInstance } from "../Components/axios_server";
 import './../assets/css/chats.css';
-import { to } from "@react-spring/web";
 
 const ChatsPage = () => {
 
@@ -18,7 +17,7 @@ const ChatsPage = () => {
         if (!token){
             navigate("/login");
         }
-    }, [])
+    }, [navigate, token])
 
     useEffect(() => {
         axiosInstance.get('/im',
@@ -29,7 +28,7 @@ const ChatsPage = () => {
             }
         })
         .then(chats => {setChats(chats.data)})
-    }, [])
+    }, [token])
 
     const onPressEnter = (e) => {
         if (e.key === 'Enter'){
@@ -46,7 +45,7 @@ const ChatsPage = () => {
                     </h2>
                     <ul className='tools'>
                         <li>
-                            <a className={searchNone? 'fa fa-search' : 'fa fa-search fa-close'} onClick={() => setSearchNone(!searchNone)}></a>
+                            <a href="/" className={searchNone? 'fa fa-search' : 'fa fa-search fa-close'} onClick={() => setSearchNone(!searchNone)}> </a>
                         </li>
                     </ul>
                 </header>
@@ -57,11 +56,11 @@ const ChatsPage = () => {
                     <ul>
                     {chats.map(chat => (
                         <li onClick={() => navigate(`${chat.userName}`)}>
-                        <a className='thumbnail'>
-                        <img src = {chat.image}/>
-                        </a>
+                            <a href="/" className='thumbnail'>
+                                <img alt="chat icon" src = {chat.image}/> 
+                            </a>
                         <div className='content'>
-                        <h3>{chat.firstName} {chat.lastName}</h3>
+                            <h3>{chat.firstName} {chat.lastName}</h3>
                         </div>
                     </li>
                     ))}    

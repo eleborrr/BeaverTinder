@@ -50,7 +50,7 @@ const LoginPage = () => {
     return( 
         <> 
  
-    <a href="#" className="scrollToTop"><i className="fa-solid fa-angle-up"></i></a> 
+    <a href="/" className="scrollToTop"><i className="fa-solid fa-angle-up"></i></a> 
  
  
     <section className="log-reg"> 
@@ -86,7 +86,7 @@ const LoginPage = () => {
                                     <input type="checkbox"
                                 className="checkboxRemember" name="RememberMe" onChange={() => setRememberMe(!rememberMe)} /> 
                                 </div> 
-                                <p className="f-pass">Forgot your password? <a href="#">recover password</a></p> 
+                                <p className="f-pass">Forgot your password? <a href="/">recover password</a></p> 
                                 <span className={spanClass}>{errMessage} Попробуйте ещё раз</span> 
                                 <div className="text-center"> 
                                     <button type="submit" className="default-btn" onClick={onSubmit}><span>Sign IN</span></button> 
@@ -96,7 +96,7 @@ const LoginPage = () => {
                                 </div> 
                                 <div className="or-content"> 
                                     <p>Sign up with your vk</p> 
-                                        <a onClick={() => handleOauth()} className="default-btn reverse"><img src={vk} alt="vk" className="vk-logo"/> <span>Sign Up with VK</span></a> 
+                                        <a href="/" onClick={() => handleOauth()} className="default-btn reverse"><img src={vk} alt="vk" className="vk-logo"/> <span>Sign Up with VK</span></a> 
                                     <p className="or-signup"> Don't have an account? <a href="/register">Sign up here</a></p> 
                                 </div> 
                             </form> 

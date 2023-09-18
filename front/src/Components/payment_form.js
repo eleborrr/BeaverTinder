@@ -2,8 +2,6 @@ import Cookies from 'js-cookie'
 import { useState } from 'react'
 import { axiosInstance } from './axios_server'
 import './../assets/css/payment_form.css'
-import jwtDecode from "jwt-decode";
-import { useEffect } from 'react';
 
 export const PaymentForm = ({onClose, userId, subsId, amount}) => {
 

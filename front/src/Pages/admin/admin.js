@@ -1,25 +1,38 @@
 import React, { useEffect, useState } from "react";
-import Dropdown from 'react-bootstrap/Dropdown';
-import { Input, Button } from "@mui/material";
+import { Button } from "@mui/material";
 import jwtDecode from "jwt-decode";
 import Cookies from "js-cookie";
 import { axiosInstance } from "../../Components/axios_server";
 import PageNotFound from './../404';
 import "../../assets/css/admin.css"
+import { useCallback } from "react";
 
 const AdminPage = () => {
     const [isAvailable, setIsAvailable] = useState(false);
-    const [func, setFunc] = useState('');
     const [users, setUsers] = useState([]);
     const [viewUsers, setViewUsers] = useState([]);
     const [isAdmin, setIsAdmin] = useState(false);
     const token = Cookies.get('token');
 
     const onSubmit = (e, userid, func) => {
-        setFunc(func);
         e.preventDefault();
         functionOnUser(func, userid);
     };
+
+    const getAllUsersAxios = useCallback(() => {
+        axiosInstance.get('/all',
+        {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                Accept : "application/json"
+            }
+        })
+        .then(res => {
+            console.log(res.data);
+            setUsers(res.data)
+            setViewUsers(res.data)
+        })
+    }, [token])
 
     useEffect( () => {   
         const roles = jwtDecode(token)["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];    
@@ -35,25 +48,26 @@ const AdminPage = () => {
                 setIsAvailable(true);
                 setIsAdmin(true);
             }
+            return element;
         })
         }
         else
         {
-            setIsAvailable(roles == "Moderator" || roles == "Admin");
-            setIsAdmin(roles == "Admin");
+            setIsAvailable(roles === "Moderator" || roles === "Admin");
+            setIsAdmin(roles === "Admin");
         }
 
         getAllUsersAxios();
 
-    }, [])
+    }, [getAllUsersAxios, token])
 
-    const handleGiveSubscription = (userId, subscriptionType) => {
-        // обработка выбора типа подписки
-      };
+    // const handleGiveSubscription = (userId, subscriptionType) => {
+    //     // обработка выбора типа подписки
+    //   };
 
-    const handleDeleteSubscription = (userId) => {
-        // обработка нажатия кнопки delete subscription
-      };
+    // const handleDeleteSubscription = (userId) => {
+    //     // обработка нажатия кнопки delete subscription
+    //   };
 
     const handleSearch = (event) => {
         setViewUsers(users.filter(u => u.userName.toLowerCase().includes(event.target.value.trim().toLowerCase())))
@@ -78,22 +92,6 @@ const AdminPage = () => {
         .catch(function(error) {
         })
     }
-
-    function getAllUsersAxios(){
-        axiosInstance.get('/all',
-        {
-            headers: {
-                Authorization: `Bearer ${token}`,
-                Accept : "application/json"
-            }
-        })
-        .then(res => {
-            console.log(res.data);
-            setUsers(res.data)
-            setViewUsers(res.data)
-        })
-    }
-
 
     return (
         <div>

@@ -1,7 +1,7 @@
-import React, { useState, useMemo, useRef } from 'react'
+import React, { useState} from 'react'
 import "../assets/css/beaverCard.css"
 
-const BeaverCard = ({profile, like, dislike, distance}) => {
+const BeaverCard = ({profile, like, dislike}) => {
 
   console.log(profile);
   const [alreadyLiked, setAlreadyLiked] = useState(false);
@@ -18,7 +18,7 @@ const BeaverCard = ({profile, like, dislike, distance}) => {
 return (
   <div className='content'>
     <div className='beaverCard'>
-          <img className='beaverCardImg' src={profile.image}></img>
+          <img className='beaverCardImg' src={profile.image} alt='User card'></img>
           <div className='profile'>
             <div className='name'>{`${profile.firstName} ${profile.lastName},`} <span>{profile.age} {CorrectWord(profile.age)}</span></div>
             {/* <div className='name from'> {profile.distanceInKm}km from you</div> */}
