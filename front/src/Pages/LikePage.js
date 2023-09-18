@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Cookies from 'js-cookie';
 import jwtDecode from "jwt-decode";
 import BeaverCard from "../Components/BeaverCard";
@@ -17,6 +18,13 @@ const LikePage = () =>
     const [long, setLong] = useState();
     const [lant, setLant] = useState();
     const [distance, setDistance] = useState('');
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (!token){
+            navigate("/login");
+        }
+    }, [navigate, token])
 
     const GetGeolocation = useCallback((prof) => {
         axiosInstance.post("/geolocation",{
