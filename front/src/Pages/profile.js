@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
 import jwt from 'jwt-decode'
-import Dropzone from 'react-dropzone';
 import { YMaps, Map, Placemark } from '@pbe/react-yandex-maps';
 import { GeoMap } from "../Components/geolocation_map";
 import './../assets/css/profile.css'
 import { axiosInstance } from '../Components/axios_server';
-import { height } from '@mui/system';
 
 const Profile = () => {
 const token = Cookies.get('token');
@@ -51,7 +49,7 @@ const token = Cookies.get('token');
             setGender(res.data.gender);
             setModelGender(res.data.gender);
         })
-  }, []);
+  }, [token]);
 
   function handleMapClick(event) {
     const coords = event.get('coords');
@@ -148,7 +146,7 @@ const token = Cookies.get('token');
                             </div> : 
                             
                             <div>
-                                {modelGender == "Man"?
+                                {modelGender === "Man"?
                                  <div className='form-group'>
                                     <select name= "gender" onChange={(e) => setGender(e.target.value)}> 
                                          <option value="Man">Man</option> 
@@ -257,7 +255,7 @@ const token = Cookies.get('token');
                     </div>
                 </div>
                 <div className='profile-img' style={{width:'40%'}}>
-                    <img src={photo}/>
+                    <img src={photo} alt='user'/>
                 </div>
             </div>
         </div>

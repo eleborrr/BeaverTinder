@@ -13,7 +13,7 @@ const PageNotFound = () => {
 
 <div>
     
-    <a href="#" className="scrollToTop"><i className="fa-solid fa-angle-up"></i></a>
+    <a href="/" className="scrollToTop"><i className="fa-solid fa-angle-up"></i></a>
 
 
     <section className="log-reg forezero">

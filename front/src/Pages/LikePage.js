@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Cookies from 'js-cookie';
 import jwtDecode from "jwt-decode";
 import BeaverCard from "../Components/BeaverCard";
 import { axiosInstance } from "../Components/axios_server";
 import { GeoMap } from "../Components/geolocation_map";
 import './../assets/css/map_style.css'
+import { useCallback } from "react";
 
 const LikePage = () =>
 {
@@ -16,10 +18,68 @@ const LikePage = () =>
     const [long, setLong] = useState();
     const [lant, setLant] = useState();
     const [distance, setDistance] = useState('');
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (!token){
+            navigate("/login");
+        }
+    }, [navigate, token])
+
+    const GetGeolocation = useCallback((prof) => {
+        axiosInstance.post("/geolocation",{
+            userId : prof.id
+        },
+         {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                Accept: 'application/json'
+            },
+        })
+        .then(res => {
+            if (res.data){
+                if (res.data.longtitude){
+                    setLong(res.data.longtitude);
+                }
+                if (res.data.latitude){
+                    setLant(res.data.latitude);
+                }
+            }
+        })
+        .catch()
+    }, [token])
+
+    const GetNewBearer = useCallback(() => {
+        axiosInstance.get('/beaversearch',
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    Accept : "application/json"
+                }
+            })
+            .then(res => {
+                if(res.data.message === "Beaver queue error")
+                {
+                    setUserLimit(true);
+                }
+                else
+                {
+                setProfile(res.data);
+    
+                if (res.data){
+                    setGeolocationAvailable(false);
+                    CheckGeolocationAvailable(jwtDecode(token)["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"]);
+                    GetGeolocation(res.data);
+                    setDistance(res.data.distance);
+                }
+            }
+            })
+            .catch();
+        }, [GetGeolocation, token])
 
     useEffect(() => {
         GetNewBearer();
-    }, [])
+    }, [GetNewBearer])
 
 
     function like () {
@@ -69,58 +129,6 @@ const LikePage = () =>
 
     }
 
-    function GetGeolocation(prof) {
-        axiosInstance.post("/geolocation",{
-            userId : prof.id
-        },
-         {
-            headers: {
-                Authorization: `Bearer ${token}`,
-                Accept: 'application/json'
-            },
-        })
-        .then(res => {
-            if (res.data){
-                if (res.data.longtitude){
-                    setLong(res.data.longtitude);
-                }
-                if (res.data.latitude){
-                    setLant(res.data.latitude);
-                }
-            }
-        })
-        .catch()
-    }
-    
-    function GetNewBearer() {
-    axiosInstance.get('/beaversearch',
-        {
-            headers: {
-                Authorization: `Bearer ${token}`,
-                Accept : "application/json"
-            }
-        })
-        .then(res => {
-            if(res.data.message === "Beaver queue error")
-            {
-                setUserLimit(true);
-            }
-            else
-            {
-            setProfile(res.data);
-
-            if (res.data){
-                setGeolocationAvailable(false);
-                CheckGeolocationAvailable(jwtDecode(token)["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"]);
-                GetGeolocation(res.data);
-                setDistance(res.data.distance);
-            }
-        }
-        })
-        .catch();
-   
-    }
-
     function CheckGeolocationAvailable(array)
     {
         if (Array.isArray(array)) {
@@ -129,6 +137,7 @@ const LikePage = () =>
                 {
                     setGeolocationAvailable(true);
                 }
+                return element;
             })
         }
         

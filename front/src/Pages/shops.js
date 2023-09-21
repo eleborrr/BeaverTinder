@@ -41,7 +41,7 @@ const ShopsPage = () => {
         }
         catch(e){
         }
-    }, [])
+    }, [navigate, token])
     return(
         <>
             { disable ? 

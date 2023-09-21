@@ -14,7 +14,7 @@ const ContactPage = () => {
         if (!token){
             navigate("/login");
         }
-    }, [])
+    }, [navigate, token])
 
     return(
     <div className="info-section padding-top padding-bottom contact-div">

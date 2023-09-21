@@ -11,7 +11,7 @@ import Cookies from 'js-cookie';
 import './../assets/css/header.css'
 
 const HeaderApp = () => {
-	const [token, setToken] = useState(Cookies.get('token'));
+	const token = Cookies.get('token');
 	const [homeClass, setHomeClass] = useState('');
 	const [chatsClass, setChatsClass] = useState('');
 	const [shopsClass, setShopsClass] = useState('');
@@ -34,8 +34,7 @@ const HeaderApp = () => {
 		}else if (location.pathname === '/myLikes'){
 			setMyLikesClass("active");
 		}
-	}
-	)
+	},[location.pathname])
 
 	function RemoveCookies() {
 		Cookies.remove('token');

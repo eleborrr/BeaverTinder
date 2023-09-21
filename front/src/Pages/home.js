@@ -15,7 +15,7 @@ const HomePage = () => {
         if (!token){
             navigate("/login");
         }
-    }, [])
+    }, [navigate, token])
 
     return(
     <div className="about padding-top padding-bottom main-container">
