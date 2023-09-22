@@ -21,12 +21,12 @@ internal sealed class TwoFAService: ITwoFAService
     public async Task SendConfirmationEmailAsync(string userId)
     {
         var user = await _userManager.FindByIdAsync(userId);
-        if (user == null)
+        if (user is null)
             Console.WriteLine("USER FINDING ERROR");
         
+        //TODO error handling. User is null. What would u do?
+        
         var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-        if (token == null)
-            Console.WriteLine("TOKEN GENERATE ERROR");
         
         byte[] tokenGeneratedBytes = Encoding.UTF8.GetBytes(token);
         var codeEncoded = WebEncoders.Base64UrlEncode(tokenGeneratedBytes);

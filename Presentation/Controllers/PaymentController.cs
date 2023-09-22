@@ -1,7 +1,6 @@
 ﻿using Contracts;
 using Contracts.Responses.Payment;
 using Domain.Entities;
-using Domain.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;

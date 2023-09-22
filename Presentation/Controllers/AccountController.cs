@@ -1,16 +1,11 @@
-﻿using System.Security.Claims;
-using Contracts;
+﻿using Contracts;
 using Contracts.ViewModels;
 using Domain.Entities;
-using Domain.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Services.Abstraction;
-using Services.Abstraction.Geolocation;
-using Services.Abstraction.TwoFA;
 
 namespace Presentation.Controllers;
 
@@ -25,7 +20,7 @@ public class AccountController : Controller
     private readonly UserManager<User> _userManager;
     private readonly IServiceManager _serviceManager;
     
-    public AccountController(IServiceManager serviceManager, UserManager<User> userManager, SignInManager<User> signInManager)
+    public AccountController(IServiceManager serviceManager, UserManager<User> userManager)
     {
         _userManager = userManager;
         _serviceManager = serviceManager;

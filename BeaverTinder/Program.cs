@@ -1,31 +1,19 @@
- using System.Net.Http.Headers;
  using System.Security.Claims;
  using System.Text;
- using System.Text.Json;
- using AspNet.Security.OAuth.Vkontakte;
  using Contracts.Configs;
-using AspNetCore.Security.OAuth;
  using Domain.Entities;
  using Domain.Repositories;
- using Microsoft.AspNetCore.Authentication;
- using Microsoft.AspNetCore.Authentication.Cookies;
  using Microsoft.AspNetCore.Authentication.JwtBearer;
- using Microsoft.AspNetCore.Authentication.OAuth;
  using Microsoft.AspNetCore.Identity;
  using Microsoft.EntityFrameworkCore;
  using Microsoft.IdentityModel.Tokens;
  using Microsoft.OpenApi.Models;
- using Newtonsoft.Json.Linq;
  using Persistence;
  using Persistence.Misc.Services.JwtGenerator;
  using Persistence.Repositories;
- using System.Security.Claims;
- using static AspNet.Security.OAuth.Vkontakte.VkontakteAuthenticationConstants;
- using Presentation.Controllers;
  using Presentation.Hubs;
  using Services;
  using Services.Abstraction;
- using Services.Abstraction.TwoFA;
 
  var builder = WebApplication.CreateBuilder(args);
  

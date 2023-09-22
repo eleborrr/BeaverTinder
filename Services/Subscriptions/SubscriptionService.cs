@@ -1,10 +1,8 @@
-﻿using System.Net;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using Contracts;
 using Domain.Entities;
 using Domain.Repositories;
 using Microsoft.AspNetCore.Identity;
-using Services.Abstraction;
 using Services.Abstraction.Subscriptions;
 
 namespace Services.Subscriptions;

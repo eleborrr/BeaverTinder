@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Misc.Services.JwtGenerator;
-using Services.Abstraction;
 using Services.Abstraction.Account;
 using Services.Abstraction.Email;
 using Services.Abstraction.Geolocation;
@@ -187,8 +186,8 @@ public class AccountService : IAccountService
                 
                 await _userManager.AddClaimAsync(userDb, new Claim(ClaimTypes.Role, "User"));
                 await _geolocationService.AddAsync(userId:userDb.Id,
-                    Latitude: model.Latitude,
-                    Longitude: model.Longitude);
+                    latitude: model.Latitude,
+                    longitude: model.Longitude);
                 return new RegisterResponseDto(RegisterResponseStatus.Ok);
                
             }
