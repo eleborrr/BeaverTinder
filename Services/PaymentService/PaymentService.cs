@@ -49,12 +49,10 @@
 //     }
 // }
 
-using System.Security.Claims;
 using Contracts;
 using Contracts.Responses.Payment;
 using Domain.Entities;
 using Domain.Repositories;
-using Microsoft.AspNetCore.Http;
 using Services.Abstraction.PaymentService;
 
 namespace Services.PaymentService
@@ -103,7 +101,7 @@ namespace Services.PaymentService
                 return false;
             var sum = 0;
             var correctProvider = false;
-            if (!long.TryParse(number, out var result))
+            if (!long.TryParse(number, out _))
                 return false;
             if ((number.StartsWith("34") || number.StartsWith("37")) && (number.Length == 15))
                 correctProvider = true;
