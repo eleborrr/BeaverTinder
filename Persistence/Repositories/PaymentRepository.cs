@@ -21,7 +21,7 @@ public class PaymentRepository : IPaymentRepository
         await _applicationDbContext.SaveChangesAsync();
     }
 
-    public async Task<Payment> GetByPaymentIdAsync(int paymentId)
+    public async Task<Payment?> GetByPaymentIdAsync(int paymentId)
     {
         return await _applicationDbContext.Payments.FirstOrDefaultAsync(x => x.Id == paymentId);
     }

@@ -29,7 +29,7 @@ public class SubscriptionService : ISubscriptionService
         if (userSub == null)
         {
             await _repositoryManager.UserSubscriptionRepository.AddUserSubscriptionAsync(subsId, userId);
-            await _userManager.AddToRoleAsync(user!, sub.RoleName);
+            await _userManager.AddToRoleAsync(user!, sub!.RoleName);
             await _userManager.AddClaimAsync(user!, new Claim(ClaimTypes.Role, sub.RoleName));
             return;
         }
@@ -41,7 +41,7 @@ public class SubscriptionService : ISubscriptionService
             return;
         }
         await _repositoryManager.UserSubscriptionRepository.UpdateUserSubAsync(subsId, userId);
-        await _userManager.AddToRoleAsync(user!, sub.RoleName);
+        await _userManager.AddToRoleAsync(user!, sub!.RoleName);
     }
 
     public async Task<SubInfoDto> GetUserActiveSubscription(string userId)
@@ -77,7 +77,7 @@ public class SubscriptionService : ISubscriptionService
         var sub = await _repositoryManager.SubscriptionRepository.GetBySubscriptionIdAsync(userSub.SubsId);
         return new SubInfoDto()
         {
-            Name = sub.Name,
+            Name = sub!.Name,
             Expires = userSub.Expires
         };
     }

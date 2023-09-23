@@ -84,8 +84,8 @@ public class VkOAuthService : IVkOAuthService
                 
             await _userManager.AddClaimAsync(userDb!, new Claim(ClaimTypes.Role, "User"));
             await _geolocationService.AddAsync(userId:userDb!.Id,
-                Latitude: 55.558741,
-                Longitude: 37.378847);
+                latitude: 55.558741,
+                longitude: 37.378847);
             return new RegisterResponseDto(RegisterResponseStatus.Ok);
         }
 
@@ -163,7 +163,7 @@ public class VkOAuthService : IVkOAuthService
         var userInfo = await _client.GetAsync(uri);
         var content = await userInfo.Content.ReadAsStringAsync();
         var resp = JsonSerializer.Deserialize<VkResponseDto>(content);
-        var user = resp!.Response.FirstOrDefault();
+        var user = resp!.Response!.FirstOrDefault();
         user!.Email = accessToken.Email;
         return user;
     }

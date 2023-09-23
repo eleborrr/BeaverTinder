@@ -3,16 +3,16 @@
 public class PaymentResponseDto
 {
     public string Message { get; set; }
-    public bool Successful { get; set; }
+    public bool Successful { get;  set; }
     public int StatusCode { get; set; }
-    private Dictionary<PaymentResponseStatus, string> Messages = new()
+    private readonly Dictionary<PaymentResponseStatus, string> _messages = new()
     {
         {PaymentResponseStatus.Ok, "Payment successful"},
         {PaymentResponseStatus.InvalidData, "billing information is incorrect"},
         {PaymentResponseStatus.Fail, "Payment process fail"}
     };
     
-    private Dictionary<PaymentResponseStatus, int> Codes = new()
+    private readonly Dictionary<PaymentResponseStatus, int> _codes = new()
     {
         {PaymentResponseStatus.Ok, 200},
         {PaymentResponseStatus.InvalidData, 400},
@@ -21,8 +21,8 @@ public class PaymentResponseDto
     
     public PaymentResponseDto(PaymentResponseStatus status, string message="")
     {
-        Message = message != "" ? message : Messages[status];
+        Message = message != "" ? message : _messages[status];
         Successful = status == PaymentResponseStatus.Ok;
-        StatusCode = Codes[status];
+        StatusCode = _codes[status];
     }
 }

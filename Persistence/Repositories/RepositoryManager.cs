@@ -1,6 +1,4 @@
-﻿using System;
-using Domain.Entities;
-using Domain.Repositories;
+﻿using Domain.Repositories;
 
 namespace Persistence.Repositories;
 

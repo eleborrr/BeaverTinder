@@ -16,7 +16,7 @@ public class LikeResponseDto: ResponseBaseDto
         {LikeResponseStatus.Fail, 400}
     };
     
-    public LikeResponseDto(LikeResponseStatus status, string message="")
+    public LikeResponseDto(LikeResponseStatus status, string? message="")
     {
         Message = message != "" ? message : Messages[status];
         Successful = status == LikeResponseStatus.Ok;

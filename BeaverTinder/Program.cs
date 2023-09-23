@@ -73,68 +73,9 @@ builder.Services.AddMvc();
              ValidateLifetime = true,
              ValidateIssuerSigningKey = true,
              IssuerSigningKey = new SymmetricSecurityKey(
-                 Encoding.UTF8.GetBytes(builder.Configuration["JWTTokenSettings:KEY"]))
+                 Encoding.UTF8.GetBytes(builder.Configuration["JWTTokenSettings:KEY"]!))
          };
-     });/*.AddVkontakte(options =>
-     {
-         options.ClientId = builder.Configuration["VKAuthSettings:CLIENTID"];
-         options.ClientSecret = builder.Configuration["VKAuthSettings:CLIENTSECRET"];
-         options.Scope.Add("email");
-         options.Scope.Add("status");
-         options.Scope.Add("screen_name");
-         options.Fields.Add("email");
-         options.Fields.Add("sex");
-         options.Fields.Add("status");
-         options.Fields.Add("screen_name");
-         options.Fields.Add("bdate");
-         options.ClaimActions.MapJsonKey(ClaimTypes.Gender, "sex");
-         options.ClaimActions.MapJsonKey(ClaimTypes.Name, "screen_name");
-         options.ClaimActions.MapJsonKey(ClaimTypes.DateOfBirth, "bdate");
-         options.ClaimActions.MapJsonKey("about", "status");
-     });*/
- /*.AddOAuth("VK", "VK", options =>
- {
-     options.ClientId = builder.Configuration["VKAuthSettings:CLIENTID"];
-     options.ClientSecret = builder.Configuration["VKAuthSettings:CLIENTSECRET"];
-     options.CallbackPath = new PathString("/signin-vkontakte");
-     options.AuthorizationEndpoint = "https://oauth.vk.com/authorize";
-     options.TokenEndpoint = "https://oauth.vk.com/access_token";
-     options.UserInformationEndpoint = "https://api.vk.com/method/users.get";
-     options.SaveTokens = true;
-     /*options.ClaimActions.MapJsonKey("email", "email");#1#
-     options.Scope.Add("email");
-     options.Events = new OAuthEvents
-     {
-         OnCreatingTicket = async context =>
-         {
-             var client = new HttpClient();
-             // Получите токен доступа VK и другие данные пользователя
-             string accessToken = context.AccessToken;
-             // Добавьте необходимую логику обработки здесь, например, проверку наличия пользователя в базе данных
-             var users = await client.GetAsync($"https://api.vk.com/method/users.get?access_token={accessToken}&v=5.131");
-             // Установите принятые утверждения (claims) для токена JWT
-             var u = await JsonSerializer.DeserializeAsync<VkUserDto>(await users.Content.ReadAsStreamAsync());
-             context.Identity.AddClaim(new Claim("Id", u.Id.ToString()));
-             
-         }
-     };*/
-         /*options.Events = new OAuthEvents
-         {
-             OnCreatingTicket = async context =>
-             {
-                 var request = new HttpRequestMessage(HttpMethod.Get, context.Options.UserInformationEndpoint);
-                 request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                 request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", context.AccessToken);
-
-                 var response = await context.Backchannel.SendAsync(request, context.HttpContext.RequestAborted);
-                 response.EnsureSuccessStatusCode();
-                 
-                 var user = new JsonElement().
-                 var el = new JsonElement(user);
-
-                 context.RunClaimActions(user);
-             }
-         };*/
+     });
      
 
  builder.Services.AddAuthorization(options =>
@@ -184,7 +125,7 @@ builder.Services.AddMvc();
      });
  });
  
- var TestSpesific = "testSpesific";
+ const string testSpesific = "testSpesific";
 
  builder.Services.AddRouting(options =>
  {
@@ -194,7 +135,7 @@ builder.Services.AddMvc();
 
  builder.Services.AddCors(options =>
  {
-     options.AddPolicy(name: TestSpesific, policyBuilder =>
+     options.AddPolicy(name: testSpesific, policyBuilder =>
      {
          policyBuilder.WithOrigins("http://localhost:3000")
              .AllowAnyHeader()
@@ -222,7 +163,7 @@ if (app.Environment.IsDevelopment())
 }
  app.MapHub<ChatHub>("/chatHub");
 
- app.UseCors(TestSpesific);
+ app.UseCors(testSpesific);
 
  app.UseHttpsRedirection();
 
