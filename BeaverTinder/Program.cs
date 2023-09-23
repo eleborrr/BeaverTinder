@@ -65,7 +65,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(builder.Configuration["JWTTokenSettings:KEY"]))
+                Encoding.UTF8.GetBytes(builder.Configuration["JWTTokenSettings:KEY"]!))
         };
     });/*.AddVkontakte(options =>
      {
@@ -178,7 +178,7 @@ builder.Services.AddSwaggerGen(opt =>
     });
 });
  
-var TestSpesific = "testSpesific";
+var testSpesific = "testSpesific";
 
 builder.Services.AddRouting(options =>
 {
@@ -188,7 +188,7 @@ builder.Services.AddRouting(options =>
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(name: TestSpesific, policyBuilder =>
+    options.AddPolicy(name: testSpesific, policyBuilder =>
     {
         policyBuilder.WithOrigins("http://localhost:3000")
             .AllowAnyHeader()
@@ -215,7 +215,7 @@ if (app.Environment.IsDevelopment())
 }
 app.MapHub<ChatHub>("/chatHub");
 
-app.UseCors(TestSpesific);
+app.UseCors(testSpesific);
 
 app.UseHttpsRedirection();
 
