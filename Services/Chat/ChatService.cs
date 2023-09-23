@@ -1,20 +1,15 @@
-﻿using Contracts.ViewModels;
-using Domain.Entities;
+﻿using Domain.Entities;
 using Domain.Repositories;
-using Microsoft.AspNetCore.Identity;
-using Persistence.Repositories;
 using Services.Abstraction.Chat;
 
 namespace Services.Chat;
 
 public class ChatService: IChatService
 {
-    private readonly UserManager<User> _userManager;
     private readonly IRepositoryManager _repositoryManager;
 
-    public ChatService(UserManager<User> userManager, IRepositoryManager repositoryManager)
+    public ChatService(IRepositoryManager repositoryManager)
     {
-        _userManager = userManager;
         _repositoryManager = repositoryManager;
     }
     

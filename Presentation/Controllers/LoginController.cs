@@ -1,22 +1,10 @@
-using System.IdentityModel.Tokens.Jwt;
-using System.Runtime.InteropServices.JavaScript;
-using System.Security.Claims;
-using System.Text.Json.Serialization;
 using AspNet.Security.OAuth.Vkontakte;
 using Contracts;
-using Contracts.Responses.Login;
 using Domain.Entities;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Net.Http.Headers;
-using Newtonsoft.Json;
 using Persistence;
 using Services.Abstraction;
 using Persistence.Misc.Services.JwtGenerator;
@@ -29,19 +17,15 @@ namespace Presentation.Controllers;
 public class LoginController : Controller
 {
     private readonly IServiceManager _serviceManager;
-    private readonly ApplicationDbContext _context;
     private readonly SignInManager<User> _signInManager;
-    private readonly IJwtGenerator _jwtGenerator;
     private readonly IConfiguration _config;
     private readonly HttpClient _client;
 
-    public LoginController(ApplicationDbContext ctx, IServiceManager serviceManager, SignInManager<User> signInManager,
-        IJwtGenerator jwtGenerator, IConfiguration configuration, HttpClient client)
+    public LoginController(IServiceManager serviceManager, SignInManager<User> signInManager,
+        IConfiguration configuration, HttpClient client)
     {
-        _context = ctx;
         _serviceManager = serviceManager;
         _signInManager = signInManager;
-        _jwtGenerator = jwtGenerator;
         _config = configuration;
         _client = client;
     }
@@ -55,7 +39,7 @@ public class LoginController : Controller
     [HttpGet("getAccessToken")]
     public async Task<IActionResult> GetAccessToken([FromQuery] string code)
     {
-        var query = new Dictionary<string, string>()
+        var query = new Dictionary<string, string>
         {
             ["client_id"] = _config["VKAuthSettings:CLIENTID"],
             ["client_secret"] = _config["VKAuthSettings:CLIENTSECRET"],

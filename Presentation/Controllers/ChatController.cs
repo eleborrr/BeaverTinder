@@ -1,16 +1,11 @@
-﻿using System.Security.Claims;
-using Contracts.Responses;
+﻿using Contracts.Responses;
 using Contracts.Responses.Chat;
-using Contracts.ViewModels;
 using Domain.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Persistence;
 using Services.Abstraction;
-using Services.Abstraction.Chat;
 
 namespace Presentation.Controllers;
 
