@@ -47,7 +47,7 @@ public class ServiceManager: IServiceManager
     {
         _geolocationService = new Lazy<IGeolocationService>(() => new GeolocationService(repositoryManager));
         _emailService = new Lazy<IEmailService>(() => new EmailService(emailConfig));
-        _twoFaService = new Lazy<ITwoFAService>(() => new TwoFAService(userManager, _emailService.Value));
+        _twoFaService = new Lazy<ITwoFAService>(() => new TwoFaService(userManager, _emailService.Value));
         _likeService = new Lazy<ILikeService>(() => new LikeService(repositoryManager));
         _findBeaverService = new Lazy<IFindBeaverService>(() => new FindBeaverService(userManager, repositoryManager, memoryCache, LikeService, GeolocationService));
         _paymentService = new Lazy<IPaymentService>(() => new PaymentService.PaymentService(repositoryManager));

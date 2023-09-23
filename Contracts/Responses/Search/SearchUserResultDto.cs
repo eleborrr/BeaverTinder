@@ -2,15 +2,15 @@
 
 public class SearchUserResultDto
 {
-    public string Id { get; set; }
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
-    public int Age { get; set; }
-    public string Gender { get; set; }
-    public string About { get; set; }
-    public bool Successful { get; set; }
-    public string Message { get; set; }
-    public string DistanceInKm { get; set; }
-    public int StatusCode { get; set; }
-    public string Image { get; set; }
+    public string Id { get; init; } = default!;
+    public string FirstName { get; init; } = default!;
+    public string LastName { get; init; } = default!;
+    public int Age { get; init; }
+    public string Gender { get; init; } = default!;
+    public string About { get; init; } = default!;
+    public bool Successful { get; init; }
+    public string Message { get; init; } = default!;
+    public string DistanceInKm { get; init; } = default!;
+    public int StatusCode { get; init; }
+    public string Image { get; init; } = default!;
 }

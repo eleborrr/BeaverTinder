@@ -4,7 +4,6 @@ using Contracts.Responses.Login;
 using Contracts.Responses.Registration;
 using Domain.Entities;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Services.Abstraction.Account;

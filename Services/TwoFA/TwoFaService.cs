@@ -7,12 +7,12 @@ using Services.Abstraction.TwoFA;
 
 namespace Services.TwoFA;
 
-internal sealed class TwoFAService: ITwoFAService
+internal sealed class TwoFaService: ITwoFAService
 {
     private readonly UserManager<User> _userManager;
     private readonly IEmailService _emailService;
 
-    public TwoFAService(UserManager<User> userManager, IEmailService emailService)
+    public TwoFaService(UserManager<User> userManager, IEmailService emailService)
     {
         _userManager = userManager;
         _emailService = emailService;
@@ -21,8 +21,8 @@ internal sealed class TwoFAService: ITwoFAService
     public async Task SendConfirmationEmailAsync(string userId)
     {
         var user = await _userManager.FindByIdAsync(userId);
-        if (user is null)
-            Console.WriteLine("USER FINDING ERROR");
+        if (user is null) //TODO log
+            return;
         
         //TODO error handling. User is null. What would u do?
         
@@ -33,7 +33,7 @@ internal sealed class TwoFAService: ITwoFAService
         
         var link = $"https://localhost:7015/confirm?userEmail={user.Email}&token={codeEncoded}";
         
-        await _emailService.SendEmailAsync(user.Email, "Confirm your account",
+        await _emailService.SendEmailAsync(user.Email!, "Confirm your account",
             $"Подтвердите регистрацию, перейдя по ссылке: <a href=\"{link}\">ссылка</a>");
         
     }
