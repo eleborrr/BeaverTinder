@@ -1,4 +1,5 @@
 ﻿using Contracts;
+using Contracts.Responses;
 using Contracts.ViewModels;
 using Domain.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -28,7 +29,7 @@ public class AccountController : Controller
     
     [Authorize(Policy = "OnlyMapSubs")]
     [HttpPost("/geolocation")]
-    public async Task<UserGeolocation> GetUserGeolocation([FromBody] GeolocationRequestViewModel model)
+    public async Task<UserGeolocation?> GetUserGeolocation([FromBody] GeolocationRequestViewModel model)
     {
         return await _serviceManager.GeolocationService.GetByUserId(model.UserId);
     }
@@ -38,7 +39,12 @@ public class AccountController : Controller
     public async Task<JsonResult> GetAccountInformation([FromQuery] string id)
     {
         var user = await _userManager.FindByIdAsync(id);
-        var geoloc = await _serviceManager.GeolocationService.GetByUserId(id);
+        if (user is null)
+            return new JsonResult(new FailResponse(false, "User not found", 404));
+        
+        var geolocation = await _serviceManager.GeolocationService.GetByUserId(id);
+        if (geolocation is null)
+            return new JsonResult(new FailResponse(false, "Oops! Seems like a problem.. We are working on it!", 400));
         
         //todo ограничение, тип чтобы не каждый мог вызывать этот метод
         var subInfo = await _serviceManager.SubscriptionService.GetUserActiveSubscription(id);
@@ -46,12 +52,12 @@ public class AccountController : Controller
         {
             FirstName = user.FirstName,
             LastName = user.LastName,
-            UserName = user.UserName,
+            UserName = user.UserName!,
             Image = user.Image,
             About = user.About,
             Gender = user.Gender,
-            Latitude = geoloc.Latitude,
-            Longitude = geoloc.Longtitude,
+            Latitude = geolocation.Latitude,
+            Longitude = geolocation.Longtitude,
             SubName = subInfo.Name,
             SubExpiresDateTime = subInfo.Expires
         };
@@ -93,7 +99,7 @@ public class AccountController : Controller
             var subscription = await _serviceManager.SubscriptionService.GetUserActiveSubscription(user.Id);
             result.Add(new ()
             {
-                UserName = user.UserName,
+                UserName = user.UserName!,
                 SubName = subscription.Name,
                 SubExpiresDateTime = subscription.Expires,
                 Id = user.Id,
@@ -107,12 +113,8 @@ public class AccountController : Controller
 
     [HttpGet("/confirm")]
     [AllowAnonymous]
-    public async Task<JsonResult> ConfirmEmail([FromQuery] string userEmail, [FromQuery] string token)
+    public async Task<JsonResult> ConfirmEmail([FromQuery] string? userEmail, [FromQuery] string? token)
     {
-        if (userEmail == null || token == null)
-        {
-
-        }
         var res = await _serviceManager.AccountService.ConfirmEmailAsync(userEmail, token);
         return Json(res);
     }

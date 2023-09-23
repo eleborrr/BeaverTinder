@@ -76,15 +76,15 @@ public class AccountService : IAccountService
 
     }
 
-    public async Task<IdentityResult> ConfirmEmailAsync(string userEmail, string token)
+    public async Task<IdentityResult> ConfirmEmailAsync(string? userEmail, string? token)
     {
+        if (userEmail == null || token == null)
+            return IdentityResult.Failed();
         var codeDecodedBytes = WebEncoders.Base64UrlDecode(token);
         var codeDecoded = Encoding.UTF8.GetString(codeDecodedBytes);
         var user = await _userManager.FindByEmailAsync(userEmail);
         if (user == null)
-        {
             return IdentityResult.Failed();
-        }
 
         var res = await _userManager.ConfirmEmailAsync(user, codeDecoded);
         return res;
@@ -157,45 +157,42 @@ public class AccountService : IAccountService
 
     public async Task<RegisterResponseDto> Register(RegisterDto model, ModelStateDictionary modelstate)
     {
-        if (modelstate.IsValid)
+        if (!modelstate.IsValid) return new RegisterResponseDto(RegisterResponseStatus.InvalidData);
+        var user = new User
         {
-            var user = new User
-            {
-                LastName = model.LastName,
-                FirstName = model.FirstName,
-                UserName = model.UserName,
-                Email = model.Email,
-                Gender = model.Gender,
-                About = model.About,
-                DateOfBirth = model.DateOfBirth,
-                Image = "https://w7.pngwing.com/pngs/831/88/png-transparent-user-profile-computer-icons-user-interface-mystique-miscellaneous-user-interface-design-smile.png",
+            LastName = model.LastName,
+            FirstName = model.FirstName,
+            UserName = model.UserName,
+            Email = model.Email,
+            Gender = model.Gender,
+            About = model.About,
+            DateOfBirth = model.DateOfBirth,
+            Image = "https://w7.pngwing.com/pngs/831/88/png-transparent-user-profile-computer-icons-user-interface-mystique-miscellaneous-user-interface-design-smile.png",
 
-            };
+        };
 
-            var emailCollision = _userManager.Users.FirstOrDefault(u => u.Email == user.Email);
-            if (emailCollision is not null)
-                return new RegisterResponseDto(RegisterResponseStatus.Fail, "User with that email already exists");
+        var emailCollision = _userManager.Users.FirstOrDefault(u => u.Email == user.Email);
+        if (emailCollision is not null)
+            return new RegisterResponseDto(RegisterResponseStatus.Fail, "User with that email already exists");
             
-            var result = await _userManager.CreateAsync(user, model.Password);
+        var result = await _userManager.CreateAsync(user, model.Password);
 
-            if (result.Succeeded)
-            {
-                await SendConfirmationEmailAsync(user.Id);
+        if (result.Succeeded)
+        {
+            await SendConfirmationEmailAsync(user.Id);
                 
-                var userDb = await _userManager.FindByEmailAsync(user.Email);
+            var userDb = await _userManager.FindByEmailAsync(user.Email);
                 
-                await _userManager.AddClaimAsync(userDb, new Claim(ClaimTypes.Role, "User"));
-                await _geolocationService.AddAsync(userId:userDb.Id,
-                    latitude: model.Latitude,
-                    longitude: model.Longitude);
-                return new RegisterResponseDto(RegisterResponseStatus.Ok);
+            await _userManager.AddClaimAsync(userDb, new Claim(ClaimTypes.Role, "User"));
+            await _geolocationService.AddAsync(userId:userDb.Id,
+                latitude: model.Latitude,
+                longitude: model.Longitude);
+            return new RegisterResponseDto(RegisterResponseStatus.Ok);
                
-            }
-
-            return new RegisterResponseDto(RegisterResponseStatus.Fail,
-                result.Errors.FirstOrDefault().Description);
         }
-        return new RegisterResponseDto(RegisterResponseStatus.InvalidData);
+
+        return new RegisterResponseDto(RegisterResponseStatus.Fail,
+            result.Errors.FirstOrDefault().Description);
     }
 
     public async Task<EditUserResponseDto> EditAccount(User userToEdit, EditUserDto model, ModelStateDictionary modelstate)

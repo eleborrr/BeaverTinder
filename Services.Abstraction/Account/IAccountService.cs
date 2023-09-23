@@ -12,7 +12,7 @@ namespace Services.Abstraction.Account;
 public interface IAccountService
 {
     public Task SendConfirmationEmailAsync(string userId);
-    public Task<IdentityResult> ConfirmEmailAsync(string userEmail, string token);
+    public Task<IdentityResult> ConfirmEmailAsync(string? userEmail, string? token);
     public Task<LoginResponseDto> Login(LoginDto model, ModelStateDictionary modelState);
 
     public Task<RegisterResponseDto> Register(RegisterDto model, ModelStateDictionary modelState);
