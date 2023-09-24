@@ -10,7 +10,7 @@ public class LikeViewModel
     //
     [Required]
     [Display(Name = "LikedUserId")]
-    public string LikedUserId { get; set; }
+    public string LikedUserId { get; set; } = default!;
     //
     // [Required]
     // [Display(Name = "Sympathy")]

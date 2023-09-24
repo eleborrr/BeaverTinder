@@ -2,10 +2,10 @@
 
 public class EmailConfig
 {
-    public string FromName { get; set; }
-    public string FromAddress { get; set; }
-    public string UserId { get; set; }
-    public string Server { get; set; }
+    public string FromName { get; set; } = default!;
+    public string FromAddress { get; set; } = default!;
+    public string UserId { get; set; } = default!;
+    public string Server { get; set; } = default!;
     public int Port { get; set; }
-    public string UserPassword { get; set; }
+    public string UserPassword { get; set; } = default!;
 }

@@ -57,7 +57,7 @@ public class AccountController : Controller
             About = user.About,
             Gender = user.Gender,
             Latitude = geolocation.Latitude,
-            Longitude = geolocation.Longtitude,
+            Longitude = geolocation.Longitude,
             SubName = subInfo.Name,
             SubExpiresDateTime = subInfo.Expires
         };

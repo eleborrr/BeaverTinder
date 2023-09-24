@@ -2,7 +2,7 @@
 
 public class RegisterResponseDto: ResponseBaseDto
 {
-    private Dictionary<RegisterResponseStatus, string> Messages = new()
+    private Dictionary<RegisterResponseStatus, string> _messages = new()
     {
         {RegisterResponseStatus.Ok, "Registration successful. Email send"},
         {RegisterResponseStatus.InvalidData, "Invalid input data"},
@@ -12,7 +12,7 @@ public class RegisterResponseDto: ResponseBaseDto
     };
     
     //TODO разобраться какие коды лучше вставлять. мб есть способ лучше это делать? 
-    private Dictionary<RegisterResponseStatus, int> Codes = new()
+    private Dictionary<RegisterResponseStatus, int> _codes = new()
     {
         {RegisterResponseStatus.Ok, 200},
         {RegisterResponseStatus.InvalidData, 400},
@@ -24,8 +24,8 @@ public class RegisterResponseDto: ResponseBaseDto
 
     public RegisterResponseDto(RegisterResponseStatus status, string? message="")
     {
-        Message = message != "" ? message : Messages[status];
+        Message = message != "" ? message : _messages[status];
         Successful = status == RegisterResponseStatus.Ok;
-        StatusCode = Codes[status];
+        StatusCode = _codes[status];
     }
 }

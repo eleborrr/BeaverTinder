@@ -24,7 +24,7 @@ public class RoomRepository: IRoomRepository
         await _dbContext.SaveChangesAsync();
     }
 
-    public async Task<Room> GetByRoomIdAsync(string roomId)
+    public async Task<Room?> GetByRoomIdAsync(string roomId)
     {
         return await _dbContext.Rooms.FirstOrDefaultAsync(x => x.Id == roomId);
     }

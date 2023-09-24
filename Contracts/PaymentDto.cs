@@ -4,9 +4,9 @@ namespace Contracts;
 
 public class PaymentDto
 {
-    public string UserId { get; set; } = null!;
-    public int SubsId { get; set; }
-    public DateTime PaymentDate { get; set; }
-    public double Amount { get; set; }
-    public PaymentResponseStatus StatusCode { get; set; }
+    public string UserId { get; init; } = null!;
+    public int SubsId { get; init; }
+    public DateTime PaymentDate { get; init; }
+    public double Amount { get; init; }
+    public PaymentResponseStatus StatusCode { get; init; }
 }

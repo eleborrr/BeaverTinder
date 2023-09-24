@@ -30,19 +30,20 @@ public class ChatController: Controller
         {
             // var users = await _userManager.Users.ToListAsync();
 
-            var s = User.Claims.FirstOrDefault(c => c.Type == "Id");
+            var s = User.Claims.FirstOrDefault(c => c.Type == "Id")!;
             var curUser = await _userManager.FindByIdAsync(s.Value);
+
+            if (curUser is null) //TODO add log
+                throw new Exception("Oops!");
+            
             var users = _userManager.Users.AsEnumerable()
                 .Where(u => _serviceManager.LikeService.IsMutualSympathy(curUser, u).Result);
-            var model = users.Select(x =>
+            var model = users.Select(x => new AllChatsResponse
             {
-                return new AllChatsResponse
-                {
-                    UserName = x.UserName,
-                    FirstName = x.FirstName,
-                    LastName = x.LastName,
-                    Image = x.Image
-                };
+                UserName = x.UserName!,
+                FirstName = x.FirstName,
+                LastName = x.LastName,
+                Image = x.Image!
             });
             return Json(model);
         }
@@ -57,16 +58,18 @@ public class ChatController: Controller
     {
         try
         {
-            var curUserId = User.Claims.FirstOrDefault(c => c.Type == "Id").Value;
+            var curUserId = User.Claims.FirstOrDefault(c => c.Type == "Id")!.Value;
             var receiver = await _userManager.FindByNameAsync(username);
             var sender = await _userManager.FindByIdAsync(curUserId);
 
-            //TODO check for curUserId null
+            if (receiver is null || sender is null) //TODO add log
+                throw new Exception("Oops!");
+            
             var res = await _serviceManager.ChatService.GetChatById(sender.Id, receiver.Id);
             var model = new SingleChatGetResponse()
             {
-                RecieverName = username,
-                SenderName = sender.UserName,
+                SenderName = sender.UserName!,
+                ReceiverName = username,
                 RoomName = res.Name
             };
             return Json(model);
