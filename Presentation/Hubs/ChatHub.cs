@@ -23,6 +23,9 @@ namespace Presentation.Hubs
 
             var room = _dbContext.Rooms.FirstOrDefault(r => r.Name == roomName);
 
+            if (room is null) //TODO log error
+                return;
+
             var messages = await _dbContext.Messages.Where(m => m.RoomId == room.Id).OrderBy(m => m.Timestamp).ToListAsync();
             
             foreach (var message in messages)
@@ -31,9 +34,9 @@ namespace Presentation.Hubs
             }
         }
 
-        private async Task<string> GetUserName(string id)
+        private async Task<string?> GetUserName(string id)
         {
-            return (await _userManager.FindByIdAsync(id)).UserName;
+            return (await _userManager.FindByIdAsync(id))?.UserName;
         }
 
         public async Task SendPrivateMessage(string senderUserName, string message, string receiverUserName, string groupName)
@@ -42,6 +45,9 @@ namespace Presentation.Hubs
 
             var sender = await _userManager.FindByNameAsync(senderUserName);
             var receiver = await _userManager.FindByNameAsync(receiverUserName);
+
+            if (receiver is null || sender is null || room is null)
+                return; //TODO log error
             
             _dbContext.Messages.Add(new Message()
             {
@@ -62,7 +68,7 @@ namespace Presentation.Hubs
             await base.OnConnectedAsync();
         }
 
-        public override async Task OnDisconnectedAsync(Exception exception)
+        public override async Task OnDisconnectedAsync(Exception? exception)
         {
             await base.OnDisconnectedAsync(exception);
         }

@@ -6,47 +6,48 @@ public class RegisterDto
 {
     [Required]
     [Display(Name = "Last name")]
-    public string LastName { get; set; }
+    public string LastName { get; set; } = default!;
 
     [Required]
     [Display(Name = "First name")]
-    public string FirstName { get; set; }
+    public string FirstName { get; set; } = default!;
 
     [Required]
     [Display(Name = "Nickname")]
-    public string UserName { get; set; }
+    public string UserName { get; set; } = default!;
 
     [Required]
     [Display(Name = "Email")]
     [EmailAddress]
-    public string Email { get; set; }
+    public string Email { get; set; } = default!;
 
     [Required]
     [Display(Name = "Password")]
     [DataType(DataType.Password)]
-    public string Password { get; set; }
+    public string Password { get; set; } = default!;
 
     [Required]
     [Compare("Password", ErrorMessage = "Пароли не совпадают")]
     [DataType(DataType.Password)]
     [Display(Name = "ConfirmPassword")]
-    public string ConfirmPassword { get; set; }
+    public string ConfirmPassword { get; set; } = default!;
     
     [Required]
     [DataType(DataType.Date)]
     [Display(Name = "Date of birth")]
-    public DateTime DateOfBirth { get; set; }
+    public DateTime DateOfBirth { get; set; } = default!;
     
     
     //TODO checks for valid values?
     [Required]
-    public double Latitude { get; set; }
+    public double Latitude { get; set; } = default!;
     
     [Required]
-    public double Longitude { get; set; }
+    public double Longitude { get; set; } = default!;
     
-    [Required] [Display(Name = "Gender")] public string Gender { get; set; }
+    [Required] [Display(Name = "Gender")] 
+    public string Gender { get; set; } = default!;
 
     [Display(Name = "Tell about yourself")]
-    public string About { get; set; }
+    public string About { get; set; } = default!;
 }

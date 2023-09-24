@@ -89,7 +89,7 @@ public class FindBeaverService: IFindBeaverService
             return new SearchUserResultDto
             {
                 Id = returnUserCache.Id,
-                About = returnUserCache.About,
+                About = returnUserCache.About ?? "",
                 FirstName = returnUserCache.FirstName,
                 LastName = returnUserCache.LastName,
                 Gender = returnUserCache.Gender,
@@ -98,7 +98,7 @@ public class FindBeaverService: IFindBeaverService
                 Message = "ok",
                 StatusCode = 200,
                 Successful = true,
-                Image = returnUserCache.Image,
+                Image = returnUserCache.Image!,
             }; 
         }
 
@@ -117,7 +117,7 @@ public class FindBeaverService: IFindBeaverService
         return new SearchUserResultDto
         {
             Id = returnUser.Id,
-            About = returnUser.About,
+            About = returnUser.About ?? "",
             FirstName = returnUser.FirstName,
             LastName = returnUser.LastName,
             Gender = returnUser.Gender,
@@ -125,7 +125,7 @@ public class FindBeaverService: IFindBeaverService
             Message = "ok",
             StatusCode = 200,
             Successful = true,
-            Image = returnUser.Image,
+            Image = returnUser.Image!
         };
     }
 
@@ -162,7 +162,7 @@ public class FindBeaverService: IFindBeaverService
         return new SearchUserResultDto
         {
             Id = returnUserCache.Id,
-            About = returnUserCache.About,
+            About = returnUserCache.About ?? "",
             FirstName = returnUserCache.FirstName,
             LastName = returnUserCache.LastName,
             Gender = returnUserCache.Gender,
@@ -170,7 +170,7 @@ public class FindBeaverService: IFindBeaverService
             Message = "ok",
             StatusCode = 200,
             Successful = true,
-            Image = returnUserCache.Image,
+            Image = returnUserCache.Image!
         }; 
     }
 

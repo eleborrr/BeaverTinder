@@ -1,6 +1,6 @@
 ﻿using Contracts;
 
-namespace Services.Abstraction.PaymentService;
+namespace Services.Abstraction.Payments;
 
 public interface IPaymentService
 {

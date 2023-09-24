@@ -89,7 +89,7 @@ public class BeaverSearchController: Controller
 
     private async Task<User?> GetUserFromJwt()
     {
-        var s = User.Claims.FirstOrDefault(c => c.Type == "Id");
+        var s = User.Claims.FirstOrDefault(c => c.Type == "Id")!;
         var user = await _userManager.FindByIdAsync(s.Value);
         // if (user is null)
         //     throw new Exception("user not found"); //TODO перенести в exception
@@ -98,7 +98,7 @@ public class BeaverSearchController: Controller
     
     private async Task<Role> GetRoleFromJwt()
     {
-        var s = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role);
+        var s = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)!;
         var role = await _roleManager.FindByNameAsync(s.Value);
         if (role is null)
             throw new Exception("role not found"); //TODO перенести в exception

@@ -1,16 +1,14 @@
-﻿using Contracts.Responses.Login;
-
-namespace Contracts.Responses.Search;
+﻿namespace Contracts.Responses.Search;
 
 public class LikeResponseDto: ResponseBaseDto
 {
-    private Dictionary<LikeResponseStatus, string> _messages = new()
+    private readonly Dictionary<LikeResponseStatus, string> _messages = new()
     {
         {LikeResponseStatus.Ok, "successful"},
         {LikeResponseStatus.Fail, "Invalid like attempt"}
     };
     
-    private Dictionary<LikeResponseStatus, int> _codes = new()
+    private readonly Dictionary<LikeResponseStatus, int> _codes = new()
     {
         {LikeResponseStatus.Ok, 200},
         {LikeResponseStatus.Fail, 400}

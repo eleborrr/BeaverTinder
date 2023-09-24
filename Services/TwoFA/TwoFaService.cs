@@ -7,7 +7,7 @@ using Services.Abstraction.TwoFA;
 
 namespace Services.TwoFA;
 
-internal sealed class TwoFaService: ITwoFAService
+internal sealed class TwoFaService: ITwoFaService
 {
     private readonly UserManager<User> _userManager;
     private readonly IEmailService _emailService;

@@ -53,8 +53,8 @@ public class AccountController : Controller
             FirstName = user.FirstName,
             LastName = user.LastName,
             UserName = user.UserName!,
-            Image = user.Image,
-            About = user.About,
+            Image = user.Image!,
+            About = user.About ?? "",
             Gender = user.Gender,
             Latitude = geolocation.Latitude,
             Longitude = geolocation.Longitude,
@@ -81,8 +81,15 @@ public class AccountController : Controller
     [HttpPost("/edit")]
     public async Task<JsonResult> EditAccount([FromBody] EditUserDto model)
     {
-        var s = User.Claims.FirstOrDefault(c => c.Type == "Id");
+        var s = User.Claims.FirstOrDefault(c => c.Type == "Id")!;
         var user = await _userManager.FindByIdAsync(s.Value);
+
+        if (user is null)
+            return new JsonResult(new FailResponse(
+                false,
+                "User not found",
+                404));
+        
         var b = await _serviceManager.AccountService.EditAccount(user, model, ModelState);
         return Json(b);
     }

@@ -4,18 +4,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Persistence;
 
-public class ApplicationDbContext: IdentityDbContext<User>
+public sealed class ApplicationDbContext: IdentityDbContext<User>
 {
-    public DbSet<Like> Likes { get; set; }
-    public DbSet<Message> Messages { get; set; }
-    public DbSet<Room> Rooms { get; set; }
-    public DbSet<Role> Roles { get; set; }
-    public DbSet<Image> Images { get; set; }
-    public DbSet<Payment> Payments {get; set; }
-    public DbSet<Subscription> Subscriptions { get; set; }
-    public DbSet<UserSubscription> UserSubscriptions { get; set; }
-    public DbSet<UserGeolocation> Geolocations { get; set; }
-    public DbSet<UserToVk> UserToVks { get; set; }
+    public DbSet<Like> Likes { get; set; } = null!;
+    public DbSet<Message> Messages { get; set; } = null!;
+    public DbSet<Room> Rooms { get; set; } = null!;
+    public new DbSet<Role> Roles { get; set; } = null!;
+    public DbSet<Image> Images { get; set; } = null!;
+    public DbSet<Payment> Payments {get; set; } = null!;
+    public DbSet<Subscription> Subscriptions { get; set; } = null!;
+    public DbSet<UserSubscription> UserSubscriptions { get; set; } = null!;
+    public DbSet<UserGeolocation> Geolocations { get; set; } = null!;
+    public DbSet<UserToVk> UserToVks { get; set; } = null!;
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)

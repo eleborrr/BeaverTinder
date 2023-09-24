@@ -1,7 +1,6 @@
 ﻿using Contracts;
 using Domain.Entities;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace Persistence.Misc.Services.Images;
@@ -14,6 +13,7 @@ public class ImageService: IImageService
     public ImageService(IWebHostEnvironment hostEnvironment, ApplicationDbContext dbContext)
     {
         _hostEnvironment = hostEnvironment;
+        _dbContext = dbContext;
     }
 
     public async Task<int> SaveAsyncAndGetId(ImageDto imageModel)
@@ -39,7 +39,7 @@ public class ImageService: IImageService
             .FirstOrDefaultAsync(i => i.ImageName == imageModel.ImageName).Id;
     }
 
-    public async Task<Image> GetByIdAsync(string id)
+    public async Task<Image?> GetByIdAsync(string id)
     {
         return await _dbContext.Images.Where(i => i.Id == id).FirstOrDefaultAsync();
     }
