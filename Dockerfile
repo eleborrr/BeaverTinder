@@ -14,6 +14,14 @@ RUN dotnet build "BeaverTinder.csproj" -c Release -o /app/build
 FROM build AS publish
 RUN dotnet publish "BeaverTinder.csproj" -c Release -o /app/publish
 
+# Запускаем миграции
+RUN dotnet ef database update
+
+# Запускаем анализатор кода Sonar
+RUN dotnet sonarscanner begin /k:"your_project_key" /d:sonar.host.url=https://sonarcloud.io /d:sonar.login="your_sonarqube_token"
+RUN dotnet build
+RUN dotnet sonarscanner end /d:sonar.login="your_sonarqube_token"
+
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
