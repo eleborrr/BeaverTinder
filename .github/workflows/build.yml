@@ -71,11 +71,13 @@ jobs:
         run: |
           cd ./front
           npm run build
+      - name: Go to app directory
+        working-directory: ./front
+        run: cd front
   
       - name: Analyze with SonarCloud front
         with:
           path: ~/home/runner/work
-          working-directory: ./front
         uses: sonarsource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
