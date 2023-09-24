@@ -46,3 +46,29 @@ jobs:
           .\.sonar\scanner\dotnet-sonarscanner begin /k:"eleborrr_BeaverTinder" /o:"beaverzz" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
           dotnet build
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+  front_build:
+    name: Build and analyze front
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code front
+        uses: actions/checkout@v2
+  
+      - name: Cache dependencies front
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: ${{ runner.os }}-node-
+  
+      - name: Install dependencies front
+        run: npm ci
+  
+      - name: Build front
+        run: npm run build
+  
+      - name: Analyze with SonarCloud front
+        uses: sonarsource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    
