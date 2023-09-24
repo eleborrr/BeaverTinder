@@ -42,17 +42,22 @@ public class VkOAuthService : IVkOAuthService
         var vkUser = await _repositoryManager.UserToVkRepository.GetByIdAsync(userDto.VkId);
         if (vkUser is null)
         {
+            var regResult = await Register(userDto);
+            if (!regResult.Successful)
+                return new LoginResponseDto(LoginResponseStatus.Fail);
             var createdUser = await _userManager.FindByNameAsync(userDto.UserName);
+            if(createdUser == null)
+                return new LoginResponseDto(LoginResponseStatus.Fail);
             var userToVk = new UserToVk()
             {
-                UserId = createdUser!.Id,
+                UserId = createdUser.Id,
                 VkId = userDto.VkId
             };
             await _repositoryManager.UserToVkRepository.AddAsync(userToVk);
             return await Login(createdUser);
         }
-        var userId = await _repositoryManager.UserToVkRepository.GetByIdAsync(userDto.VkId);
-        var signedUser = await _signInManager.UserManager.FindByIdAsync(userId!.UserId);
+        var userVk = await _repositoryManager.UserToVkRepository.GetByIdAsync(userDto.VkId);
+        var signedUser = await _signInManager.UserManager.FindByIdAsync(userVk!.UserId);
         return await Login(signedUser!);
     }
 
@@ -80,7 +85,7 @@ public class VkOAuthService : IVkOAuthService
         var result = await _userManager.CreateAsync(user);
         if (result.Succeeded)
         {
-            var userDb = await _userManager.FindByEmailAsync(user.Email);
+            var userDb = await _userManager.FindByIdAsync(user.Id);
                 
             await _userManager.AddClaimAsync(userDb!, new Claim(ClaimTypes.Role, "User"));
             await _geolocationService.AddAsync(userId:userDb!.Id,
@@ -153,13 +158,13 @@ public class VkOAuthService : IVkOAuthService
     
     public async Task<VkUserDto?> GetVkUserInfoAsync(VkAccessTokenDto accessToken)
     {
-        var query = new Dictionary<string, string>()
+        var query = new Dictionary<string, string?>()
         {
             ["fields"] = "screen_name, bdate, sex, status, about, photo_max_orig",
             ["access_token"] = accessToken.Token,
             ["v"] = "5.131",
         };
-        var uri = QueryHelpers.AddQueryString(VkontakteAuthenticationDefaults.UserInformationEndpoint, query!);
+        var uri = QueryHelpers.AddQueryString(VkontakteAuthenticationDefaults.UserInformationEndpoint, query);
         var userInfo = await _client.GetAsync(uri);
         var content = await userInfo.Content.ReadAsStringAsync();
         var resp = JsonSerializer.Deserialize<VkResponseDto>(content);
