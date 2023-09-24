@@ -1,4 +1,7 @@
 ﻿name: SonarCloud
+env:
+  SONAR_PROJECT_KEY: "eleborrr_BeaverTinder"
+  SONAR_ORGANIZATION: "beaverzz"
 on:
   push:
     branches:
@@ -49,7 +52,6 @@ jobs:
   front_build:
     name: Build and analyze front
     runs-on: ubuntu-latest
-    
     steps:
     
       - name: Checkout code front
@@ -79,6 +81,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_PROJECT_KEY: "eleborrr_BeaverTinder"
-          SONAR_ORGANIZATION: "beaverzz"
+          
     
