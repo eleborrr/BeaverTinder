@@ -79,4 +79,17 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-    
+          
+      - name: Check for warnings
+        id: check-warnings
+        run: echo ::set-output name=has_warnings::$(grep -Rn "WARN" .)
+  
+      - name: Handle warnings
+        if: steps.check-warnings.outputs.has_warnings != ''
+        run: |
+          echo "There are warnings in the code!"
+          exit 1
+      
+      - name: Continue on success
+        if: steps.check-warnings.outputs.has_warnings == ''
+        run: echo "No warnings found!"
