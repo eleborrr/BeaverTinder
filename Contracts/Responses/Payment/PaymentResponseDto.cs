@@ -1,10 +1,7 @@
 ﻿namespace Contracts.Responses.Payment;
 
-public class PaymentResponseDto
+public class PaymentResponseDto : ResponseBaseDto
 {
-    public string Message { get; set; }
-    public bool Successful { get;  set; }
-    public int StatusCode { get; set; }
     private readonly Dictionary<PaymentResponseStatus, string> _messages = new()
     {
         {PaymentResponseStatus.Ok, "Payment successful"},
