@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using Contracts.Responses;
 using Contracts.Responses.Search;
 using Contracts.ViewModels;
 using Domain.Entities;
@@ -32,14 +33,7 @@ public class BeaverSearchController: Controller
     {
         var result = await _serviceManager.FindBeaverService.GetNextBeaver(await GetUserFromJwt(), await GetRoleFromJwt());
         if (!result.Successful)
-        {
-            return Json(new SearchUserFailedResponse
-            {
-                Message = result.Message,
-                Successful = result.Successful,
-                StatusCode = result.StatusCode
-            });
-        }
+            return Json(new FailResponse(result.Successful, result.Message, result.StatusCode));
 
         Console.WriteLine(result.DistanceInKm);
         var user = new SearchUserResultDto
@@ -61,14 +55,7 @@ public class BeaverSearchController: Controller
     {
         var result = await _serviceManager.FindBeaverService.GetNextSympathy(await GetUserFromJwt());
         if (!result.Successful)
-        {
-            return Json(new SearchUserFailedResponse()
-            {
-                Message = result.Message,
-                Successful = result.Successful,
-                StatusCode = result.StatusCode
-            });
-        }
+            return Json(new FailResponse(result.Successful, result.Message, result.StatusCode));
         
         var user = new SearchUserResultDto()
         {

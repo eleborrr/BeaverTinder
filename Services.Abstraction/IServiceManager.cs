@@ -1,6 +1,4 @@
-﻿using Domain.Repositories;
-using Microsoft.AspNetCore.Identity;
-using Services.Abstraction.Account;
+﻿using Services.Abstraction.Account;
 using Services.Abstraction.Chat;
 using Services.Abstraction.Email;
 using Services.Abstraction.FindBeaver;

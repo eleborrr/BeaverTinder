@@ -48,12 +48,7 @@ public class ChatController: Controller
         }
         catch (Exception exception)
         {
-            return Json(new FailResponse()
-            {
-                Message = exception.Message,
-                StatusCode = 400,
-                Successful = false
-            });
+            return Json(new FailResponse(false, exception.Message, 400));
         }
     }
     
@@ -78,12 +73,7 @@ public class ChatController: Controller
         }
         catch (Exception exception)
         {
-            return Json(new FailResponse()
-            {
-                Message = exception.Message,
-                StatusCode = 400,
-                Successful = false
-            });
+            return Json(new FailResponse(false, exception.Message, 400));
         }
     }
 }

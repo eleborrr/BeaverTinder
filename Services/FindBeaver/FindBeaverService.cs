@@ -1,4 +1,5 @@
-﻿using Contracts.Responses.Search;
+﻿using System.Globalization;
+using Contracts.Responses.Search;
 using Domain.Entities;
 using Domain.Repositories;
 using Microsoft.AspNetCore.Identity;
@@ -73,9 +74,17 @@ public class FindBeaverService: IFindBeaverService
             var curUserGeolocation = await _geolocationService.GetByUserId(currentUser.Id);
             var likedUserGeolocation = await _geolocationService.GetByUserId(returnUserCache.Id);
 
+            if (curUserGeolocation is null || likedUserGeolocation is null)
+                return new SearchUserResultDto()
+                {
+                    Successful = false,
+                    Message = "Geolocation binding error",
+                    StatusCode = 500
+                };
+
             var distanceInKm = 
                 Math.Ceiling(
-                    await _geolocationService.GetDistance(curUserGeolocation, likedUserGeolocation)).ToString();
+                    await _geolocationService.GetDistance(curUserGeolocation, likedUserGeolocation)).ToString(CultureInfo.CurrentCulture);
 
             return new SearchUserResultDto
             {
@@ -131,17 +140,18 @@ public class FindBeaverService: IFindBeaverService
                 Message = "Logged in user error",
                 StatusCode = 400
             };
-        var likes = await _repositoryManager.LikeRepository.GetAllAsync(default); // ???
-
-            var filtredBeavers = _userManager.Users.AsEnumerable()
-            .Where(u => likes.Count(l => l.UserId ==  u.Id && l.LikedUserId ==currentUser.Id ) != 0 
-                        && likes.Count(l => l.UserId == currentUser.Id && l.LikedUserId ==  u.Id) == 0
-                        && u.Id != currentUser.Id) // проверяем чтобы попадались лайкнутые
-            .OrderBy(u => Math.Abs(currentUser.DateOfBirth.Year - u.DateOfBirth.Year))
-            .Take(10)
-            .ToList();
+        var likes = (await _repositoryManager.LikeRepository.GetAllAsync(default)).ToList();
         
-        var returnUserCache = filtredBeavers.FirstOrDefault();
+
+        var filteredBeavers = _userManager.Users.AsEnumerable()
+        .Where(u => likes.Count(l => l.UserId ==  u.Id && l.LikedUserId ==currentUser.Id ) != 0 
+                    && likes.Count(l => l.UserId == currentUser.Id && l.LikedUserId ==  u.Id) == 0
+                    && u.Id != currentUser.Id) // проверяем чтобы попадались лайкнутые
+        .OrderBy(u => Math.Abs(currentUser.DateOfBirth.Year - u.DateOfBirth.Year))
+        .Take(10)
+        .ToList();
+        
+        var returnUserCache = filteredBeavers.FirstOrDefault();
         if (returnUserCache is null)
             return new SearchUserResultDto()
             {
@@ -181,7 +191,7 @@ public class FindBeaverService: IFindBeaverService
             return new LikeResponseDto(LikeResponseStatus.Fail, "Like limit!");
         MemoryCacheUpdate(user1.Id);
 
-        var newLike = new Like() { UserId = user1.Id, LikedUserId = userId2, LikeDate = DateTime.Now, Sympathy = sympathy};
+        var newLike = new Like { UserId = user1.Id, LikedUserId = userId2, LikeDate = DateTime.Now, Sympathy = sympathy};
         await _repositoryManager.LikeRepository.AddAsync(newLike);
         return new LikeResponseDto(LikeResponseStatus.Ok);
     }
@@ -190,7 +200,7 @@ public class FindBeaverService: IFindBeaverService
     {
         if (_memoryCache.TryGetValue(userId, out List<User>? likesCache))
         {
-            _memoryCache.Set(userId, likesCache.Skip(1),
+            _memoryCache.Set(userId, likesCache is null? new List<User>() :likesCache.Skip(1),
                 new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(10)));
         }
     }

@@ -46,9 +46,9 @@ public class GeolocationService: IGeolocationService
 
     public async Task<double> GetDistance(User user1, User user2)
     {
-        var geoloc1 = await GetByUserId(user1.Id);
-        var geoloc2 = await GetByUserId(user2.Id);
-        return await GetDistance(geoloc1, geoloc2);
+        var firstUserGeolocation = await GetByUserId(user1.Id);
+        var secondUserGeolocation = await GetByUserId(user2.Id);
+        return await GetDistance(firstUserGeolocation!, secondUserGeolocation!);
     }
 
     public async Task Update(string userId, double latitude, double longitude)

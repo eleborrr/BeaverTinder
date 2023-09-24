@@ -39,52 +39,47 @@ public class AccountService : IAccountService
     public async Task SendConfirmationEmailAsync(string userId)
     {
         var user = await _userManager.FindByIdAsync(userId);
-        if (user == null)
-            Console.WriteLine("USER FINDING ERROR");
+        if (user == null) //TODO log error
+            return;
 
         var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-        if (token == null)
-            Console.WriteLine("TOKEN GENERATE ERROR");
 
         byte[] tokenGeneratedBytes = Encoding.UTF8.GetBytes(token);
         var codeEncoded = WebEncoders.Base64UrlEncode(tokenGeneratedBytes);
 
         var link = $"https://localhost:7015/confirm?userEmail={user.Email}&token={codeEncoded}";
 
-        await _emailService.SendEmailAsync(user.Email, "Confirm your account",
+        await _emailService.SendEmailAsync(user.Email!, "Confirm your account",
             $"Подтвердите регистрацию, перейдя по ссылке: <a href=\"{link}\">ссылка</a>");
-
     }
 
     public async Task SendPasswordResetAsync(string userId)
     {
         var user = await _userManager.FindByIdAsync(userId);
-        if (user == null)
-            Console.WriteLine("USER FINDING ERROR");
+        if (user == null) // TODO log error
+            return;
 
         var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-        if (token == null)
-            Console.WriteLine("TOKEN GENERATE ERROR");
 
         byte[] tokenGeneratedBytes = Encoding.UTF8.GetBytes(token);
         var codeEncoded = WebEncoders.Base64UrlEncode(tokenGeneratedBytes);
 
         var link = $"https://localhost:7015/confirm?userEmail={user.Email}&token={codeEncoded}";
 
-        await _emailService.SendEmailAsync(user.Email, "Confirm your account",
+        await _emailService.SendEmailAsync(user.Email!, "Confirm your account",
             $"Подтвердите регистрацию, перейдя по ссылке: <a href=\"{link}\">ссылка</a>");
 
     }
 
-    public async Task<IdentityResult> ConfirmEmailAsync(string userEmail, string token)
+    public async Task<IdentityResult> ConfirmEmailAsync(string? userEmail, string? token)
     {
+        if (userEmail == null || token == null)
+            return IdentityResult.Failed();
         var codeDecodedBytes = WebEncoders.Base64UrlDecode(token);
         var codeDecoded = Encoding.UTF8.GetString(codeDecodedBytes);
         var user = await _userManager.FindByEmailAsync(userEmail);
         if (user == null)
-        {
             return IdentityResult.Failed();
-        }
 
         var res = await _userManager.ConfirmEmailAsync(user, codeDecoded);
         return res;
@@ -113,127 +108,110 @@ public class AccountService : IAccountService
         }#1#
         model.RememberMe = rememberMe;*/
 
-        if (modelstate.IsValid)
+        if (!modelstate.IsValid) return new LoginResponseDto(LoginResponseStatus.Fail);
+        
+        var signedUser = await _signInManager.UserManager.FindByNameAsync(model.UserName);
+        if (signedUser is null) return new LoginResponseDto(LoginResponseStatus.Fail);
+        
+        var result = await _signInManager.PasswordSignInAsync(signedUser.UserName!, model.Password, false,
+            lockoutOnFailure: false);
+
+
+        if (!result.Succeeded) return new LoginResponseDto(LoginResponseStatus.Fail);
+        
+        //TODO instead of remove check for having??
+        try
         {
-            User? signedUser = await _signInManager.UserManager.FindByNameAsync(model.UserName);
-            var result = await _signInManager.PasswordSignInAsync(signedUser.UserName, model.Password, false,
-                lockoutOnFailure: false);
-
-
-            if (result.Succeeded)
-            {
-                //TODO instead of remove check for having??
-                try
-                {
-                    await _userManager.RemoveClaimAsync(signedUser, new Claim("Id", signedUser.Id));
-                    await _userManager.RemoveClaimAsync(signedUser, new Claim(ClaimTypes.Role, "Admin"));
-                    await _userManager.RemoveClaimAsync(signedUser, new Claim(ClaimTypes.Role, "User"));
-                    await _userManager.RemoveClaimAsync(signedUser, new Claim(ClaimTypes.Role, "Moderator"));
-                }
-                catch (Exception exception)
-                {
-                    // ignored
-                }
+            await _userManager.RemoveClaimAsync(signedUser, new Claim("Id", signedUser.Id));
+            await _userManager.RemoveClaimAsync(signedUser, new Claim(ClaimTypes.Role, "Admin"));
+            await _userManager.RemoveClaimAsync(signedUser, new Claim(ClaimTypes.Role, "User"));
+            await _userManager.RemoveClaimAsync(signedUser, new Claim(ClaimTypes.Role, "Moderator"));
+        }
+        catch (Exception)
+        {
+            // ignored
+        }
                 
-                await _signInManager.UserManager.AddClaimAsync(signedUser, new Claim("Id", signedUser.Id));
-                if (await _signInManager.UserManager.IsInRoleAsync(signedUser, "Admin"))
-                {
+        await _signInManager.UserManager.AddClaimAsync(signedUser, new Claim("Id", signedUser.Id));
+        if (await _signInManager.UserManager.IsInRoleAsync(signedUser, "Admin"))
+        {
                     
-                    await _signInManager.UserManager.AddClaimAsync(signedUser, new Claim(ClaimTypes.Role, "Admin"));
-                }
-
-                else if (await _signInManager.UserManager.IsInRoleAsync(signedUser, "Moderator"))
-                    await _signInManager.UserManager.AddClaimAsync(signedUser, new Claim(ClaimTypes.Role, "Moderator"));
-
-                else
-                    await _userManager.AddClaimAsync(signedUser, new Claim(ClaimTypes.Role, "StandartUser"));
-
-                return new LoginResponseDto(LoginResponseStatus.Ok, await _jwtGenerator.GenerateJwtToken(signedUser.Id));
-            }
+            await _signInManager.UserManager.AddClaimAsync(signedUser, new Claim(ClaimTypes.Role, "Admin"));
         }
 
-        return new LoginResponseDto(LoginResponseStatus.Fail);
+        else if (await _signInManager.UserManager.IsInRoleAsync(signedUser, "Moderator"))
+            await _signInManager.UserManager.AddClaimAsync(signedUser, new Claim(ClaimTypes.Role, "Moderator"));
+
+        else
+            await _userManager.AddClaimAsync(signedUser, new Claim(ClaimTypes.Role, "StandartUser"));
+
+        return new LoginResponseDto(LoginResponseStatus.Ok, await _jwtGenerator.GenerateJwtToken(signedUser.Id));
+
     }
 
     public async Task<RegisterResponseDto> Register(RegisterDto model, ModelStateDictionary modelstate)
     {
-        if (modelstate.IsValid)
+        if (!modelstate.IsValid) return new RegisterResponseDto(RegisterResponseStatus.InvalidData);
+        var user = new User
         {
-            var user = new User
-            {
-                LastName = model.LastName,
-                FirstName = model.FirstName,
-                UserName = model.UserName,
-                Email = model.Email,
-                Gender = model.Gender,
-                About = model.About,
-                DateOfBirth = model.DateOfBirth,
-                Image = "https://w7.pngwing.com/pngs/831/88/png-transparent-user-profile-computer-icons-user-interface-mystique-miscellaneous-user-interface-design-smile.png",
+            LastName = model.LastName,
+            FirstName = model.FirstName,
+            UserName = model.UserName,
+            Email = model.Email,
+            Gender = model.Gender,
+            About = model.About,
+            DateOfBirth = model.DateOfBirth,
+            Image = "https://w7.pngwing.com/pngs/831/88/png-transparent-user-profile-computer-icons-user-interface-mystique-miscellaneous-user-interface-design-smile.png",
 
-            };
+        };
 
-            var emailCollision = _userManager.Users.FirstOrDefault(u => u.Email == user.Email);
-            if (emailCollision is not null)
-                return new RegisterResponseDto(RegisterResponseStatus.Fail, "User with that email already exists");
+        var emailCollision = _userManager.Users.FirstOrDefault(u => u.Email == user.Email);
+        if (emailCollision is not null)
+            return new RegisterResponseDto(RegisterResponseStatus.Fail, "User with that email already exists");
             
-            var result = await _userManager.CreateAsync(user, model.Password);
+        var result = await _userManager.CreateAsync(user, model.Password);
 
-            if (result.Succeeded)
-            {
-                await SendConfirmationEmailAsync(user.Id);
-                
-                var userDb = await _userManager.FindByEmailAsync(user.Email);
-                
-                await _userManager.AddClaimAsync(userDb, new Claim(ClaimTypes.Role, "User"));
-                await _geolocationService.AddAsync(userId:userDb.Id,
-                    latitude: model.Latitude,
-                    longitude: model.Longitude);
-                return new RegisterResponseDto(RegisterResponseStatus.Ok);
-               
-            }
-
+        if (!result.Succeeded)
             return new RegisterResponseDto(RegisterResponseStatus.Fail,
-                result.Errors.FirstOrDefault().Description);
-        }
-        return new RegisterResponseDto(RegisterResponseStatus.InvalidData);
+                result.Errors.FirstOrDefault()!.Description);
+        await SendConfirmationEmailAsync(user.Id);
+                
+        var userInDb = await _userManager.FindByEmailAsync(user.Email);
+        if (userInDb is null)
+            return new RegisterResponseDto(RegisterResponseStatus.Fail, "User registration error");
+                
+        await _userManager.AddClaimAsync(userInDb, new Claim(ClaimTypes.Role, "User"));
+        await _geolocationService.AddAsync(userId:userInDb.Id,
+            latitude: model.Latitude,
+            longitude: model.Longitude);
+        return new RegisterResponseDto(RegisterResponseStatus.Ok);
     }
 
     public async Task<EditUserResponseDto> EditAccount(User userToEdit, EditUserDto model, ModelStateDictionary modelstate)
     {
-        if (modelstate.IsValid)
-        {
-            string passwordHash;
-            if (model.Password == "")
-                passwordHash = userToEdit.PasswordHash;
-            else
-            {
-                passwordHash = _passwordHasher.HashPassword(userToEdit, model.Password);
-            }
+        if (!modelstate.IsValid) return new EditUserResponseDto(EditResponseStatus.InvalidData);
+        
+        var passwordHash = model.Password == "" ? userToEdit.PasswordHash : _passwordHasher.HashPassword(userToEdit, model.Password);
             
 
-            userToEdit.LastName = model.LastName;
-            userToEdit.FirstName = model.FirstName;
-            userToEdit.UserName = model.UserName;
-            userToEdit.Gender = model.Gender;
-            userToEdit.About = model.About;
-            userToEdit.Image = model.Image;
-            userToEdit.PasswordHash = passwordHash;
+        userToEdit.LastName = model.LastName;
+        userToEdit.FirstName = model.FirstName;
+        userToEdit.UserName = model.UserName;
+        userToEdit.Gender = model.Gender;
+        userToEdit.About = model.About;
+        userToEdit.Image = model.Image;
+        userToEdit.PasswordHash = passwordHash;
             
             
-            var result = await _userManager.UpdateAsync(userToEdit);
+        var result = await _userManager.UpdateAsync(userToEdit);
 
-            await _geolocationService.Update(userToEdit.Id, model.Latitude, model.Longitude);
+        await _geolocationService.Update(userToEdit.Id, model.Latitude, model.Longitude);
 
-            if (result.Succeeded)
-            {
-                var userDb = await _userManager.FindByEmailAsync(userToEdit.Email);
-                return new EditUserResponseDto(EditResponseStatus.Ok);
-            }
-
+        if (!result.Succeeded)
             return new EditUserResponseDto(EditResponseStatus.Fail,
-                result.Errors.FirstOrDefault().Description);
-        }
-        return new EditUserResponseDto(EditResponseStatus.InvalidData); 
+                result.Errors.FirstOrDefault()!.Description);
+            
+        return new EditUserResponseDto(EditResponseStatus.Ok);
     }
    
     public async Task<IEnumerable<User>> GetAllMappedUsers()
