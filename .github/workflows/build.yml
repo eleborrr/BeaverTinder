@@ -71,15 +71,13 @@ jobs:
           cd ./front
           npm run build
   
-      - name: Analyze with SonarCloud front
-        with:
-          path: ~/home/runner/work
-        uses: sonarsource/sonarcloud-github-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
-          SONAR_ORGANIZATION: ${{ secrets.SONAR_ORGANIZATION }}
+      - name: SonarQube Scan front
+        run: sonar-scanner
+           -Dsonar.host.url="https://sonarcloud.io"
+           -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+           -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
+           -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
+           -Dsonar.sources=$GITHUB_WORKSPACE
 
           
     
