@@ -76,8 +76,10 @@ jobs:
           path: ~/home/runner/work
         uses: sonarsource/sonarcloud-github-action@master
         env:
-          SONAR_PROJECT_KEY: "eleborrr_BeaverTinder"
-          SONAR_ORGANIZATION: "beaverzz"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_PROJECT_KEY: eleborrr_BeaverTinder
+          SONAR_ORGANIZATION: beaverzz
 
           
     
