@@ -8,10 +8,7 @@ using Domain.Entities;
 using Domain.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
-using Newtonsoft.Json;
 using Persistence.Misc.Services.JwtGenerator;
-using Services.Abstraction;
-using Services.Abstraction.Email;
 using Services.Abstraction.Geolocation;
 using Services.Abstraction.OAuth;
 using static System.Enum;
@@ -45,19 +42,18 @@ public class VkOAuthService : IVkOAuthService
         var vkUser = await _repositoryManager.UserToVkRepository.GetByIdAsync(userDto.VkId);
         if (vkUser is null)
         {
-            var regResult = await Register(userDto);
             var createdUser = await _userManager.FindByNameAsync(userDto.UserName);
             var userToVk = new UserToVk()
             {
-                UserId = createdUser.Id,
+                UserId = createdUser!.Id,
                 VkId = userDto.VkId
             };
             await _repositoryManager.UserToVkRepository.AddAsync(userToVk);
             return await Login(createdUser);
         }
         var userId = await _repositoryManager.UserToVkRepository.GetByIdAsync(userDto.VkId);
-        var signedUser = await _signInManager.UserManager.FindByIdAsync(userId.UserId);
-        return await Login(signedUser);
+        var signedUser = await _signInManager.UserManager.FindByIdAsync(userId!.UserId);
+        return await Login(signedUser!);
     }
 
     public async Task<RegisterResponseDto> Register(VkAuthDto userDto)
@@ -90,11 +86,12 @@ public class VkOAuthService : IVkOAuthService
             await _geolocationService.AddAsync(userId:userDb.Id,
                 latitude: 55.558741,
                 longitude: 37.378847);
+
             return new RegisterResponseDto(RegisterResponseStatus.Ok);
         }
 
         return new RegisterResponseDto(RegisterResponseStatus.Fail,
-            result.Errors.FirstOrDefault().Description);
+            result.Errors.FirstOrDefault()!.Description);
     }
     
     public async Task<LoginResponseDto> Login(User signedUser)
@@ -109,7 +106,7 @@ public class VkOAuthService : IVkOAuthService
             await _userManager.RemoveClaimAsync(signedUser, new Claim(ClaimTypes.Role, "User"));
             await _userManager.RemoveClaimAsync(signedUser, new Claim(ClaimTypes.Role, "Moderator"));
         }
-        catch (Exception exception)
+        catch (Exception)
         {
             // ignored
         }
@@ -163,12 +160,12 @@ public class VkOAuthService : IVkOAuthService
             ["access_token"] = accessToken.Token,
             ["v"] = "5.131",
         };
-        var uri = QueryHelpers.AddQueryString(VkontakteAuthenticationDefaults.UserInformationEndpoint, query);
+        var uri = QueryHelpers.AddQueryString(VkontakteAuthenticationDefaults.UserInformationEndpoint, query!);
         var userInfo = await _client.GetAsync(uri);
         var content = await userInfo.Content.ReadAsStringAsync();
         var resp = JsonSerializer.Deserialize<VkResponseDto>(content);
-        var user = resp.Response.FirstOrDefault();
-        user.Email = accessToken.Email;
+        var user = resp!.Response.FirstOrDefault();
+        user!.Email = accessToken.Email;
         return user;
     }
 }

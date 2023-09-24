@@ -29,8 +29,8 @@ public class SubscriptionService : ISubscriptionService
         if (userSub == null)
         {
             await _repositoryManager.UserSubscriptionRepository.AddUserSubscriptionAsync(subsId, userId);
-            await _userManager.AddToRoleAsync(user, sub.RoleName);
-            await _userManager.AddClaimAsync(user, new Claim(ClaimTypes.Role, sub.RoleName));
+            await _userManager.AddToRoleAsync(user!, sub.RoleName);
+            await _userManager.AddClaimAsync(user!, new Claim(ClaimTypes.Role, sub.RoleName));
             return;
         }
         if (userSub.Active)
@@ -41,13 +41,13 @@ public class SubscriptionService : ISubscriptionService
             return;
         }
         await _repositoryManager.UserSubscriptionRepository.UpdateUserSubAsync(subsId, userId);
-        await _userManager.AddToRoleAsync(user, sub.RoleName);
+        await _userManager.AddToRoleAsync(user!, sub.RoleName);
     }
 
     public async Task<SubInfoDto> GetUserActiveSubscription(string userId)
     {
         var user = await _userManager.FindByIdAsync(userId);
-        var roles = await _userManager.GetRolesAsync(user);
+        var roles = await _userManager.GetRolesAsync(user!);
         if (roles.Any(c => c == "Admin"))
         {
             return new SubInfoDto()
