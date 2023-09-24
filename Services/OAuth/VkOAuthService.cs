@@ -86,7 +86,6 @@ public class VkOAuthService : IVkOAuthService
         if (result.Succeeded)
         {
             var userDb = await _userManager.FindByIdAsync(user.Id);
-            
             await _userManager.AddClaimAsync(userDb!, new Claim(ClaimTypes.Role, "User"));
             await _geolocationService.AddAsync(userId:userDb!.Id,
                 latitude: 55.558741,
