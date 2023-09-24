@@ -74,7 +74,6 @@ jobs:
           
       - name: Go to app directory
         working-directory: ./front
-        run: cd ./front
   
       - name: Analyze with SonarCloud front
         with:
