@@ -61,7 +61,7 @@ jobs:
           restore-keys: ${{ runner.os }}-node-
   
       - name: Install dependencies front
-        run: npm ci
+        run: npm i
   
       - name: Build front
         run: npm run build
