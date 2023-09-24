@@ -15,7 +15,6 @@ public class GeolocationService: IGeolocationService
 
     public async Task AddAsync(string userId, double latitude, double longitude)
     {
-        //TODO валидность проверять
         var geolocation = new UserGeolocation()
         {
             Id = Guid.NewGuid().ToString(),

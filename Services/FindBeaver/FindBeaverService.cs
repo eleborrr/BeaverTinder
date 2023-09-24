@@ -30,7 +30,6 @@ public class FindBeaverService: IFindBeaverService
     public async Task<SearchUserResultDto> GetNextBeaver(User? currentUser, Role? userRole)
     {
         // логика, где поиск идет так же по местоположению.
-        // TODO учет расстояния, ограничение по подписке.
         if (currentUser is null)
             return new SearchUserResultDto
             {
@@ -52,16 +51,15 @@ public class FindBeaverService: IFindBeaverService
         {
             var likes = await _repositoryManager.LikeRepository.GetAllAsync(default); // ???
 
-            var filtredBeavers = _userManager.Users.AsEnumerable()
-                .Where(u => likes.Count(l => l.UserId == currentUser.Id && l.LikedUserId == u.Id ) == 0 && u.Id != currentUser.Id) // проверяем чтобы не попадались лайкнутые
+            var filteredBeavers = _userManager.Users.AsEnumerable()
+                .Where(u => !likes.Any(l => l.UserId == currentUser.Id && l.LikedUserId == u.Id ) && u.Id != currentUser.Id) // проверяем чтобы не попадались лайкнутые
                 .OrderBy(u => Math.Abs(_geolocationService.GetDistance(currentUser, u).Result))
                 .ThenBy(u => currentUser.DateOfBirth.Year - u.DateOfBirth.Year)
                 .Take(10)
                 .ToList();
-                _memoryCache.Set(currentUser.Id, filtredBeavers,
+                _memoryCache.Set(currentUser.Id, filteredBeavers,
                 new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(10)));
-            //TODO possible error?
-            var returnUserCache = filtredBeavers.FirstOrDefault();
+            var returnUserCache = filteredBeavers.FirstOrDefault();
             
             if (returnUserCache is null)
                 return new SearchUserResultDto()
@@ -111,9 +109,7 @@ public class FindBeaverService: IFindBeaverService
                 Message = "Beaver queue error",
                 StatusCode = 500
             };
-        
-        
-        //TODO possible error?
+
         return new SearchUserResultDto
         {
             Id = returnUser.Id,
@@ -129,8 +125,6 @@ public class FindBeaverService: IFindBeaverService
         };
     }
 
-    
-    //TODO memory cache
     public async Task<SearchUserResultDto> GetNextSympathy(User? currentUser)
     {
         if (currentUser is null)
@@ -144,8 +138,8 @@ public class FindBeaverService: IFindBeaverService
         
 
         var filteredBeavers = _userManager.Users.AsEnumerable()
-        .Where(u => likes.Count(l => l.UserId ==  u.Id && l.LikedUserId ==currentUser.Id ) != 0 
-                    && likes.Count(l => l.UserId == currentUser.Id && l.LikedUserId ==  u.Id) == 0
+        .Where(u => likes.Any(l => l.UserId ==  u.Id && l.LikedUserId ==currentUser.Id )
+                    && !likes.Any(l => l.UserId == currentUser.Id && l.LikedUserId ==  u.Id)
                     && u.Id != currentUser.Id) // проверяем чтобы попадались лайкнутые
         .OrderBy(u => Math.Abs(currentUser.DateOfBirth.Year - u.DateOfBirth.Year))
         .Take(10)
@@ -173,8 +167,6 @@ public class FindBeaverService: IFindBeaverService
             Image = returnUserCache.Image!
         }; 
     }
-
-    //TODO юзер будет приходить через жвт??
     public async Task<LikeResponseDto> AddSympathy(User? user1, string userId2, bool sympathy, Role? userRole)
     {
         if (user1 is null)
@@ -208,9 +200,7 @@ public class FindBeaverService: IFindBeaverService
     {
         if (user is null)
             return false;
-        //TODO make checks
         return (await _likeService.GetAllAsync())
             .Count(l => l.LikeDate.Date.Day == DateTime.Today.Day && l.UserId == user.Id) <= role.LikesCountAllowed;
-        // TODO return custom Exception
     }
 }

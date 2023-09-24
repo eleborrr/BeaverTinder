@@ -25,7 +25,7 @@ public class UserSubscriptionRepository : IUserSubscriptionRepository
     
     public async Task<List<UserSubscription>> GetActiveSubscriptionsByUserIdAsync(string userId)
     {
-        return await _applicationDbContext.UserSubscriptions.Where(x => x.UserId == userId && x.Active == true).ToListAsync();
+        return await _applicationDbContext.UserSubscriptions.Where(x => x.UserId == userId && x.Active).ToListAsync();
     }
 
     public async Task<UserSubscription?> GetUserSubscriptionByUserIdAndSubsIdAsync(int subsId, string userId)

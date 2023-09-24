@@ -15,7 +15,7 @@ public class RoomRepository: IRoomRepository
 
     public async Task<IEnumerable<Room>> GetAllAsync(CancellationToken cancellationToken)
     {
-        return await _dbContext.Rooms.ToListAsync();
+        return await _dbContext.Rooms.ToListAsync(cancellationToken);
     }
 
     public async Task AddAsync(Room room)

@@ -21,10 +21,8 @@ internal sealed class TwoFaService: ITwoFaService
     public async Task SendConfirmationEmailAsync(string userId)
     {
         var user = await _userManager.FindByIdAsync(userId);
-        if (user is null) //TODO log
+        if (user is null)
             return;
-        
-        //TODO error handling. User is null. What would u do?
         
         var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
         

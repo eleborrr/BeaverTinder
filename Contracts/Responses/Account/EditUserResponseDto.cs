@@ -2,7 +2,7 @@
 
 public class EditUserResponseDto: ResponseBaseDto
 {
-    private Dictionary<EditResponseStatus, string> _messages = new()
+    private readonly Dictionary<EditResponseStatus, string> _messages = new()
     {
         {EditResponseStatus.Ok, "Successful editing"},
         {EditResponseStatus.InvalidData, "Invalid input data"},
@@ -10,8 +10,7 @@ public class EditUserResponseDto: ResponseBaseDto
         {EditResponseStatus.Fail, "Error"}
     };
     
-    //TODO разобраться какие коды лучше вставлять. мб есть способ лучше это делать? 
-    private Dictionary<EditResponseStatus, int> _codes = new()
+    private readonly Dictionary<EditResponseStatus, int> _codes = new()
     {
         {EditResponseStatus.Ok, 200},
         {EditResponseStatus.InvalidData, 400},

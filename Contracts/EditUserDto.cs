@@ -30,14 +30,11 @@ public class EditUserDto
     [Required]
     [Display(Name = "Image")]
     public string Image { get; set; } = default!;
-    
-    
-    // [Required]
+
     [Display(Name = "Password")]
     [DataType(DataType.Password)]
     public string Password { get; set; } = default!;
 
-    // [Required]
     [Compare("Password", ErrorMessage = "Пароли не совпадают")]
     [DataType(DataType.Password)]
     [Display(Name = "ConfirmPassword")]

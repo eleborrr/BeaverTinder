@@ -36,9 +36,7 @@ public class RegisterDto
     [DataType(DataType.Date)]
     [Display(Name = "Date of birth")]
     public DateTime DateOfBirth { get; set; } = default!;
-    
-    
-    //TODO checks for valid values?
+
     [Required]
     public double Latitude { get; set; } = default!;
     

@@ -23,7 +23,7 @@ namespace Presentation.Hubs
 
             var room = _dbContext.Rooms.FirstOrDefault(r => r.Name == roomName);
 
-            if (room is null) //TODO log error
+            if (room is null)
                 return;
 
             var messages = await _dbContext.Messages.Where(m => m.RoomId == room.Id).OrderBy(m => m.Timestamp).ToListAsync();
@@ -47,7 +47,7 @@ namespace Presentation.Hubs
             var receiver = await _userManager.FindByNameAsync(receiverUserName);
 
             if (receiver is null || sender is null || room is null)
-                return; //TODO log error
+                return;
             
             _dbContext.Messages.Add(new Message()
             {

@@ -22,13 +22,13 @@ public sealed class ApplicationDbContext: IdentityDbContext<User>
     {
         Database.EnsureCreated();
     }
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    protected override void OnModelCreating(ModelBuilder builder)
     {
 
-        modelBuilder.Entity<User>()
+        builder.Entity<User>()
             .Ignore(u => u.PhoneNumber)
             .Ignore(u => u.PhoneNumberConfirmed);
-        modelBuilder.Entity<Role>().HasData(
+        builder.Entity<Role>().HasData(
             new Role
             {
                 Id = "1",
@@ -69,7 +69,7 @@ public sealed class ApplicationDbContext: IdentityDbContext<User>
                 LikesCountAllowed = 50,
                 LocationViewAllowed = true
             });
-        modelBuilder.Entity<Subscription>().HasData(
+        builder.Entity<Subscription>().HasData(
             new Subscription()
             {
                 Name = "More likes",
@@ -89,9 +89,9 @@ public sealed class ApplicationDbContext: IdentityDbContext<User>
                 RoleName = "UserMoreLikesAndMap"
             }
         );
-        modelBuilder.Entity<UserSubscription>().HasKey(u => new { u.UserId, u.SubsId});
-        modelBuilder.Entity<UserToVk>().HasKey(x => new { Id = x.UserId, x.VkId });
-        base.OnModelCreating(modelBuilder);
+        builder.Entity<UserSubscription>().HasKey(u => new { u.UserId, u.SubsId});
+        builder.Entity<UserToVk>().HasKey(x => new { Id = x.UserId, x.VkId });
+        base.OnModelCreating(builder);
         
         
     }

@@ -2,7 +2,7 @@
 
 public class RegisterResponseDto: ResponseBaseDto
 {
-    private Dictionary<RegisterResponseStatus, string> _messages = new()
+    private readonly Dictionary<RegisterResponseStatus, string> _messages = new()
     {
         {RegisterResponseStatus.Ok, "Registration successful. Email send"},
         {RegisterResponseStatus.InvalidData, "Invalid input data"},
@@ -11,15 +11,13 @@ public class RegisterResponseDto: ResponseBaseDto
         {RegisterResponseStatus.Fail, "Error"}
     };
     
-    //TODO разобраться какие коды лучше вставлять. мб есть способ лучше это делать? 
-    private Dictionary<RegisterResponseStatus, int> _codes = new()
+    private readonly Dictionary<RegisterResponseStatus, int> _codes = new()
     {
         {RegisterResponseStatus.Ok, 200},
         {RegisterResponseStatus.InvalidData, 400},
         {RegisterResponseStatus.SendEmailFailure, 403},
         {RegisterResponseStatus.UserCreationFailure, 403},
         {RegisterResponseStatus.Fail, 400}
-
     };
 
     public RegisterResponseDto(RegisterResponseStatus status, string? message="")

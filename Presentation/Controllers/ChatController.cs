@@ -33,7 +33,7 @@ public class ChatController: Controller
             var s = User.Claims.FirstOrDefault(c => c.Type == "Id")!;
             var curUser = await _userManager.FindByIdAsync(s.Value);
 
-            if (curUser is null) //TODO add log
+            if (curUser is null) 
                 throw new Exception("Oops!");
             
             var users = _userManager.Users.AsEnumerable()
@@ -62,7 +62,7 @@ public class ChatController: Controller
             var receiver = await _userManager.FindByNameAsync(username);
             var sender = await _userManager.FindByIdAsync(curUserId);
 
-            if (receiver is null || sender is null) //TODO add log
+            if (receiver is null || sender is null)
                 throw new Exception("Oops!");
             
             var res = await _serviceManager.ChatService.GetChatById(sender.Id, receiver.Id);

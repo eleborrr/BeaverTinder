@@ -10,9 +10,6 @@ using Services.Abstraction;
 
 namespace Presentation.Controllers;
 
-
-//TODO методы для изменения информации об аккаунте
-
 [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 [ApiController]
 [Route("[controller]")]
@@ -34,7 +31,6 @@ public class AccountController : Controller
         return await _serviceManager.GeolocationService.GetByUserId(model.UserId);
     }
 
-    //TODO уменьшить количество выдаваемых данных
     [HttpGet("/userinfo")]
     public async Task<JsonResult> GetAccountInformation([FromQuery] string id)
     {
@@ -46,7 +42,6 @@ public class AccountController : Controller
         if (geolocation is null)
             return new JsonResult(new FailResponse(false, "Oops! Seems like a problem.. We are working on it!", 400));
         
-        //todo ограничение, тип чтобы не каждый мог вызывать этот метод
         var subInfo = await _serviceManager.SubscriptionService.GetUserActiveSubscription(id);
         var model = new EditUserViewModel()
         {
@@ -67,7 +62,6 @@ public class AccountController : Controller
     [HttpGet("/usersubinfo")]
     public async Task<JsonResult> GetUserSubInformation([FromQuery] string userId)
     {
-        //todo ограничение, тип чтобы не каждый мог вызывать этот метод
         var subInfo = await _serviceManager.SubscriptionService.GetUserActiveSubscription(userId);
 
         var model = new SubInfoDto()
@@ -125,19 +119,4 @@ public class AccountController : Controller
         var res = await _serviceManager.AccountService.ConfirmEmailAsync(userEmail, token);
         return Json(res);
     }
-    
-    // [HttpGet("/resetPassword")]
-    // [AllowAnonymous]
-    // public async Task<JsonResult> ResetPassword([FromQuery] string userEmail, [FromQuery] string token)
-    // {
-    //     //TODO где получать пароль?
-    //     
-    //     if (userEmail == null || token == null)
-    //     {
-    //
-    //     }
-    //
-    //     var res = await _serviceManager.AccountService.ResetPasswordAsync(userEmail, token, "123");
-    //     return Json(res);
-    // }
 }
