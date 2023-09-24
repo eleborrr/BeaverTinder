@@ -46,29 +46,37 @@ jobs:
           .\.sonar\scanner\dotnet-sonarscanner begin /k:"eleborrr_BeaverTinder" /o:"beaverzz" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
           dotnet build
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
-  sonarqube:
+  front_build:
+    name: Build and analyze front
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
-      with:
-        fetch-depth: 0
-    # Setup java 17 to be default (sonar-scanner requirement as of 5.x)
-    - uses: actions/setup-java@v3
-      with:
-        distribution: 'temurin' # See 'Supported distributions' for available options
-        java-version: '17'
-    # Setup sonar-scanner
-    - name: Setup SonarQube
-      uses: warchant/setup-sonar-scanner@v7
-    # Run sonar-scanner
-    - name: SonarQube Scan
-      run: |
-        sonar-scanner
-        -Dsonar.host.url=${{ secrets.SONAR_URL }}
-        -Dsonar.login=${{ secrets.SONAR_TOKEN }}
-        -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
-        -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
-        -Dsonar.sources=$GITHUB_WORKSPACE
-
-          
     
+      - name: Checkout code front
+        uses: actions/checkout@v2
+  
+      - name: Cache dependencies front
+        uses: actions/cache@v2
+        with:
+          path: ./front
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: ${{ runner.os }}-node-
+  
+      - name: Install dependencies front
+        run: |
+          cd ./front
+          npm ci
+  
+      - name: Build front
+        run: |
+          cd ./front
+          npm run build
+  
+      - name: Analyze with SonarCloud front
+        with:
+          path: ~/home/runner/work
+        uses: sonarsource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
+          SONAR_ORGANIZATION: ${{ secrets.SONAR_ORGANIZATION }}
