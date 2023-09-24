@@ -85,7 +85,7 @@ jobs:
         run: echo ::set-output name=has_warnings::$(grep -Rn "WARN" .)
   
       - name: Handle warnings
-        if: steps.check-warnings.outputs.has_warnings != ''
+        if: steps.check-warnings.outputs.has_warnings
         run: |
           echo "There are warnings in the code!"
           exit 1
