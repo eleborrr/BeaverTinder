@@ -14,6 +14,7 @@ public class PaymentResponseDto : ResponseBaseDto
         {PaymentResponseStatus.Ok, 200},
         {PaymentResponseStatus.InvalidData, 400},
         {PaymentResponseStatus.Fail, 400}
+        
     };
     
     public PaymentResponseDto(PaymentResponseStatus status, string message="")
