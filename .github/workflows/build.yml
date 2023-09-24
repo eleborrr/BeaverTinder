@@ -73,6 +73,7 @@ jobs:
           npm run build
   
       - name: Analyze with SonarCloud front
+        id: sonar
         with:
           projectBaseDir: front
         uses: sonarsource/sonarcloud-github-action@master
@@ -80,12 +81,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           
-      - name: Check for warnings
-        id: check-warnings
-        run: echo ::set-output name=has_warnings::$(grep -Rn "WARN" .)
-  
       - name: Handle warnings
-        if: steps.check-warnings.outputs.has_warnings
+        if: ${{ steps.sonar.outputs.warnings > 0 }}
         run: |
           echo "There are warnings in the code!"
           exit 1
