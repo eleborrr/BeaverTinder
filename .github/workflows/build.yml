@@ -71,9 +71,10 @@ jobs:
         run: |
           cd ./front
           npm run build
+          
       - name: Go to app directory
         working-directory: ./front
-        run: cd front
+        run: cd ./front
   
       - name: Analyze with SonarCloud front
         with:
