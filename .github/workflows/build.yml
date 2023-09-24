@@ -47,14 +47,37 @@ jobs:
           dotnet build
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
   front_build:
-    name: SonarCloud
+    name: Build and analyze front
     runs-on: ubuntu-latest
+    
     steps:
-      - uses: actions/checkout@v3
+    
+      - name: Checkout code front
+        uses: actions/checkout@v2
+  
+      - name: Cache dependencies front
+        uses: actions/cache@v2
         with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
+          path: ./front
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: ${{ runner.os }}-node-
+  
+      - name: Install dependencies front
+        run: |
+          cd ./front
+          npm ci
+  
+      - name: Build front
+        run: |
+          cd ./front
+          npm run build
+  
+      - name: Analyze with SonarCloud front
+        with:
+          path: ~/home/runner/work
+          working-directory: ./front
+        uses: sonarsource/sonarcloud-github-action@master
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    
