@@ -46,7 +46,7 @@ jobs:
           .\.sonar\scanner\dotnet-sonarscanner begin /k:"eleborrr_BeaverTinder" /o:"beaverzz" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
           dotnet build
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
-  sonarcloud:
+  front_build:
     name: SonarCloud
     runs-on: ubuntu-latest
     steps:
