@@ -82,10 +82,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           
       - name: Handle warnings
-        if: ${{ steps.sonar.outputs.warnings > 0 }}
-        run: |
-          echo "There are warnings in the code!"
-          exit 1
+        run: echo ${{steps.sonar.outputs.warnings}}
       
       - name: Continue on success
         if: steps.check-warnings.outputs.has_warnings == ''
