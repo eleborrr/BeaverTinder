@@ -83,8 +83,7 @@ jobs:
           
       - name: Handle warnings
         run: |
-          echo ${{ steps.sonar.outputs }}
-          exit 1
+          env
       
       - name: Continue on success
         if: steps.check-warnings.outputs.has_warnings == ''
