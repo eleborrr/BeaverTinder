@@ -48,7 +48,7 @@ jobs:
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
   front_build:
     name: Build and analyze front
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code front
         uses: actions/checkout@v2
