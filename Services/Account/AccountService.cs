@@ -185,7 +185,6 @@ public class AccountService : IAccountService
             latitude: model.Latitude,
             longitude: model.Longitude);
         return new RegisterResponseDto(RegisterResponseStatus.Ok);
-
     }
 
     public async Task<EditUserResponseDto> EditAccount(User userToEdit, EditUserDto model, ModelStateDictionary modelstate)
