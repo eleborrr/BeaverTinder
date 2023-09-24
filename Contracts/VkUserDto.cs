@@ -20,10 +20,12 @@ public class VkUserDto
     [JsonPropertyName("last_name")]
     public string LastName { get; set; } = null!;
 
-    [JsonPropertyName("first_name")] public string FirstName { get; set; } = null!;
-    [JsonPropertyName("screen_name")] public string UserName { get; set; } = null!;
+    [JsonPropertyName("first_name")] 
+    public string FirstName { get; set; } = null!;
+    [JsonPropertyName("screen_name")] 
+    public string UserName { get; set; } = null!;
     [JsonPropertyName("email")]
-    public string Email { get; set; }
+    public string? Email { get; set; }
     [JsonPropertyName("sex")]
     public int Gender { get; set; }
     [JsonPropertyName("status")]
