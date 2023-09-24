@@ -17,6 +17,9 @@ const ChatsPage = () => {
         if (!token){
             navigate("/login");
         }
+        if(!token){
+            navigate("/login");
+        }
     }, [navigate, token])
 
     useEffect(() => {
