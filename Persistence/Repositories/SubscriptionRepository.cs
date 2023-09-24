@@ -18,7 +18,7 @@ public class SubscriptionRepository : ISubscriptionRepository
         return await _applicationDbContext.Subscriptions.ToListAsync(cancellationToken);
     }
 
-    public async Task<Subscription> GetBySubscriptionIdAsync(int subsId)
+    public async Task<Subscription?>GetBySubscriptionIdAsync(int subsId)
     {
         return await _applicationDbContext.Subscriptions.FirstOrDefaultAsync(x => x.Id == subsId);
     }

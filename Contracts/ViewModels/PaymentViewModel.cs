@@ -7,7 +7,7 @@ public class PaymentViewModel
     [Required]
     [MinLength(13)]
     [MaxLength(16)]
-    public string CardNumber { get; set; }
+    public string CardNumber { get; set; } = null!;
     [Required]
     [Range(1,12)]
     public int Month { get; set; }

@@ -16,7 +16,7 @@ public class LoginResponseDto: ResponseBaseDto
 
     };
     
-    public LoginResponseDto(LoginResponseStatus status, string message="")
+    public LoginResponseDto(LoginResponseStatus status, string? message="")
     {
         Message = message != "" ? message : Messages[status];
         Successful = status == LoginResponseStatus.Ok;

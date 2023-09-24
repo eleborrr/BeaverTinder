@@ -4,7 +4,7 @@ namespace Contracts;
 
 public class PaymentDto
 {
-    public string UserId { get; set; }
+    public string UserId { get; set; } = null!;
     public int SubsId { get; set; }
     public DateTime PaymentDate { get; set; }
     public double Amount { get; set; }
