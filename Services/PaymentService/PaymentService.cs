@@ -1,60 +1,7 @@
-﻿// using Yandex.Checkout.V3;
-// using System.Net;
-// using Microsoft.AspNetCore.Authentication;
-// using Microsoft.AspNetCore.Mvc;
-//
-// namespace BeaverTinder.Services.Pay;
-//
-// internal sealed class PaymentService: IPaymentService
-// {
-//     private string secret_key = "test_izBJTFEOXAuUWTh9720fYGQ9U_FZPnNRBDpvdA0PkTY";
-//     private string shop_id = "211284";
-//     private AsyncClient _asyncClient;
-//
-//     public PaymentService()
-//     {
-//         var client = new Yandex.Checkout.V3.Client(
-//             shopId: shop_id,
-//             secretKey: secret_key);
-//         _asyncClient = client.MakeAsync();
-//
-//     }
-//     
-//     public async Task<Payment> DoPayment()
-//     {
-//         var client = new HttpClient();
-//         var newPayment = new NewPayment()
-//         {
-//             Amount = new Amount { Value = 100.00m, Currency = "RUB" },
-//             Confirmation = new Confirmation
-//             {
-//                 Type = ConfirmationType.Redirect,
-//                 ReturnUrl = "https://localhost:7015/"
-//             }
-//         };
-//
-//         Payment payment = await _asyncClient.CreatePaymentAsync(newPayment);
-//         
-//         return payment;
-//         // HttpResponse.Redirect();
-//         // 3. Дождитесь получения уведомления
-//         // Message message = Client.ParseMessage(HttpRequest, Request.ContentType, Request.InputStream);
-//         // payment = message?.Object;
-//         //
-//         // if (message?.Event == Event.PaymentWaitingForCapture && payment.Paid)
-//         // {
-//         //     // 4. Подтвердите готовность принять платеж
-//         //     _asyncClient.CapturePaymentAsync(payment.Id);
-//         // }
-//     }
-// }
-
-using System.Security.Claims;
-using Contracts;
+﻿using Contracts;
 using Contracts.Responses.Payment;
 using Domain.Entities;
 using Domain.Repositories;
-using Microsoft.AspNetCore.Http;
 using Services.Abstraction.PaymentService;
 
 namespace Services.PaymentService
@@ -103,7 +50,7 @@ namespace Services.PaymentService
                 return false;
             var sum = 0;
             var correctProvider = false;
-            if (!long.TryParse(number, out var result))
+            if (!long.TryParse(number, out _))
                 return false;
             if ((number.StartsWith("34") || number.StartsWith("37")) && (number.Length == 15))
                 correctProvider = true;

@@ -22,7 +22,7 @@ public class RegisterResponseDto: ResponseBaseDto
 
     };
 
-    public RegisterResponseDto(RegisterResponseStatus status, string message="")
+    public RegisterResponseDto(RegisterResponseStatus status, string? message="")
     {
         Message = message != "" ? message : Messages[status];
         Successful = status == RegisterResponseStatus.Ok;

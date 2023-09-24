@@ -2,5 +2,5 @@
 
 public interface IJwtGenerator
 {
-    public Task<string> GenerateJwtToken(string username);
+    public Task<string?> GenerateJwtToken(string username);
 }

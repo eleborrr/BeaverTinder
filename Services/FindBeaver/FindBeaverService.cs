@@ -3,7 +3,6 @@ using Domain.Entities;
 using Domain.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Caching.Memory;
-using Services.Abstraction;
 using Services.Abstraction.FindBeaver;
 using Services.Abstraction.Geolocation;
 using Services.Abstraction.Likes;
@@ -18,7 +17,7 @@ public class FindBeaverService: IFindBeaverService
     private readonly ILikeService _likeService;
     private readonly IGeolocationService _geolocationService;
 
-    public FindBeaverService(UserManager<User> userManager, IRepositoryManager repositoryManager, IMemoryCache memoryCache, RoleManager<Role> roleManager, ILikeService likeService, IGeolocationService geolocationService)
+    public FindBeaverService(UserManager<User> userManager, IRepositoryManager repositoryManager, IMemoryCache memoryCache, ILikeService likeService, IGeolocationService geolocationService)
     {
         _userManager = userManager;
         _repositoryManager = repositoryManager;
@@ -71,12 +70,12 @@ public class FindBeaverService: IFindBeaverService
                     StatusCode = 500
                 };
 
-            var curUserGeoloc = await _geolocationService.GetByUserId(currentUser.Id);
-            var likedUserGeoloc = await _geolocationService.GetByUserId(returnUserCache.Id);
+            var curUserGeolocation = await _geolocationService.GetByUserId(currentUser.Id);
+            var likedUserGeolocation = await _geolocationService.GetByUserId(returnUserCache.Id);
 
             var distanceInKm = 
                 Math.Ceiling(
-                    await _geolocationService.GetDistance(curUserGeoloc, likedUserGeoloc)).ToString();
+                    await _geolocationService.GetDistance(curUserGeolocation, likedUserGeolocation)).ToString();
 
             return new SearchUserResultDto
             {

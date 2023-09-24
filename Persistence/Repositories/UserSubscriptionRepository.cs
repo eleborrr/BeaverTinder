@@ -18,14 +18,14 @@ public class UserSubscriptionRepository : IUserSubscriptionRepository
         return await _applicationDbContext.UserSubscriptions.ToListAsync(cancellationToken);
     }
 
-    public async Task<List<UserSubscription>> GetSubscriptionsByUserIdAsync(string UserId)
+    public async Task<List<UserSubscription>> GetSubscriptionsByUserIdAsync(string userId)
     {
-        return await _applicationDbContext.UserSubscriptions.Where(x => x.UserId == UserId).ToListAsync();
+        return await _applicationDbContext.UserSubscriptions.Where(x => x.UserId == userId).ToListAsync();
     }
     
-    public async Task<List<UserSubscription>> GetActiveSubscriptionsByUserIdAsync(string UserId)
+    public async Task<List<UserSubscription>> GetActiveSubscriptionsByUserIdAsync(string userId)
     {
-        return await _applicationDbContext.UserSubscriptions.Where(x => x.UserId == UserId && x.Active == true).ToListAsync();
+        return await _applicationDbContext.UserSubscriptions.Where(x => x.UserId == userId && x.Active == true).ToListAsync();
     }
 
     public async Task<UserSubscription?> GetUserSubscriptionByUserIdAndSubsIdAsync(int subsId, string userId)
@@ -51,7 +51,8 @@ public class UserSubscriptionRepository : IUserSubscriptionRepository
     {
         var sub = await _applicationDbContext.UserSubscriptions.FirstOrDefaultAsync(x =>
             x.SubsId == subsId && x.UserId == userId);
-        if (!sub.Active)
+        
+        if (!sub!.Active)
         {
             sub.Active = true;
             sub.Expires = DateTime.Now + TimeSpan.FromDays(30);

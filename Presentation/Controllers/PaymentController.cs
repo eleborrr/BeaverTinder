@@ -1,7 +1,6 @@
 ﻿using Contracts;
 using Contracts.Responses.Payment;
 using Domain.Entities;
-using Domain.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -43,7 +42,7 @@ public class PaymentController : Controller
     private async Task<User> GetUserFromJwt()
     {
         var s = User.Claims.FirstOrDefault(c => c.Type == "Id");
-        var user = await _userManager.FindByIdAsync(s.Value);
+        var user = await _userManager.FindByIdAsync(s!.Value);
         if (user is null)
             throw new Exception("user not found"); //TODO перенести в exception
         return user;

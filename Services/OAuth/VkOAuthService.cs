@@ -8,10 +8,7 @@ using Domain.Entities;
 using Domain.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
-using Newtonsoft.Json;
 using Persistence.Misc.Services.JwtGenerator;
-using Services.Abstraction;
-using Services.Abstraction.Email;
 using Services.Abstraction.Geolocation;
 using Services.Abstraction.OAuth;
 using static System.Enum;
@@ -46,7 +43,11 @@ public class VkOAuthService : IVkOAuthService
         if (vkUser is null)
         {
             var regResult = await Register(userDto);
+            if (!regResult.Successful)
+                return new LoginResponseDto(LoginResponseStatus.Fail);
             var createdUser = await _userManager.FindByNameAsync(userDto.UserName);
+            if(createdUser == null)
+                return new LoginResponseDto(LoginResponseStatus.Fail);
             var userToVk = new UserToVk()
             {
                 UserId = createdUser.Id,
@@ -55,9 +56,9 @@ public class VkOAuthService : IVkOAuthService
             await _repositoryManager.UserToVkRepository.AddAsync(userToVk);
             return await Login(createdUser);
         }
-        var userId = await _repositoryManager.UserToVkRepository.GetByIdAsync(userDto.VkId);
-        var signedUser = await _signInManager.UserManager.FindByIdAsync(userId.UserId);
-        return await Login(signedUser);
+        var userVk = await _repositoryManager.UserToVkRepository.GetByIdAsync(userDto.VkId);
+        var signedUser = await _signInManager.UserManager.FindByIdAsync(userVk!.UserId);
+        return await Login(signedUser!);
     }
 
     public async Task<RegisterResponseDto> Register(VkAuthDto userDto)
@@ -84,17 +85,17 @@ public class VkOAuthService : IVkOAuthService
         var result = await _userManager.CreateAsync(user);
         if (result.Succeeded)
         {
-            var userDb = await _userManager.FindByEmailAsync(user.Email);
+            var userDb = await _userManager.FindByIdAsync(user.Id);
                 
-            await _userManager.AddClaimAsync(userDb, new Claim(ClaimTypes.Role, "User"));
-            await _geolocationService.AddAsync(userId:userDb.Id,
-                Latitude: 55.558741,
-                Longitude: 37.378847);
+            await _userManager.AddClaimAsync(userDb!, new Claim(ClaimTypes.Role, "User"));
+            await _geolocationService.AddAsync(userId:userDb!.Id,
+                latitude: 55.558741,
+                longitude: 37.378847);
             return new RegisterResponseDto(RegisterResponseStatus.Ok);
         }
 
         return new RegisterResponseDto(RegisterResponseStatus.Fail,
-            result.Errors.FirstOrDefault().Description);
+            result.Errors.FirstOrDefault()!.Description);
     }
     
     public async Task<LoginResponseDto> Login(User signedUser)
@@ -109,7 +110,7 @@ public class VkOAuthService : IVkOAuthService
             await _userManager.RemoveClaimAsync(signedUser, new Claim(ClaimTypes.Role, "User"));
             await _userManager.RemoveClaimAsync(signedUser, new Claim(ClaimTypes.Role, "Moderator"));
         }
-        catch (Exception exception)
+        catch (Exception)
         {
             // ignored
         }
@@ -157,7 +158,7 @@ public class VkOAuthService : IVkOAuthService
     
     public async Task<VkUserDto?> GetVkUserInfoAsync(VkAccessTokenDto accessToken)
     {
-        var query = new Dictionary<string, string>()
+        var query = new Dictionary<string, string?>()
         {
             ["fields"] = "screen_name, bdate, sex, status, about, photo_max_orig",
             ["access_token"] = accessToken.Token,
@@ -167,8 +168,8 @@ public class VkOAuthService : IVkOAuthService
         var userInfo = await _client.GetAsync(uri);
         var content = await userInfo.Content.ReadAsStringAsync();
         var resp = JsonSerializer.Deserialize<VkResponseDto>(content);
-        var user = resp.Response.FirstOrDefault();
-        user.Email = accessToken.Email;
+        var user = resp!.Response!.FirstOrDefault();
+        user!.Email = accessToken.Email;
         return user;
     }
 }

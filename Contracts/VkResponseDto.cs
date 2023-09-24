@@ -4,5 +4,5 @@ namespace Contracts;
 
 public class VkResponseDto
 {
-    [JsonPropertyName("response")] public VkUserDto[] Response { get; set; }
+    [JsonPropertyName("response")] public VkUserDto[]? Response { get; set; }
 }

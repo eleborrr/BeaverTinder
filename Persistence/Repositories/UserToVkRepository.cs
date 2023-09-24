@@ -24,7 +24,7 @@ public class UserToVkRepository : IUserToVkRepository
         await _applicationDbContext.SaveChangesAsync();
     }
 
-    public async Task<UserToVk> GetByIdAsync(string vkId)
+    public async Task<UserToVk?> GetByIdAsync(string vkId)
     {
         return await _applicationDbContext.UserToVks.FirstOrDefaultAsync(x => x.VkId == vkId);
     }

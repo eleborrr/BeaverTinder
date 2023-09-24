@@ -13,7 +13,7 @@ internal sealed class GeolocationRepository: IGeolocationRepository
     public async Task<IEnumerable<UserGeolocation>> GetAllAsync(CancellationToken cancellationToken = default) =>
         await _applicationDbContext.Geolocations.ToListAsync(cancellationToken);
     
-    public async Task<UserGeolocation>? GetByUserIdAsync(string userId) =>
+    public async Task<UserGeolocation?> GetByUserIdAsync(string userId) =>
         await _applicationDbContext.Geolocations.FirstOrDefaultAsync(x => x.UserId == userId);
 
     public async Task AddAsync(UserGeolocation geolocation)

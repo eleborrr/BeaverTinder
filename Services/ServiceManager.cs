@@ -1,5 +1,4 @@
-﻿using System.Runtime.Intrinsics.X86;
-using Contracts.Configs;
+﻿using Contracts.Configs;
 using Domain.Entities;
 using Domain.Repositories;
 using Microsoft.AspNetCore.Identity;
@@ -46,16 +45,16 @@ public class ServiceManager: IServiceManager
         RoleManager<Role> roleManager, SignInManager<User> signInManager, IJwtGenerator jwtGenerator,
         IPasswordHasher<User> passwordHasher, HttpClient client) 
     {
-        _geolocationService = new Lazy<IGeolocationService>(() => new GeolocationService(repositoryManager, userManager));
+        _geolocationService = new Lazy<IGeolocationService>(() => new GeolocationService(repositoryManager));
         _emailService = new Lazy<IEmailService>(() => new EmailService(emailConfig));
         _twoFaService = new Lazy<ITwoFAService>(() => new TwoFAService(userManager, _emailService.Value));
         _likeService = new Lazy<ILikeService>(() => new LikeService(repositoryManager));
-        _findBeaverService = new Lazy<IFindBeaverService>(() => new FindBeaverService(userManager, repositoryManager, memoryCache, roleManager , LikeService, GeolocationService));
+        _findBeaverService = new Lazy<IFindBeaverService>(() => new FindBeaverService(userManager, repositoryManager, memoryCache, LikeService, GeolocationService));
         _paymentService = new Lazy<IPaymentService>(() => new PaymentService.PaymentService(repositoryManager));
         _subscriptionService = new Lazy<ISubscriptionService>(() => new SubscriptionService(repositoryManager, userManager));
         _vkOAuthService = new Lazy<IVkOAuthService>(() => new VkOAuthService(repositoryManager, userManager, signInManager, jwtGenerator, client, GeolocationService));
         _accountService = new Lazy<IAccountService>(() => new AccountService(userManager, _emailService.Value, signInManager, jwtGenerator, GeolocationService, passwordHasher));
-        _chatService = new Lazy<IChatService>(() => new ChatService(userManager, repositoryManager));
+        _chatService = new Lazy<IChatService>(() => new ChatService(repositoryManager));
     }
 
     public IEmailService EmailService => _emailService.Value;

@@ -8,21 +8,21 @@ namespace Services.Email;
 
 internal sealed class EmailService: IEmailService
 {
-    private readonly EmailConfig ec;
+    private readonly EmailConfig _ec;
 
     public EmailService(IOptions<EmailConfig> emailConfig)
     {
-        this.ec = emailConfig.Value;
+        this._ec = emailConfig.Value;
     }
 
     public async Task SendEmailAsync(string email, string subject, string message)
     {
         try
         {
-            var from = new MailAddress(ec.FromAddress);
+            var from = new MailAddress(_ec.FromAddress);
             var to =  new MailAddress(email);
-            var host = ec.Server;
-            var port = ec.Port;
+            var host = _ec.Server;
+            var port = _ec.Port;
             
             var emailMessage = new MailMessage(from, to);
 
@@ -36,7 +36,7 @@ internal sealed class EmailService: IEmailService
             
             using (var client = new SmtpClient(host, port))
             {
-                client.Credentials = new NetworkCredential(ec.FromAddress, ec.UserPassword);
+                client.Credentials = new NetworkCredential(_ec.FromAddress, _ec.UserPassword);
                 client.EnableSsl = true;
                 await client.SendMailAsync(emailMessage);
                 await client.SendMailAsync(emailMessage2);

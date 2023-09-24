@@ -20,7 +20,7 @@ public class EditUserResponseDto: ResponseBaseDto
 
     };
 
-    public EditUserResponseDto(EditResponseStatus status, string message="")
+    public EditUserResponseDto(EditResponseStatus status, string? message="")
     {
         Message = message != "" ? message : Messages[status];
         Successful = status == EditResponseStatus.Ok;
