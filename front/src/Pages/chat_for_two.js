@@ -4,7 +4,6 @@ import { axiosInstance } from "../Components/axios_server";
 import jwtDecode from "jwt-decode";
 import Cookies from "js-cookie";
 import './../assets/css/chat_for_two.css';
-import 'https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js';
 import * as signalR from "@microsoft/signalr";
 
 const ChatForTwoPage = () => {

@@ -1,11 +1,9 @@
-FROM node:current-alpine
+FROM node:current-alpine AS build-env
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . ./
 RUN npm run build
-# Запускаем анализатор кода Sonar
-RUN sonar-scanner -Dsonar.projectKey=your_project_key -Dsonar.sources=./src -Dsonar.host.url=http://your_sonarqube_url -Dsonar.login=your_sonarqube_token
 
 # Запускаем приложение
 FROM nginx:alpine

@@ -3,13 +3,14 @@ services:
   mssql:
     image: mcr.microsoft.com/mssql/server:2022-latest
     ports:
-      - "1414:1414"
+      - "1414:1433"
     volumes:
       - ~/apps/mssql/data:/var/lib/mssqlql/data
     environment:
       ACCEPT_EULA: Y
       MSSQL_SA_PASSWORD: superPuperPassword!15641
   web:
+    image: back
     depends_on:
       - mssql
     build: 
@@ -22,6 +23,7 @@ services:
       ConnectionStrings_BeaverTinderDatabase: Data Source=mssql;Initial Catalog=BeaverTinderDatabase;User=sa;Password=superPuperPassword!15641;Connect Timeout=300;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False
       
   react:
+    image: front
     build: 
       context: /front
       dockerfile: DockerFile
