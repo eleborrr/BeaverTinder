@@ -168,3 +168,6 @@ Contracts/obj
 BeaverTinder/bin
 BeaverTinder/obj
 .vs
+.idea/.idea.BeaverTinder/.idea/dataSources.xml
+.idea/.idea.BeaverTinder/.idea/jsonSchemas.xml
+.idea/.idea.BeaverTinder/.idea/dataSources.xml
