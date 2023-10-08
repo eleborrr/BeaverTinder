@@ -6,7 +6,7 @@ import './../assets/css/style.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
-import logo from './../assets/images/logo/logo.jpg'
+import logo from './../assets/images/logo/logo.png'
 import Cookies from 'js-cookie';
 import './../assets/css/header.css'
 

@@ -12,8 +12,10 @@ import ShopsPage from './Pages/shops';
 import ChatsPage from './Pages/chats';
 import HomePage from './Pages/home';
 import LikePage from './Pages/LikePage';
-import './assets/css/App.css';
 import ProfilePage from './Pages/profile';
+import './assets/css/App.css';
+import ChatWindow from './Components/window_connect_with_admin';
+import SupporChatsPage from './Pages/admin/support-chats';
 
 function App() {
   return (
@@ -31,10 +33,13 @@ function App() {
         <Route path='/myLikes' element= {<MyLikesPage/>}/>
         <Route path='/register' element={<RegisterPage />} />
         <Route path='/profile' element={<ProfilePage />} />
+        <Route path='/support_chat' element={<SupporChatsPage />} />
+        <Route path='/profile' element={<ProfilePage />} />
         <Route path='/afterCallback' element={<OAuthAfterCallback />} />
         <Route path='*' element={<PageNotFound />}
         />
       </Routes>
+      <ChatWindow />
     </>
   );
 }

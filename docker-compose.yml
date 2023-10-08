@@ -5,10 +5,11 @@ services:
       context: ./
       dockerfile: Dockerfile
     ports:
-      - "4040:4040"
+      - "7015:80"
     environment:
       ASPNETCORE_ENVIRONMENT: Production
   react:
+    image: react
     build: 
       context: /front
       dockerfile: DockerFile
