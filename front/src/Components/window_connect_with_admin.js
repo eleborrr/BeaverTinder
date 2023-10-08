@@ -36,9 +36,19 @@ const ChatWindow = () => {
             </div>
                 {messages.map((message, index) => (
                     <div className = "chatMessage">
-                        <div key={index} className={message.author === 'me' ? "chat-message-from" : "chat-message-to"}>
+                        {message.author === 'me' ?
+                        <div key={index} className="chat-message-from">
+                            {message.message}
+                        </div>                  
+                    :
+                    <div className='adminBlock'>
+                        <img src='https://fikiwiki.com/uploads/posts/2022-02/1644852415_12-fikiwiki-com-p-kartinki-admina-12.png' className='pngAdmin'></img>
+                        <div key={index} className="chat-message-to">
                             {message.message}
                         </div>
+                    </div>
+                                                            
+                    }                        
                     </div>
                     ))}
             <div>

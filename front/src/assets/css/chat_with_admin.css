@@ -12,7 +12,7 @@
 }
 
 .chat-message-from {
-  align-self: flex-start;
+  align-self: flex-start; 
   margin-bottom: 10px;
   background-color: #f2f2f2;
   padding: 5px;
@@ -20,7 +20,6 @@
 }
 
 .chat-message-to {
-  align-self: flex-end;
   margin-bottom: 10px;
   background-color: #e27f7f;
   padding: 5px;
@@ -94,4 +93,13 @@ button {
   margin-bottom: 10px;
   display: flex;
   flex-direction: column;
+}
+
+.pngAdmin {
+  align-self: center;
+  width: 50px;
+}
+
+.adminBlock{
+  align-self: end;
 }
