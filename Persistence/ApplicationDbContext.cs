@@ -8,7 +8,9 @@ public class ApplicationDbContext: IdentityDbContext<User>
 {
     public DbSet<Like> Likes { get; set; }
     public DbSet<Message> Messages { get; set; }
+    public DbSet<SupportChatMessage> SupportChatMessages { get; set; }
     public DbSet<Room> Rooms { get; set; }
+    public DbSet<SupportRoom> SupportRooms { get; set; }
     public DbSet<Role> Roles { get; set; }
     public DbSet<Image> Images { get; set; }
     public DbSet<Payment> Payments {get; set; }
@@ -28,6 +30,16 @@ public class ApplicationDbContext: IdentityDbContext<User>
         modelBuilder.Entity<User>()
             .Ignore(u => u.PhoneNumber)
             .Ignore(u => u.PhoneNumberConfirmed);
+        modelBuilder.Entity<User>().HasData(
+            new User()
+            {
+                Id = "1",
+                UserName = "Admin",
+                FirstName = "Gleb",
+                LastName = "Bober",
+                EmailConfirmed = true,
+                Gender = "Male"
+            });
         modelBuilder.Entity<Role>().HasData(
             new Role
             {

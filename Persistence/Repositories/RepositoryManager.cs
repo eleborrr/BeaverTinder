@@ -13,6 +13,8 @@ public sealed class RepositoryManager : IRepositoryManager
     private readonly Lazy<IUserToVkRepository> _lazyUserToVkRepository;
     private readonly Lazy<IRoomRepository> _lazyRoomRepository;
     private readonly Lazy<IMessageRepository> _lazyMessageRepository;
+    private readonly Lazy<ISupportChatMessageRepository> _lazySupportChatMessageRepository;
+    private readonly Lazy<ISupportRoomRepository> _lazySupportRoomRepository;
     public RepositoryManager(ApplicationDbContext dbContext)
     {
         _lazyGeolocationRepository = new Lazy<IGeolocationRepository>(() => new GeolocationRepository(dbContext));
@@ -25,6 +27,9 @@ public sealed class RepositoryManager : IRepositoryManager
         _lazyUserToVkRepository = new Lazy<IUserToVkRepository>(() => new UserToVkRepository(dbContext));
         _lazyMessageRepository = new Lazy<IMessageRepository>(() => new MessageRepository(dbContext));
         _lazyRoomRepository = new Lazy<IRoomRepository>(() => new RoomRepository(dbContext));
+        _lazySupportChatMessageRepository =
+            new Lazy<ISupportChatMessageRepository>(() => new SupportChatMessageRepository(dbContext));
+        _lazySupportRoomRepository = new Lazy<ISupportRoomRepository>(() => new SupportRoomRepository(dbContext));
     }
 
     public ILikeRepository LikeRepository => _lazyLikeRepository.Value;
@@ -36,5 +41,7 @@ public sealed class RepositoryManager : IRepositoryManager
     public IUserToVkRepository UserToVkRepository => _lazyUserToVkRepository.Value;
     public IRoomRepository RoomRepository => _lazyRoomRepository.Value;
     public IMessageRepository MessageRepository => _lazyMessageRepository.Value;
+    public ISupportChatMessageRepository SupportChatMessageRepository => _lazySupportChatMessageRepository.Value;
+    public ISupportRoomRepository SupportRoomRepository => _lazySupportRoomRepository.Value;
 }
 

@@ -3,6 +3,7 @@
  using Contracts.Configs;
  using Domain.Entities;
  using Domain.Repositories;
+ using MassTransit;
  using Microsoft.AspNetCore.Authentication.JwtBearer;
  using Microsoft.AspNetCore.Identity;
  using Microsoft.EntityFrameworkCore;
@@ -14,6 +15,7 @@
  using Presentation.Hubs;
  using Services;
  using Services.Abstraction;
+ using Services.SupportChat;
 
  var builder = WebApplication.CreateBuilder(args);
  
@@ -51,6 +53,17 @@ builder.Services.AddMvc();
  builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
  builder.Services.AddScoped<IServiceManager , ServiceManager>();
  builder.Services.AddScoped<HttpClient>();
+ builder.Services.AddMassTransit(cfg =>
+ {
+     cfg.UsingInMemory((context, cfg) =>
+     {
+         cfg.ReceiveEndpoint("support_chat_queue", e =>
+         {
+             e.UseMessageRetry(r => r.Interval(2, 100));
+             e.ConfigureConsumer<SupportChatConsumer>(context);
+         });
+     });
+ });
  builder.Services.Configure<EmailConfig>(builder.Configuration.GetSection("SmtpSettings"));
  
  builder.Services.AddControllers().AddApplicationPart(typeof(Presentation.AssemblyReference).Assembly);
@@ -163,6 +176,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
  app.MapHub<ChatHub>("/chatHub");
+ app.MapHub<SupportChatHub>("/supportChatHub");
 
  app.UseCors(testSpesific);
 
