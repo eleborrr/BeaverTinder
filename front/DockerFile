@@ -1,23 +1,19 @@
-# Используем базовый образ Node.js
-FROM node:latest
+FROM node:13.12.0-alpine
 
-# Установка рабочей директории внутри контейнера
+# set working directory
 WORKDIR /app
 
-# Копирование package.json и package-lock.json
-COPY package*.json ./
+# add `/app/node_modules/.bin` to $PATH
+ENV PATH /app/node_modules/.bin:$PATH
 
-# Установка зависимостей
-RUN npm install
+# install app dependencies
+COPY package.json ./
+COPY package-lock.json ./
+RUN npm install --silent
+RUN npm install react-scripts@3.4.1 -g --silent
 
-# Копирование всех файлов проекта внутрь контейнера
-COPY . .
+# add app
+COPY . ./
 
-# Сборка приложения
-RUN npm run build
-
-# Указание порта, который будет использоваться при запуске контейнера
-EXPOSE 3000
-
-# Команда для запуска приложения
+# start app
 CMD ["npm", "start"]

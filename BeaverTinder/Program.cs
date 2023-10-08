@@ -21,6 +21,8 @@
  builder.Services.AddControllers();
  builder.Services.AddMemoryCache();
  builder.Services.AddSignalR();
+ builder.Configuration.AddEnvironmentVariables();
+
 
  
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -165,4 +167,15 @@ if (app.Environment.IsDevelopment())
 
  app.MapControllers();
 
+ using (var scope = app.Services.CreateScope())
+ {
+     var services = scope.ServiceProvider;
+
+     var context = services.GetRequiredService<ApplicationDbContext>();
+     if (context.Database.GetPendingMigrations().Any())
+     {
+         context.Database.Migrate();
+     }
+ }
+ 
 app.Run();
