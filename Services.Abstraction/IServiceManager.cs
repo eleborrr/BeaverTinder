@@ -1,4 +1,5 @@
-﻿using Services.Abstraction.Account;
+﻿using Domain.Repositories;
+using Services.Abstraction.Account;
 using Services.Abstraction.Chat;
 using Services.Abstraction.Email;
 using Services.Abstraction.FindBeaver;
@@ -7,6 +8,7 @@ using Services.Abstraction.Likes;
 using Services.Abstraction.OAuth;
 using Services.Abstraction.Payments;
 using Services.Abstraction.Subscriptions;
+using Services.Abstraction.SupportChat;
 using Services.Abstraction.TwoFA;
 
 namespace Services.Abstraction;
@@ -23,4 +25,5 @@ public interface IServiceManager
     ISubscriptionService SubscriptionService { get; }
     IVkOAuthService VkOAuthService { get; }
     IChatService ChatService { get; }
+    ISupportChatService SupportChatService { get; }
 }

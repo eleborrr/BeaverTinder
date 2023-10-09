@@ -1,7 +1,9 @@
 ﻿using Contracts.Configs;
 using Domain.Entities;
 using Domain.Repositories;
+using MassTransit;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using Persistence.Misc.Services.JwtGenerator;
@@ -15,6 +17,7 @@ using Services.Abstraction.Likes;
 using Services.Abstraction.OAuth;
 using Services.Abstraction.Payments;
 using Services.Abstraction.Subscriptions;
+using Services.Abstraction.SupportChat;
 using Services.Abstraction.TwoFA;
 using Services.Account;
 using Services.Chat;
@@ -24,6 +27,7 @@ using Services.Geolocation;
 using Services.Likes;
 using Services.OAuth;
 using Services.Subscriptions;
+using Services.SupportChat;
 using Services.TwoFA;
 
 namespace Services;
@@ -40,10 +44,12 @@ public class ServiceManager: IServiceManager
     private readonly Lazy<IAccountService> _accountService;
     private readonly Lazy<IVkOAuthService> _vkOAuthService;
     private readonly Lazy<IChatService> _chatService;
+    private readonly Lazy<ISupportChatService> _supportChatService;
 
     public ServiceManager(UserManager<User> userManager, IOptions<EmailConfig> emailConfig, IRepositoryManager repositoryManager, IMemoryCache memoryCache,
-        SignInManager<User> signInManager, IJwtGenerator jwtGenerator,
-        IPasswordHasher<User> passwordHasher, HttpClient client) 
+        RoleManager<Role> roleManager, SignInManager<User> signInManager, IJwtGenerator jwtGenerator,
+        IPasswordHasher<User> passwordHasher, HttpClient client, IPublishEndpoint publishEndpoint
+        )
     {
         _geolocationService = new Lazy<IGeolocationService>(() => new GeolocationService(repositoryManager));
         _emailService = new Lazy<IEmailService>(() => new EmailService(emailConfig));
@@ -55,6 +61,8 @@ public class ServiceManager: IServiceManager
         _vkOAuthService = new Lazy<IVkOAuthService>(() => new VkOAuthService(repositoryManager, userManager, signInManager, jwtGenerator, client, GeolocationService));
         _accountService = new Lazy<IAccountService>(() => new AccountService(userManager, _emailService.Value, signInManager, jwtGenerator, GeolocationService, passwordHasher));
         _chatService = new Lazy<IChatService>(() => new ChatService(repositoryManager));
+        _supportChatService = new Lazy<ISupportChatService>(() =>
+            new SupportChatService(repositoryManager, publishEndpoint, userManager));
     }
 
     public IEmailService EmailService => _emailService.Value;
@@ -67,4 +75,5 @@ public class ServiceManager: IServiceManager
     public IAccountService AccountService => _accountService.Value;
     public IVkOAuthService VkOAuthService => _vkOAuthService.Value;
     public IChatService ChatService => _chatService.Value;
+    public ISupportChatService SupportChatService => _supportChatService.Value;
 }

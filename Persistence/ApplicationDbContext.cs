@@ -6,16 +6,18 @@ namespace Persistence;
 
 public sealed class ApplicationDbContext: IdentityDbContext<User>
 {
-    public DbSet<Like> Likes { get; set; } = null!;
-    public DbSet<Message> Messages { get; set; } = null!;
-    public DbSet<Room> Rooms { get; set; } = null!;
-    public new DbSet<Role> Roles { get; set; } = null!;
-    public DbSet<Image> Images { get; set; } = null!;
-    public DbSet<Payment> Payments {get; set; } = null!;
-    public DbSet<Subscription> Subscriptions { get; set; } = null!;
-    public DbSet<UserSubscription> UserSubscriptions { get; set; } = null!;
-    public DbSet<UserGeolocation> Geolocations { get; set; } = null!;
-    public DbSet<UserToVk> UserToVks { get; set; } = null!;
+    public DbSet<Like> Likes { get; set; }
+    public DbSet<Message> Messages { get; set; }
+    public DbSet<SupportChatMessage> SupportChatMessages { get; set; }
+    public DbSet<Room> Rooms { get; set; }
+    public DbSet<SupportRoom> SupportRooms { get; set; }
+    public DbSet<Role> Roles { get; set; }
+    public DbSet<Image> Images { get; set; }
+    public DbSet<Payment> Payments {get; set; }
+    public DbSet<Subscription> Subscriptions { get; set; }
+    public DbSet<UserSubscription> UserSubscriptions { get; set; }
+    public DbSet<UserGeolocation> Geolocations { get; set; }
+    public DbSet<UserToVk> UserToVks { get; set; }
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)
@@ -28,6 +30,16 @@ public sealed class ApplicationDbContext: IdentityDbContext<User>
         builder.Entity<User>()
             .Ignore(u => u.PhoneNumber)
             .Ignore(u => u.PhoneNumberConfirmed);
+        builder.Entity<User>().HasData(
+            new User()
+            {
+                Id = "1",
+                UserName = "Admin",
+                FirstName = "Gleb",
+                LastName = "Bober",
+                EmailConfirmed = true,
+                Gender = "Male"
+            });
         builder.Entity<Role>().HasData(
             new Role
             {

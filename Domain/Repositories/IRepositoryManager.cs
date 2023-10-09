@@ -11,5 +11,7 @@
         IUserToVkRepository UserToVkRepository { get; }
         IRoomRepository RoomRepository { get; }
         IMessageRepository MessageRepository { get; }
+        ISupportChatMessageRepository SupportChatMessageRepository { get; }
+        ISupportRoomRepository SupportRoomRepository { get; }
     }
 }

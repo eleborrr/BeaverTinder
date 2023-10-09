@@ -1,4 +1,6 @@
 import { Routes, Route } from 'react-router-dom';
+import Cookies from "js-cookie";
+import jwtDecode from "jwt-decode";
 import { OAuthAfterCallback } from './Components/after_call_back';
 import ChatForTwoPage from './Pages/chat_for_two';
 import PageNotFound from './Pages/404';
@@ -12,10 +14,24 @@ import ShopsPage from './Pages/shops';
 import ChatsPage from './Pages/chats';
 import HomePage from './Pages/home';
 import LikePage from './Pages/LikePage';
-import './assets/css/App.css';
+import SupportChatPage from "./Pages/admin/support-chat";
 import ProfilePage from './Pages/profile';
+import ChatWindow from './Components/window_connect_with_admin';
+import SupporChatsPage from './Pages/admin/support-chats';
+import './assets/css/App.css';
+import { useEffect } from 'react';
 
 function App() {
+  
+  const token = Cookies.get('token');
+  let roles = null;
+  useEffect(() => {
+    console.log(!token);
+    if (token !== undefined)
+      roles =jwtDecode(token)["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"]; 
+    console.log(!token || (roles != null && roles.includes("Admin")));
+
+  },[]) 
   return (
     <>
       <HeaderApp />
@@ -31,12 +47,16 @@ function App() {
         <Route path='/myLikes' element= {<MyLikesPage/>}/>
         <Route path='/register' element={<RegisterPage />} />
         <Route path='/profile' element={<ProfilePage />} />
+        <Route path='/support_chat' element={<SupporChatsPage />} />
+        <Route path='/support_chat/:nickname' element={<SupportChatPage />} />
+        <Route path='/profile' element={<ProfilePage />} />
         <Route path='/afterCallback' element={<OAuthAfterCallback />} />
         <Route path='*' element={<PageNotFound />}
         />
       </Routes>
+      {(!token || (roles != null && roles.includes("Admin")))? <></> : <ChatWindow />}
     </>
   );
-}
+}   
 
 export default App;

@@ -112,11 +112,9 @@ $RECYCLE.BIN/
 
 ### Sass ###
 .sass-cache/
-*.css.map
 
 
 ### Less ###
-*.css
 
 
 ### grunt ###
@@ -170,3 +168,6 @@ Contracts/obj
 BeaverTinder/bin
 BeaverTinder/obj
 .vs
+.idea/.idea.BeaverTinder/.idea/dataSources.xml
+.idea/.idea.BeaverTinder/.idea/jsonSchemas.xml
+.idea/.idea.BeaverTinder/.idea/dataSources.xml
