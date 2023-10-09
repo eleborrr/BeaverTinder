@@ -15,7 +15,7 @@ using Services.Abstraction.FindBeaver;
 using Services.Abstraction.Geolocation;
 using Services.Abstraction.Likes;
 using Services.Abstraction.OAuth;
-using Services.Abstraction.PaymentService;
+using Services.Abstraction.Payments;
 using Services.Abstraction.Subscriptions;
 using Services.Abstraction.SupportChat;
 using Services.Abstraction.TwoFA;
@@ -35,7 +35,7 @@ namespace Services;
 public class ServiceManager: IServiceManager
 {
     private readonly Lazy<IEmailService> _emailService;
-    private readonly Lazy<ITwoFAService> _twoFaService;
+    private readonly Lazy<ITwoFaService> _twoFaService;
     private readonly Lazy<ILikeService> _likeService;
     private readonly Lazy<IGeolocationService> _geolocationService;
     private readonly Lazy<IFindBeaverService> _findBeaverService;
@@ -53,7 +53,7 @@ public class ServiceManager: IServiceManager
     {
         _geolocationService = new Lazy<IGeolocationService>(() => new GeolocationService(repositoryManager));
         _emailService = new Lazy<IEmailService>(() => new EmailService(emailConfig));
-        _twoFaService = new Lazy<ITwoFAService>(() => new TwoFaService(userManager, _emailService.Value));
+        _twoFaService = new Lazy<ITwoFaService>(() => new TwoFaService(userManager, _emailService.Value));
         _likeService = new Lazy<ILikeService>(() => new LikeService(repositoryManager));
         _findBeaverService = new Lazy<IFindBeaverService>(() => new FindBeaverService(userManager, repositoryManager, memoryCache, LikeService, GeolocationService));
         _paymentService = new Lazy<IPaymentService>(() => new PaymentService.PaymentService(repositoryManager));
@@ -66,7 +66,7 @@ public class ServiceManager: IServiceManager
     }
 
     public IEmailService EmailService => _emailService.Value;
-    public ITwoFAService TwoFaService => _twoFaService.Value;
+    public ITwoFaService TwoFaService => _twoFaService.Value;
     public ILikeService LikeService => _likeService.Value;
     public IFindBeaverService FindBeaverService => _findBeaverService.Value;
     public IPaymentService PaymentService => _paymentService.Value;

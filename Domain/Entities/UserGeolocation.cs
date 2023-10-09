@@ -2,8 +2,8 @@
 
 public class UserGeolocation
 {
-    public string Id { get; set; }
-    public string UserId { get; set; }
+    public string Id { get; set; } = default!;
+    public string UserId { get; set; } = default!;
     public double Latitude { get; set; }
-    public double Longtitude { get; set; }
+    public double Longitude { get; set; }
 }

@@ -130,7 +130,6 @@ public class VkOAuthService : IVkOAuthService
         return new LoginResponseDto(LoginResponseStatus.Ok, await _jwtGenerator.GenerateJwtToken(signedUser.Id));
     }
     
-    //TODO обработка скрытой даты рождения
     public async Task<LoginResponseDto> OAuthCallback(VkUserDto vkUserDto)
     {
         DateTime parsedDate;

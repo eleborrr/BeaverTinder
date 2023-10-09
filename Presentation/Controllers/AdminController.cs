@@ -17,6 +17,7 @@ public class AdminController: Controller
 {
     private readonly UserManager<User> _userManager;
     private readonly IServiceManager _serviceManager;
+    private const bool ModeratorReturnValue = true;
     
     public AdminController(UserManager<User> userManager, IServiceManager serviceManager)
     {
@@ -194,7 +195,7 @@ public class AdminController: Controller
     [HttpGet("page")]
     public bool GetAdminPage()
     {
-        return true;
+        return ModeratorReturnValue;
     }
     
 }
