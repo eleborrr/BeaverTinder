@@ -2,6 +2,7 @@
 using Domain.Entities;
 using Domain.Repositories;
 using MassTransit;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Services.Abstraction.SupportChat;
@@ -12,11 +13,13 @@ public class SupportChatService : ISupportChatService
 {
     private readonly IRepositoryManager _repositoryManager;
     private readonly IPublishEndpoint _publishEndpoint;
+    private readonly UserManager<User> _userManager;
 
-    public SupportChatService(IRepositoryManager repositoryManager, IPublishEndpoint publishEndpoint)
+    public SupportChatService(IRepositoryManager repositoryManager, IPublishEndpoint publishEndpoint, UserManager<User> userManager)
     {
         _repositoryManager = repositoryManager;
         _publishEndpoint = publishEndpoint;
+        _userManager = userManager;
     }
     
     public async Task<SupportRoom> GetChatById(string curUserId, string userId)
@@ -47,14 +50,16 @@ public class SupportChatService : ISupportChatService
             .ToList();
         if (messages is null)
             return Array.Empty<SupportChatMessageDto>();
-        return messages.Select(m => new SupportChatMessageDto()
+        var result = await Task.WhenAll(messages.Select(async m => new SupportChatMessageDto()
         {
             Timestamp = m.Timestamp,
             Content = m.Content,
             RoomId = m.RoomId,
             ReceiverId = m.ReceiverId,
-            SenderId = m.SenderId
-        });
+            SenderId = m.SenderId,
+            SenderName = (await _userManager.FindByIdAsync(m.SenderId)).UserName
+        }));
+        return result;
     }
 
     public async Task SaveMessageAsync(SupportChatMessageDto message)

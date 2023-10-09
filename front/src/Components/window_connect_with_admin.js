@@ -28,18 +28,20 @@ const ChatWindow = () => {
     elem.className="message-from";
 
     author.className = "message-from";
-    // if(user === nickname){
-        
-    // }
-    // else{
-    //     elem.className="message-to";
+    if(msg.senderName === nickname){
+        elem.className="message-from";
 
-    //     author.className = "message-to";
-    // }
-    author.textContent = "INSERT USER NAME" + ":";
+        author.className = "message-from";
+    }
+    else{
+        elem.className="message-to";
+
+        author.className = "message-to";
+    }
+    author.textContent = msg.senderName + ":";
 
     content.className = "message-text";
-    content.textContent = message;
+    content.textContent = msg.content;
 
     elem.appendChild(author);
     elem.appendChild(content);

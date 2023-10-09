@@ -7,4 +7,5 @@ public class SupportChatMessageDto
     public string SenderId { get; set; }
     public string ReceiverId { get; set; }
     public string RoomId { get; set; }
+    public string SenderName { get; set; }
 }
