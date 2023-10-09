@@ -26,10 +26,10 @@
 
  
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
- builder.Configuration.AddEnvironmentVariables();
+builder.Configuration.AddEnvironmentVariables();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(); 
-builder.Services.AddMvc();
+builder.Services.AddSwaggerGen();
+ builder.Services.AddMvc();
 
  builder.Services.AddDbContext<ApplicationDbContext>(options =>
  {
@@ -57,11 +57,12 @@ builder.Services.AddMvc();
  {
      cfg.UsingInMemory((context, cfg) =>
      {
-         cfg.ReceiveEndpoint("support_chat_queue", e =>
+         /*cfg.ReceiveEndpoint( e =>
          {
              e.UseMessageRetry(r => r.Interval(2, 100));
              e.ConfigureConsumer<SupportChatConsumer>(context);
-         });
+         });*/
+         cfg.ConfigureEndpoints(context);
      });
  });
  builder.Services.Configure<EmailConfig>(builder.Configuration.GetSection("SmtpSettings"));
