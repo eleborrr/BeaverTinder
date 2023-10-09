@@ -42,7 +42,13 @@ public class SupportChatService : ISupportChatService
         }
         return room;
     }
-    
+
+    public Task<IEnumerable<SupportRoom>> GetAllChatRooms()
+    {
+        var rooms = (IEnumerable<SupportRoom>)_repositoryManager.SupportRoomRepository.GetAll();
+        return Task.FromResult(rooms);
+    }
+
     public async Task<IEnumerable<SupportChatMessageDto>> GetChatHistory(string userId, string secondUserId)
     {
         var room = await GetChatById(userId, secondUserId);
