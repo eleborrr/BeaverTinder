@@ -1,7 +1,6 @@
 import './../assets/css/chat_with_admin.css'
 import jwtDecode from "jwt-decode";
 import { axiosInstance } from "../Components/axios_server";
-import 'https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js';
 import * as signalR from "@microsoft/signalr";
 import Cookies from "js-cookie";
 import React, {useCallback, useEffect, useState} from 'react';
@@ -15,25 +14,37 @@ const ChatWindow = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { nickname } = useParams();
 
-  useEffect(() => {
-    if (!token){
-        navigate("/login");
-    }
-    }, [navigate, token])
+//   useEffect(() => {
+//     if (!token){
+//         navigate("/login");
+//     }
+//     }, [navigate, token])
 
 
   const handleSendMessage = (msg) => {
-    if (msg.trim() !== '') {
-        const mess = { 
-            message : msg,
-            author: 'me' 
-        }
-        const m2 = {
-            message : msg,
-            author: 'to'
-        }
-        setMessages([...messages, mess, m2]);
-    }
+    var elem = document.createElement("div");
+    var author = document.createElement("span");
+    var content = document.createElement("span");
+    elem.className="message-from";
+
+    author.className = "message-from";
+    // if(user === nickname){
+        
+    // }
+    // else{
+    //     elem.className="message-to";
+
+    //     author.className = "message-to";
+    // }
+    author.textContent = "INSERT USER NAME" + ":";
+
+    content.className = "message-text";
+    content.textContent = message;
+
+    elem.appendChild(author);
+    elem.appendChild(content);
+
+    document.getElementById("messagesList").appendChild(elem);
   };
   const togglePopup = () => {
     setIsOpen(!isOpen);
@@ -42,35 +53,46 @@ const ChatWindow = () => {
     const [message, setMessage] = useState('');
     const callbackSignalR = useCallback((roomData) => {
     
-        let connection = new signalR.HubConnectionBuilder().withUrl("https://localhost:7015/chatHub").build();
-    
-        connection.on("ReceivePrivateMessage", function (user, message){
+        let connection = new signalR.HubConnectionBuilder().withUrl("http://localhost:5276/supportChatHub").build();
+
+        connection.on("Receive", function (user, message){
+            console.log("received back");
             var elem = document.createElement("div");
             var author = document.createElement("span");
             var content = document.createElement("span");
             if(user === nickname){
                 elem.className="message-from";
-    
+
                 author.className = "message-from";
             }
             else{
                 elem.className="message-to";
-    
+
                 author.className = "message-to";
             }
             author.textContent = user + ":";
-    
+
             content.className = "message-text";
             content.textContent = message;
-    
+
             elem.appendChild(author);
             elem.appendChild(content);
-    
+
             document.getElementById("messagesList").appendChild(elem);
-    
+
         });
+
+        connection.start().then(res => {connection.invoke("ConnectToRoom", `${roomData.roomName}`)
+            .catch(function (err) {
+                return console.error(err.toString());
+            })});
     
-        document.getElementById("sendButton").addEventListener("click", function (event) {
+        // document.addEventListener('DOMContentLoaded', function(){
+        //     var a = document.getElementById("sendButton");
+        //     console.log(a);
+        //   });
+        document.getElementById('sendButton').addEventListener("click", function (event) {
+            console.log("Sended");
             var message = document.getElementById("messageInput").value;
             connection.invoke("SendPrivateMessage", `${roomData.senderName}`, message, `${roomData.recieverName}`, `${roomData.roomName}`).catch(function (err) {
                 return console.error(err.toString());
@@ -81,7 +103,7 @@ const ChatWindow = () => {
 
     useEffect(() => {
         let room;
-        axiosInstance.get(`/im/supportChat?username=${nickname}`,
+        axiosInstance.get(`/im/supportChat?username=Admin`,
             {
                 headers:{
                     Authorization: `Bearer ${token}`,
@@ -94,7 +116,7 @@ const ChatWindow = () => {
             })
             .catch();
         let messages;
-        axiosInstance.get(`/history?username=${nickname}`,
+        axiosInstance.get(`/history?username=Admin`,
             {
                 headers:{
                     Authorization: `Bearer ${token}`,
@@ -103,7 +125,9 @@ const ChatWindow = () => {
             })
             .then(response => {
                 messages = response.data; // выводим данные, полученные из сервера
-                messages.forEach(msg => handleSendMessage(msg))
+                if(messages){
+                    messages.forEach(msg => handleSendMessage(msg))
+                }
             })
             .catch();
     }, [callbackSignalR, nickname, token])
@@ -111,41 +135,33 @@ const ChatWindow = () => {
   return (
     <div>
       <button className='open-chat-button' onClick={togglePopup}>Связаться с администратором</button>
-      {isOpen && (
-        <div className="popup">
+      
+        <div className={
+            isOpen? "popup": "displayChat"
+        }>
           <div className="popup-content">
             <div className='header-window'>
                 <h5>Свяжитесь с администратором </h5>
                 <button className='close-button' onClick={togglePopup}>&times;</button>
             </div>
-                {messages.map((message, index) => (
-                    <div className = "chatMessage">
-                        {message.author === 'me' ?
-                        <div key={index} className="chat-message-from">
-                            {message.message}
-                        </div>                  
-                    :
-                    <div className='adminBlock'>
-                        <img src='https://fikiwiki.com/uploads/posts/2022-02/1644852415_12-fikiwiki-com-p-kartinki-admina-12.png' className='pngAdmin'></img>
-                        <div key={index} className="chat-message-to">
-                            {message.message}
-                        </div>
-                    </div>
-                                                            
-                    }                        
-                    </div>
-                    ))}
-            <div>
+            <div className='chat-messages'>
+
+                <div id="messagesList" className='chat-messages__content'>
+                    
+                </div>
+            
                 <input
                 type="text"
+                id="messageInput"
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
                 />
-                <button onClick={handleSendMessage}>Send</button>
+                <input type='submit' id="sendButton" className='chat-form__submit' value='Send' />
             </div>
           </div>
         </div>
-      )}
+      
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js"></script>
     </div>
   );
 };

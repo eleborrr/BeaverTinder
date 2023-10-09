@@ -38,7 +38,7 @@ public class SupportChatController : Controller
             var sender = await _userManager.FindByIdAsync(curUserId);
 
             //TODO check for curUserId null
-            var res = await _serviceManager.ChatService.GetChatById(sender.Id, receiver.Id);
+            var res = await _serviceManager.SupportChatService.GetChatById(sender.Id, receiver.Id);
             var model = new SingleChatGetResponse()
             {
                 RecieverName = username,
@@ -56,7 +56,8 @@ public class SupportChatController : Controller
     [HttpGet("/history")]
     public async Task<JsonResult> GetChatHistory([FromQuery] string username)
     {
-        var user = await _userManager.FindByNameAsync(User.Identity!.Name!);
+        var claim = User.Claims.FirstOrDefault(c => c.Type == "Id");
+        var user = await _userManager.FindByIdAsync(claim!.Value);
         var secondUser = await _userManager.FindByNameAsync(username);
         var history = await _serviceManager.SupportChatService.GetChatHistory(user!.Id, secondUser!.Id);
         return Json(history);

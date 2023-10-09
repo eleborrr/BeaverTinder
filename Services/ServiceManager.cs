@@ -48,8 +48,8 @@ public class ServiceManager: IServiceManager
 
     public ServiceManager(UserManager<User> userManager, IOptions<EmailConfig> emailConfig, IRepositoryManager repositoryManager, IMemoryCache memoryCache,
         RoleManager<Role> roleManager, SignInManager<User> signInManager, IJwtGenerator jwtGenerator,
-        IPasswordHasher<User> passwordHasher, HttpClient client,
-        IPublishEndpoint publishEndpoint) 
+        IPasswordHasher<User> passwordHasher, HttpClient client, IPublishEndpoint publishEndpoint
+        )
     {
         _geolocationService = new Lazy<IGeolocationService>(() => new GeolocationService(repositoryManager));
         _emailService = new Lazy<IEmailService>(() => new EmailService(emailConfig));

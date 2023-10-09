@@ -59,13 +59,16 @@ builder.Services.AddSwaggerGen();
      cfg.UsingInMemory((context, cfg) =>
      {
          /*cfg.ReceiveEndpoint( "support_chat_queue",e =>
-         {
-             e.ConfigureConsumer<SupportChatConsumer>(context);
-         });*/
+         {           
+             e.UseMessageRetry(r => r.Interval(2, 100));
+             // e.ConfigureConsumer<SupportChatConsumer>(context);
+         });
+         */
          cfg.ConfigureEndpoints(context);
      });
  });
- /*builder.Services.AddSingleton<IPublishEndpoint>(provider => provider.GetRequiredService<IBusControl>());*/
+ 
+ builder.Services.AddSingleton<IPublishEndpoint>(provider => provider.GetRequiredService<IBusControl>());
  builder.Services.Configure<EmailConfig>(builder.Configuration.GetSection("SmtpSettings"));
  
  builder.Services.AddControllers().AddApplicationPart(typeof(Presentation.AssemblyReference).Assembly);

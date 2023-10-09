@@ -21,9 +21,10 @@ const ChatForTwoPage = () => {
     const [message, setMessage] = useState('');
     const callbackSignalR = useCallback((roomData) => {
 
-        let connection = new signalR.HubConnectionBuilder().withUrl("https://localhost:7015/chatHub").build();
+        let connection = new signalR.HubConnectionBuilder().withUrl("http://localhost:5276/chatHub").build();
 
         connection.on("ReceivePrivateMessage", function (user, message){
+            console.log("normal chat recieved");
             var elem = document.createElement("div");
             var author = document.createElement("span");
             var content = document.createElement("span");
@@ -99,7 +100,7 @@ const ChatForTwoPage = () => {
                     <input type='text' autoComplete="off" id='messageInput' className='chat-form__input' placeholder='Введите сообщение' value={message} onChange={(e) => setMessage(e.target.value)} />
                     <input type='submit' id="sendButton" className='chat-form__submit' value='Send' />
             </div>
-
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js"></script>
         </div>
     )
 }

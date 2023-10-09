@@ -29,9 +29,10 @@ public class SupportChatService : ISupportChatService
         {
             room = new SupportRoom()
             {
+                Id = Guid.NewGuid().ToString(),
                 FirstUserId = curUserId,
                 SecondUserId = userId,
-                Name = Guid.NewGuid().ToString()
+                Name = Guid.NewGuid().ToString(),
             };
             await _repositoryManager.SupportRoomRepository.AddAsync(
                 room);
@@ -42,7 +43,11 @@ public class SupportChatService : ISupportChatService
     public async Task<IEnumerable<SupportChatMessageDto>> GetChatHistory(string userId, string secondUserId)
     {
         var room = await GetChatById(userId, secondUserId);
-        return room.Messages.Select(m => new SupportChatMessageDto()
+        var messages = _repositoryManager.SupportChatMessageRepository.GetAll().Where(msg => msg.RoomId == room.Id)
+            .ToList();
+        if (messages is null)
+            return Array.Empty<SupportChatMessageDto>();
+        return messages.Select(m => new SupportChatMessageDto()
         {
             Timestamp = m.Timestamp,
             Content = m.Content,

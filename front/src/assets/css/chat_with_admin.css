@@ -103,3 +103,7 @@ button {
 .adminBlock{
   align-self: end;
 }
+
+.displayChat{
+  display: none;
+}
