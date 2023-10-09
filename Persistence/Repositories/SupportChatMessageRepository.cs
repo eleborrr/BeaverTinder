@@ -15,7 +15,7 @@ public class SupportChatMessageRepository : ISupportChatMessageRepository
 
     public async Task AddAsync(SupportChatMessage message)
     {
-        await _dbContext.AddAsync(message);
+        await _dbContext.SupportChatMessages.AddAsync(message);
         await _dbContext.SaveChangesAsync();
     }
 

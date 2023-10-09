@@ -1,20 +1,22 @@
-﻿using Domain.Entities;
+﻿using Contracts;
+using Domain.Entities;
 using Domain.Repositories;
 using MassTransit;
+using Persistence.Repositories;
 
 namespace Services.SupportChat;
 
 public class SupportChatConsumer : IConsumer<SupportChatMessage>
 {
-    private readonly ISupportChatMessageRepository _messageRepository;
+    private readonly IRepositoryManager _repositoryManager;
 
-    public SupportChatConsumer(ISupportChatMessageRepository supportChatMessageRepository)
+    public SupportChatConsumer(IRepositoryManager repositoryManager)
     {
-        _messageRepository = supportChatMessageRepository;
+        _repositoryManager = repositoryManager;
     }
     public async Task Consume(ConsumeContext<SupportChatMessage> context)
     {
         var message = context.Message;
-        await _messageRepository.AddAsync(message);
+        await _repositoryManager.SupportChatMessageRepository.AddAsync(message);
     }
 }

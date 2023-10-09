@@ -55,16 +55,17 @@ builder.Services.AddSwaggerGen();
  builder.Services.AddScoped<HttpClient>();
  builder.Services.AddMassTransit(cfg =>
  {
+     cfg.AddConsumer<SupportChatConsumer>();
      cfg.UsingInMemory((context, cfg) =>
      {
-         /*cfg.ReceiveEndpoint( e =>
+         /*cfg.ReceiveEndpoint( "support_chat_queue",e =>
          {
-             e.UseMessageRetry(r => r.Interval(2, 100));
              e.ConfigureConsumer<SupportChatConsumer>(context);
          });*/
          cfg.ConfigureEndpoints(context);
      });
  });
+ /*builder.Services.AddSingleton<IPublishEndpoint>(provider => provider.GetRequiredService<IBusControl>());*/
  builder.Services.Configure<EmailConfig>(builder.Configuration.GetSection("SmtpSettings"));
  
  builder.Services.AddControllers().AddApplicationPart(typeof(Presentation.AssemblyReference).Assembly);
@@ -188,7 +189,7 @@ if (app.Environment.IsDevelopment())
 
  app.MapControllers();
  
- using (var scope = app.Services.CreateScope())
+ /*using (var scope = app.Services.CreateScope())
  {
      var services = scope.ServiceProvider;
 
@@ -197,6 +198,6 @@ if (app.Environment.IsDevelopment())
      {
          context.Database.Migrate();
      }
- }
+ }*/
 
 app.Run();

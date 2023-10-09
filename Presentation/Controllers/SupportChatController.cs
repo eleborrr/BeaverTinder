@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Contracts;
+using Domain.Entities;
 using Domain.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -29,5 +30,20 @@ public class SupportChatController : Controller
         var user = await _userManager.FindByNameAsync(User.Identity!.Name!);
         var history = await _serviceManager.SupportChatService.GetChatHistory(user!.Id, secondUserId);
         return Ok(history);
+    }
+
+    [HttpGet("send")]
+    public async Task<IActionResult> SendMessage([FromQuery] string message)
+    {
+        var m = new SupportChatMessageDto()
+        {
+            Content = message,
+            ReceiverId = "1",
+            RoomId = "23",
+            SenderId = "43",
+            Timestamp = DateTime.Now,
+        };
+        await _serviceManager.SupportChatService.SaveMessageAsync(m);
+        return Ok(m);
     }
 }

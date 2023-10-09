@@ -54,6 +54,14 @@ public class SupportChatService : ISupportChatService
 
     public async Task SaveMessageAsync(SupportChatMessageDto message)
     {
-        await _publishEndpoint.Publish(message);
+        var entity = new SupportChatMessage()
+        {
+            SenderId = message.SenderId,
+            ReceiverId = message.ReceiverId,
+            Content = message.Content,
+            Timestamp = message.Timestamp,
+            RoomId = message.RoomId
+        };
+        await _publishEndpoint.Publish(entity);
     }
 }
