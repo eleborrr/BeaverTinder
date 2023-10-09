@@ -39,7 +39,7 @@ public class AccountService : IAccountService
     public async Task SendConfirmationEmailAsync(string userId)
     {
         var user = await _userManager.FindByIdAsync(userId);
-        if (user == null) //TODO log error
+        if (user == null)
             return;
 
         var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -56,7 +56,7 @@ public class AccountService : IAccountService
     public async Task SendPasswordResetAsync(string userId)
     {
         var user = await _userManager.FindByIdAsync(userId);
-        if (user == null) // TODO log error
+        if (user == null)
             return;
 
         var token = await _userManager.GeneratePasswordResetTokenAsync(user);
@@ -99,7 +99,7 @@ public class AccountService : IAccountService
         return res;
     }
 
-    public async Task<LoginResponseDto> Login(LoginDto model, ModelStateDictionary modelstate)
+    public async Task<LoginResponseDto> Login(LoginDto model, ModelStateDictionary modelState)
     {
         /*bool rememberMe = false;
         /*if (Request.Form.ContainsKey("RememberMe"))
@@ -108,7 +108,7 @@ public class AccountService : IAccountService
         }#1#
         model.RememberMe = rememberMe;*/
 
-        if (!modelstate.IsValid) return new LoginResponseDto(LoginResponseStatus.Fail);
+        if (!modelState.IsValid) return new LoginResponseDto(LoginResponseStatus.Fail);
         
         var signedUser = await _signInManager.UserManager.FindByNameAsync(model.UserName);
         if (signedUser is null) return new LoginResponseDto(LoginResponseStatus.Fail);
@@ -119,7 +119,6 @@ public class AccountService : IAccountService
 
         if (!result.Succeeded) return new LoginResponseDto(LoginResponseStatus.Fail);
         
-        //TODO instead of remove check for having??
         try
         {
             await _userManager.RemoveClaimAsync(signedUser, new Claim("Id", signedUser.Id));
@@ -149,9 +148,9 @@ public class AccountService : IAccountService
 
     }
 
-    public async Task<RegisterResponseDto> Register(RegisterDto model, ModelStateDictionary modelstate)
+    public async Task<RegisterResponseDto> Register(RegisterDto model, ModelStateDictionary modelState)
     {
-        if (!modelstate.IsValid) return new RegisterResponseDto(RegisterResponseStatus.InvalidData);
+        if (!modelState.IsValid) return new RegisterResponseDto(RegisterResponseStatus.InvalidData);
         var user = new User
         {
             LastName = model.LastName,
@@ -187,9 +186,9 @@ public class AccountService : IAccountService
         return new RegisterResponseDto(RegisterResponseStatus.Ok);
     }
 
-    public async Task<EditUserResponseDto> EditAccount(User userToEdit, EditUserDto model, ModelStateDictionary modelstate)
+    public async Task<EditUserResponseDto> EditAccount(User userToEdit, EditUserDto model, ModelStateDictionary modelState)
     {
-        if (!modelstate.IsValid) return new EditUserResponseDto(EditResponseStatus.InvalidData);
+        if (!modelState.IsValid) return new EditUserResponseDto(EditResponseStatus.InvalidData);
         
         var passwordHash = model.Password == "" ? userToEdit.PasswordHash : _passwordHasher.HashPassword(userToEdit, model.Password);
             

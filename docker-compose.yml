@@ -1,16 +1,36 @@
 version: '3.9'
 services:
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    ports:
+      - "1414:1433"
+    volumes:
+      - ~/apps/mssql/data:/var/lib/mssqlql/data
+    environment:
+      ACCEPT_EULA: Y
+      MSSQL_SA_PASSWORD: superPuperPassword!15641
   web:
-    build: 
+    image: back
+    depends_on:
+      - mssql
+    build:
       context: ./
       dockerfile: Dockerfile
     ports:
-      - "4040:4040"
+      - "4040:443"
     environment:
-      ASPNETCORE_ENVIRONMENT: Production
+      - ASPNETCORE_ENVIRONMENT:Production
+      - ASPNETCORE_URLS=https://+:443
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=password
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+      - ConnectionStrings__BeaverTinderDatabase=Data Source=mssql;Initial Catalog=BeaverTinderDatabase;User=sa;Password=superPuperPassword!15641;Connect Timeout=300;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False
+    volumes:
+      - ~/.aspnet/https:/https:ro
+  
   react:
-    build: 
+    image: front
+    build:
       context: /front
-      dockerfile: DockerFile
+      dockerfile: Dockerfile
     ports:
       - "3000:3000"

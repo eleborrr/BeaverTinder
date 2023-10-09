@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using System.Security;
+using System.Security.Claims;
 using Contracts.Responses;
 using Contracts.Responses.Search;
 using Contracts.ViewModels;
@@ -27,7 +28,6 @@ public class BeaverSearchController: Controller
         _roleManager = roleManager;
     }
 
-    //TODO: isSerching == false?? change searching algorithm
     [HttpGet]
     public async Task<JsonResult> Search()
     {
@@ -71,8 +71,6 @@ public class BeaverSearchController: Controller
         return Json(user);
     }
 
-
-    //TODO: тут тоже с гонками все норм брат да(я постараюсь на фронте избежать но не обещаю(мб и обещаю))
     [HttpPost("/like")]
     public async Task<JsonResult> Like([FromBody]  LikeViewModel likeViewModel)
     {
@@ -89,19 +87,17 @@ public class BeaverSearchController: Controller
 
     private async Task<User?> GetUserFromJwt()
     {
-        var s = User.Claims.FirstOrDefault(c => c.Type == "Id");
+        var s = User.Claims.FirstOrDefault(c => c.Type == "Id")!;
         var user = await _userManager.FindByIdAsync(s.Value);
-        // if (user is null)
-        //     throw new Exception("user not found"); //TODO перенести в exception
         return user;
     }
     
     private async Task<Role> GetRoleFromJwt()
     {
-        var s = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role);
+        var s = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)!;
         var role = await _roleManager.FindByNameAsync(s.Value);
         if (role is null)
-            throw new Exception("role not found"); //TODO перенести в exception
+            throw new SecurityException("role not found");
         return role;
     }
 }

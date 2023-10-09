@@ -5,7 +5,7 @@ using Services.Abstraction.FindBeaver;
 using Services.Abstraction.Geolocation;
 using Services.Abstraction.Likes;
 using Services.Abstraction.OAuth;
-using Services.Abstraction.PaymentService;
+using Services.Abstraction.Payments;
 using Services.Abstraction.Subscriptions;
 using Services.Abstraction.TwoFA;
 
@@ -14,7 +14,7 @@ namespace Services.Abstraction;
 public interface IServiceManager
 {
     IEmailService EmailService { get; }
-    ITwoFAService TwoFaService { get; }
+    ITwoFaService TwoFaService { get; }
     ILikeService LikeService { get; }
     IGeolocationService GeolocationService { get; }
     IFindBeaverService FindBeaverService { get; }

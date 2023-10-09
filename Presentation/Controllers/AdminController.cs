@@ -13,6 +13,7 @@ namespace Presentation.Controllers;
 public class AdminController: Controller
 {
     private readonly UserManager<User> _userManager;
+    private const bool ModeratorReturnValue = true;
     
     public AdminController(UserManager<User> userManager)
     {
@@ -162,7 +163,7 @@ public class AdminController: Controller
     [HttpGet("page")]
     public bool GetAdminPage()
     {
-        return true;
+        return ModeratorReturnValue;
     }
     
 }

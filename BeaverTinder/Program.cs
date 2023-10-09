@@ -21,6 +21,8 @@
  builder.Services.AddControllers();
  builder.Services.AddMemoryCache();
  builder.Services.AddSignalR();
+ builder.Configuration.AddEnvironmentVariables();
+
 
  
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -54,16 +56,9 @@ builder.Services.AddMvc();
  
  builder.Services.AddControllers().AddApplicationPart(typeof(Presentation.AssemblyReference).Assembly);
  
- // builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
- //     .AddCookie(options =>
- //     {
- //         options.LoginPath = "/login";
- //         options.AccessDeniedPath = "../login";
- //     });
  builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
      .AddJwtBearer(options =>
      {
-         /*options.RequireHttpsMetadata = false;*/
          options.TokenValidationParameters = new TokenValidationParameters()
          {
              ValidateIssuer = true,
@@ -120,7 +115,7 @@ builder.Services.AddMvc();
                      Id="Bearer"
                  }
              },
-             new string[]{}
+             Array.Empty<string>()
          }
      });
  });
@@ -172,4 +167,15 @@ if (app.Environment.IsDevelopment())
 
  app.MapControllers();
 
+ using (var scope = app.Services.CreateScope())
+ {
+     var services = scope.ServiceProvider;
+
+     var context = services.GetRequiredService<ApplicationDbContext>();
+     if (context.Database.GetPendingMigrations().Any())
+     {
+         context.Database.Migrate();
+     }
+ }
+ 
 app.Run();
