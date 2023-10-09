@@ -48,7 +48,7 @@ public class ServiceManager: IServiceManager
 
     public ServiceManager(UserManager<User> userManager, IOptions<EmailConfig> emailConfig, IRepositoryManager repositoryManager, IMemoryCache memoryCache,
         RoleManager<Role> roleManager, SignInManager<User> signInManager, IJwtGenerator jwtGenerator,
-        IPasswordHasher<User> passwordHasher, HttpClient client, SupportChat.SupportChatService supportChatService,
+        IPasswordHasher<User> passwordHasher, HttpClient client,
         IPublishEndpoint publishEndpoint) 
     {
         _geolocationService = new Lazy<IGeolocationService>(() => new GeolocationService(repositoryManager));
@@ -62,7 +62,7 @@ public class ServiceManager: IServiceManager
         _accountService = new Lazy<IAccountService>(() => new AccountService(userManager, _emailService.Value, signInManager, jwtGenerator, GeolocationService, passwordHasher));
         _chatService = new Lazy<IChatService>(() => new ChatService(repositoryManager));
         _supportChatService = new Lazy<ISupportChatService>(() =>
-            new SupportChat.SupportChatService(repositoryManager, publishEndpoint));
+            new SupportChatService(repositoryManager, publishEndpoint));
     }
 
     public IEmailService EmailService => _emailService.Value;
