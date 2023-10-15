@@ -2,7 +2,7 @@
 using Contracts.Responses.Payment;
 using Domain.Entities;
 using Domain.Repositories;
-using Services.Abstraction.PaymentService;
+using Services.Abstraction.Payments;
 
 namespace Services.PaymentService
 {

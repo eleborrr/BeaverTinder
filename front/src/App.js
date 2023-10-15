@@ -14,13 +14,13 @@ import ShopsPage from './Pages/shops';
 import ChatsPage from './Pages/chats';
 import HomePage from './Pages/home';
 import LikePage from './Pages/LikePage';
+import SupportChatPage from "./Pages/admin/support-chat";
 import ProfilePage from './Pages/profile';
 import ChatWindow from './Components/window_connect_with_admin';
 import SupporChatsPage from './Pages/admin/support-chats';
 import './assets/css/App.css';
 
 function App() {
-  
   let token = Cookies.get('token');
   return (
     <>
@@ -38,6 +38,7 @@ function App() {
         <Route path='/register' element={<RegisterPage />} />
         <Route path='/profile' element={<ProfilePage />} />
         <Route path='/support_chat' element={<SupporChatsPage />} />
+        <Route path='/support_chat/:nickname' element={<SupportChatPage />} />
         <Route path='/profile' element={<ProfilePage />} />
         <Route path='/afterCallback' element={<OAuthAfterCallback />} />
         <Route path='*' element={<PageNotFound />}

@@ -6,6 +6,13 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
 COPY ["BeaverTinder/BeaverTinder.csproj", "BeaverTinder/"]
+COPY ["Infrastructure/Persistence.Misc/Persistence.Misc.csproj", "Infrastructure/Persistence.Misc/"]
+COPY ["Contracts/Contracts.csproj", "Contracts/"]
+COPY ["Domain/Domain.csproj", "Domain/"]
+COPY ["Persistence/Persistence.csproj", "Persistence/"]
+COPY ["Services.Abstraction/Services.Abstraction.csproj", "Services.Abstraction/"]
+COPY ["Presentation/Presentation.csproj", "Presentation/"]
+COPY ["Services/Services.csproj", "Services/"]
 RUN dotnet restore "BeaverTinder/BeaverTinder.csproj"
 COPY . .
 WORKDIR "/src/BeaverTinder"

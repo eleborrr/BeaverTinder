@@ -24,7 +24,7 @@ public class MessageRepository: IMessageRepository
         await _applicationDbContext.SaveChangesAsync();
     }
 
-    public async Task<Message> GetByMessageIdAsync(string messageId)
+    public async Task<Message?> GetByMessageIdAsync(string messageId)
     {
         return await _applicationDbContext.Messages.FirstOrDefaultAsync(x => x.Id == messageId);
     }

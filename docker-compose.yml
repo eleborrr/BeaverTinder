@@ -13,19 +13,24 @@ services:
     image: back
     depends_on:
       - mssql
-    build: 
+    build:
       context: ./
       dockerfile: Dockerfile
     ports:
-      - "7015:80"
+      - "4040:443"
     environment:
-      ASPNETCORE_ENVIRONMENT: Production
-      ConnectionStrings_BeaverTinderDatabase: Data Source=mssql;Initial Catalog=BeaverTinderDatabase;User=sa;Password=superPuperPassword!15641;Connect Timeout=300;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False
-      
+      - ASPNETCORE_ENVIRONMENT:Production
+      - ASPNETCORE_URLS=https://+:443
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=password
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+      - ConnectionStrings__BeaverTinderDatabase=Data Source=mssql;Initial Catalog=BeaverTinderDatabase;User=sa;Password=superPuperPassword!15641;Connect Timeout=300;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False
+    volumes:
+      - ~/.aspnet/https:/https:ro
+  
   react:
     image: front
-    build: 
+    build:
       context: /front
-      dockerfile: DockerFile
+      dockerfile: Dockerfile
     ports:
       - "3000:3000"
