@@ -20,7 +20,7 @@ const SupportChatPage = () => {
 
     const [message, setMessage] = useState('');
 
-    const handleSendMessage = (msg) => {
+    const handleSendMessage = useCallback((msg) => {
         var elem = document.createElement("div");
         var author = document.createElement("span");
         var content = document.createElement("span");
@@ -46,7 +46,7 @@ const SupportChatPage = () => {
         elem.appendChild(content);
     
         document.getElementById("messagesList").appendChild(elem);
-      };
+      }, [nickname])
 
     const callbackSignalR = useCallback((roomData) => {
 
@@ -123,7 +123,7 @@ const SupportChatPage = () => {
                 }
             })
             .catch();
-    }, [callbackSignalR, nickname, token])
+    }, [callbackSignalR, handleSendMessage, nickname, token])
 
     
     
