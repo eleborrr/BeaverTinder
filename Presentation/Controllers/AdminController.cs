@@ -1,9 +1,12 @@
 ﻿using Contracts;
+using Contracts.Responses;
+using Contracts.Responses.Chat;
 using Domain.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Services.Abstraction;
 
 namespace Presentation.Controllers;
 
@@ -13,10 +16,13 @@ namespace Presentation.Controllers;
 public class AdminController: Controller
 {
     private readonly UserManager<User> _userManager;
+    private readonly IServiceManager _serviceManager;
+    private const bool ModeratorReturnValue = true;
     
-    public AdminController(UserManager<User> userManager)
+    public AdminController(UserManager<User> userManager, IServiceManager serviceManager)
     {
         _userManager = userManager;
+        _serviceManager = serviceManager;
     }
 
     [Authorize(Policy = "OnlyForModerators")]
@@ -95,6 +101,33 @@ public class AdminController: Controller
         return RedirectToAction("GetAllUsers", "Account");
     }
     
+    [HttpGet("/supportChats")]
+    public async Task<JsonResult> Chats()
+    {
+        try
+        {
+            var curUserId = User.Claims.FirstOrDefault(c => c.Type == "Id")!.Value;
+
+            var chats = (await _serviceManager.SupportChatService.GetAllChatRooms()).ToList();
+            var model = chats.Select(x =>
+            {
+                var user = _userManager.FindByIdAsync(x.FirstUserId != curUserId? x.FirstUserId: x.SecondUserId).Result;
+                return new AllChatsResponse
+                {
+                    UserName = user.UserName,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Image = user.Image
+                };
+            }).ToList();
+            return Json(model);
+        }
+        catch (Exception exception)
+        {
+            return Json(new FailResponse(false, exception.Message, 400));
+        }
+    }
+    
     [Authorize(Policy = "OnlyForModerators")]
     [HttpPost("/activate")]
     public async Task<IActionResult> ActivateSearch([FromBody] AdminPageUserIdDto userIdId)  //List<User>
@@ -162,7 +195,7 @@ public class AdminController: Controller
     [HttpGet("page")]
     public bool GetAdminPage()
     {
-        return true;
+        return ModeratorReturnValue;
     }
     
 }

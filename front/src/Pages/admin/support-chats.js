@@ -56,7 +56,7 @@ const SupporChatsPage = () => {
     }, [getAllUsersAxios, token])
 
     useEffect(() => {
-        axiosInstance.get('/im',
+        axiosInstance.get('/supportChats',
          {
             headers:{
                 Authorization: `Bearer ${token}`,
