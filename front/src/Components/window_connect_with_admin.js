@@ -17,7 +17,7 @@ const ChatWindow = () => {
     }, [messagesListRef, isOpen])
 
 
-  const handleSendMessage = (msg) => {
+  const handleSendMessage = useCallback((msg) => {
     var elem = document.createElement("div");
     var author = document.createElement("span");
     var content = document.createElement("span");
@@ -43,7 +43,7 @@ const ChatWindow = () => {
     elem.appendChild(content);
 
     document.getElementById("messagesList").appendChild(elem);
-  };
+  },[nickname])
   const togglePopup = () => {
     setIsOpen(!isOpen);
   }
@@ -127,7 +127,7 @@ const ChatWindow = () => {
                 }
             })
             .catch();
-    }, [callbackSignalR, nickname, token])
+    }, [callbackSignalR, handleSendMessage, nickname, token])
 
   return (
     <div>

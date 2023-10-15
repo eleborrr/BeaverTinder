@@ -18,16 +18,10 @@ import ProfilePage from './Pages/profile';
 import ChatWindow from './Components/window_connect_with_admin';
 import SupporChatsPage from './Pages/admin/support-chats';
 import './assets/css/App.css';
-import { useEffect } from 'react';
 
 function App() {
   
   let token = Cookies.get('token');
-  let roles = null;
-  useEffect(() => {
-    if (token)
-      roles = jwtDecode(token)["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"]; 
-  },[]) 
   return (
     <>
       <HeaderApp />
