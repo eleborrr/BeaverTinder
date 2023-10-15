@@ -20,6 +20,8 @@ const LoginPage = () => {
     } 
     const onSubmit = (e) => { 
         e.preventDefault(); 
+        setErrMessage(""); 
+        setSpanClass('hide'); 
  
         axiosInstance.post('/login', { 
             userName: userName, 
@@ -74,20 +76,20 @@ const LoginPage = () => {
                         <div className="main-content inloginp"> 
                             <form> 
                                 <div className="form-group"> 
-                                    <label >Имя пользователя</label> 
+                                    <label >Nickname</label> 
                                     <input type="text" className="my-form-control" name="UserName" onChange={(e) => setUserName(e.target.value)} placeholder="Enter Your Nickname" /> 
                                 </div> 
                                 <div className="form-group"> 
-                                    <label >Пароль</label> 
+                                    <label >Password</label> 
                                     <input type="password" className="my-form-control" name="Password" onChange={(e) => setPassword(e.target.value)} placeholder="Enter Your Password" /> 
                                 </div> 
                                 <div className="checkbox-form"> 
-                                    <label >Запомнить?</label> 
+                                    <label >Remember me?</label> 
                                     <input type="checkbox"
                                 className="checkboxRemember" name="RememberMe" onChange={() => setRememberMe(!rememberMe)} /> 
                                 </div> 
                                 <p className="f-pass">Forgot your password? <a href="/">recover password</a></p> 
-                                <span className={spanClass}>{errMessage} Попробуйте ещё раз</span> 
+                                <span className={spanClass}>{errMessage} Try again!</span> 
                                 <div className="text-center"> 
                                     <button type="submit" className="default-btn" onClick={onSubmit}><span>Sign IN</span></button> 
                                 </div> 
