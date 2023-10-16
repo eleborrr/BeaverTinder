@@ -41,7 +41,7 @@ public class SupportChatController : Controller
             var res = await _serviceManager.SupportChatService.GetChatById(sender.Id, receiver.Id);
             var model = new SingleChatGetResponse()
             {
-                RecieverName = username,
+                ReceiverName = username,
                 SenderName = sender.UserName,
                 RoomName = res.Name
             };
