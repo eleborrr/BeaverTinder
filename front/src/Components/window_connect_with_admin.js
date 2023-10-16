@@ -1,27 +1,23 @@
 import './../assets/css/chat_with_admin.css'
-import jwtDecode from "jwt-decode";
 import { axiosInstance } from "../Components/axios_server";
 import * as signalR from "@microsoft/signalr";
 import Cookies from "js-cookie";
-import React, {useCallback, useEffect, useState} from 'react';
-import { useNavigate, useParams } from "react-router-dom";
+import React, { useCallback, useEffect, useState, useRef} from 'react';
+import { useParams } from "react-router-dom";
 
 const ChatWindow = () => {
-  const navigate = useNavigate();
-  const [messages, setMessages] = useState([]);
   const token = Cookies.get('token');
   const [newMessage, setNewMessage] = useState('');
   const [isOpen, setIsOpen] = useState(false);
+  const messagesListRef = useRef(null);
   const { nickname } = useParams();
 
-//   useEffect(() => {
-//     if (!token){
-//         navigate("/login");
-//     }
-//     }, [navigate, token])
+  useEffect(() => {
+    messagesListRef.current.scrollTop = messagesListRef.current.scrollHeight;
+    }, [messagesListRef, isOpen])
 
 
-  const handleSendMessage = (msg) => {
+  const handleSendMessage = useCallback((msg) => {
     var elem = document.createElement("div");
     var author = document.createElement("span");
     var content = document.createElement("span");
@@ -47,12 +43,10 @@ const ChatWindow = () => {
     elem.appendChild(content);
 
     document.getElementById("messagesList").appendChild(elem);
-  };
+  },[nickname])
   const togglePopup = () => {
     setIsOpen(!isOpen);
   }
-
-    const [message, setMessage] = useState('');
     const callbackSignalR = useCallback((roomData) => {
     
         let connection = new signalR.HubConnectionBuilder().withUrl("http://localhost:5276/supportChatHub").build();
@@ -81,7 +75,6 @@ const ChatWindow = () => {
             elem.appendChild(content);
 
             document.getElementById("messagesList").appendChild(elem);
-
         });
 
         connection.start().then(res => {connection.invoke("ConnectToRoom", `${roomData.roomName}`)
@@ -96,6 +89,8 @@ const ChatWindow = () => {
         document.getElementById('sendButton').addEventListener("click", function (event) {
             console.log("Sended");
             var message = document.getElementById("messageInput").value;
+            document.getElementById("messageInput").value = "";
+            messagesListRef.current.scrollTop = messagesListRef.current.scrollHeight;
             connection.invoke("SendPrivateMessage", `${roomData.senderName}`, message, `${roomData.recieverName}`, `${roomData.roomName}`).catch(function (err) {
                 return console.error(err.toString());
             });
@@ -132,7 +127,7 @@ const ChatWindow = () => {
                 }
             })
             .catch();
-    }, [callbackSignalR, nickname, token])
+    }, [callbackSignalR, handleSendMessage, nickname, token])
 
   return (
     <div>
@@ -143,12 +138,15 @@ const ChatWindow = () => {
         }>
           <div className="popup-content">
             <div className='header-window'>
-                <h5>Свяжитесь с администратором </h5>
+                <h5>Connect with administration </h5>
                 <button className='close-button' onClick={togglePopup}>&times;</button>
             </div>
             <div className='chat-messages'>
 
-                <div id="messagesList" className='chat-messages__content'>
+                <div 
+                    ref={messagesListRef} 
+                    id="messagesList" 
+                    className='chat-messages__content main-content log-reg-inner'>
                     
                 </div>
             

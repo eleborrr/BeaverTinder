@@ -19,19 +19,9 @@ import ProfilePage from './Pages/profile';
 import ChatWindow from './Components/window_connect_with_admin';
 import SupporChatsPage from './Pages/admin/support-chats';
 import './assets/css/App.css';
-import { useEffect } from 'react';
 
 function App() {
-  
-  const token = Cookies.get('token');
-  let roles = null;
-  useEffect(() => {
-    console.log(!token);
-    if (token !== undefined)
-      roles =jwtDecode(token)["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"]; 
-    console.log(!token || (roles != null && roles.includes("Admin")));
-
-  },[]) 
+  let token = Cookies.get('token');
   return (
     <>
       <HeaderApp />
@@ -54,7 +44,7 @@ function App() {
         <Route path='*' element={<PageNotFound />}
         />
       </Routes>
-      {(!token || (roles != null && roles.includes("Admin")))? <></> : <ChatWindow />}
+      {!token || !jwtDecode(token)["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] || jwtDecode(token)["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"].includes("Admin") ? <div></div> : <ChatWindow />}
     </>
   );
 }   
