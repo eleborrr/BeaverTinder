@@ -3,8 +3,6 @@ using Domain.Entities;
 using Domain.Repositories;
 using MassTransit;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore;
 using Services.Abstraction.SupportChat;
 
 namespace Services.SupportChat;
@@ -15,7 +13,10 @@ public class SupportChatService : ISupportChatService
     private readonly IPublishEndpoint _publishEndpoint;
     private readonly UserManager<User> _userManager;
 
-    public SupportChatService(IRepositoryManager repositoryManager, IPublishEndpoint publishEndpoint, UserManager<User> userManager)
+    public SupportChatService(
+        IRepositoryManager repositoryManager, 
+        IPublishEndpoint publishEndpoint, 
+        UserManager<User> userManager)
     {
         _repositoryManager = repositoryManager;
         _publishEndpoint = publishEndpoint;
