@@ -1,11 +1,11 @@
 version: '3.9'
 services:
   rabbitmq:
-    image: rabbitmq:3.8-alpine
+    image: rabbitmq:3-management-alpine
     hostname: rabbitmq
     environment:
-      - RABBITMQ_DEFAULT_USER=user
-      - RABBITMQ_DEFAULT_PASSWORD=mypa55w0rd!
+      RABBITMQ_DEFAULT_USER: rabbitsa
+      RABBITMQ_DEFAULT_PASSWORD: mypa55w0rd!
     ports:
       - "5672:5672"
   mssql:
@@ -28,11 +28,12 @@ services:
     ports:
       - "4040:443"
     environment:
-      - ASPNETCORE_ENVIRONMENT:Production
-      - ASPNETCORE_URLS=https://+:443
-      - ASPNETCORE_Kestrel__Certificates__Default__Password=password
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
-      - ConnectionStrings__BeaverTinderDatabase=Data Source=mssql;Initial Catalog=BeaverTinderDatabase;User=sa;Password=superPuperPassword!15641;Connect Timeout=300;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False
+      MessageBroker__Username: rabbitsa
+      MessageBroker__Password: mypa55w0rd!
+      MessageBroker__Hostname: rabbitmq
+      MessageBroker__Port: 5672
+      ASPNETCORE_ENVIRONMENT: Production
+      ConnectionStrings__BeaverTinderDatabase: Data Source=mssql;Initial Catalog=BeaverTinderDatabase;User=sa;Password=superPuperPassword!15641;Connect Timeout=300;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False
     volumes:
       - ~/.aspnet/https:/https:ro
   supportconsumer:
@@ -42,15 +43,16 @@ services:
       - rabbitmq
     build:
       context: ./
-      dockerfile: Dockerfile
+      dockerfile: DockerfileConsumer
     ports:
       - "4041:443"
     environment:
-      - ASPNETCORE_ENVIRONMENT:Production
-      - ASPNETCORE_URLS=https://+:443
-      - ASPNETCORE_Kestrel__Certificates__Default__Password=password
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
-      - ConnectionStrings__BeaverTinderDatabase=Data Source=mssql;Initial Catalog=BeaverTinderDatabase;User=sa;Password=superPuperPassword!15641;Connect Timeout=300;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False
+      MessageBroker__Username: rabbitsa
+      MessageBroker__Password: mypa55w0rd!
+      MessageBroker__Hostname: rabbitmq
+      MessageBroker__Port: 5672
+      ASPNETCORE_ENVIRONMENT: Production
+      ConnectionStrings__BeaverTinderDatabase: Data Source=mssql;Initial Catalog=BeaverTinderDatabase;User=sa;Password=superPuperPassword!15641;Connect Timeout=300;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False
     volumes:
       - ~/.aspnet/https:/https:ro
   react:

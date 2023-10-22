@@ -59,7 +59,7 @@ builder.Services.AddSwaggerGen();
  
  builder.Services.AddSingleton<IPublishEndpoint>(provider => provider.GetRequiredService<IBusControl>());
  builder.Services.Configure<EmailConfig>(builder.Configuration.GetSection("SmtpSettings"));
- builder.Services.Configure<RabbitMqConfig>(builder.Configuration.GetSection("RabbitMQCSettings"));
+ //builder.Services.Configure<RabbitMqConfig>(builder.Configuration.GetSection("RabbitMQCSettings"));
  
  builder.Services.AddControllers().AddApplicationPart(typeof(Presentation.AssemblyReference).Assembly);
  
