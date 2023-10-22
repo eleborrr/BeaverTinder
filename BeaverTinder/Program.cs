@@ -1,5 +1,6 @@
  using System.Security.Claims;
  using System.Text;
+ using BeaverTinder.ServicesExtensions.MassTransit;
  using Contracts.Configs;
  using Domain.Entities;
  using Domain.Repositories;
@@ -55,20 +56,6 @@ builder.Services.AddSwaggerGen();
  builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
  builder.Services.AddScoped<IServiceManager , ServiceManager>();
  builder.Services.AddScoped<HttpClient>();
- builder.Services.AddMassTransit(cfg =>
- {
-     cfg.AddConsumer<SupportChatConsumer>();
-     cfg.UsingInMemory((context, cfg) =>
-     {
-         /*cfg.ReceiveEndpoint( "support_chat_queue",e =>
-         {           
-             e.UseMessageRetry(r => r.Interval(2, 100));
-             // e.ConfigureConsumer<SupportChatConsumer>(context);
-         });
-         */
-         cfg.ConfigureEndpoints(context);
-     });
- });
  
  builder.Services.AddSingleton<IPublishEndpoint>(provider => provider.GetRequiredService<IBusControl>());
  builder.Services.Configure<EmailConfig>(builder.Configuration.GetSection("SmtpSettings"));
@@ -111,6 +98,8 @@ builder.Services.AddSwaggerGen();
          
      });
  });
+
+ builder.Services.AddMasstransitRabbitMq(builder.Configuration);
 
  builder.Services.AddSwaggerGen(opt =>
  {
