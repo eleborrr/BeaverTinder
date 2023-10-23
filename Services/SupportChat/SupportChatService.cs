@@ -10,12 +10,12 @@ namespace Services.SupportChat;
 public class SupportChatService : ISupportChatService
 {
     private readonly IRepositoryManager _repositoryManager;
-    private readonly IPublishEndpoint _publishEndpoint;
+    private readonly IBus _publishEndpoint;
     private readonly UserManager<User> _userManager;
 
     public SupportChatService(
         IRepositoryManager repositoryManager, 
-        IPublishEndpoint publishEndpoint, 
+        IBus publishEndpoint, 
         UserManager<User> userManager)
     {
         _repositoryManager = repositoryManager;
@@ -64,7 +64,8 @@ public class SupportChatService : ISupportChatService
             RoomId = m.RoomId,
             ReceiverId = m.ReceiverId,
             SenderId = m.SenderId,
-            SenderName = (await _userManager.FindByIdAsync(m.SenderId)).UserName
+            SenderName = (await _userManager.FindByIdAsync(m.SenderId)).UserName,
+            ReceiverName = (await _userManager.FindByIdAsync(m.ReceiverId)).UserName
         }));
         return result;
     }

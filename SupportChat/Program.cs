@@ -14,7 +14,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ApplicationDbContext>();
 // builder.Services.Configure<RabbitMqConfig>(builder.Configuration.GetSection("RabbitMQCSettings"));
-builder.Services.AddScoped<SupportChatConsumer>();
 builder.Services.AddMasstransitRabbitMq(builder.Configuration);
 
 var app = builder.Build();

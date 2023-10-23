@@ -1,3 +1,4 @@
 import axios from "axios";
+import ServerURL from "./ServerURL";
 
-export const axiosInstance = axios.create({baseURL: "https://localhost:4040"});
+export const axiosInstance = axios.create({baseURL: ServerURL});

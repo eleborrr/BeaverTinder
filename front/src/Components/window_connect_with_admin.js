@@ -1,9 +1,10 @@
-import './../assets/css/chat_with_admin.css'
 import { axiosInstance } from "../Components/axios_server";
 import * as signalR from "@microsoft/signalr";
 import Cookies from "js-cookie";
 import React, { useCallback, useEffect, useState, useRef} from 'react';
 import { useParams } from "react-router-dom";
+import './../assets/css/chat_with_admin.css'
+import ServerURL from './ServerURL';
 
 const ChatWindow = () => {
   const token = Cookies.get('token');
@@ -48,8 +49,7 @@ const ChatWindow = () => {
     setIsOpen(!isOpen);
   }
     const callbackSignalR = useCallback((roomData) => {
-    
-        let connection = new signalR.HubConnectionBuilder().withUrl("http://localhost:5276/supportChatHub").build();
+        let connection = new signalR.HubConnectionBuilder().withUrl(`${ServerURL}/supportChatHub`).build();
 
         connection.on("Receive", function (user, message){
             console.log("received back");
@@ -91,7 +91,7 @@ const ChatWindow = () => {
             var message = document.getElementById("messageInput").value;
             document.getElementById("messageInput").value = "";
             messagesListRef.current.scrollTop = messagesListRef.current.scrollHeight;
-            connection.invoke("SendPrivateMessage", `${roomData.senderName}`, message, `${roomData.recieverName}`, `${roomData.roomName}`).catch(function (err) {
+            connection.invoke("SendPrivateMessage", `${roomData.senderName}`, message, `${roomData.receiverName}`, `${roomData.roomName}`).catch(function (err) {
                 return console.error(err.toString());
             });
             event.preventDefault();

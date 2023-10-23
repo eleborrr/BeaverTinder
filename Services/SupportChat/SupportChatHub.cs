@@ -20,7 +20,10 @@ public class SupportChatHub : Hub
         _serviceManager = serviceManager;
     }
 
-    public async Task SendPrivateMessage(string senderUserName, string message, string receiverUserName,
+    public async Task SendPrivateMessage(
+        string senderUserName,
+        string message, 
+        string receiverUserName,
         string groupName)
     {
         Console.WriteLine("-----> Message received");
@@ -28,7 +31,10 @@ public class SupportChatHub : Hub
 
         var sender = await _userManager.FindByNameAsync(senderUserName);
         var receiver = await _userManager.FindByNameAsync(receiverUserName);
-        
+        Console.WriteLine($"senderUserName: {senderUserName}\n" +
+                          $"message: {message}\n" +
+                          $"receiverUserName: {receiverUserName}\n" +
+                          $"groupName: {groupName}\n");
         var dto = new SupportChatMessageDto()
         {
             Content = message,

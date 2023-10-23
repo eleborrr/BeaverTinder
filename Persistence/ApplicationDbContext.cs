@@ -37,6 +37,7 @@ public sealed class ApplicationDbContext: IdentityDbContext<User>
                 UserName = "Admin",
                 FirstName = "Gleb",
                 LastName = "Bober",
+                NormalizedUserName = "ADMIN",
                 EmailConfirmed = true,
                 Gender = "Male"
             });
