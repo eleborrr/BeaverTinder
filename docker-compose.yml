@@ -35,9 +35,9 @@ services:
       MessageBroker__Port: 5672
       ASPNETCORE_ENVIRONMENT: Production
       ASPNETCORE_URLS: https://+:443
-      ASPNETCORE_Kestrel__Certificates__Default__Password: $CREDENTIAL_PLACEHOLDER$
+      ASPNETCORE_Kestrel__Certificates__Default__Password: password
       ASPNETCORE_Kestrel__Certificates__Default__Path: /https/aspnetapp.pfx
-      ConnectionStrings__BeaverTinderDatabase: Data Source=mssql;Initial Catalog=BeaverTinderDatabase;User=sa;Password=superPuperPassword!15641;Connect Timeout=300;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False
+      ConnectionStrings__BeaverTinderDatabase: Data Source=mssql;Initial Catalog=BeaverTinderDatabase;User=sa;Password=superPuperPassword!15641;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False
     volumes:
       - ~/.aspnet/https:/https:ro
   supportconsumer:
@@ -57,9 +57,9 @@ services:
       MessageBroker__Port: 5672
       ASPNETCORE_ENVIRONMENT: Production
       ASPNETCORE_URLS: https://+:443
-      ASPNETCORE_Kestrel__Certificates__Default__Password: $CREDENTIAL_PLACEHOLDER$
+      ASPNETCORE_Kestrel__Certificates__Default__Password: password
       ASPNETCORE_Kestrel__Certificates__Default__Path: /https/aspnetapp.pfx
-      ConnectionStrings__BeaverTinderDatabase: Data Source=mssql;Initial Catalog=BeaverTinderDatabase;User=sa;Password=superPuperPassword!15641;Connect Timeout=300;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False
+      ConnectionStrings__BeaverTinderDatabase: Data Source=mssql;Initial Catalog=BeaverTinderDatabase;User=sa;Password=superPuperPassword!15641;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False
     volumes:
       - ~/.aspnet/https:/https:ro
   react:

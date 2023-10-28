@@ -10,16 +10,16 @@ namespace Services.SupportChat;
 public class SupportChatService : ISupportChatService
 {
     private readonly IRepositoryManager _repositoryManager;
-    private readonly IBus _publishEndpoint;
+    private readonly IBus _bus;
     private readonly UserManager<User> _userManager;
 
     public SupportChatService(
         IRepositoryManager repositoryManager, 
-        IBus publishEndpoint, 
+        IBus bus, 
         UserManager<User> userManager)
     {
         _repositoryManager = repositoryManager;
-        _publishEndpoint = publishEndpoint;
+        _bus = bus;
         _userManager = userManager;
     }
     
@@ -80,6 +80,6 @@ public class SupportChatService : ISupportChatService
             Timestamp = message.Timestamp,
             RoomId = message.RoomId
         };
-        await _publishEndpoint.Publish(entity);
+        await _bus.Publish(entity);
     }
 }
