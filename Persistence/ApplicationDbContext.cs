@@ -26,7 +26,6 @@ public sealed class ApplicationDbContext: IdentityDbContext<User>
     }
     protected override void OnModelCreating(ModelBuilder builder)
     {
-
         builder.Entity<User>()
             .Ignore(u => u.PhoneNumber)
             .Ignore(u => u.PhoneNumberConfirmed);
@@ -37,6 +36,7 @@ public sealed class ApplicationDbContext: IdentityDbContext<User>
                 UserName = "Admin",
                 FirstName = "Gleb",
                 LastName = "Bober",
+                NormalizedUserName = "ADMIN",
                 EmailConfirmed = true,
                 Gender = "Male"
             });

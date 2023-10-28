@@ -3,8 +3,6 @@ using Domain.Entities;
 using Domain.Repositories;
 using MassTransit;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore;
 using Services.Abstraction.SupportChat;
 
 namespace Services.SupportChat;
@@ -12,13 +10,16 @@ namespace Services.SupportChat;
 public class SupportChatService : ISupportChatService
 {
     private readonly IRepositoryManager _repositoryManager;
-    private readonly IPublishEndpoint _publishEndpoint;
+    private readonly IBus _bus;
     private readonly UserManager<User> _userManager;
 
-    public SupportChatService(IRepositoryManager repositoryManager, IPublishEndpoint publishEndpoint, UserManager<User> userManager)
+    public SupportChatService(
+        IRepositoryManager repositoryManager, 
+        IBus bus, 
+        UserManager<User> userManager)
     {
         _repositoryManager = repositoryManager;
-        _publishEndpoint = publishEndpoint;
+        _bus = bus;
         _userManager = userManager;
     }
     
@@ -63,7 +64,8 @@ public class SupportChatService : ISupportChatService
             RoomId = m.RoomId,
             ReceiverId = m.ReceiverId,
             SenderId = m.SenderId,
-            SenderName = (await _userManager.FindByIdAsync(m.SenderId)).UserName
+            SenderName = (await _userManager.FindByIdAsync(m.SenderId)).UserName,
+            ReceiverName = (await _userManager.FindByIdAsync(m.ReceiverId)).UserName
         }));
         return result;
     }
@@ -78,6 +80,6 @@ public class SupportChatService : ISupportChatService
             Timestamp = message.Timestamp,
             RoomId = message.RoomId
         };
-        await _publishEndpoint.Publish(entity);
+        await _bus.Publish(entity);
     }
 }

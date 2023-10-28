@@ -167,6 +167,9 @@ Contracts/bin
 Contracts/obj
 BeaverTinder/bin
 BeaverTinder/obj
+*/bin
+*/obj
+*.pfx
 .vs
 .idea/.idea.BeaverTinder/.idea/dataSources.xml
 BeaverTinder.sln.DotSettings.user
