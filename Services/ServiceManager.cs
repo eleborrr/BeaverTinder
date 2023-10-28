@@ -46,10 +46,16 @@ public class ServiceManager: IServiceManager
     private readonly Lazy<IChatService> _chatService;
     private readonly Lazy<ISupportChatService> _supportChatService;
 
-    public ServiceManager(UserManager<User> userManager, IOptions<EmailConfig> emailConfig, IRepositoryManager repositoryManager, IMemoryCache memoryCache,
-        RoleManager<Role> roleManager, SignInManager<User> signInManager, IJwtGenerator jwtGenerator,
-        IPasswordHasher<User> passwordHasher, HttpClient client, IPublishEndpoint publishEndpoint
-        )
+    public ServiceManager(UserManager<User> userManager,
+        IOptions<EmailConfig> emailConfig,
+        IRepositoryManager repositoryManager,
+        IMemoryCache memoryCache,
+        RoleManager<Role> roleManager, 
+        SignInManager<User> signInManager, 
+        IJwtGenerator jwtGenerator,
+        IPasswordHasher<User> passwordHasher, 
+        HttpClient client,
+        IBus publishEndpoint)
     {
         _geolocationService = new Lazy<IGeolocationService>(() => new GeolocationService(repositoryManager));
         _emailService = new Lazy<IEmailService>(() => new EmailService(emailConfig));
