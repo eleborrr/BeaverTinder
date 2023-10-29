@@ -184,7 +184,10 @@ const RegisterPage = () => {
         }
     }, [navigate]);
     
-    
+    const HandleEnterPress = (event) => {
+        if (event.key === 'Enter')
+            onSubmit(event);
+    }
 
     return (
         <>
@@ -225,7 +228,7 @@ const RegisterPage = () => {
                                 </>
                             }
                             { errorCode !== 'ERR_NETWORK' && !respStatus &&
-                            <form onSubmit={onSubmit}>
+                            <form onSubmit={onSubmit} onKeyDown={HandleEnterPress}>
                                 <h4 className="content-title">Acount Details</h4>
                                 <div className="form-group">
                                     <label>Last name</label>

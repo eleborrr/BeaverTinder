@@ -48,6 +48,12 @@ const LoginPage = () => {
             navigate('/home'); 
         } 
     }) 
+
+    const HandleEnterPress = (event) => {
+        console.log(event.key);
+        if (event.key === 'Enter')
+            onSubmit(event);
+    }
     
     return( 
         <> 
@@ -77,11 +83,21 @@ const LoginPage = () => {
                             <form> 
                                 <div className="form-group"> 
                                     <label >Nickname</label> 
-                                    <input type="text" className="my-form-control" name="UserName" onChange={(e) => setUserName(e.target.value)} placeholder="Enter Your Nickname" /> 
+                                    <input type="text" 
+                                        className="my-form-control" 
+                                        name="UserName" 
+                                        onChange={(e) => setUserName(e.target.value)} 
+                                        placeholder="Enter Your Nickname" 
+                                        onKeyDown={(event) => HandleEnterPress(event)}/> 
                                 </div> 
                                 <div className="form-group"> 
                                     <label >Password</label> 
-                                    <input type="password" className="my-form-control" name="Password" onChange={(e) => setPassword(e.target.value)} placeholder="Enter Your Password" /> 
+                                    <input type="password" 
+                                        className="my-form-control" 
+                                        name="Password" 
+                                        onChange={(e) => setPassword(e.target.value)} 
+                                        placeholder="Enter Your Password" 
+                                        onKeyDown={(event) => HandleEnterPress(event)}/> 
                                 </div> 
                                 <div className="checkbox-form"> 
                                     <label >Remember me?</label> 
