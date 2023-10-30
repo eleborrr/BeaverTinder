@@ -131,7 +131,7 @@ const SupportChatPage = () => {
     return(
         <div className='chat'>
             <div className="ref-back">
-                <a href="/chats" className="backto-home"><i className="fas fa-chevron-left"></i> Back to chats</a>
+                <a href="/support_chat" className="backto-home"><i className="fas fa-chevron-left"></i> Back to chats</a>
             </div>
             <div className='chat-messages'>
 

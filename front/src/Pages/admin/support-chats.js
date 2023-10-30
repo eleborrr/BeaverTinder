@@ -77,6 +77,9 @@ const SupporChatsPage = () => {
         {isAvailable? 
         <>
             <div className='chat'>
+                <div className="ref-back">
+                    <a href="/admin" className="backto-home"><i className="fas fa-chevron-left"></i> Back to admin panel</a>
+                </div>
                 <header>
                     <h2 className='title'>
                         <span className="text">Your Chats:</span>
