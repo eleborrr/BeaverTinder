@@ -9,6 +9,7 @@ const LoginPage = () => {
  
     const [userName, setUserName] = useState('') 
     const [password, setPassword] = useState('') 
+    const [errorsLogin, setErrorsLogin] = useState([]) 
     const [rememberMe, setRememberMe] = useState(false) 
     const [errMessage, setErrMessage] = useState('') 
     const [spanClass, setSpanClass] = useState('hide') 
@@ -33,6 +34,7 @@ const LoginPage = () => {
             if (!res.data.successful){ 
                 setSpanClass('errorMessage'); 
                 setErrMessage(res.data.message); 
+                setErrorsLogin('')
             } 
             else{ 
                 Cookies.set('token', res.data.message); 
@@ -40,6 +42,7 @@ const LoginPage = () => {
             } 
         }) 
         .catch((err) => { 
+            setErrorsLogin(err["response"]["data"]["errors"]);
         }); 
     }; 
  
@@ -50,7 +53,6 @@ const LoginPage = () => {
     }) 
 
     const HandleEnterPress = (event) => {
-        console.log(event.key);
         if (event.key === 'Enter')
             onSubmit(event);
     }
@@ -106,6 +108,26 @@ const LoginPage = () => {
                                 </div> 
                                 <p className="f-pass">Forgot your password? <a href="/">recover password</a></p> 
                                 <span className={spanClass}>{errMessage} Try again!</span> 
+                                {errorsLogin === null || errorsLogin === undefined ? 
+                                    <></>
+                                    :
+                                    <>
+                                        {errorsLogin["Password"] ?
+                                                errorsLogin["Password"].map(err => (
+                                                    <><span>{err}</span><br/></>
+                                                ))
+                                            :
+                                            <></>
+                                        }
+                                        {errorsLogin["UserName"] ?
+                                                errorsLogin["UserName"].map(err => (
+                                                    <><span>{err}</span><br/></>
+                                                ))
+                                            :
+                                            <></>
+                                        }
+                                    </>
+                                }
                                 <div className="text-center"> 
                                     <button type="submit" className="default-btn" onClick={onSubmit}><span>Sign IN</span></button> 
                                 </div> 

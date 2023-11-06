@@ -5,6 +5,7 @@ import jwtDecode from "jwt-decode";
 import Cookies from "js-cookie";
 import './../assets/css/chat_for_two.css';
 import * as signalR from "@microsoft/signalr";
+import ServerURL from "../Components/server_url";
 
 const ChatForTwoPage = () => {
     const navigate = useNavigate();
@@ -21,7 +22,7 @@ const ChatForTwoPage = () => {
     const [message, setMessage] = useState('');
     const callbackSignalR = useCallback((roomData) => {
 
-        let connection = new signalR.HubConnectionBuilder().withUrl("http://localhost:5276/chatHub").build();
+        let connection = new signalR.HubConnectionBuilder().withUrl(`${ServerURL}/chatHub`).build();
 
         connection.on("ReceivePrivateMessage", function (user, message){
             console.log("normal chat recieved");

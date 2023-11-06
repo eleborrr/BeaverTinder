@@ -12,6 +12,7 @@ const ChatsPage = () => {
     const [searchInput, setSearchInput] = useState('');
     const [searchNone, setSearchNone] = useState(true);
     const [chats, setChats] = useState([]);
+    const [networkError, setNetworkError] = useState(false);
 
     useEffect(() => {
         if (!token){
@@ -28,6 +29,10 @@ const ChatsPage = () => {
             }
         })
         .then(chats => {setChats(chats.data)})
+        .catch(err => {
+            console.log(err);
+            setNetworkError(true)}
+            );
     }, [token])
 
     const onPressEnter = (e) => {
@@ -49,7 +54,13 @@ const ChatsPage = () => {
                         </li>
                     </ul>
                 </header>
+                    {networkError ? 
+                        <span className="error">Connection error, please reload page</span>
+                        :
+                        <></>
+                    }
                 <div className='body'>
+                    
                     <div className="search" style={{display: searchNone? "none" : "block"}}>
                         <input placeholder='Search...' type='text' value={searchInput} onChange={(e) => setSearchInput(e.target.value)} onKeyPress={(e) => onPressEnter(e)}/>
                     </div>

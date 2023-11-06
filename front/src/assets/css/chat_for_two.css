@@ -2,21 +2,24 @@
 	border:1px solid #333;
 	margin:15px;
 	width:100%;
-	background:#555;
+	background:none !important;
 	color:#fff;
-	height: 100%;
+	margin: 0px;
 }
 
 .chat-messages {
-	min-height:93%;
-	max-height:93%;
 	overflow:auto;
-	width: 50%;
-	margin-bottom: 10%;
+	width: 80% !important;
+	margin-bottom: 10% !important;
+    overflow-x: hidden;
+    overflow-y: scroll;
+	max-height: 400px;
 }
+
 
 .chat-messages__content {
 	padding:1px;
+	max-height: 400px !important;
 }
 
 .chat__message {
@@ -49,6 +52,7 @@
 	width: 50%;
 	position: fixed;
 	bottom: 0;
+	display: flex;
 }
 input {
 	font-family:arial;
@@ -63,15 +67,22 @@ input {
 }
 
 .chat-form__input {
-	width:79%;
+	width: 80%;
+    height: 100%;
+	padding: 0px;
+    margin: 0px;
+	border: none;
+	overflow-wrap: anywhere;
 }
 
 .chat-form__submit {
-	width:21%;
-	background: #f24570;
-	color: white;
-	height: 100%;
-	text-align: center;
+	width: 20%;
+    background: #f24570;
+    color: white;
+    height: 100%;
+    text-align: center;
+    padding: 0px;
+    margin: 0px;
 }
 
 .ref-back {

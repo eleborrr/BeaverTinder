@@ -105,9 +105,7 @@ const AdminPage = () => {
         <>
             <div className="refr-button-div">
                 <button type="submit" className="refr-button" onClick={getAllUsersAxios}>Refresh User List</button>
-            </div>
-            <div className="refr-button-div">
-                <button type="submit" className="refr-button" onClick={() => navigate('/support_chat')}>Go to support chats</button>
+                <button type="submit" className="nav-button" onClick={() => navigate('/support_chat')}>Go to support chats</button>
             </div>
             <div className="form-group">
                 <label className="search-label">Search</label>

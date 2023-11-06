@@ -4,7 +4,7 @@ import Cookies from "js-cookie";
 import React, { useCallback, useEffect, useState, useRef} from 'react';
 import { useParams } from "react-router-dom";
 import './../assets/css/chat_with_admin.css'
-import ServerURL from './ServerURL';
+import ServerURL from './server_url';
 
 const ChatWindow = () => {
   const token = Cookies.get('token');

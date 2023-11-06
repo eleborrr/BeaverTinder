@@ -21,6 +21,20 @@ import SupporChatsPage from './Pages/admin/support-chats';
 import './assets/css/App.css';
 
 function App() {
+  const CheckAllowForChatWithAdmin = () =>{
+    if(token === undefined || token === null)
+      return false;
+    try {
+      const decodedToken = jwtDecode(token);
+      if (!decodedToken["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"])
+        return false;
+      if (jwtDecode(token)["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"].includes("Admin"))
+        return false;
+      return true;
+    } catch (error) {
+      Cookies.remove('token');
+    }
+  }
   let token = Cookies.get('token');
   return (
     <>
@@ -44,7 +58,7 @@ function App() {
         <Route path='*' element={<PageNotFound />}
         />
       </Routes>
-      {!token || !jwtDecode(token)["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] || jwtDecode(token)["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"].includes("Admin") ? <div></div> : <ChatWindow />}
+      { !CheckAllowForChatWithAdmin() ? <div></div> : <ChatWindow />}
     </>
   );
 }   

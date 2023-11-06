@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import jwtDecode from "jwt-decode";
@@ -15,18 +15,6 @@ const SupporChatsPage = () => {
     const [searchInput, setSearchInput] = useState('');
     const [searchNone, setSearchNone] = useState(true);
     const [chats, setChats] = useState([]);
-    const getAllUsersAxios = useCallback(() => {
-        axiosInstance.get('/all',
-        {
-            headers: {
-                Authorization: `Bearer ${token}`,
-                Accept : "application/json"
-            }
-        })
-        .then(res => {
-            console.log(res.data);
-        })
-    }, [token])
 
     useEffect(() => {
         if (!token){
@@ -51,9 +39,7 @@ const SupporChatsPage = () => {
             setIsAvailable(roles === "Moderator" || roles === "Admin");
         }
 
-        getAllUsersAxios();
-
-    }, [getAllUsersAxios, token])
+    }, [token])
 
     useEffect(() => {
         axiosInstance.get('/supportChats',
@@ -63,7 +49,8 @@ const SupporChatsPage = () => {
                 Accept : "application/json"
             }
         })
-        .then(chats => {setChats(chats.data)})
+        .then(chats => {setChats(chats.data); console.log(chats)})
+        .catch(err => console.log(err));
     }, [token])
 
     const onPressEnter = (e) => {
@@ -96,7 +83,7 @@ const SupporChatsPage = () => {
                     </div>
                     <ul>
                     {chats.map(chat => (
-                        <li onClick={() => navigate(`/support_chat/${chat.userName}`)}>
+                        <li onClick={() => navigate(`/support_chat/${chat.userName}`)} key={chat.userName}>
                             <a href="/" className='thumbnail'>
                                 <img alt="chat icon" src = {chat.image}/> 
                             </a>

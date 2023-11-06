@@ -1,16 +1,18 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { axiosInstance } from "../../Components/axios_server";
+import * as signalR from "@microsoft/signalr";
 import jwtDecode from "jwt-decode";
 import Cookies from "js-cookie";
 import './../../assets/css/chat_for_two.css';
-import * as signalR from "@microsoft/signalr";
+import ServerURL from "../../Components/server_url";
 
 const SupportChatPage = () => {
     const navigate = useNavigate();
     const token = Cookies.get('token');
     const uid = jwtDecode(token).Id;
     const { nickname } = useParams();
+    let counterMessagesKey = 0;
 
     useEffect(() => {
         if (!token){
@@ -50,7 +52,7 @@ const SupportChatPage = () => {
 
     const callbackSignalR = useCallback((roomData) => {
 
-        let connection = new signalR.HubConnectionBuilder().withUrl("http://localhost:5276/supportChatHub").build();
+        let connection = new signalR.HubConnectionBuilder().withUrl(`${ServerURL}/supportChatHub`).build();
 
         connection.on("Receive", function (user, message){
             console.log("normal chat recieved");
@@ -74,6 +76,7 @@ const SupportChatPage = () => {
 
             elem.appendChild(author);
             elem.appendChild(content);
+            elem.setAttribute("key", `${counterMessagesKey++}`)
 
             document.getElementById("messagesList").appendChild(elem);
 
@@ -87,12 +90,13 @@ const SupportChatPage = () => {
 
         document.getElementById("sendButton").addEventListener("click", function (event) { 
             var message = document.getElementById("messageInput").value;
-            connection.invoke("SendPrivateMessage", `${roomData.senderName}`, message, `${roomData.recieverName}`, `${roomData.roomName}`).catch(function (err) { 
+            document.getElementById("messageInput").value ='';
+            connection.invoke("SendPrivateMessage", `${roomData.senderName}`, message, `${roomData.receiverName}`, `${roomData.roomName}`).catch(function (err) { 
                 return console.error(err.toString());
             });
             event.preventDefault();
         });
-    }, [nickname])
+    }, [counterMessagesKey, nickname])
 
     useEffect(() => {
         let room;
@@ -105,6 +109,7 @@ const SupportChatPage = () => {
         }) 
         .then(response => {
             room = response.data; // выводим данные, полученные из сервера
+            console.log(room);
             callbackSignalR(room);
         })
         .catch(); 
