@@ -147,8 +147,6 @@ sftp-config.json
 .settings/
 .vscode/
 
-# Migrations #
-Persistence/Migrations
 
 # bin and obj folders #
 Services/bin
