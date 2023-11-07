@@ -26,15 +26,17 @@ public class SupportChatHub : Hub
         string receiverUserName,
         string groupName)
     {
-        Console.WriteLine("-----> Message received");
         var room = _dbContext.SupportRooms.FirstOrDefault(r => r.Name == groupName);
 
         var sender = await _userManager.FindByNameAsync(senderUserName);
         var receiver = await _userManager.FindByNameAsync(receiverUserName);
-        Console.WriteLine($"senderUserName: {senderUserName}\n" +
-                          $"message: {message}\n" +
-                          $"receiverUserName: {receiverUserName}\n" +
-                          $"groupName: {groupName}\n");
+
+        if (sender is null || receiver is null || room is null)
+        {
+            //TODO logger
+            return;
+        }
+        
         var dto = new SupportChatMessageDto()
         {
             Content = message,
@@ -58,7 +60,7 @@ public class SupportChatHub : Hub
         await base.OnConnectedAsync();
     }
 
-    public override async Task OnDisconnectedAsync(Exception exception)
+    public override async Task OnDisconnectedAsync(Exception? exception)
     {
         await base.OnDisconnectedAsync(exception);
     }
