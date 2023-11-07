@@ -52,7 +52,11 @@ const SupportChatPage = () => {
 
     const callbackSignalR = useCallback((roomData) => {
 
+<<<<<<< Updated upstream
         let connection = new signalR.HubConnectionBuilder().withUrl(`${ServerURL}/supportChatHub`).build();
+=======
+        let connection = new signalR.HubConnectionBuilder().withUrl("https://localhost:4040/supportChatHub").build();
+>>>>>>> Stashed changes
 
         connection.on("Receive", function (user, message){
             console.log("normal chat recieved");
