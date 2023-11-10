@@ -184,7 +184,10 @@ const RegisterPage = () => {
         }
     }, [navigate]);
     
-    
+    const HandleEnterPress = (event) => {
+        if (event.key === 'Enter')
+            onSubmit(event);
+    }
 
     return (
         <>
@@ -225,7 +228,7 @@ const RegisterPage = () => {
                                 </>
                             }
                             { errorCode !== 'ERR_NETWORK' && !respStatus &&
-                            <form onSubmit={onSubmit}>
+                            <form onSubmit={onSubmit} onKeyDown={HandleEnterPress}>
                                 <h4 className="content-title">Acount Details</h4>
                                 <div className="form-group">
                                     <label>Last name</label>
@@ -311,24 +314,6 @@ const RegisterPage = () => {
             </div>
         </div>
     </section>
-
-	
-	
-
-	<script src="assets/js/vendor/jquery-3.6.0.min.js"></script>
-	<script src="assets/js/vendor/modernizr-3.11.2.min.js"></script>
-	<script src="assets/js/isotope.pkgd.min.js"></script>
-	<script src="assets/js/swiper.min.js"></script>
-	<script src="assets/js/all.min.js"></script> 
-	<script src="assets/js/wow.js"></script>
-	<script src="assets/js/counterup.js"></script>
-	<script src="assets/js/jquery.countdown.min.js"></script>
-	<script src="assets/js/lightcase.js"></script>
-	<script src="assets/js/waypoints.min.js"></script>
-	<script src="assets/js/vendor/bootstrap.bundle.min.js"></script>
-	<script src="assets/js/plugins.js"></script>
-	<script src="assets/js/main.js"></script>
-	<script src="https://www.google-analytics.com/analytics.js" async></script>
 </>
     )
 }

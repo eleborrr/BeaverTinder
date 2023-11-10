@@ -2,7 +2,7 @@
 
 public class ChatModel
 {
-    public string RoomName { get; set; }
-    public string UserId { get; set; }
-    public string RecieverId { get; set; }
+    public string RoomName { get; set; } = default!;
+    public string UserId { get; set; } = default!;
+    public string ReceiverId { get; set; } = default!;
 }

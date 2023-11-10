@@ -1,4 +1,5 @@
-﻿using Contracts;
+﻿using System.Security;
+using Contracts;
 using Contracts.Responses.Payment;
 using Domain.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -44,7 +45,7 @@ public class PaymentController : Controller
         var s = User.Claims.FirstOrDefault(c => c.Type == "Id");
         var user = await _userManager.FindByIdAsync(s!.Value);
         if (user is null)
-            throw new Exception("user not found"); //TODO перенести в exception
+            throw new SecurityException("user not found"); 
         return user;
     }
 }   

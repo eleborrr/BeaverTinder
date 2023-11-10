@@ -6,15 +6,15 @@ public class EditUserDto
 {
     [Required]
     [Display(Name = "Last name")]
-    public string LastName { get; set; }
+    public string LastName { get; set; } = default!;
 
     [Required]
     [Display(Name = "First name")]
-    public string FirstName { get; set; }
+    public string FirstName { get; set; } = default!;
 
     [Required]
     [Display(Name = "Nickname")]
-    public string UserName { get; set; }
+    public string UserName { get; set; } = default!;
 
     // [Required]
     // [Display(Name = "Email")]
@@ -29,28 +29,26 @@ public class EditUserDto
     
     [Required]
     [Display(Name = "Image")]
-    public string Image { get; set; }
-    
-    
-    // [Required]
+    public string Image { get; set; } = default!;
+
     [Display(Name = "Password")]
     [DataType(DataType.Password)]
-    public string Password { get; set; }
+    public string Password { get; set; } = default!;
 
-    // [Required]
     [Compare("Password", ErrorMessage = "Пароли не совпадают")]
     [DataType(DataType.Password)]
     [Display(Name = "ConfirmPassword")]
-    public string ConfirmPassword { get; set; }
+    public string ConfirmPassword { get; set; } = default!;
 
-    [Required] [Display(Name = "Gender")] public string Gender { get; set; }
+    [Required] [Display(Name = "Gender")] 
+    public string Gender { get; set; } = default!;
 
     [Display(Name = "Tell about yourself")]
-    public string About { get; set; }
+    public string About { get; set; } = default!;
     
     [Required]
     [Display(Name = "Subscription Name")]
-    public string SubName { get; set; }
+    public string SubName { get; set; } = default!;
     [Required]
     [Display(Name = "Subscription Expires Date Time")]
     public DateTime SubExpiresDateTime { get; set; }

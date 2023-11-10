@@ -112,11 +112,9 @@ $RECYCLE.BIN/
 
 ### Sass ###
 .sass-cache/
-*.css.map
 
 
 ### Less ###
-*.css
 
 
 ### grunt ###
@@ -149,8 +147,6 @@ sftp-config.json
 .settings/
 .vscode/
 
-# Migrations #
-Persistence/Migrations
 
 # bin and obj folders #
 Services/bin
@@ -169,4 +165,10 @@ Contracts/bin
 Contracts/obj
 BeaverTinder/bin
 BeaverTinder/obj
+*/bin
+*/obj
+*.pfx
 .vs
+.idea/.idea.BeaverTinder/.idea/dataSources.xml
+BeaverTinder.sln.DotSettings.user
+.idea/.idea.BeaverTinder/.idea/jsonSchemas.xml

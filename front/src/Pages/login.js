@@ -9,6 +9,7 @@ const LoginPage = () => {
  
     const [userName, setUserName] = useState('') 
     const [password, setPassword] = useState('') 
+    const [errorsLogin, setErrorsLogin] = useState([]) 
     const [rememberMe, setRememberMe] = useState(false) 
     const [errMessage, setErrMessage] = useState('') 
     const [spanClass, setSpanClass] = useState('hide') 
@@ -20,6 +21,8 @@ const LoginPage = () => {
     } 
     const onSubmit = (e) => { 
         e.preventDefault(); 
+        setErrMessage(""); 
+        setSpanClass('hide'); 
  
         axiosInstance.post('/login', { 
             userName: userName, 
@@ -31,6 +34,7 @@ const LoginPage = () => {
             if (!res.data.successful){ 
                 setSpanClass('errorMessage'); 
                 setErrMessage(res.data.message); 
+                setErrorsLogin('')
             } 
             else{ 
                 Cookies.set('token', res.data.message); 
@@ -38,6 +42,7 @@ const LoginPage = () => {
             } 
         }) 
         .catch((err) => { 
+            setErrorsLogin(err["response"]["data"]["errors"]);
         }); 
     }; 
  
@@ -46,6 +51,11 @@ const LoginPage = () => {
             navigate('/home'); 
         } 
     }) 
+
+    const HandleEnterPress = (event) => {
+        if (event.key === 'Enter')
+            onSubmit(event);
+    }
     
     return( 
         <> 
@@ -74,20 +84,50 @@ const LoginPage = () => {
                         <div className="main-content inloginp"> 
                             <form> 
                                 <div className="form-group"> 
-                                    <label >Имя пользователя</label> 
-                                    <input type="text" className="my-form-control" name="UserName" onChange={(e) => setUserName(e.target.value)} placeholder="Enter Your Nickname" /> 
+                                    <label >Nickname</label> 
+                                    <input type="text" 
+                                        className="my-form-control" 
+                                        name="UserName" 
+                                        onChange={(e) => setUserName(e.target.value)} 
+                                        placeholder="Enter Your Nickname" 
+                                        onKeyDown={(event) => HandleEnterPress(event)}/> 
                                 </div> 
                                 <div className="form-group"> 
-                                    <label >Пароль</label> 
-                                    <input type="password" className="my-form-control" name="Password" onChange={(e) => setPassword(e.target.value)} placeholder="Enter Your Password" /> 
+                                    <label >Password</label> 
+                                    <input type="password" 
+                                        className="my-form-control" 
+                                        name="Password" 
+                                        onChange={(e) => setPassword(e.target.value)} 
+                                        placeholder="Enter Your Password" 
+                                        onKeyDown={(event) => HandleEnterPress(event)}/> 
                                 </div> 
                                 <div className="checkbox-form"> 
-                                    <label >Запомнить?</label> 
+                                    <label >Remember me?</label> 
                                     <input type="checkbox"
                                 className="checkboxRemember" name="RememberMe" onChange={() => setRememberMe(!rememberMe)} /> 
                                 </div> 
                                 <p className="f-pass">Forgot your password? <a href="/">recover password</a></p> 
-                                <span className={spanClass}>{errMessage} Попробуйте ещё раз</span> 
+                                <span className={spanClass}>{errMessage} Try again!</span> 
+                                {errorsLogin === null || errorsLogin === undefined ? 
+                                    <></>
+                                    :
+                                    <>
+                                        {errorsLogin["Password"] ?
+                                                errorsLogin["Password"].map(err => (
+                                                    <><span>{err}</span><br/></>
+                                                ))
+                                            :
+                                            <></>
+                                        }
+                                        {errorsLogin["UserName"] ?
+                                                errorsLogin["UserName"].map(err => (
+                                                    <><span>{err}</span><br/></>
+                                                ))
+                                            :
+                                            <></>
+                                        }
+                                    </>
+                                }
                                 <div className="text-center"> 
                                     <button type="submit" className="default-btn" onClick={onSubmit}><span>Sign IN</span></button> 
                                 </div> 
@@ -106,22 +146,6 @@ const LoginPage = () => {
             </div> 
         </div> 
     </section> 
-
-
-
-<script src="assets/js/vendor/jquery-3.6.0.min.js"></script> 
-<script src="assets/js/vendor/modernizr-3.11.2.min.js"></script> 
-<script src="assets/js/isotope.pkgd.min.js"></script> 
-<script src="assets/js/swiper.min.js"></script> 
-<script src="assets/js/all.min.js"></script>  
-<script src="assets/js/wow.js"></script> 
-<script src="assets/js/counterup.js"></script> 
-<script src="assets/js/jquery.countdown.min.js"></script> 
-<script src="assets/js/lightcase.js"></script> 
-<script src="assets/js/waypoints.min.js"></script> 
-<script src="assets/js/vendor/bootstrap.bundle.min.js"></script> 
-<script src="assets/js/plugins.js"></script> 
-<script src="assets/js/main.js"></script> 
 </> 
 ) 
 } 

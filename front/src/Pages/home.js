@@ -11,6 +11,7 @@ const HomePage = () => {
     const navigate = useNavigate();
     const token = Cookies.get('token');
 
+
     useEffect(() => {
         if (!token){
             navigate("/login");

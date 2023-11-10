@@ -20,6 +20,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Presentation", "Presentatio
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Persistence.Misc", "Infrastructure\Persistence.Misc\Persistence.Misc.csproj", "{5ED82122-D9FB-40D3-BE98-9B8AD605B84C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SupportChat", "SupportChat\SupportChat.csproj", "{8B9F26DE-EA11-4CB8-82A4-3402747F475D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -58,6 +60,10 @@ Global
 		{5ED82122-D9FB-40D3-BE98-9B8AD605B84C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5ED82122-D9FB-40D3-BE98-9B8AD605B84C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5ED82122-D9FB-40D3-BE98-9B8AD605B84C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8B9F26DE-EA11-4CB8-82A4-3402747F475D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B9F26DE-EA11-4CB8-82A4-3402747F475D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B9F26DE-EA11-4CB8-82A4-3402747F475D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B9F26DE-EA11-4CB8-82A4-3402747F475D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{7280DE81-6D45-4837-ABC6-0D1B42B140D7} = {BDFB66EB-E5FA-422C-BF08-5B7128F99352}

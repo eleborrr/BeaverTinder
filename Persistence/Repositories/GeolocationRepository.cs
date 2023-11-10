@@ -10,7 +10,7 @@ internal sealed class GeolocationRepository: IGeolocationRepository
     
     public GeolocationRepository(ApplicationDbContext applicationDbContext) => _applicationDbContext = applicationDbContext;
     
-    public async Task<IEnumerable<UserGeolocation>> GetAllAsync(CancellationToken cancellationToken = default) =>
+    public async Task<IEnumerable<UserGeolocation>> GetAllAsync(CancellationToken cancellationToken) =>
         await _applicationDbContext.Geolocations.ToListAsync(cancellationToken);
     
     public async Task<UserGeolocation?> GetByUserIdAsync(string userId) =>
@@ -24,10 +24,10 @@ internal sealed class GeolocationRepository: IGeolocationRepository
 
     public async Task UpdateAsync(UserGeolocation geolocation)
     {
-        var geolocDb = _applicationDbContext.Geolocations.FirstOrDefault(g => g.Id == geolocation.Id);
-        if (geolocDb is null)
-            throw new Exception("geolocation not found");
-        _applicationDbContext.Entry(geolocDb).CurrentValues.SetValues(geolocation);
+        var geolocationInDb = _applicationDbContext.Geolocations.FirstOrDefault(g => g.Id == geolocation.Id);
+        if (geolocationInDb is null)
+            return;
+        _applicationDbContext.Entry(geolocationInDb).CurrentValues.SetValues(geolocation);
         await _applicationDbContext.SaveChangesAsync();
     }
 }

@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@mui/material";
 import jwtDecode from "jwt-decode";
 import Cookies from "js-cookie";
 import { axiosInstance } from "../../Components/axios_server";
 import PageNotFound from './../404';
 import "../../assets/css/admin.css"
-import { useCallback } from "react";
 
 const AdminPage = () => {
+    const navigate = useNavigate();
     const [isAvailable, setIsAvailable] = useState(false);
     const [users, setUsers] = useState([]);
     const [viewUsers, setViewUsers] = useState([]);
@@ -32,6 +33,7 @@ const AdminPage = () => {
             setUsers(res.data)
             setViewUsers(res.data)
         })
+        .catch()
     }, [token])
 
     useEffect( () => {   
@@ -39,14 +41,18 @@ const AdminPage = () => {
         if(Array.isArray(roles))
         {
         roles.some(element => {
+            console.log(element);
+            console.log(roles)
             if (element === "Moderator")
             {
                 setIsAvailable(true);
+                getAllUsersAxios();
             }
             if(element === "Admin")
             {
                 setIsAvailable(true);
                 setIsAdmin(true);
+                getAllUsersAxios();
             }
             return element;
         })
@@ -57,7 +63,7 @@ const AdminPage = () => {
             setIsAdmin(roles === "Admin");
         }
 
-        getAllUsersAxios();
+        
 
     }, [getAllUsersAxios, token])
 
@@ -99,6 +105,7 @@ const AdminPage = () => {
         <>
             <div className="refr-button-div">
                 <button type="submit" className="refr-button" onClick={getAllUsersAxios}>Refresh User List</button>
+                <button type="submit" className="nav-button" onClick={() => navigate('/support_chat')}>Go to support chats</button>
             </div>
             <div className="form-group">
                 <label className="search-label">Search</label>
