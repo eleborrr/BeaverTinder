@@ -28,13 +28,11 @@ public class ChatController: Controller
     {
         try
         {
-            // var users = await _userManager.Users.ToListAsync();
-
             var s = User.Claims.FirstOrDefault(c => c.Type == "Id")!;
             var curUser = await _userManager.FindByIdAsync(s.Value);
 
-            if (curUser is null) 
-                throw new Exception("Oops!");
+            if (curUser is null)
+                throw new SystemException("data about user is missing");
             
             var users = _userManager.Users.AsEnumerable()
                 .Where(u => _serviceManager.LikeService.IsMutualSympathy(curUser, u).Result);

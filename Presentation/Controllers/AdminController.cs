@@ -112,12 +112,16 @@ public class AdminController: Controller
             var model = chats.Select(x =>
             {
                 var user = _userManager.FindByIdAsync(x.FirstUserId != curUserId? x.FirstUserId: x.SecondUserId).Result;
+
+                if (user is null)
+                    throw new SystemException("data about user is missing");
+                
                 return new AllChatsResponse
                 {
-                    UserName = user.UserName,
+                    UserName = user.UserName!,
                     FirstName = user.FirstName,
                     LastName = user.LastName,
-                    Image = user.Image
+                    Image = user.Image!
                 };
             }).ToList();
             return Json(model);

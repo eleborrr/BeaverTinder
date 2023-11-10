@@ -64,8 +64,8 @@ public class SupportChatService : ISupportChatService
             RoomId = m.RoomId,
             ReceiverId = m.ReceiverId,
             SenderId = m.SenderId,
-            SenderName = (await _userManager.FindByIdAsync(m.SenderId)).UserName,
-            ReceiverName = (await _userManager.FindByIdAsync(m.ReceiverId)).UserName
+            SenderName = (await _userManager.FindByIdAsync(m.SenderId))!.UserName!,
+            ReceiverName = (await _userManager.FindByIdAsync(m.ReceiverId))!.UserName!
         }));
         return result;
     }

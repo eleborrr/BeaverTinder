@@ -1,4 +1,3 @@
-using Contracts;
 using Contracts.Responses;
 using Contracts.Responses.Chat;
 using Domain.Entities;

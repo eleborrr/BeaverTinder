@@ -3,7 +3,6 @@ using Domain.Entities;
 using Domain.Repositories;
 using MassTransit;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using Persistence.Misc.Services.JwtGenerator;
@@ -50,7 +49,6 @@ public class ServiceManager: IServiceManager
         IOptions<EmailConfig> emailConfig,
         IRepositoryManager repositoryManager,
         IMemoryCache memoryCache,
-        RoleManager<Role> roleManager, 
         SignInManager<User> signInManager, 
         IJwtGenerator jwtGenerator,
         IPasswordHasher<User> passwordHasher, 
