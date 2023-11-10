@@ -55,7 +55,7 @@ public class SupportChatService : ISupportChatService
         var room = await GetChatById(userId, secondUserId);
         var messages = _repositoryManager.SupportChatMessageRepository.GetAll().Where(msg => msg.RoomId == room.Id)
             .ToList();
-        if (messages is null)
+        if (messages.Count == 0)
             return Array.Empty<SupportChatMessageDto>();
         var result = await Task.WhenAll(messages.Select(async m => new SupportChatMessageDto()
         {

@@ -2,7 +2,6 @@ using Contracts;
 using Contracts.Responses;
 using Contracts.Responses.Chat;
 using Domain.Entities;
-using Domain.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -18,13 +17,11 @@ namespace Presentation.Controllers;
 public class SupportChatController : Controller
 {
     private readonly IServiceManager _serviceManager;
-    private readonly IRepositoryManager _repositoryManager;
     private readonly UserManager<User> _userManager;
 
-    public SupportChatController(IRepositoryManager repositoryManager, IServiceManager serviceManager, UserManager<User> userManager)
+    public SupportChatController(IServiceManager serviceManager, UserManager<User> userManager)
     {
         _serviceManager = serviceManager;
-        _repositoryManager = repositoryManager;
         _userManager = userManager;
     }
     
@@ -33,16 +30,16 @@ public class SupportChatController : Controller
     {
         try
         {
-            var curUserId = User.Claims.FirstOrDefault(c => c.Type == "Id").Value;
+            var curUserId = User.Claims.FirstOrDefault(c => c.Type == "Id")!.Value;
             var receiver = await _userManager.FindByNameAsync(username);
             var sender = await _userManager.FindByIdAsync(curUserId);
 
             //TODO check for curUserId null
-            var res = await _serviceManager.SupportChatService.GetChatById(sender.Id, receiver.Id);
+            var res = await _serviceManager.SupportChatService.GetChatById(sender!.Id, receiver!.Id);
             var model = new SingleChatGetResponse()
             {
                 ReceiverName = username,
-                SenderName = sender.UserName,
+                SenderName = sender.UserName!,
                 RoomName = res.Name
             };
             return Json(model);
@@ -61,20 +58,5 @@ public class SupportChatController : Controller
         var secondUser = await _userManager.FindByNameAsync(username);
         var history = await _serviceManager.SupportChatService.GetChatHistory(user!.Id, secondUser!.Id);
         return Json(history);
-    }
-
-    [HttpGet("send")]
-    public async Task<IActionResult> SendMessage([FromQuery] string message)
-    {
-        var m = new SupportChatMessageDto()
-        {
-            Content = message,
-            ReceiverId = "1",
-            RoomId = "23",
-            SenderId = "43",
-            Timestamp = DateTime.Now,
-        };
-        await _serviceManager.SupportChatService.SaveMessageAsync(m);
-        return Ok(m);
     }
 }

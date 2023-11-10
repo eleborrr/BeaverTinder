@@ -53,7 +53,6 @@ const SupportChatPage = () => {
     const callbackSignalR = useCallback((roomData) => {
 
         let connection = new signalR.HubConnectionBuilder().withUrl(`${ServerURL}/supportChatHub`).build();
-
         connection.on("Receive", function (user, message){
             console.log("normal chat recieved");
             var elem = document.createElement("div");
