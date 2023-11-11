@@ -157,4 +157,4 @@ sftp-config.json
 .vs
 */.idea/
 BeaverTinder.sln.DotSettings.user
-Infrastructure/Persistence/obj/Debug/net7.0/Persistence.csproj.AssemblyReference.cache
+.idea/
