@@ -1,6 +1,8 @@
-﻿using Contracts;
-using Contracts.Responses;
-using Contracts.ViewModels;
+﻿using Contracts.Dto.Account;
+using Contracts.Dto.AdminPage;
+using Contracts.Dto.Geolocation;
+using Contracts.Dto.Subscription;
+using Contracts.ResponsesAbstraction;
 using Domain.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -26,7 +28,7 @@ public class AccountController : Controller
     
     [Authorize(Policy = "OnlyMapSubs")]
     [HttpPost("/geolocation")]
-    public async Task<UserGeolocation?> GetUserGeolocation([FromBody] GeolocationRequestViewModel model)
+    public async Task<UserGeolocation?> GetUserGeolocation([FromBody] GeolocationRequestDto model)
     {
         return await _serviceManager.GeolocationService.GetByUserId(model.UserId);
     }
@@ -43,7 +45,7 @@ public class AccountController : Controller
             return new JsonResult(new FailResponse(false, "Oops! Seems like a problem.. We are working on it!", 400));
         
         var subInfo = await _serviceManager.SubscriptionService.GetUserActiveSubscription(id);
-        var model = new EditUserViewModel()
+        var model = new EditUserRequestDto
         {
             FirstName = user.FirstName,
             LastName = user.LastName,
@@ -64,7 +66,7 @@ public class AccountController : Controller
     {
         var subInfo = await _serviceManager.SubscriptionService.GetUserActiveSubscription(userId);
 
-        var model = new SubInfoDto()
+        var model = new SubscriptionInfoDto()
         {
             Name = subInfo.Name,
             Expires = subInfo.Expires
@@ -73,7 +75,7 @@ public class AccountController : Controller
     }
 
     [HttpPost("/edit")]
-    public async Task<JsonResult> EditAccount([FromBody] EditUserDto model)
+    public async Task<JsonResult> EditAccount([FromBody] EditUserRequestDto model)
     {
         var s = User.Claims.FirstOrDefault(c => c.Type == "Id")!;
         var user = await _userManager.FindByIdAsync(s.Value);

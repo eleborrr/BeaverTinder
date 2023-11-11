@@ -1,8 +1,7 @@
 ﻿using System.Security;
 using System.Security.Claims;
-using Contracts.Responses;
-using Contracts.Responses.Search;
-using Contracts.ViewModels;
+using Contracts.Dto.BeaverMatchSearch;
+using Contracts.ResponsesAbstraction;
 using Domain.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -72,17 +71,17 @@ public class BeaverSearchController: Controller
     }
 
     [HttpPost("/like")]
-    public async Task<JsonResult> Like([FromBody]  LikeViewModel likeViewModel)
+    public async Task<JsonResult> Like([FromBody]  LikeRequestDto likeRequestDto)
     {
         return Json(await _serviceManager.FindBeaverService.
-            AddSympathy(await GetUserFromJwt(), likeViewModel.LikedUserId, sympathy:true, await GetRoleFromJwt()));
+            AddSympathy(await GetUserFromJwt(), likeRequestDto.LikedUserId, sympathy:true, await GetRoleFromJwt()));
     }
     
     [HttpPost("/dislike")]
-    public async Task<JsonResult> DisLike([FromBody] LikeViewModel likeViewModel)
+    public async Task<JsonResult> DisLike([FromBody] LikeRequestDto likeRequestDto)
     {
         return Json(await _serviceManager.FindBeaverService.
-            AddSympathy(await GetUserFromJwt(), likeViewModel.LikedUserId, sympathy:false, await GetRoleFromJwt()));
+            AddSympathy(await GetUserFromJwt(), likeRequestDto.LikedUserId, sympathy:false, await GetRoleFromJwt()));
     }
 
     private async Task<User?> GetUserFromJwt()

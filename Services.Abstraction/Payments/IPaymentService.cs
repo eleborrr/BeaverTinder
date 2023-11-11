@@ -1,4 +1,4 @@
-﻿using Contracts;
+﻿using Contracts.Dto.Payment;
 
 namespace Services.Abstraction.Payments;
 

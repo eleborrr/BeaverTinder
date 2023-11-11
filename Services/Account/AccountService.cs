@@ -1,9 +1,8 @@
 ﻿using System.Security.Claims;
 using System.Text;
-using Contracts;
-using Contracts.Responses.Account;
-using Contracts.Responses.Login;
-using Contracts.Responses.Registration;
+using Contracts.Dto.Account;
+using Contracts.Dto.Authentication.Login;
+using Contracts.Dto.Authentication.Register;
 using Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
@@ -99,7 +98,7 @@ public class AccountService : IAccountService
         return res;
     }
 
-    public async Task<LoginResponseDto> Login(LoginDto model, ModelStateDictionary modelState)
+    public async Task<LoginResponseDto> Login(LoginRequestDto model, ModelStateDictionary modelState)
     {
         /*bool rememberMe = false;
         /*if (Request.Form.ContainsKey("RememberMe"))
@@ -148,7 +147,7 @@ public class AccountService : IAccountService
 
     }
 
-    public async Task<RegisterResponseDto> Register(RegisterDto model, ModelStateDictionary modelState)
+    public async Task<RegisterResponseDto> Register(RegisterRequestDto model, ModelStateDictionary modelState)
     {
         if (!modelState.IsValid) return new RegisterResponseDto(RegisterResponseStatus.InvalidData);
         var user = new User
@@ -186,9 +185,9 @@ public class AccountService : IAccountService
         return new RegisterResponseDto(RegisterResponseStatus.Ok);
     }
 
-    public async Task<EditUserResponseDto> EditAccount(User userToEdit, EditUserDto model, ModelStateDictionary modelState)
+    public async Task<EditUserResponseDto> EditAccount(User userToEdit, EditUserRequestDto model, ModelStateDictionary modelState)
     {
-        if (!modelState.IsValid) return new EditUserResponseDto(EditResponseStatus.InvalidData);
+        if (!modelState.IsValid) return new EditUserResponseDto(EditUserResponseStatus.InvalidData);
         
         var passwordHash = model.Password == "" ? userToEdit.PasswordHash : _passwordHasher.HashPassword(userToEdit, model.Password);
             
@@ -207,10 +206,10 @@ public class AccountService : IAccountService
         await _geolocationService.Update(userToEdit.Id, model.Latitude, model.Longitude);
 
         if (!result.Succeeded)
-            return new EditUserResponseDto(EditResponseStatus.Fail,
+            return new EditUserResponseDto(EditUserResponseStatus.Fail,
                 result.Errors.FirstOrDefault()!.Description);
             
-        return new EditUserResponseDto(EditResponseStatus.Ok);
+        return new EditUserResponseDto(EditUserResponseStatus.Ok);
     }
    
     public async Task<IEnumerable<User>> GetAllMappedUsers()

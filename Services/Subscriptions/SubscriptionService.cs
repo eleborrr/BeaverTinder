@@ -1,5 +1,5 @@
 ﻿using System.Security.Claims;
-using Contracts;
+using Contracts.Dto.Subscription;
 using Domain.Entities;
 using Domain.Repositories;
 using Microsoft.AspNetCore.Identity;
@@ -42,13 +42,13 @@ public class SubscriptionService : ISubscriptionService
         await _userManager.AddToRoleAsync(user!, sub!.RoleName);
     }
 
-    public async Task<SubInfoDto> GetUserActiveSubscription(string userId)
+    public async Task<SubscriptionInfoDto> GetUserActiveSubscription(string userId)
     {
         var user = await _userManager.FindByIdAsync(userId);
         var roles = await _userManager.GetRolesAsync(user!);
         if (roles.Any(c => c == "Admin"))
         {
-            return new SubInfoDto()
+            return new SubscriptionInfoDto()
             {
                 Name = "Admin",
                 Expires = new DateTime(10, 10, 10)
@@ -56,7 +56,7 @@ public class SubscriptionService : ISubscriptionService
         }
         if (roles.Any(c => c == "Moderator"))
         {
-            return new SubInfoDto()
+            return new SubscriptionInfoDto()
             {
                 Name = "Moderator",
                 Expires = new DateTime(10, 10, 10)
@@ -66,14 +66,14 @@ public class SubscriptionService : ISubscriptionService
             .FirstOrDefault();
         if (userSub == null)
         {
-            return new SubInfoDto()
+            return new SubscriptionInfoDto()
             {
                 Name = "User",
                 Expires = new DateTime(10, 10, 10)
             };
         }
         var sub = await _repositoryManager.SubscriptionRepository.GetBySubscriptionIdAsync(userSub.SubsId);
-        return new SubInfoDto()
+        return new SubscriptionInfoDto()
         {
             Name = sub!.Name,
             Expires = userSub.Expires

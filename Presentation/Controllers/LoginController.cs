@@ -1,5 +1,6 @@
 using AspNet.Security.OAuth.Vkontakte;
-using Contracts;
+using Contracts.Dto.Authentication.Login;
+using Contracts.Dto.Vk;
 using Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -29,7 +30,7 @@ public class LoginController : Controller
     }
 
     [HttpPost]
-    public async Task<JsonResult> Login([FromBody] LoginDto model)
+    public async Task<JsonResult> Login([FromBody] LoginRequestDto model)
     {
         return Json(await _serviceManager.AccountService.Login(model, ModelState));
     }

@@ -1,5 +1,4 @@
-﻿using Contracts;
-using Contracts.Responses.Payment;
+﻿using Contracts.Dto.Payment;
 using Domain.Entities;
 using Domain.Repositories;
 using Services.Abstraction.Payments;

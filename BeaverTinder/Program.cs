@@ -59,7 +59,7 @@ builder.Services.AddScoped<HttpClient>();
 builder.Services.AddSingleton<IPublishEndpoint>(provider => provider.GetRequiredService<IBusControl>());
 builder.Services.Configure<EmailConfig>(builder.Configuration.GetSection("SmtpSettings"));
 
-builder.Services.AddControllers().AddApplicationPart(typeof(Presentation.AssemblyReference).Assembly);
+builder.Services.AddControllers().AddApplicationPart(typeof(Presentation.IAssemblyReference).Assembly);
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
  .AddJwtBearer(options =>

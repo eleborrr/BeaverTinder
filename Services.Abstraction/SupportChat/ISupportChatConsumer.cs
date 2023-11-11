@@ -1,7 +1,7 @@
 ﻿using Domain.Entities;
 using MassTransit;
 
-namespace Services.Abstraction.RabbitMq;
+namespace Services.Abstraction.SupportChat;
 
 public interface ISupportChatConsumer: IConsumer<SupportChatMessage>
 {

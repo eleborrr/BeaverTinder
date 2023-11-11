@@ -1,4 +1,4 @@
-﻿using Contracts;
+﻿using Contracts.Dto.Authentication.Register;
 using Microsoft.AspNetCore.Mvc;
 using Services.Abstraction;
 
@@ -15,7 +15,7 @@ public class RegistrationController : Controller
     }
 
     [HttpPost]
-    public async Task<JsonResult> Register([FromBody]RegisterDto model)
+    public async Task<JsonResult> Register([FromBody]RegisterRequestDto model)
     {
         return Json(await _serviceManager.AccountService.Register(model, ModelState));
     }

@@ -1,6 +1,6 @@
-﻿using Contracts;
-using Contracts.Responses;
-using Contracts.Responses.Chat;
+﻿using Contracts.Dto.AdminPage;
+using Contracts.Dto.Chat;
+using Contracts.ResponsesAbstraction;
 using Domain.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;

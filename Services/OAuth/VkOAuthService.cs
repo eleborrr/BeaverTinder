@@ -1,9 +1,9 @@
 ﻿using System.Security.Claims;
 using AspNet.Security.OAuth.Vkontakte;
-using Contracts;
+using Contracts.Dto.Authentication.Login;
+using Contracts.Dto.Authentication.Register;
+using Contracts.Dto.Vk;
 using Contracts.Enums;
-using Contracts.Responses.Login;
-using Contracts.Responses.Registration;
 using Domain.Entities;
 using Domain.Repositories;
 using Microsoft.AspNetCore.Identity;
@@ -13,6 +13,7 @@ using Services.Abstraction.Geolocation;
 using Services.Abstraction.OAuth;
 using static System.Enum;
 using JsonSerializer = System.Text.Json.JsonSerializer;
+using RegisterResponseDto = Contracts.Dto.Authentication.Register.RegisterResponseDto;
 
 namespace Services.OAuth;
 

@@ -1,4 +1,4 @@
-﻿using Contracts;
+﻿using Contracts.Dto.SupportChat;
 using Domain.Entities;
 using Domain.Repositories;
 using MassTransit;

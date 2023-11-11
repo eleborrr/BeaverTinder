@@ -1,4 +1,4 @@
-﻿using Contracts;
+﻿using Contracts.Dto.SupportChat;
 using Domain.Entities;
 
 namespace Services.Abstraction.SupportChat;

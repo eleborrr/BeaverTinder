@@ -1,6 +1,5 @@
 ﻿using System.Security;
-using Contracts;
-using Contracts.Responses.Payment;
+using Contracts.Dto.Payment;
 using Domain.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;

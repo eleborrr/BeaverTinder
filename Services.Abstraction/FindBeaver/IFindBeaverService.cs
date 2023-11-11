@@ -1,4 +1,4 @@
-﻿using Contracts.Responses.Search;
+﻿using Contracts.Dto.BeaverMatchSearch;
 using Domain.Entities;
 
 namespace Services.Abstraction.FindBeaver;

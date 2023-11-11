@@ -1,4 +1,4 @@
-﻿using Contracts;
+﻿using Contracts.Dto.Image;
 using Domain.Entities;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;

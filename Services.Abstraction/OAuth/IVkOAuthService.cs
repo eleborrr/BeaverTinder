@@ -1,5 +1,5 @@
-﻿using Contracts;
-using Contracts.Responses.Login;
+﻿using Contracts.Dto.Authentication.Login;
+using Contracts.Dto.Vk;
 
 namespace Services.Abstraction.OAuth;
 

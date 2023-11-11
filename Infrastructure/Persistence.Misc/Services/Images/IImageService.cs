@@ -1,4 +1,4 @@
-﻿using Contracts;
+﻿using Contracts.Dto.Image;
 using Domain.Entities;
 
 namespace Persistence.Misc.Services.Images;

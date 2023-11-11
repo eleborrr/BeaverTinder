@@ -1,5 +1,5 @@
 ﻿using System.Globalization;
-using Contracts.Responses.Search;
+using Contracts.Dto.BeaverMatchSearch;
 using Domain.Entities;
 using Domain.Repositories;
 using Microsoft.AspNetCore.Identity;
