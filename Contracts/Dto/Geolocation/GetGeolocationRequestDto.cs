@@ -2,7 +2,7 @@
 
 namespace Contracts.Dto.Geolocation;
 
-public class GeolocationRequestDto
+public class GetGeolocationRequestDto
 {
     [Required]
     [Display(Name = "userId")]

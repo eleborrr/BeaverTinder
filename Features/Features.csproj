@@ -7,13 +7,15 @@
     </PropertyGroup>
 
 
-    <ItemGroup>
-      <Folder Include="Geolocation\EditGeolocation\" />
-      <Folder Include="Geolocation\GetGeolocations\" />
-    </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\Services.Abstraction\Services.Abstraction.csproj" />
+    </ItemGroup>
+
+
+
+    <ItemGroup>
+      <PackageReference Include="MediatR" Version="12.1.1" />
     </ItemGroup>
 
 </Project>

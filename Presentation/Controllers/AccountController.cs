@@ -28,7 +28,7 @@ public class AccountController : Controller
     
     [Authorize(Policy = "OnlyMapSubs")]
     [HttpPost("/geolocation")]
-    public async Task<UserGeolocation?> GetUserGeolocation([FromBody] GeolocationRequestDto model)
+    public async Task<UserGeolocation?> GetUserGeolocation([FromBody] GetGeolocationRequestDto model)
     {
         return await _serviceManager.GeolocationService.GetByUserId(model.UserId);
     }

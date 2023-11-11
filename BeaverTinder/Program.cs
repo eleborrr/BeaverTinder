@@ -1,3 +1,4 @@
+using System.Reflection.Metadata;
 using System.Security.Claims;
 using System.Text;
 using BeaverTinder.ServicesExtensions.MassTransit;
@@ -58,6 +59,13 @@ builder.Services.AddScoped<HttpClient>();
 
 builder.Services.AddSingleton<IPublishEndpoint>(provider => provider.GetRequiredService<IBusControl>());
 builder.Services.Configure<EmailConfig>(builder.Configuration.GetSection("SmtpSettings"));
+
+builder.Services.AddMediatR(configuration =>
+{
+    configuration.RegisterServicesFromAssembly(typeof(AssemblyReference).Assembly);
+    configuration.RegisterServicesFromAssembly(typeof(Program).Assembly);
+
+});
 
 builder.Services.AddControllers().AddApplicationPart(typeof(Presentation.IAssemblyReference).Assembly);
 
