@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class SupportChat : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -357,7 +357,7 @@ namespace Persistence.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "About", "AccessFailedCount", "ConcurrencyStamp", "DateOfBirth", "Email", "EmailConfirmed", "FirstName", "Gender", "Image", "IsBlocked", "IsSearching", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "1", null, 0, "6e0a86f7-7ae3-442f-b379-4c5dd5a71796", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, true, "Gleb", "Male", null, false, false, "Bober", false, null, null, "ADMIN", null, "3201722c-b3c3-430d-a3e5-1d111fe0ff9c", false, "Admin" });
+                values: new object[] { "1", null, 0, "2cba88c3-4f30-49c6-b362-9515574fa991", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, true, "Gleb", "Male", null, false, false, "Bober", false, null, null, "ADMIN", null, "546bbea7-7dbb-411f-bda7-75ca1a825f04", false, "Admin" });
 
             migrationBuilder.InsertData(
                 table: "Subscriptions",

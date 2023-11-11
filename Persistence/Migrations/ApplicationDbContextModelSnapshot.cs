@@ -346,7 +346,7 @@ namespace Persistence.Migrations
                         {
                             Id = "1",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "6e0a86f7-7ae3-442f-b379-4c5dd5a71796",
+                            ConcurrencyStamp = "2cba88c3-4f30-49c6-b362-9515574fa991",
                             DateOfBirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmailConfirmed = true,
                             FirstName = "Gleb",
@@ -356,7 +356,7 @@ namespace Persistence.Migrations
                             LastName = "Bober",
                             LockoutEnabled = false,
                             NormalizedUserName = "ADMIN",
-                            SecurityStamp = "3201722c-b3c3-430d-a3e5-1d111fe0ff9c",
+                            SecurityStamp = "546bbea7-7dbb-411f-bda7-75ca1a825f04",
                             TwoFactorEnabled = false,
                             UserName = "Admin"
                         });

@@ -5,6 +5,7 @@ using BeaverTinder.ServicesExtensions.MassTransit;
 using Contracts.Configs;
 using Domain.Entities;
 using Domain.Repositories;
+using Features.Helpers;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -62,7 +63,7 @@ builder.Services.Configure<EmailConfig>(builder.Configuration.GetSection("SmtpSe
 
 builder.Services.AddMediatR(configuration =>
 {
-    configuration.RegisterServicesFromAssembly(typeof(AssemblyReference).Assembly);
+    configuration.RegisterServicesFromAssembly(FeaturesAssemblyReference.Assembly);
     configuration.RegisterServicesFromAssembly(typeof(Program).Assembly);
 
 });

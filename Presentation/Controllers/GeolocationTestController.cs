@@ -1,11 +1,13 @@
-﻿using System.Web.Http;
-using Domain.Entities;
+﻿using Domain.Entities;
 using Features.Geolocation.GetGeolocations;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Presentation.Controllers;
 
-public class GeolocationTestController
+[ApiController]
+[Route("[controller]")]
+public class GeolocationTestController: Controller
 {
     private readonly IMediator _mediator;
 
