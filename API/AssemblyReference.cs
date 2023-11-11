@@ -1,4 +1,4 @@
-﻿namespace Presentation
+﻿namespace API
 {
     public interface IAssemblyReference
     {

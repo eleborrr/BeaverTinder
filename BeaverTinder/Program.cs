@@ -1,4 +1,3 @@
-using System.Reflection.Metadata;
 using System.Security.Claims;
 using System.Text;
 using API.Hubs;
@@ -68,7 +67,7 @@ builder.Services.AddMediatR(configuration =>
 
 });
 
-builder.Services.AddControllers().AddApplicationPart(typeof(Presentation.IAssemblyReference).Assembly);
+builder.Services.AddControllers().AddApplicationPart(typeof(API.IAssemblyReference).Assembly);
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
  .AddJwtBearer(options =>
