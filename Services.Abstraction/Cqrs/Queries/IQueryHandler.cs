@@ -1,3 +1,4 @@
+using Contracts.Dto.MediatR;
 using MediatR;
 
 namespace Services.Abstraction.Cqrs.Queries;
