@@ -1,11 +1,12 @@
 using System.Reflection.Metadata;
 using System.Security.Claims;
 using System.Text;
+using API.Hubs;
+using Application.Helpers;
 using BeaverTinder.ServicesExtensions.MassTransit;
 using Contracts.Configs;
 using Domain.Entities;
 using Domain.Repositories;
-using Features.Helpers;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -15,7 +16,6 @@ using Microsoft.OpenApi.Models;
 using Persistence;
 using Persistence.Misc.Services.JwtGenerator;
 using Persistence.Repositories;
-using Presentation.Hubs;
 using Services;
 using Services.Abstraction;
 using Services.SupportChat;
@@ -63,7 +63,7 @@ builder.Services.Configure<EmailConfig>(builder.Configuration.GetSection("SmtpSe
 
 builder.Services.AddMediatR(configuration =>
 {
-    configuration.RegisterServicesFromAssembly(FeaturesAssemblyReference.Assembly);
+    configuration.RegisterServicesFromAssembly(ApllicationAssemblyReference.Assembly);
     configuration.RegisterServicesFromAssembly(typeof(Program).Assembly);
 
 });

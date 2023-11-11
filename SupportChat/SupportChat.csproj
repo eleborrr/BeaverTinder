@@ -19,7 +19,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Contracts\Contracts.csproj" />
-      <ProjectReference Include="..\Persistence\Persistence.csproj" />
+      <ProjectReference Include="..\Infrastructure\Persistence\Persistence.csproj" />
     </ItemGroup>
 
 
@@ -28,6 +28,14 @@
       <Content Include="..\.dockerignore">
         <Link>.dockerignore</Link>
       </Content>
+    </ItemGroup>
+
+
+
+    <ItemGroup>
+      <Reference Include="Persistence">
+        <HintPath>..\Infrastructure\Persistence\bin\Debug\net7.0\Persistence.dll</HintPath>
+      </Reference>
     </ItemGroup>
     
 </Project>

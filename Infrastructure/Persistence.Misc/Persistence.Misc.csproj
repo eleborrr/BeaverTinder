@@ -14,12 +14,15 @@
     <ItemGroup>
       <ProjectReference Include="..\..\Contracts\Contracts.csproj" />
       <ProjectReference Include="..\..\Domain\Domain.csproj" />
-      <ProjectReference Include="..\..\Persistence\Persistence.csproj" />
+      <ProjectReference Include="..\..\Infrastructure\Persistence\Persistence.csproj" />
     </ItemGroup>
 
     <ItemGroup>
       <Reference Include="Microsoft.AspNetCore.Hosting.Abstractions">
         <HintPath>..\..\..\..\..\..\Program Files\dotnet\shared\Microsoft.AspNetCore.App\7.0.1\Microsoft.AspNetCore.Hosting.Abstractions.dll</HintPath>
+      </Reference>
+      <Reference Include="Persistence">
+        <HintPath>..\Persistence\bin\Debug\net7.0\Persistence.dll</HintPath>
       </Reference>
     </ItemGroup>
 
