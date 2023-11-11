@@ -58,6 +58,6 @@ services:
     image: front
     build:
       context: /front
-      dockerfile: Dockerfile
+      dockerfile: DockerFile
     ports:
       - "3000:3000"
