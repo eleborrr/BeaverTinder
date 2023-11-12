@@ -5,7 +5,7 @@ using Services.Abstraction.Cqrs.Commands;
 
 namespace Application.Chat.AddChat;
 
-public class AddChatHandler : ICommandHandler<AddChatCommand, Guid>
+public class AddChatHandler : ICommandHandler<AddChatCommand, Room>
 {
     private readonly IRepositoryManager _repositoryManager;
 
@@ -13,12 +13,11 @@ public class AddChatHandler : ICommandHandler<AddChatCommand, Guid>
     {
         _repositoryManager = repositoryManager;
     }
-    public async Task<Result<Guid>> Handle(AddChatCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Room>> Handle(AddChatCommand request, CancellationToken cancellationToken)
     {
-        var chatId = Guid.NewGuid();
         var room = new Room
         {
-            Id = chatId.ToString(),
+            Id = Guid.NewGuid().ToString(),
             FirstUserId = request.FirstUserId,
             SecondUserId = request.SecondUserId,
             Name = Guid.NewGuid().ToString()
@@ -27,11 +26,11 @@ public class AddChatHandler : ICommandHandler<AddChatCommand, Guid>
         {
             await _repositoryManager.RoomRepository.AddAsync(
                 room);
-            return new Result<Guid>(chatId, true);
+            return new Result<Room>(room, true);
         }
         catch (Exception e)
         {
-            return new Result<Guid>(Guid.Empty, false, e.Message);
+            return new Result<Room>(new Room(), false, e.Message);
         }
     }
 }

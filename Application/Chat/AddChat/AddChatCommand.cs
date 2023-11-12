@@ -1,9 +1,8 @@
-﻿using Services.Abstraction.Cqrs.Commands;
+﻿using Domain.Entities;
+using Services.Abstraction.Cqrs.Commands;
 
 namespace Application.Chat.AddChat;
 
-public class AddChatCommand : ICommand<Guid>
+public record AddChatCommand(string FirstUserId, string SecondUserId) : ICommand<Room>
 {
-    public string FirstUserId { get; set; } = default!;
-    public string SecondUserId { get; set; } = default!;
 }
