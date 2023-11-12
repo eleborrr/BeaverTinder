@@ -23,13 +23,4 @@ public class SubscriptionController : Controller
     {
        return await _serviceManager.SubscriptionService.GetAllAsync().ContinueWith(x => x.Result.ToList());
     }
-
-    [HttpGet("test")]
-    public async Task<IActionResult> Test([FromQuery] int subsId, [FromQuery] string userId)
-    {
-        var s = await _repositoryManager.UserSubscriptionRepository.GetUserSubscriptionByUserIdAndSubsIdAsync(subsId, userId);
-        if (s == null)
-            return Ok("MAZAFAKA");
-        return BadRequest("XUI((");
-    }
 }
