@@ -1,6 +1,9 @@
-﻿namespace Application.TwoFa.SendConfirmationEmail;
+﻿using MediatR;
+using Services.Abstraction.Cqrs.Queries;
 
-public class SendConfirmationEmailQuery
+namespace Application.TwoFa.SendConfirmationEmail;
+
+public class SendConfirmationEmailQuery : IQuery<Unit>
 {
-    
+    public string UserId { get; set; }
 }
