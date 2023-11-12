@@ -27,8 +27,8 @@ public class GetNextSympathyHandler : IQueryHandler<GetNextSympathyQuery, Search
         
 
         var filteredBeavers = _userManager.Users.AsEnumerable()
-            .Where(u => likes.Any(l => l.UserId ==  u.Id && l.LikedUserId == request.CurrentUser!.Id )
-                        && !likes.Any(l => l.UserId == request.CurrentUser!.Id && l.LikedUserId ==  u.Id)
+            .Where(u => likes.Exists(l => l.UserId ==  u.Id && l.LikedUserId == request.CurrentUser!.Id )
+                        && !likes.Exists(l => l.UserId == request.CurrentUser!.Id && l.LikedUserId ==  u.Id)
                         && u.Id != request.CurrentUser!.Id) // проверяем чтобы попадались лайкнутые
             .OrderBy(u => Math.Abs(request.CurrentUser!.DateOfBirth.Year - u.DateOfBirth.Year))
             .Take(10)
