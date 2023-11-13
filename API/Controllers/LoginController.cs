@@ -86,7 +86,7 @@ public class LoginController : Controller
     // -> return Login
     private async Task<LoginResponseDto> OAuthCallback(VkUserDto vkUserDto, CancellationToken cancellationToken)
     {
-        if (!DateTime.TryParse(vkUserDto.DateOfBirth, out DateTime parsedDate))
+        if (!DateTime.TryParse(vkUserDto.DateOfBirth, new CultureInfo("en-US"), out DateTime parsedDate))
         {
             parsedDate = DateTime.Parse("2.1.1999", new CultureInfo("en-US"));
         }
