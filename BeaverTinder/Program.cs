@@ -1,5 +1,7 @@
 using System.Security.Claims;
 using System.Text;
+using API.Hubs;
+using Application.Helpers;
 using BeaverTinder.ServicesExtensions.MassTransit;
 using Contracts.Configs;
 using Domain.Entities;
@@ -13,7 +15,6 @@ using Microsoft.OpenApi.Models;
 using Persistence;
 using Persistence.Misc.Services.JwtGenerator;
 using Persistence.Repositories;
-using Presentation.Hubs;
 using Services;
 using Services.Abstraction;
 using Services.SupportChat;
@@ -59,7 +60,14 @@ builder.Services.AddScoped<HttpClient>();
 builder.Services.AddSingleton<IPublishEndpoint>(provider => provider.GetRequiredService<IBusControl>());
 builder.Services.Configure<EmailConfig>(builder.Configuration.GetSection("SmtpSettings"));
 
-builder.Services.AddControllers().AddApplicationPart(typeof(Presentation.IAssemblyReference).Assembly);
+builder.Services.AddMediatR(configuration =>
+{
+    configuration.RegisterServicesFromAssembly(ApllicationAssemblyReference.Assembly);
+    configuration.RegisterServicesFromAssembly(typeof(Program).Assembly);
+
+});
+
+builder.Services.AddControllers().AddApplicationPart(typeof(API.IAssemblyReference).Assembly);
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
  .AddJwtBearer(options =>

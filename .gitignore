@@ -149,26 +149,12 @@ sftp-config.json
 
 
 # bin and obj folders #
-Services/bin
-Services/obj
-Services.Abstraction/obj
-Services.Abstraction/bin
-Presentation/obj
-Presentation/bin
-Persistence/obj
-Persistence/bin
-Infrastructure/Persistence.Misc/obj/
-Infrastructure/Persistence.Misc/bin/
-Domain/obj
-Domain/bin
-Contracts/bin
-Contracts/obj
-BeaverTinder/bin
-BeaverTinder/obj
 */bin
 */obj
+*/*/bin
+*/*/obj
 *.pfx
 .vs
-.idea/.idea.BeaverTinder/.idea/dataSources.xml
+*/.idea/
 BeaverTinder.sln.DotSettings.user
-.idea/.idea.BeaverTinder/.idea/jsonSchemas.xml
+.idea/

@@ -4,13 +4,13 @@
         <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <RootNamespace>API</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
       <PackageReference Include="AspNet.Security.OAuth.Vkontakte" Version="7.0.2" />
-      <PackageReference Include="MassTransit" Version="8.1.2-develop.1567" />
-      <PackageReference Include="MassTransit.RabbitMQ" Version="8.1.2-develop.1567" />
-      <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.2.9" />
+      <PackageReference Include="AspNetCore.Security.OAuth.Vkontakte" Version="1.0.1" />
+      <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.4" />
       <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.4" />
       <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.4" />
       <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.4" />
@@ -20,20 +20,16 @@
       </PackageReference>
       <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.4" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.4" />
-      <PackageReference Include="System.Runtime.Serialization.Json" Version="4.3.0" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\Contracts\Contracts.csproj" />
       <ProjectReference Include="..\Domain\Domain.csproj" />
+      <ProjectReference Include="..\Application\Application.csproj" />
       <ProjectReference Include="..\Infrastructure\Persistence.Misc\Persistence.Misc.csproj" />
+      <ProjectReference Include="..\Infrastructure\Persistence\Persistence.csproj" />
       <ProjectReference Include="..\Services.Abstraction\Services.Abstraction.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Reference Include="Persistence">
-        <HintPath>..\Infrastructure\Persistence\bin\Debug\net7.0\Persistence.dll</HintPath>
-      </Reference>
+      <ProjectReference Include="..\Services\Services.csproj" />
     </ItemGroup>
 
 </Project>
