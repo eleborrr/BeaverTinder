@@ -1,5 +1,7 @@
-﻿using Domain.Entities;
+﻿using Application.Subscription.GetAllSubscriptions;
+using Domain.Entities;
 using Domain.Repositories;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Services.Abstraction;
 
@@ -10,26 +12,19 @@ namespace API.Controllers;
 public class SubscriptionController : Controller
 {
     private readonly IServiceManager _serviceManager;
-    private readonly IRepositoryManager _repositoryManager;
-
-    public SubscriptionController(IServiceManager serviceManager, IRepositoryManager repositoryManager)
+    private readonly IMediator _mediator;
+    
+    public SubscriptionController(IServiceManager serviceManager, IMediator mediator)
     {
         _serviceManager = serviceManager;
-        _repositoryManager = repositoryManager;
+        _mediator = mediator;
     }
 
     [HttpGet("all")]
     public async Task<List<Subscription>> GetAll()
     {
-       return await _serviceManager.SubscriptionService.GetAllAsync().ContinueWith(x => x.Result.ToList());
-    }
-
-    [HttpGet("test")]
-    public async Task<IActionResult> Test([FromQuery] int subsId, [FromQuery] string userId)
-    {
-        var s = await _repositoryManager.UserSubscriptionRepository.GetUserSubscriptionByUserIdAndSubsIdAsync(subsId, userId);
-        if (s == null)
-            return Ok("MAZAFAKA");
-        return BadRequest("XUI((");
+        var query = new GetAllSubscriptionsQuery();
+        var subscriptions = (await _mediator.Send(query)).Value;
+        return subscriptions!.ToList();
     }
 }

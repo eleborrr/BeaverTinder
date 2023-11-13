@@ -1,9 +1,11 @@
-﻿using Contracts.Dto.Account;
+﻿using Application.Subscription.GetUsersActiveSubscription;
+using Contracts.Dto.Account;
 using Contracts.Dto.AdminPage;
 using Contracts.Dto.Geolocation;
 using Contracts.Dto.Subscription;
 using Contracts.ResponsesAbstraction;
 using Domain.Entities;
+using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -19,10 +21,12 @@ public class AccountController : Controller
 {
     private readonly UserManager<User> _userManager;
     private readonly IServiceManager _serviceManager;
+    private readonly IMediator _mediator;
     
-    public AccountController(IServiceManager serviceManager, UserManager<User> userManager)
+    public AccountController(IServiceManager serviceManager, UserManager<User> userManager, IMediator mediator)
     {
         _userManager = userManager;
+        _mediator = mediator;
         _serviceManager = serviceManager;
     }
     
@@ -43,8 +47,8 @@ public class AccountController : Controller
         var geolocation = await _serviceManager.GeolocationService.GetByUserId(id);
         if (geolocation is null)
             return new JsonResult(new FailResponse(false, "Oops! Seems like a problem.. We are working on it!", 400));
-        
-        var subInfo = await _serviceManager.SubscriptionService.GetUserActiveSubscription(id);
+
+        var subInfo = (await _mediator.Send(new GetUsersActiveSubscriptionQuery(id))).Value;
         var model = new EditUserRequestDto
         {
             FirstName = user.FirstName,
@@ -64,8 +68,8 @@ public class AccountController : Controller
     [HttpGet("/usersubinfo")]
     public async Task<JsonResult> GetUserSubInformation([FromQuery] string userId)
     {
-        var subInfo = await _serviceManager.SubscriptionService.GetUserActiveSubscription(userId);
-
+        var subInfo = (await _mediator.Send(new GetUsersActiveSubscriptionQuery(userId))).Value;
+        
         var model = new SubscriptionInfoDto()
         {
             Name = subInfo.Name,
@@ -99,7 +103,7 @@ public class AccountController : Controller
         var result = new List<AdminUserDto>();
         foreach (var user in users)
         {
-            var subscription = await _serviceManager.SubscriptionService.GetUserActiveSubscription(user.Id);
+            var subscription = (await _mediator.Send(new GetUsersActiveSubscriptionQuery(user.Id))).Value;
             result.Add(new ()
             {
                 UserName = user.UserName!,

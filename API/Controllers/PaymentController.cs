@@ -1,6 +1,8 @@
 ﻿using System.Security;
+using Application.Subscription.AddSubscription;
 using Contracts.Dto.Payment;
 using Domain.Entities;
+using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -15,10 +17,13 @@ public class PaymentController : Controller
 {
     private readonly UserManager<User> _userManager;
     private readonly IServiceManager _serviceManager;
-    public PaymentController(UserManager<User> userManager, IServiceManager serviceManager)
+    private readonly IMediator _mediator;
+    
+    public PaymentController(UserManager<User> userManager, IServiceManager serviceManager, IMediator mediator)
     {
         _userManager = userManager;
         _serviceManager = serviceManager;
+        _mediator = mediator;
     }
     
     // GET
@@ -35,7 +40,7 @@ public class PaymentController : Controller
             return Json(new PaymentResponseDto(PaymentResponseStatus.InvalidData));
         if(payment.StatusCode == PaymentResponseStatus.Fail)
             return Json(new PaymentResponseDto(PaymentResponseStatus.Fail));
-        await _serviceManager.SubscriptionService.AddSubscriptionToUser(payment.SubsId, payment.UserId);
+        await _mediator.Send(new AddSubscriptionCommand(payment.SubsId, payment.UserId));
         return Json(new PaymentResponseDto(PaymentResponseStatus.Ok));
     }
     
