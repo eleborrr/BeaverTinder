@@ -33,10 +33,14 @@ public class PaymentController : Controller
         var command = new AddPaymentCommand(model.UserId, model.CardNumber, model.Month, model.Amount, model.Year, model.Code, model.SubsId);
         
         var user = await GetUserFromJwt();
-        model.UserId = user.Id;
+        command.UserId = user.Id;
         var response = await _mediator.Send(command, cancellationToken);
-        //TODO: фича Subscriptions
-        await _serviceManager.SubscriptionService.AddSubscriptionToUser(payment.SubsId, payment.UserId);
+        if (response.IsFailure)
+        {
+            return new JsonResult(response);
+        }
+            //TODO: фича Subscriptions
+        await _serviceManager.SubscriptionService.AddSubscriptionToUser(command.SubsId, command.UserId);
         return Json(response);
     }
     
