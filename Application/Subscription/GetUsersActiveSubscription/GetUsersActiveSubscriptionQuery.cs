@@ -3,7 +3,4 @@ using Services.Abstraction.Cqrs.Queries;
 
 namespace Application.Subscription.GetUsersActiveSubscription;
 
-public class GetUsersActiveSubscriptionQuery: IQuery<SubscriptionInfoDto>
-{
-    public string UserId { get; set; } = default!;
-}
+public record GetUsersActiveSubscriptionQuery(string UserId): IQuery<SubscriptionInfoDto>;
