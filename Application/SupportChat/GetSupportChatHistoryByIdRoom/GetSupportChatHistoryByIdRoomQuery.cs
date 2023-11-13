@@ -3,7 +3,4 @@ using Services.Abstraction.Cqrs.Queries;
 
 namespace Application.SupportChat.GetSupportChatHistory;
 
-public class GetSupportChatHistoryByIdRoomQuery : IQuery<IEnumerable<SupportChatMessageDto>>
-{
-    public string SupportRoomId { get; set; }
-}
+public record GetSupportChatHistoryByIdRoomQuery(string SupportRoomId) : IQuery<IEnumerable<SupportChatMessageDto>>;

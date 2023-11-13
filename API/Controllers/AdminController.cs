@@ -1,7 +1,9 @@
-﻿using Contracts.Dto.AdminPage;
+﻿using Application.SupportChat.GetAllSupportChatRooms;
+using Contracts.Dto.AdminPage;
 using Contracts.Dto.Chat;
 using Contracts.ResponsesAbstraction;
 using Domain.Entities;
+using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -17,12 +19,14 @@ public class AdminController: Controller
 {
     private readonly UserManager<User> _userManager;
     private readonly IServiceManager _serviceManager;
+    private readonly IMediator _mediator;
     private const bool ModeratorReturnValue = true;
     
-    public AdminController(UserManager<User> userManager, IServiceManager serviceManager)
+    public AdminController(UserManager<User> userManager, IServiceManager serviceManager, IMediator mediator)
     {
         _userManager = userManager;
         _serviceManager = serviceManager;
+        _mediator = mediator;
     }
 
     [Authorize(Policy = "OnlyForModerators")]
@@ -107,8 +111,7 @@ public class AdminController: Controller
         try
         {
             var curUserId = User.Claims.FirstOrDefault(c => c.Type == "Id")!.Value;
-
-            var chats = (await _serviceManager.SupportChatService.GetAllChatRooms()).ToList();
+            var chats = (await _mediator.Send(new GetAllSupportChatRoomsQuery())).Value!.ToList();
             var model = chats.Select(x =>
             {
                 var user = _userManager.FindByIdAsync(x.FirstUserId != curUserId? x.FirstUserId: x.SecondUserId).Result;
