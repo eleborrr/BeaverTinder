@@ -1,5 +1,6 @@
-﻿using System.Security;
+using System.Security;
 using Application.Payment.AddPayment;
+using Application.Subscription.AddSubscription;
 using Contracts.Dto.Payment;
 using Domain.Entities;
 using MediatR;
@@ -18,6 +19,7 @@ public class PaymentController : Controller
     private readonly UserManager<User> _userManager;
     private readonly IServiceManager _serviceManager;
     private readonly IMediator _mediator;
+
     public PaymentController(UserManager<User> userManager, IServiceManager serviceManager, IMediator mediator)
     {
         _userManager = userManager;

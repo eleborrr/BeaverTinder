@@ -51,7 +51,7 @@ public class SubscriptionService : ISubscriptionService
             return new SubscriptionInfoDto()
             {
                 Name = "Admin",
-                Expires = new DateTime(10, 10, 10)
+                Expires = new DateTime(100, 10, 10)
             };
         }
         if (roles.Any(c => c == "Moderator"))
@@ -59,7 +59,7 @@ public class SubscriptionService : ISubscriptionService
             return new SubscriptionInfoDto()
             {
                 Name = "Moderator",
-                Expires = new DateTime(10, 10, 10)
+                Expires = new DateTime(100, 10, 10)
             };
         }
         var userSub = (await _repositoryManager.UserSubscriptionRepository.GetActiveSubscriptionsByUserIdAsync(userId))
@@ -69,7 +69,7 @@ public class SubscriptionService : ISubscriptionService
             return new SubscriptionInfoDto()
             {
                 Name = "User",
-                Expires = new DateTime(10, 10, 10)
+                Expires = new DateTime(100, 10, 10)
             };
         }
         var sub = await _repositoryManager.SubscriptionRepository.GetBySubscriptionIdAsync(userSub.SubsId);
