@@ -1,4 +1,4 @@
-﻿using Application.Subscription.GetUsersActiveSubscription;
+using Application.Subscription.GetUsersActiveSubscription;
 using Contracts.Dto.Account;
 using Contracts.Dto.AdminPage;
 using Contracts.Dto.Geolocation;
@@ -22,7 +22,6 @@ public class AccountController : Controller
     private readonly UserManager<User> _userManager;
     private readonly IServiceManager _serviceManager;
     private readonly IMediator _mediator;
-    
     public AccountController(IServiceManager serviceManager, UserManager<User> userManager, IMediator mediator)
     {
         _userManager = userManager;
@@ -47,8 +46,9 @@ public class AccountController : Controller
         var geolocation = await _serviceManager.GeolocationService.GetByUserId(id);
         if (geolocation is null)
             return new JsonResult(new FailResponse(false, "Oops! Seems like a problem.. We are working on it!", 400));
-
+            
         var subInfo = (await _mediator.Send(new GetUsersActiveSubscriptionQuery(id))).Value;
+        
         var model = new EditUserRequestDto
         {
             FirstName = user.FirstName,

@@ -1,4 +1,4 @@
-﻿using Application.Chat.AddChat;
+using Application.Chat.AddChat;
 using Application.Chat.GetChatById;
 using Contracts.Dto.Chat;
 using Contracts.ResponsesAbstraction;

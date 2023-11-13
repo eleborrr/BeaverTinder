@@ -15,10 +15,11 @@ public class PaymentRepository : IPaymentRepository
         return await _applicationDbContext.Payments.ToListAsync(cancellationToken);
     }
 
-    public async Task AddAsync(Payment payment)
+    public async Task<int> AddAsync(Payment payment)
     {
         await _applicationDbContext.Payments.AddAsync(payment);
         await _applicationDbContext.SaveChangesAsync();
+        return payment.Id;
     }
 
     public async Task<Payment?> GetByPaymentIdAsync(int paymentId)

@@ -1,4 +1,4 @@
-﻿using Application.Subscription.GetAllSubscriptions;
+using Application.Subscription.GetAllSubscriptions;
 using Domain.Entities;
 using Domain.Repositories;
 using MediatR;

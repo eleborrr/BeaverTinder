@@ -67,7 +67,6 @@ public class LoginController : Controller
         if (resultTokenString == string.Empty)
             return BadRequest();
         var accessToken = JsonSerializer.Deserialize<VkAccessTokenDto>(resultTokenString);
-        
         var vkUser = await _mediator.Send(new GetVkUserInfoQuery(accessToken!), cancellationToken);
         var authResult = await OAuthCallback(vkUser.Value!, cancellationToken);
         if (authResult.Successful)

@@ -1,4 +1,5 @@
-﻿using System.Security;
+using System.Security;
+using Application.Payment.AddPayment;
 using Application.Subscription.AddSubscription;
 using Contracts.Dto.Payment;
 using Domain.Entities;
@@ -18,7 +19,7 @@ public class PaymentController : Controller
     private readonly UserManager<User> _userManager;
     private readonly IServiceManager _serviceManager;
     private readonly IMediator _mediator;
-    
+
     public PaymentController(UserManager<User> userManager, IServiceManager serviceManager, IMediator mediator)
     {
         _userManager = userManager;
@@ -29,21 +30,23 @@ public class PaymentController : Controller
     // GET
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [HttpPost("pay")]
-    public async Task<JsonResult> Pay([FromBody] PaymentRequestDto model)
+    public async Task<JsonResult> Pay([FromBody] PaymentRequestDto model, CancellationToken cancellationToken)
     {
-        if (!ModelState.IsValid)
-            return Json(new PaymentResponseDto(PaymentResponseStatus.InvalidData));
+        var command = new AddPaymentCommand(model.UserId, model.CardNumber, model.Month, model.Amount, model.Year, model.Code, model.SubsId);
+        
         var user = await GetUserFromJwt();
-        model.UserId = user.Id;
-        var payment = await _serviceManager.PaymentService.ProcessPayment(model);
-        if (payment.StatusCode == PaymentResponseStatus.InvalidData)
-            return Json(new PaymentResponseDto(PaymentResponseStatus.InvalidData));
-        if(payment.StatusCode == PaymentResponseStatus.Fail)
-            return Json(new PaymentResponseDto(PaymentResponseStatus.Fail));
-        await _mediator.Send(new AddSubscriptionCommand(payment.SubsId, payment.UserId));
-        return Json(new PaymentResponseDto(PaymentResponseStatus.Ok));
+        command.UserId = user.Id;
+        var response = await _mediator.Send(command, cancellationToken);
+        if (response.IsFailure)
+        {
+            return new JsonResult(response);
+        }
+            //TODO: фича Subscriptions
+        await _serviceManager.SubscriptionService.AddSubscriptionToUser(command.SubsId, command.UserId);
+        return Json(response);
     }
     
+    //TODO: фича User??
     private async Task<User> GetUserFromJwt()
     {
         var s = User.Claims.FirstOrDefault(c => c.Type == "Id");
