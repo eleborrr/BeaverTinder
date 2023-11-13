@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <RootNamespace>BeaverTinder.Application</RootNamespace>
+    </PropertyGroup>
+
+
+
+    <ItemGroup>
+      <PackageReference Include="AspNet.Security.OAuth.Vkontakte" Version="7.0.2" />
+      <PackageReference Include="FluentValidation" Version="11.8.0" />
+      <PackageReference Include="JetBrains.Annotations" Version="10.1.5" />
+      <PackageReference Include="MassTransit.Abstractions" Version="8.1.2-develop.1567" />
+      <PackageReference Include="MediatR" Version="12.1.1" />
+      <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.21.0" />
+    </ItemGroup>
+
+
+
+
+    <ItemGroup>
+      <Folder Include="Features\" />
+    </ItemGroup>
+
+
+
+
+    <ItemGroup>
+      <ProjectReference Include="..\BeaverTinder.Domain\BeaverTinder.Domain.csproj" />
+    </ItemGroup>
+
+
+
+</Project>
