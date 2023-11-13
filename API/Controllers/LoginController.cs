@@ -1,7 +1,14 @@
+using System.Globalization;
+using Application.OAuth.AddUserToVk;
+using Application.OAuth.GetUserFromToVkById;
+using Application.OAuth.GetVkUserInfo;
+using Application.OAuth.Login;
+using Application.OAuth.Register;
 using AspNet.Security.OAuth.Vkontakte;
 using Contracts.Dto.Authentication.Login;
 using Contracts.Dto.Vk;
 using Domain.Entities;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
@@ -19,14 +26,23 @@ public class LoginController : Controller
     private readonly SignInManager<User> _signInManager;
     private readonly IConfiguration _config;
     private readonly HttpClient _client;
+    private readonly IMediator _mediator;
+    private readonly UserManager<User> _userManager;
 
-    public LoginController(IServiceManager serviceManager, SignInManager<User> signInManager,
-        IConfiguration configuration, HttpClient client)
+    public LoginController(
+        IServiceManager serviceManager,
+        SignInManager<User> signInManager,
+        IConfiguration configuration,
+        HttpClient client,
+        IMediator mediator,
+        UserManager<User> userManager)
     {
         _serviceManager = serviceManager;
         _signInManager = signInManager;
         _config = configuration;
         _client = client;
+        _mediator = mediator;
+        _userManager = userManager;
     }
 
     [HttpPost]
@@ -36,7 +52,7 @@ public class LoginController : Controller
     }
     
     [HttpGet("getAccessToken")]
-    public async Task<IActionResult> GetAccessToken([FromQuery] string code)
+    public async Task<IActionResult> GetAccessToken([FromQuery] string code, CancellationToken cancellationToken)
     {
         var query = new Dictionary<string, string?>
         {
@@ -51,8 +67,9 @@ public class LoginController : Controller
         if (resultTokenString == string.Empty)
             return BadRequest();
         var accessToken = JsonSerializer.Deserialize<VkAccessTokenDto>(resultTokenString);
-        var vkUser = await _serviceManager.VkOAuthService.GetVkUserInfoAsync(accessToken!);
-        var authResult = await _serviceManager.VkOAuthService.OAuthCallback(vkUser!);
+        
+        var vkUser = await _mediator.Send(new GetVkUserInfoQuery(accessToken!), cancellationToken);
+        var authResult = await OAuthCallback(vkUser.Value!, cancellationToken);
         if (authResult.Successful)
         {
             return Ok(authResult.Message);
@@ -60,7 +77,64 @@ public class LoginController : Controller
         return BadRequest(authResult.Message);
     }
 
-    
+    // -> GetUserFromVkById
+    // -> if user is null; then
+    // -> Register
+    // -> AddGeolocation latitude: 55.558741, longitude: 37.378847
+    // -> return Login
+    // -> fi
+    // -> return Login
+    private async Task<LoginResponseDto> OAuthCallback(VkUserDto vkUserDto, CancellationToken cancellationToken)
+    {
+        if (!DateTime.TryParse(vkUserDto.DateOfBirth, new CultureInfo("en-US"), out DateTime parsedDate))
+        {
+            parsedDate = DateTime.Parse("2.1.1999", new CultureInfo("en-US"));
+        }
+
+        var registerDto = new VkAuthDto
+        {
+            VkId = vkUserDto.VkId.ToString(),
+            About = vkUserDto.About,
+            Email = vkUserDto.Email,
+            FirstName = vkUserDto.FirstName,
+            Gender = vkUserDto.Gender.ToString(),
+            LastName = vkUserDto.LastName,
+            UserName = vkUserDto.UserName,
+            DateOfBirth = parsedDate,
+            PhotoUrl = vkUserDto.PhotoUrl
+        };
+        User? user = default;
+        var userVk = await _mediator.Send(
+            new GetUserFromVkByIdQuery(vkUserDto.VkId.ToString()),
+            cancellationToken);
+        
+        if (!userVk.IsSuccess || userVk.Value is null)
+        {
+            var registeredUser = await _mediator.Send(
+                new RegisterOAuthVkCommand(registerDto),
+                cancellationToken);
+            if (!registeredUser.IsSuccess)
+                return new LoginResponseDto(LoginResponseStatus.Fail);
+            user = await _userManager.FindByNameAsync(registerDto.UserName);
+            if (user is null)
+                return new LoginResponseDto(LoginResponseStatus.Fail);
+            var addUserResult = await _mediator.Send(
+                new AddUserToVkCommand(
+                    user.Id,
+                    vkUserDto.VkId.ToString()),
+                cancellationToken);
+            if (!addUserResult.IsSuccess)
+                return new LoginResponseDto(LoginResponseStatus.Fail);
+        }
+        if (user is null)
+            user = await _userManager.FindByNameAsync(registerDto.UserName);
+        var loginResult = await _mediator.Send(
+            new LoginOAuthVkCommand(user!),
+            cancellationToken);
+        if (!loginResult.IsSuccess)
+            return new LoginResponseDto(LoginResponseStatus.Fail);
+        return new LoginResponseDto(LoginResponseStatus.Ok);
+    }
 
     [HttpGet("/logout")]
     public async Task<IActionResult> Logout()
