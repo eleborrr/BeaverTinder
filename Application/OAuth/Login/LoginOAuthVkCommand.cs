@@ -2,6 +2,6 @@
 using Domain.Entities;
 using Services.Abstraction.Cqrs.Commands;
 
-namespace Application.OAth.Login;
+namespace Application.OAuth.Login;
 
 public record LoginOAuthVkCommand(User SignedUser) : ICommand<LoginResponseDto>;

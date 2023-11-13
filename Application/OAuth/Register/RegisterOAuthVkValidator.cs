@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace Application.OAth.Register;
+namespace Application.OAuth.Register;
 
 public class RegisterOAuthVkValidator : AbstractValidator<RegisterOAuthVkCommand>
 {

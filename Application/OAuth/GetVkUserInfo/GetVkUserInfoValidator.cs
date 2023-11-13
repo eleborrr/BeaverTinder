@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace Application.OAth.GetVkUserInfo;
+namespace Application.OAuth.GetVkUserInfo;
 
 public class GetVkUserInfoValidator : AbstractValidator<GetVkUserInfoQuery>
 {

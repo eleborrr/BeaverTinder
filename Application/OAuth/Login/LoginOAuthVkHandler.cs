@@ -3,11 +3,10 @@ using Contracts.Dto.Authentication.Login;
 using Contracts.Dto.MediatR;
 using Domain.Entities;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 using Persistence.Misc.Services.JwtGenerator;
 using Services.Abstraction.Cqrs.Commands;
 
-namespace Application.OAth.Login;
+namespace Application.OAuth.Login;
 
 public class LoginOAuthVkHandler : ICommandHandler<LoginOAuthVkCommand, LoginResponseDto>
 {

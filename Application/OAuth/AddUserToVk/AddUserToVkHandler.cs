@@ -4,7 +4,7 @@ using Domain.Repositories;
 using MediatR;
 using Services.Abstraction.Cqrs.Commands;
 
-namespace Application.OAth.AddUserToVk;
+namespace Application.OAuth.AddUserToVk;
 
 public class AddUserToVkHandler : ICommandHandler<AddUserToVkCommand, Unit>
 {

@@ -1,12 +1,12 @@
-﻿using static System.Enum;
-using Contracts.Dto.Authentication.Register;
+﻿using Contracts.Dto.Authentication.Register;
 using Contracts.Dto.MediatR;
 using Contracts.Enums;
 using Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Services.Abstraction.Cqrs.Commands;
+using static System.Enum;
 
-namespace Application.OAth.Register;
+namespace Application.OAuth.Register;
 
 public class RegisterOAuthVkHandler : ICommandHandler<RegisterOAuthVkCommand, RegisterResponseDto>
 {
@@ -20,7 +20,8 @@ public class RegisterOAuthVkHandler : ICommandHandler<RegisterOAuthVkCommand, Re
     public async Task<Result<RegisterResponseDto>> Handle(RegisterOAuthVkCommand request, CancellationToken cancellationToken)
     {
         var userDto = request.UserDto;
-        TryParse(userDto.Gender, out Gender gender);
+        if (!TryParse(userDto.Gender, out Gender gender))
+            gender = Gender.Undefined;
         var user = new User
         {
             LastName = userDto.LastName,

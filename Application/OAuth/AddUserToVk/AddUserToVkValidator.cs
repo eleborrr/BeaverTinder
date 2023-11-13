@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace Application.OAth.AddUserToVk;
+namespace Application.OAuth.AddUserToVk;
 
 public class AddUserToVkValidator : AbstractValidator<AddUserToVkCommand>
 {

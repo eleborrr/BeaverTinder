@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace Application.OAth.Login;
+namespace Application.OAuth.Login;
 
 public class LoginOAuthVkValidator : AbstractValidator<LoginOAuthVkCommand>
 {

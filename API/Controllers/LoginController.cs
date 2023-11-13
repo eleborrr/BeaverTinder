@@ -1,8 +1,9 @@
-using Application.OAth.AddUserToVk;
-using Application.OAth.GetUserFromToVkById;
-using Application.OAth.GetVkUserInfo;
-using Application.OAth.Login;
-using Application.OAth.Register;
+using System.Globalization;
+using Application.OAuth.AddUserToVk;
+using Application.OAuth.GetUserFromToVkById;
+using Application.OAuth.GetVkUserInfo;
+using Application.OAuth.Login;
+using Application.OAuth.Register;
 using AspNet.Security.OAuth.Vkontakte;
 using Contracts.Dto.Authentication.Login;
 using Contracts.Dto.Vk;
@@ -85,10 +86,9 @@ public class LoginController : Controller
     // -> return Login
     private async Task<LoginResponseDto> OAuthCallback(VkUserDto vkUserDto, CancellationToken cancellationToken)
     {
-        DateTime parsedDate;
-        if (!DateTime.TryParse(vkUserDto.DateOfBirth, out parsedDate))
+        if (!DateTime.TryParse(vkUserDto.DateOfBirth, out DateTime parsedDate))
         {
-            parsedDate = DateTime.Parse("2.1.1999");
+            parsedDate = DateTime.Parse("2.1.1999", new CultureInfo("en-US"));
         }
 
         var registerDto = new VkAuthDto

@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace Application.OAth.GetUserFromToVkById;
+namespace Application.OAuth.GetUserFromToVkById;
 
 public class GetUserFromVkByIdValidator : AbstractValidator<GetUserFromVkByIdQuery>
 {

@@ -3,7 +3,7 @@ using Domain.Entities;
 using Domain.Repositories;
 using Services.Abstraction.Cqrs.Queries;
 
-namespace Application.OAth.GetUserFromToVkById;
+namespace Application.OAuth.GetUserFromToVkById;
 
 public class GetUserFromVkByIdHandler : IQueryHandler<GetUserFromVkByIdQuery, UserToVk?>
 {
