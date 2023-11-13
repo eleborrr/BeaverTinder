@@ -3,8 +3,4 @@ using Services.Abstraction.Cqrs.Queries;
 
 namespace Application.SupportChat.GetChatById;
 
-public class GetSupportChatByIdQuery : IQuery<SupportRoom>
-{
-    public string CurUserId { get; set; }
-    public string UserId { get; set; }
-}
+public record GetSupportChatByIdQuery(string CurUserId, string UserId) : IQuery<SupportRoom>;

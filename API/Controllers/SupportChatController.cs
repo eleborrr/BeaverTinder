@@ -1,6 +1,9 @@
+using Application.SupportChat.GetChatById;
+using Application.SupportChat.GetSupportChatHistory;
 using Contracts.Dto.Chat;
 using Contracts.ResponsesAbstraction;
 using Domain.Entities;
+using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -16,11 +19,13 @@ public class SupportChatController : Controller
 {
     private readonly IServiceManager _serviceManager;
     private readonly UserManager<User> _userManager;
+    private readonly IMediator _mediator;
 
-    public SupportChatController(IServiceManager serviceManager, UserManager<User> userManager)
+    public SupportChatController(IServiceManager serviceManager, UserManager<User> userManager, IMediator mediator)
     {
         _serviceManager = serviceManager;
         _userManager = userManager;
+        _mediator = mediator;
     }
     
     [HttpGet("/im/supportChat")]
@@ -33,7 +38,7 @@ public class SupportChatController : Controller
             var sender = await _userManager.FindByIdAsync(curUserId);
 
             //TODO check for curUserId null
-            var res = await _serviceManager.SupportChatService.GetChatById(sender!.Id, receiver!.Id);
+            var res = (await _mediator.Send(new GetSupportChatByIdQuery(sender!.Id, receiver!.Id))).Value;
             var model = new SingleChatGetResponse()
             {
                 ReceiverName = username,
@@ -49,12 +54,14 @@ public class SupportChatController : Controller
     }
     
     [HttpGet("/history")]
-    public async Task<JsonResult> GetChatHistory([FromQuery] string username)
+    public async Task<JsonResult> GetChatHistory([FromQuery] string username, CancellationToken cancellationToken)
     {
         var claim = User.Claims.FirstOrDefault(c => c.Type == "Id");
         var user = await _userManager.FindByIdAsync(claim!.Value);
         var secondUser = await _userManager.FindByNameAsync(username);
-        var history = await _serviceManager.SupportChatService.GetChatHistory(user!.Id, secondUser!.Id);
+
+        var chatRoom = (await _mediator.Send(new GetSupportChatByIdQuery(user!.Id, secondUser!.Id), cancellationToken)).Value;
+        var history = (await _mediator.Send(new GetSupportChatHistoryByIdRoomQuery(chatRoom.Id))).Value;
         return Json(history);
     }
 }

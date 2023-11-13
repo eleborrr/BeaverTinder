@@ -1,5 +1,7 @@
-﻿using Contracts.Dto.SupportChat;
+﻿using Application.SupportChat.SaveMessageByDtoBus;
+using Contracts.Dto.SupportChat;
 using Domain.Entities;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using Persistence;
@@ -12,12 +14,14 @@ public class SupportChatHub : Hub
     private readonly ApplicationDbContext _dbContext;
     private readonly UserManager<User> _userManager;
     private readonly IServiceManager _serviceManager;
+    private readonly IMediator _mediator;
 
-    public SupportChatHub(ApplicationDbContext context, UserManager<User> userManager, IServiceManager serviceManager)
+    public SupportChatHub(ApplicationDbContext context, UserManager<User> userManager, IServiceManager serviceManager, IMediator mediator)
     {
         _dbContext = context;
         _userManager = userManager;
         _serviceManager = serviceManager;
+        _mediator = mediator;
     }
 
     public async Task SendPrivateMessage(
@@ -45,7 +49,7 @@ public class SupportChatHub : Hub
             ReceiverId = receiver.Id,
             Timestamp = DateTime.Now
         };
-        await _serviceManager.SupportChatService.SaveMessageAsync(dto);
+        await _mediator.Send(new SaveMessageByDtoBusCommand(dto));
         await Clients.Group(groupName).SendAsync("Receive", senderUserName, message);
     }
 

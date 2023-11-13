@@ -4,7 +4,4 @@ using Services.Abstraction.Cqrs.Commands;
 
 namespace Application.SupportChat.SaveMessageByDtoBus;
 
-public class SaveMessageByDtoBusCommand : ICommand<Unit>, ICommand<SupportChatMessageDto>
-{
-    public SupportChatMessageDto Message { get; set; }
-}
+public record SaveMessageByDtoBusCommand(SupportChatMessageDto Message) : ICommand<Unit>, ICommand<SupportChatMessageDto>;
