@@ -1,8 +1,12 @@
 ﻿using System.Security;
 using System.Security.Claims;
+using Application.FindBeaver.AddSympathy;
+using Application.FindBeaver.GetNextBeaver;
+using Application.FindBeaver.GetNextSympathy;
 using Contracts.Dto.BeaverMatchSearch;
 using Contracts.ResponsesAbstraction;
 using Domain.Entities;
+using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -19,19 +23,24 @@ public class BeaverSearchController: Controller
     private readonly UserManager<User> _userManager;
     private readonly IServiceManager _serviceManager;
     private readonly RoleManager<Role> _roleManager;
+    private readonly IMediator _mediator;
 
-    public BeaverSearchController(UserManager<User> userManager, IServiceManager serviceManager, RoleManager<Role> roleManager)
+    public BeaverSearchController(UserManager<User> userManager, IServiceManager serviceManager, RoleManager<Role> roleManager, IMediator mediator)
     {
         _serviceManager = serviceManager;
         _userManager = userManager;
         _roleManager = roleManager;
+        _mediator = mediator;
     }
 
     [HttpGet]
-    public async Task<JsonResult> Search()
+    public async Task<JsonResult> Search(CancellationToken cancellationToken)
     {
-        var result = await _serviceManager.FindBeaverService.GetNextBeaver(await GetUserFromJwt(), await GetRoleFromJwt());
-        if (!result.Successful)
+        var res = await _mediator.Send(
+            new GetNextBeaverQuery(await GetUserFromJwt(), await GetRoleFromJwt()),
+            cancellationToken);
+        var result = res.Value;
+        if (!result!.Successful)
             return Json(new FailResponse(result.Successful, result.Message, result.StatusCode));
 
         Console.WriteLine(result.DistanceInKm);
@@ -50,13 +59,16 @@ public class BeaverSearchController: Controller
     }
 
     [HttpGet("/mylikes")]
-    public async Task<JsonResult> Likes()
+    public async Task<JsonResult> Likes(CancellationToken cancellationToken)
     {
-        var result = await _serviceManager.FindBeaverService.GetNextSympathy(await GetUserFromJwt());
-        if (!result.Successful)
+        var res = await _mediator.Send(
+            new GetNextSympathyQuery(await GetUserFromJwt()),
+            cancellationToken);
+        var result = res.Value;
+        if (!result!.Successful)
             return Json(new FailResponse(result.Successful, result.Message, result.StatusCode));
         
-        var user = new SearchUserResultDto()
+        var user = new SearchUserResultDto
         {
             Id = result.Id,
             About = result.About,
@@ -71,17 +83,27 @@ public class BeaverSearchController: Controller
     }
 
     [HttpPost("/like")]
-    public async Task<JsonResult> Like([FromBody]  LikeRequestDto likeRequestDto)
+    public async Task<JsonResult> Like([FromBody]  LikeRequestDto likeRequestDto, CancellationToken cancellationToken)
     {
-        return Json(await _serviceManager.FindBeaverService.
-            AddSympathy(await GetUserFromJwt(), likeRequestDto.LikedUserId, sympathy:true, await GetRoleFromJwt()));
+        return Json(await _mediator.Send(
+            new AddSympathyCommand(
+                await GetUserFromJwt(),
+                likeRequestDto.LikedUserId,
+                Sympathy:true,
+                await GetRoleFromJwt()),
+            cancellationToken));
     }
     
     [HttpPost("/dislike")]
-    public async Task<JsonResult> DisLike([FromBody] LikeRequestDto likeRequestDto)
+    public async Task<JsonResult> DisLike([FromBody] LikeRequestDto likeRequestDto, CancellationToken cancellationToken)
     {
-        return Json(await _serviceManager.FindBeaverService.
-            AddSympathy(await GetUserFromJwt(), likeRequestDto.LikedUserId, sympathy:false, await GetRoleFromJwt()));
+        return Json(await _mediator.Send(
+            new AddSympathyCommand(
+                await GetUserFromJwt(),
+                likeRequestDto.LikedUserId,
+                Sympathy:false,
+                await GetRoleFromJwt()),
+            cancellationToken));
     }
 
     private async Task<User?> GetUserFromJwt()
