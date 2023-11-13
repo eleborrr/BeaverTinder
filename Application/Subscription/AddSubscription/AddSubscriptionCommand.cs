@@ -2,4 +2,4 @@
 
 namespace Application.Subscription.AddSubscription;
 
-public record AddSubscriptionCommand(int SubscriptionId, string userId): ICommand;
+public record AddSubscriptionCommand(int SubscriptionId, string UserId): ICommand;
