@@ -1,6 +1,9 @@
-﻿using Contracts.Dto.Chat;
+﻿using Application.Chat.AddChat;
+using Application.Chat.GetChatById;
+using Contracts.Dto.Chat;
 using Contracts.ResponsesAbstraction;
 using Domain.Entities;
+using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -16,11 +19,13 @@ public class ChatController: Controller
 {
     private readonly UserManager<User> _userManager;
     private readonly IServiceManager _serviceManager;
+    private readonly IMediator _mediator;
 
-    public ChatController(UserManager<User> userManager, IServiceManager serviceManager)
+    public ChatController(UserManager<User> userManager, IServiceManager serviceManager, IMediator mediator)
     {
         _userManager = userManager;
         _serviceManager = serviceManager;
+        _mediator = mediator;
     }
 
     [HttpGet("/im")]
@@ -52,7 +57,7 @@ public class ChatController: Controller
     }
     
     [HttpGet("/im/chat")]
-    public async Task<JsonResult> Chat([FromQuery] string username)
+    public async Task<JsonResult> Chat([FromQuery] string username, CancellationToken cancellationToken)
     {
         try
         {
@@ -62,13 +67,19 @@ public class ChatController: Controller
 
             if (receiver is null || sender is null)
                 throw new Exception("Oops!");
-            
-            var res = await _serviceManager.ChatService.GetChatById(sender.Id, receiver.Id);
+            var res = await _mediator.Send(new GetChatByIdQuery(sender.Id, receiver.Id), cancellationToken);
+
+            if (!res.IsSuccess && res.Error == "Room not found")
+            {
+                res = (await _mediator.Send(new AddChatCommand(sender.Id, receiver.Id), cancellationToken))!;
+            }
+            if (!res.IsSuccess)
+                return Json(new FailResponse(false, "Wrong data!", 400));
             var model = new SingleChatGetResponse()
             {
                 SenderName = sender.UserName!,
                 ReceiverName = username,
-                RoomName = res.Name
+                RoomName = res.Value!.Name
             };
             return Json(model);
         }
