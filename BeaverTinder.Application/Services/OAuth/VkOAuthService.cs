@@ -69,7 +69,9 @@ public class VkOAuthService : IVkOAuthService
 
     public async Task<RegisterResponseDto> Register(VkAuthDto userDto)
     {
-        TryParse(userDto.Gender, out Gender gender);
+        if (TryParse(userDto.Gender, out Gender gender))
+            gender = Gender.Undefined;
+        
         var user = new User
         {
             LastName = userDto.LastName,
@@ -162,7 +164,7 @@ public class VkOAuthService : IVkOAuthService
     
     public async Task<VkUserDto?> GetVkUserInfoAsync(VkAccessTokenDto accessToken)
     {
-        var query = new Dictionary<string, string?>()
+        var query = new Dictionary<string, string?>
         {
             ["fields"] = "screen_name, bdate, sex, status, about, photo_max_orig",
             ["access_token"] = accessToken.Token,

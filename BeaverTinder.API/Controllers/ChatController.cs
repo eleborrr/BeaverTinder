@@ -66,7 +66,7 @@ public class ChatController: Controller
             var sender = await _userManager.FindByIdAsync(curUserId);
 
             if (receiver is null || sender is null)
-                throw new ArgumentNullException(nameof(username));
+                throw new ArgumentNullException("Ooops!");
             var res = await _mediator.Send(new GetChatByIdQuery(sender.Id, receiver.Id), cancellationToken);
 
             if (res is { IsSuccess: false, Error: "Room not found" })

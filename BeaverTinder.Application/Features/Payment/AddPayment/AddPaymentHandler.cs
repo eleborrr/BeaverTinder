@@ -40,7 +40,7 @@ public class AddPaymentHandler : ICommandHandler<AddPaymentCommand, PaymentIdDto
     
     private static bool CheckBillingInfoIsCorrect(string number, int month, int year)
     {
-        var ends = new DateTime(year, month, 1);
+        var ends = new DateTime(year, month, 1, 0, 0, 0, DateTimeKind.Utc);
         if (ends.CompareTo(DateTime.Now.Date) > 0)
             return false;
         

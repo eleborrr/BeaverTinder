@@ -117,7 +117,7 @@ public class AdminController: Controller
                 var user = _userManager.FindByIdAsync(x.FirstUserId != curUserId? x.FirstUserId: x.SecondUserId).Result;
 
                 if (user is null)
-                    throw new ArgumentNullException(nameof(user));
+                    throw new ArgumentNullException("User not found");
                 
                 return new AllChatsResponse
                 {
