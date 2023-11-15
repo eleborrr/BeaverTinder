@@ -5,7 +5,6 @@ using BeaverTinder.Application.Dto.ResponsesAbstraction;
 using BeaverTinder.Application.Features.FindBeaver.AddSympathy;
 using BeaverTinder.Application.Features.FindBeaver.GetNextBeaver;
 using BeaverTinder.Application.Features.FindBeaver.GetNextSympathy;
-using BeaverTinder.Application.Services.Abstractions;
 using BeaverTinder.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -21,13 +20,11 @@ namespace BeaverTinder.API.Controllers;
 public class BeaverSearchController: Controller
 {
     private readonly UserManager<User> _userManager;
-    private readonly IServiceManager _serviceManager;
     private readonly RoleManager<Role> _roleManager;
     private readonly IMediator _mediator;
 
-    public BeaverSearchController(UserManager<User> userManager, IServiceManager serviceManager, RoleManager<Role> roleManager, IMediator mediator)
+    public BeaverSearchController(UserManager<User> userManager, RoleManager<Role> roleManager, IMediator mediator)
     {
-        _serviceManager = serviceManager;
         _userManager = userManager;
         _roleManager = roleManager;
         _mediator = mediator;

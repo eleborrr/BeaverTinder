@@ -31,7 +31,7 @@ using Microsoft.Extensions.Options;
 
 namespace BeaverTinder.Application.Services;
 
-public class ServiceManager: IServiceManager
+public class ServiceManager : IServiceManager
 {
     private readonly Lazy<IEmailService> _emailService;
     private readonly Lazy<ITwoFaService> _twoFaService;
@@ -45,25 +45,35 @@ public class ServiceManager: IServiceManager
     private readonly Lazy<IChatService> _chatService;
     private readonly Lazy<ISupportChatService> _supportChatService;
 
-    public ServiceManager(UserManager<User> userManager,
+    public ServiceManager(
+        UserManager<User> userManager,
         IOptions<EmailConfig> emailConfig,
         IRepositoryManager repositoryManager,
         IMemoryCache memoryCache,
-        SignInManager<User> signInManager, 
+        SignInManager<User> signInManager,
         IJwtGenerator jwtGenerator,
-        IPasswordHasher<User> passwordHasher, 
+        IPasswordHasher<User> passwordHasher,
         HttpClient client,
         IBus publishEndpoint)
     {
-        _geolocationService = new Lazy<IGeolocationService>(() => new GeolocationService(repositoryManager));
-        _emailService = new Lazy<IEmailService>(() => new EmailService(emailConfig));
-        _twoFaService = new Lazy<ITwoFaService>(() => new TwoFaService(userManager, _emailService.Value));
+        _geolocationService = new Lazy<IGeolocationService>(() =>
+            new GeolocationService(repositoryManager));
+        _emailService = new Lazy<IEmailService>(() =>
+            new EmailService(emailConfig));
+        _twoFaService = new Lazy<ITwoFaService>(() =>
+            new TwoFaService(userManager, _emailService.Value));
         _likeService = new Lazy<ILikeService>(() => new LikeService(repositoryManager));
-        _findBeaverService = new Lazy<IFindBeaverService>(() => new FindBeaverService(userManager, repositoryManager, memoryCache, LikeService, GeolocationService));
-        _paymentService = new Lazy<IPaymentService>(() => new global::BeaverTinder.Application.Services.PaymentService.PaymentService(repositoryManager));
-        _subscriptionService = new Lazy<ISubscriptionService>(() => new SubscriptionService(repositoryManager, userManager));
-        _vkOAuthService = new Lazy<IVkOAuthService>(() => new VkOAuthService(repositoryManager, userManager, signInManager, jwtGenerator, client, GeolocationService));
-        _accountService = new Lazy<IAccountService>(() => new AccountService(userManager, _emailService.Value, signInManager, jwtGenerator, GeolocationService, passwordHasher));
+        _findBeaverService = new Lazy<IFindBeaverService>(() =>
+            new FindBeaverService(userManager, repositoryManager, memoryCache, LikeService, GeolocationService));
+        _paymentService = new Lazy<IPaymentService>(() =>
+            new global::BeaverTinder.Application.Services.PaymentService.PaymentService(repositoryManager));
+        _subscriptionService =
+            new Lazy<ISubscriptionService>(() => new SubscriptionService(repositoryManager, userManager));
+        _vkOAuthService = new Lazy<IVkOAuthService>(() =>
+            new VkOAuthService(repositoryManager, userManager, signInManager, jwtGenerator, client,
+                GeolocationService));
+        _accountService = new Lazy<IAccountService>(() => new AccountService(userManager, _emailService.Value,
+            signInManager, jwtGenerator, GeolocationService, passwordHasher));
         _chatService = new Lazy<IChatService>(() => new ChatService(repositoryManager));
         _supportChatService = new Lazy<ISupportChatService>(() =>
             new SupportChatService(repositoryManager, publishEndpoint, userManager));

@@ -53,7 +53,9 @@ public class LoginController : Controller
     }
     
     [HttpGet("getAccessToken")]
-    public async Task<IActionResult> GetAccessToken([FromQuery] string code, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetAccessToken(
+        [FromQuery] string code, 
+        CancellationToken cancellationToken)
     {
         var query = new Dictionary<string, string?>
         {
@@ -62,13 +64,17 @@ public class LoginController : Controller
             ["redirect_uri"] = "http://localhost:3000/afterCallback",
             ["code"] = code
         };
-        var uri = QueryHelpers.AddQueryString(VkontakteAuthenticationDefaults.TokenEndpoint, query);
-        var res = await _client.GetAsync(uri);
-        var resultTokenString = await res.Content.ReadAsStringAsync();
+        var uri = QueryHelpers.AddQueryString(
+            VkontakteAuthenticationDefaults.TokenEndpoint,
+            query);
+        var res = await _client.GetAsync(uri, cancellationToken);
+        var resultTokenString = await res.Content.ReadAsStringAsync(cancellationToken);
         if (resultTokenString == string.Empty)
             return BadRequest();
         var accessToken = JsonSerializer.Deserialize<VkAccessTokenDto>(resultTokenString);
-        var vkUser = await _mediator.Send(new GetVkUserInfoQuery(accessToken!), cancellationToken);
+        var vkUser = await _mediator.Send(
+            new GetVkUserInfoQuery(accessToken!),
+            cancellationToken);
         var authResult = await OAuthCallback(vkUser.Value!, cancellationToken);
         if (authResult.Successful)
         {

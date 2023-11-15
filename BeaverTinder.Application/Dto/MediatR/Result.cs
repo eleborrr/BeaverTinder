@@ -26,5 +26,5 @@ public class Result<TValue> : Result
 
     public TValue? Value => IsSuccess
         ? _value
-        : throw new Exception(Error);
+        : default;
 }

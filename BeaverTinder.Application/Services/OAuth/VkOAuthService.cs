@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using System.Globalization;
+using System.Security.Claims;
 using AspNet.Security.OAuth.Vkontakte;
 using BeaverTinder.Application.Dto.Authentication.Login;
 using BeaverTinder.Application.Dto.Authentication.Register;
@@ -26,8 +27,12 @@ public class VkOAuthService : IVkOAuthService
     private readonly HttpClient _client;
     private readonly IGeolocationService _geolocationService;
 
-    public VkOAuthService(IRepositoryManager repositoryManager, UserManager<User> userManager,
-        SignInManager<User> signInManager, IJwtGenerator jwtGenerator, HttpClient client,
+    public VkOAuthService(
+        IRepositoryManager repositoryManager,
+        UserManager<User> userManager,
+        SignInManager<User> signInManager,
+        IJwtGenerator jwtGenerator,
+        HttpClient client,
         IGeolocationService geolocationService)
     {
         _repositoryManager = repositoryManager;
@@ -49,7 +54,7 @@ public class VkOAuthService : IVkOAuthService
             var createdUser = await _userManager.FindByNameAsync(userDto.UserName);
             if(createdUser == null)
                 return new LoginResponseDto(LoginResponseStatus.Fail);
-            var userToVk = new UserToVk()
+            var userToVk = new UserToVk
             {
                 UserId = createdUser.Id,
                 VkId = userDto.VkId
@@ -64,8 +69,7 @@ public class VkOAuthService : IVkOAuthService
 
     public async Task<RegisterResponseDto> Register(VkAuthDto userDto)
     {
-        Gender gender;
-        TryParse(userDto.Gender, out gender);
+        TryParse(userDto.Gender, out Gender gender);
         var user = new User
         {
             LastName = userDto.LastName,
@@ -80,7 +84,9 @@ public class VkOAuthService : IVkOAuthService
         
         var emailCollision = _userManager.Users.FirstOrDefault(u => u.Email == user.Email);
         if (emailCollision is not null)
-            return new RegisterResponseDto(RegisterResponseStatus.Fail, "User with that email already exists");
+            return new RegisterResponseDto(
+                RegisterResponseStatus.Fail,
+                "User with that email already exists");
 
             
         var result = await _userManager.CreateAsync(user);
@@ -133,13 +139,12 @@ public class VkOAuthService : IVkOAuthService
     
     public async Task<LoginResponseDto> OAuthCallback(VkUserDto vkUserDto)
     {
-        DateTime parsedDate;
-        if (!DateTime.TryParse(vkUserDto.DateOfBirth, out parsedDate))
+        if (!DateTime.TryParse(vkUserDto.DateOfBirth, CultureInfo.CurrentUICulture, out var parsedDate))
         {
-            parsedDate = DateTime.Parse("2.1.1999");
+            parsedDate = DateTime.Parse("2.1.1999", CultureInfo.CurrentUICulture);
         }
 
-        var registerDto = new VkAuthDto()
+        var registerDto = new VkAuthDto
         {
             VkId = vkUserDto.VkId.ToString(),
             About = vkUserDto.About,
@@ -163,7 +168,8 @@ public class VkOAuthService : IVkOAuthService
             ["access_token"] = accessToken.Token,
             ["v"] = "5.131",
         };
-        var uri = QueryHelpers.AddQueryString(VkontakteAuthenticationDefaults.UserInformationEndpoint, query);
+        var uri = QueryHelpers
+            .AddQueryString(VkontakteAuthenticationDefaults.UserInformationEndpoint, query);
         var userInfo = await _client.GetAsync(uri);
         var content = await userInfo.Content.ReadAsStringAsync();
         var resp = JsonSerializer.Deserialize<VkResponseDto>(content);

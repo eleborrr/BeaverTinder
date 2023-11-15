@@ -23,7 +23,10 @@ public class AccountController : Controller
     private readonly UserManager<User> _userManager;
     private readonly IServiceManager _serviceManager;
     private readonly IMediator _mediator;
-    public AccountController(IServiceManager serviceManager, UserManager<User> userManager, IMediator mediator)
+    public AccountController(
+        IServiceManager serviceManager,
+        UserManager<User> userManager,
+        IMediator mediator)
     {
         _userManager = userManager;
         _mediator = mediator;
@@ -48,7 +51,9 @@ public class AccountController : Controller
         if (geolocation is null)
             return new JsonResult(new FailResponse(false, "Oops! Seems like a problem.. We are working on it!", 400));
             
-        var subInfo = (await _mediator.Send(new GetUsersActiveSubscriptionQuery(id))).Value;
+        var subInfo = (await _mediator.Send(
+            new GetUsersActiveSubscriptionQuery(id),
+            cancellationToken)).Value;
         
         var model = new EditUserRequestDto
         {
@@ -60,20 +65,24 @@ public class AccountController : Controller
             Gender = user.Gender,
             Latitude = geolocation.Latitude,
             Longitude = geolocation.Longitude,
-            SubName = subInfo.Name,
+            SubName = subInfo!.Name,
             SubExpiresDateTime = subInfo.Expires
         };
         return Json(model);
     }
 
     [HttpGet("/usersubinfo")]
-    public async Task<JsonResult> GetUserSubInformation([FromQuery] string userId)
+    public async Task<JsonResult> GetUserSubInformation(
+        [FromQuery] string userId,
+        CancellationToken cancellationToken)
     {
-        var subInfo = (await _mediator.Send(new GetUsersActiveSubscriptionQuery(userId))).Value;
+        var subInfo = (await _mediator.Send(
+            new GetUsersActiveSubscriptionQuery(userId),
+            cancellationToken)).Value;
         
-        var model = new SubscriptionInfoDto()
+        var model = new SubscriptionInfoDto
         {
-            Name = subInfo.Name,
+            Name = subInfo!.Name,
             Expires = subInfo.Expires
         };
         return Json(model);
@@ -97,18 +106,20 @@ public class AccountController : Controller
     
     [Authorize(Policy = "OnlyForModerators")]
     [HttpGet("/all")]
-    public async Task<JsonResult> GetAllUsers()
+    public async Task<JsonResult> GetAllUsers(CancellationToken cancellationToken)
     {
         var users = _userManager.Users;
         
         var result = new List<AdminUserDto>();
         foreach (var user in users)
         {
-            var subscription = (await _mediator.Send(new GetUsersActiveSubscriptionQuery(user.Id))).Value;
+            var subscription = (await _mediator.Send(
+                new GetUsersActiveSubscriptionQuery(user.Id),
+                cancellationToken)).Value;
             result.Add(new ()
             {
                 UserName = user.UserName!,
-                SubName = subscription.Name,
+                SubName = subscription!.Name,
                 SubExpiresDateTime = subscription.Expires,
                 Id = user.Id,
                 IsBlocked = user.IsBlocked,

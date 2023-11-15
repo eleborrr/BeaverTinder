@@ -1,5 +1,4 @@
 using BeaverTinder.Application.Features.Subscription.GetAllSubscriptions;
-using BeaverTinder.Application.Services.Abstractions;
 using BeaverTinder.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -10,12 +9,10 @@ namespace BeaverTinder.API.Controllers;
 [Route("[controller]")]
 public class SubscriptionController : Controller
 {
-    private readonly IServiceManager _serviceManager;
     private readonly IMediator _mediator;
     
-    public SubscriptionController(IServiceManager serviceManager, IMediator mediator)
+    public SubscriptionController(IMediator mediator)
     {
-        _serviceManager = serviceManager;
         _mediator = mediator;
     }
 

@@ -17,27 +17,12 @@ public class GeolocationTestController: Controller
     }
 
     [HttpGet]
-    public async Task<IEnumerable<UserGeolocation>> GetAllGeolocations(CancellationToken cancellationToken)
+    public async Task<IEnumerable<UserGeolocation>> GetAllGeolocations(
+        CancellationToken cancellationToken)
     {
-        var response = await _mediator.Send(new GetAllGeolocationsQuery(), cancellationToken);
-        return response.Value;
+        var response = await _mediator.Send(
+            new GetAllGeolocationsQuery(),
+            cancellationToken);
+        return response.Value!;
     }
-    
-    // [HttpGet]
-    // public Task GetGeolocationById()
-    // {
-    //     
-    // }
-    //
-    // [HttpPost]
-    // public Task AddGeolocation()
-    // {
-    //     
-    // }
-    //
-    // [HttpPut]
-    // public Task UpdateGeolocation()
-    // {
-    //     
-    // }
 }

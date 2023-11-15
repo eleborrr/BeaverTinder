@@ -1,8 +1,7 @@
 using System.Security;
-using Application.Payment.AddPayment;
 using Application.Subscription.AddSubscription;
 using BeaverTinder.Application.Dto.Payment;
-using BeaverTinder.Application.Services.Abstractions;
+using BeaverTinder.Application.Features.Payment.AddPayment;
 using BeaverTinder.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -17,13 +16,11 @@ namespace BeaverTinder.API.Controllers;
 public class PaymentController : Controller
 {
     private readonly UserManager<User> _userManager;
-    private readonly IServiceManager _serviceManager;
     private readonly IMediator _mediator;
 
-    public PaymentController(UserManager<User> userManager, IServiceManager serviceManager, IMediator mediator)
+    public PaymentController(UserManager<User> userManager, IMediator mediator)
     {
         _userManager = userManager;
-        _serviceManager = serviceManager;
         _mediator = mediator;
     }
     
@@ -42,7 +39,9 @@ public class PaymentController : Controller
             return new JsonResult(response);
         }
             //TODO: фича Subscriptions
-        await _mediator.Send(new AddSubscriptionCommand(command.SubsId, command.UserId));
+        await _mediator.Send(
+            new AddSubscriptionCommand(command.SubsId, command.UserId),
+            cancellationToken);
         return Json(response);
     }
     

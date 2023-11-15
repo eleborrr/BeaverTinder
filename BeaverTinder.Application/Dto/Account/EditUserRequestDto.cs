@@ -16,10 +16,10 @@ public class EditUserRequestDto
     [Display(Name = "Nickname")]
     public string UserName { get; set; } = default!;
 
-    // [Required]
-    // [Display(Name = "Email")]
-    // [EmailAddress]
-    // public string Email { get; set; }
+    // -> [Required]
+    // -> [Display(Name = "Email")]
+    // -> [EmailAddress]
+    // -> public string Email { get; set; }
 
     [Required]
     public double Latitude { get; set; }

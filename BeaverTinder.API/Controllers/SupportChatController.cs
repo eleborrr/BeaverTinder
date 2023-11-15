@@ -3,7 +3,6 @@ using BeaverTinder.Application.Dto.Chat;
 using BeaverTinder.Application.Dto.ResponsesAbstraction;
 using BeaverTinder.Application.Features.SupportChat.CreateSupportChatById;
 using BeaverTinder.Application.Features.SupportChat.GetSupportChatById;
-using BeaverTinder.Application.Services.Abstractions;
 using BeaverTinder.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -18,13 +17,13 @@ namespace BeaverTinder.API.Controllers;
 [Route("[controller]")]
 public class SupportChatController : Controller
 {
-    private readonly IServiceManager _serviceManager;
     private readonly UserManager<User> _userManager;
     private readonly IMediator _mediator;
 
-    public SupportChatController(IServiceManager serviceManager, UserManager<User> userManager, IMediator mediator)
+    public SupportChatController(
+        UserManager<User> userManager,
+        IMediator mediator)
     {
-        _serviceManager = serviceManager;
         _userManager = userManager;
         _mediator = mediator;
     }
@@ -44,7 +43,7 @@ public class SupportChatController : Controller
             {
                 ReceiverName = username,
                 SenderName = sender.UserName!,
-                RoomName = res.Name
+                RoomName = res!.Name
             };
             return Json(model);
         }
@@ -63,9 +62,13 @@ public class SupportChatController : Controller
 
         var chatRoom = (await _mediator.Send(new GetSupportChatByIdQuery(user!.Id, secondUser!.Id), cancellationToken));
         if (!chatRoom.IsSuccess)
-            chatRoom = await _mediator.Send(new CreateSupportChatByIdCommand(user!.Id, secondUser.Id));
+            chatRoom = await _mediator.Send(
+                new CreateSupportChatByIdCommand(user!.Id, secondUser.Id),
+                cancellationToken);
         
-        var history = (await _mediator.Send(new GetSupportChatHistoryByIdRoomQuery(chatRoom.Value.Id))).Value;
+        var history = (await _mediator.Send(
+            new GetSupportChatHistoryByIdRoomQuery(chatRoom.Value!.Id),
+            cancellationToken)).Value;
         return Json(history);
     }
 }

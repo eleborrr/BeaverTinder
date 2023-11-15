@@ -11,7 +11,8 @@ public sealed class ApplicationDbContext: IdentityDbContext<User>
     public DbSet<SupportChatMessage> SupportChatMessages { get; set; }
     public DbSet<Room> Rooms { get; set; }
     public DbSet<SupportRoom> SupportRooms { get; set; }
-    public DbSet<Role> Roles { get; set; }
+    
+    public new DbSet<Role> Roles { get; set; }
     public DbSet<Image> Images { get; set; }
     public DbSet<Payment> Payments {get; set; }
     public DbSet<Subscription> Subscriptions { get; set; }

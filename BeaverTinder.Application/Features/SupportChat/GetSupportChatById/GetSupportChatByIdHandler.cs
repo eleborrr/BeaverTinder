@@ -19,9 +19,10 @@ public class GetSupportChatByIdHandler : IQueryHandler<GetSupportChatByIdQuery, 
     {
         var allRooms = _repositoryManager.SupportRoomRepository.GetAll();
         var room = await allRooms
-            .FirstOrDefaultAsync(r => (r.FirstUserId == request.CurUserId && r.SecondUserId == request.UserId)
-                                 ||
-                                 (r.SecondUserId == request.CurUserId && r.FirstUserId == request.UserId));
+            .FirstOrDefaultAsync(r => 
+                (r.FirstUserId == request.CurUserId && r.SecondUserId == request.UserId) ||
+                (r.SecondUserId == request.CurUserId && r.FirstUserId == request.UserId),
+                cancellationToken);
         if (room is null)
         {
             return new Result<SupportRoom>(null, false, "can not find room");

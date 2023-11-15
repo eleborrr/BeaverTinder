@@ -104,18 +104,20 @@ public class AdminController: Controller
     }
     
     [HttpGet("/supportChats")]
-    public async Task<JsonResult> Chats()
+    public async Task<JsonResult> Chats(CancellationToken cancellationToken)
     {
         try
         {
             var curUserId = User.Claims.FirstOrDefault(c => c.Type == "Id")!.Value;
-            var chats = (await _mediator.Send(new GetAllSupportChatRoomsQuery())).Value!.ToList();
+            var chats = (await _mediator.Send(
+                new GetAllSupportChatRoomsQuery(),
+                cancellationToken)).Value!.ToList();
             var model = chats.Select(x =>
             {
                 var user = _userManager.FindByIdAsync(x.FirstUserId != curUserId? x.FirstUserId: x.SecondUserId).Result;
 
                 if (user is null)
-                    throw new SystemException("data about user is missing");
+                    throw new ArgumentNullException(nameof(user));
                 
                 return new AllChatsResponse
                 {

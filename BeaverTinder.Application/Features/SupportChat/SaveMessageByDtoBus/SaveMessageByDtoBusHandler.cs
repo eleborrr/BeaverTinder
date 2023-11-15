@@ -16,11 +16,13 @@ public class SaveMessageByDtoBusHandler : ICommandHandler<SaveMessageByDtoBusCom
         _bus = bus;
     }
 
-    public async Task<Result<Unit>> Handle(SaveMessageByDtoBusCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Unit>> Handle(
+        SaveMessageByDtoBusCommand request,
+        CancellationToken cancellationToken)
     {
         try
         {
-            var entity = new SupportChatMessage()
+            var entity = new SupportChatMessage
             {
                 SenderId = request.Message.SenderId,
                 ReceiverId = request.Message.ReceiverId,
@@ -28,7 +30,7 @@ public class SaveMessageByDtoBusHandler : ICommandHandler<SaveMessageByDtoBusCom
                 Timestamp = request.Message.Timestamp,
                 RoomId = request.Message.RoomId
             };
-            await _bus.Publish(entity);
+            await _bus.Publish(entity, cancellationToken);
             return new Result<Unit>(new Unit(), true);
         }
         catch (Exception e)

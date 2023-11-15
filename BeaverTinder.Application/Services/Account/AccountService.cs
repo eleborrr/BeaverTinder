@@ -24,8 +24,13 @@ public class AccountService : IAccountService
     private readonly IGeolocationService _geolocationService;
     private readonly IPasswordHasher<User> _passwordHasher;
 
-    public AccountService(UserManager<User> userManager, IEmailService emailService, SignInManager<User> signInManager, IJwtGenerator jwtGenerator, 
-        IGeolocationService geolocationService, IPasswordHasher<User> passwordHasher)
+    public AccountService(
+        UserManager<User> userManager,
+        IEmailService emailService,
+        SignInManager<User> signInManager,
+        IJwtGenerator jwtGenerator, 
+        IGeolocationService geolocationService,
+        IPasswordHasher<User> passwordHasher)
     {
         _userManager = userManager;
         _emailService = emailService;
@@ -70,7 +75,9 @@ public class AccountService : IAccountService
 
     }
 
-    public async Task<IdentityResult> ConfirmEmailAsync(string? userEmail, string? token)
+    public async Task<IdentityResult> ConfirmEmailAsync(
+        string? userEmail,
+        string? token)
     {
         if (userEmail == null || token == null)
             return IdentityResult.Failed();
@@ -84,7 +91,10 @@ public class AccountService : IAccountService
         return res;
     }
 
-    public async Task<IdentityResult> ResetPasswordAsync(string userId, string token, string newPassword)
+    public async Task<IdentityResult> ResetPasswordAsync(
+        string userId,
+        string token,
+        string newPassword)
     {
         var codeDecodedBytes = WebEncoders.Base64UrlDecode(token);
         var codeDecoded = Encoding.UTF8.GetString(codeDecodedBytes);
@@ -94,13 +104,14 @@ public class AccountService : IAccountService
             return IdentityResult.Failed();
         }
 
-        var res = await _userManager.ResetPasswordAsync(user, codeDecoded, newPassword);
+        var res = await _userManager
+            .ResetPasswordAsync(user, codeDecoded, newPassword);
         return res;
     }
 
     public async Task<LoginResponseDto> Login(LoginRequestDto model, ModelStateDictionary modelState)
     {
-        /*bool rememberMe = false;
+        /* -> bool rememberMe = false;
         /*if (Request.Form.ContainsKey("RememberMe"))
         {
             bool.TryParse(Request.Form["RememberMe"], out rememberMe);
@@ -165,18 +176,23 @@ public class AccountService : IAccountService
 
         var emailCollision = _userManager.Users.FirstOrDefault(u => u.Email == user.Email);
         if (emailCollision is not null)
-            return new RegisterResponseDto(RegisterResponseStatus.Fail, "User with that email already exists");
+            return new RegisterResponseDto(
+                RegisterResponseStatus.Fail,
+                "User with that email already exists");
             
         var result = await _userManager.CreateAsync(user, model.Password);
 
         if (!result.Succeeded)
-            return new RegisterResponseDto(RegisterResponseStatus.Fail,
+            return new RegisterResponseDto(
+                RegisterResponseStatus.Fail,
                 result.Errors.FirstOrDefault()!.Description);
         await SendConfirmationEmailAsync(user.Id);
                 
         var userInDb = await _userManager.FindByEmailAsync(user.Email);
         if (userInDb is null)
-            return new RegisterResponseDto(RegisterResponseStatus.Fail, "User registration error");
+            return new RegisterResponseDto(
+                RegisterResponseStatus.Fail,
+                "User registration error");
                 
         await _userManager.AddClaimAsync(userInDb, new Claim(ClaimTypes.Role, "User"));
         await _geolocationService.AddAsync(userId:userInDb.Id,
@@ -185,25 +201,30 @@ public class AccountService : IAccountService
         return new RegisterResponseDto(RegisterResponseStatus.Ok);
     }
 
-    public async Task<EditUserResponseDto> EditAccount(User userToEdit, EditUserRequestDto model, ModelStateDictionary modelState)
+    public async Task<EditUserResponseDto> EditAccount(
+        User currentUser,
+        EditUserRequestDto model,
+        ModelStateDictionary modelState)
     {
         if (!modelState.IsValid) return new EditUserResponseDto(EditUserResponseStatus.InvalidData);
         
-        var passwordHash = model.Password == "" ? userToEdit.PasswordHash : _passwordHasher.HashPassword(userToEdit, model.Password);
+        var passwordHash = model.Password == "" 
+            ? currentUser.PasswordHash 
+            : _passwordHasher.HashPassword(currentUser, model.Password);
             
 
-        userToEdit.LastName = model.LastName;
-        userToEdit.FirstName = model.FirstName;
-        userToEdit.UserName = model.UserName;
-        userToEdit.Gender = model.Gender;
-        userToEdit.About = model.About;
-        userToEdit.Image = model.Image;
-        userToEdit.PasswordHash = passwordHash;
+        currentUser.LastName = model.LastName;
+        currentUser.FirstName = model.FirstName;
+        currentUser.UserName = model.UserName;
+        currentUser.Gender = model.Gender;
+        currentUser.About = model.About;
+        currentUser.Image = model.Image;
+        currentUser.PasswordHash = passwordHash;
             
             
-        var result = await _userManager.UpdateAsync(userToEdit);
+        var result = await _userManager.UpdateAsync(currentUser);
 
-        await _geolocationService.Update(userToEdit.Id, model.Latitude, model.Longitude);
+        await _geolocationService.Update(currentUser.Id, model.Latitude, model.Longitude);
 
         if (!result.Succeeded)
             return new EditUserResponseDto(EditUserResponseStatus.Fail,

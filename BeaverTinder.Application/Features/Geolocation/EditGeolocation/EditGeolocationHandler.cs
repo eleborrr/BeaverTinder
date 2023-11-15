@@ -31,7 +31,7 @@ public class EditGeolocationHandler: ICommandHandler<EditGeolocationCommand, Geo
             new GeolocationIdDto(geolocation.Id), true, null);
     }
 
-    private void MapGeolocation(UserGeolocation entity, EditGeolocationCommand input)
+    private static void MapGeolocation(UserGeolocation entity, EditGeolocationCommand input)
     {
         if (input.Longitude is not null)
             entity.Longitude = input.Longitude.Value;

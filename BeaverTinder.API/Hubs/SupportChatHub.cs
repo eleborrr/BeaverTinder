@@ -1,6 +1,5 @@
 ﻿using Application.SupportChat.SaveMessageByDtoBus;
 using BeaverTinder.Application.Dto.SupportChat;
-using BeaverTinder.Application.Services.Abstractions;
 using BeaverTinder.Domain.Entities;
 using BeaverTinder.Infrastructure.Database;
 using MediatR;
@@ -13,14 +12,15 @@ public class SupportChatHub : Hub
 {
     private readonly ApplicationDbContext _dbContext;
     private readonly UserManager<User> _userManager;
-    private readonly IServiceManager _serviceManager;
     private readonly IMediator _mediator;
 
-    public SupportChatHub(ApplicationDbContext context, UserManager<User> userManager, IServiceManager serviceManager, IMediator mediator)
+    public SupportChatHub(
+        ApplicationDbContext context,
+        UserManager<User> userManager,
+        IMediator mediator)
     {
         _dbContext = context;
         _userManager = userManager;
-        _serviceManager = serviceManager;
         _mediator = mediator;
     }
 

@@ -2,16 +2,16 @@
 using BeaverTinder.Application.Services.Abstractions.Cqrs.Commands;
 using JetBrains.Annotations;
 
-namespace Application.Payment.AddPayment;
+namespace BeaverTinder.Application.Features.Payment.AddPayment;
 
 public class AddPaymentCommand : ICommand<PaymentIdDto>
 {
-    public string UserId { get; set; } = null!;
-    public string CardNumber { get; set; } = null!;
+    public string UserId { get; set; }
+    public string CardNumber { get; set; }
     public int Month { get; [UsedImplicitly] init; }
     public double Amount { get; [UsedImplicitly] init; }
     public int Year { get; [UsedImplicitly] init; }
-    public string Code { get; set; } = null!;
+    public string Code { get; set; }
 
     public int SubsId { get; [UsedImplicitly] init; }
 

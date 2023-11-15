@@ -14,9 +14,14 @@ public class GetAllSupportChatRoomsHandler : IQueryHandler<GetAllSupportChatRoom
         _repositoryManager = repositoryManager;
     }
 
-    public async Task<Result<IEnumerable<SupportRoom>>> Handle(GetAllSupportChatRoomsQuery request, CancellationToken cancellationToken)
+    public Task<Result<IEnumerable<SupportRoom>>> Handle(
+        GetAllSupportChatRoomsQuery request,
+        CancellationToken cancellationToken)
     {
         var supportRooms = (IEnumerable<SupportRoom>) _repositoryManager.SupportRoomRepository.GetAll();
-        return new Result<IEnumerable<SupportRoom>>(supportRooms, true);
+        return Task.FromResult(
+            new Result<IEnumerable<SupportRoom>>(
+                supportRooms,
+                true));
     }
 }
