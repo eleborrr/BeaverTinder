@@ -22,7 +22,7 @@ public class ChatService: IChatService
                 (r.SecondUserId == curUserId && r.FirstUserId == userId));
         if (room is null)
         {
-            room = new Room()
+            room = new Room
             {
                 Id = Guid.NewGuid().ToString(),
                 FirstUserId = curUserId,

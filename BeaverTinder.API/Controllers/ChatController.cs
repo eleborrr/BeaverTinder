@@ -35,7 +35,7 @@ public class ChatController: Controller
             var curUser = await _userManager.FindByIdAsync(s.Value);
 
             if (curUser is null)
-                throw new ArgumentNullException(nameof(curUser));
+                throw new ArgumentNullException("user doesn't exists");
             
             var users = _userManager.Users.AsEnumerable()
                 .Where(u => _mediator.Send(
