@@ -60,7 +60,7 @@ export const PaymentForm = ({onClose, userId, subsId, amount}) => {
         }
         const endDate = new Date(`${year}-${month}-01`);
         const now = new Date(); 
-        if (endDate <= now || now.getFullYear() - year > 5){
+        if (endDate <= now){
             setErr('срок действия карты истёк');
             return false;
         }
