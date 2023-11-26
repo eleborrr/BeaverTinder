@@ -5,6 +5,8 @@ import { YMaps, Map, Placemark } from '@pbe/react-yandex-maps';
 import { GeoMap } from "../Components/geolocation_map";
 import './../assets/css/profile.css'
 import { axiosInstance } from '../Components/axios_server';
+import SubscriptionCardProfile from '../Components/subscription_card_profile';
+import { useNavigate } from 'react-router-dom';
 
 const Profile = () => {
 const token = Cookies.get('token');
@@ -24,6 +26,7 @@ const token = Cookies.get('token');
   const [subName, setSubName] = useState('');
   const [subExpires, setSubExpires] = useState('');
   const [passChange, setPassChange] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const decodedToken = jwt(token);
@@ -84,6 +87,8 @@ const token = Cookies.get('token');
     e.preventDefault();
   };
 
+  const expirationDate = `\t${subExpires.substring(8,10)}/${subExpires.substring(5,7)}/${subExpires.substring(0,4)}`
+
   return (
     <section className="log-reg">
         <div className="container">
@@ -91,10 +96,14 @@ const token = Cookies.get('token');
                 <div className="col-lg-7">
                     <div className="log-reg-inner">
                         <div className="section-header">
-                            <h2 className="title">subname: {subName} </h2>
-                            <p>expires: {subExpires} </p>
+                            <SubscriptionCardProfile 
+                                name={subName}
+                                info={`Expires at ${expirationDate}`}
+                                onClick={() => navigate("/shops")}
+                            />
                         </div>
                         <div className="main-content">
+                            
                             <form onSubmit={handleSubmit}>
                             <div className="form-group">
                                 <label htmlFor="firstName">First Name</label>

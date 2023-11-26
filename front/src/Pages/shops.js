@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { axiosInstance } from "../Components/axios_server";
 import { PaymentForm } from "../Components/payment_form";
 import './../assets/css/shops.css';
+import SubscriptionCard from "../Components/subscription_card";
 
 const ShopsPage = () => {
 
@@ -28,6 +29,7 @@ const ShopsPage = () => {
     useEffect(() => {
         if (!token){
             navigate("/login");
+            return;
         }
         try{
             axiosInstance.get('/subscription/all',
@@ -52,21 +54,11 @@ const ShopsPage = () => {
                     {paymentArr? paymentArr.map((p) => 
                     <div className="col-xl-4 col-lg-4 col-md-4" key={p.roleId}>
                         <div className="gen-price-block text-center">
-                            <div className="gen-price-detail">
-                                <span className="gen-price-title"> {p.name} </span>
-                                <h2 className="price">{p.pricePerMonth} ₽</h2>
-                                <p className="gen-price-duration">/ Per Month</p>
-                            </div>
-                            <ul className="gen-list-info">
-                                <li>
-                                    {p.description}
-                                </li>
-                            </ul>
-                            <div className="gen-btn-container button-1">
-                                <button onClick={() => handleClick(p.id, p.pricePerMonth)} className="gen-button">
-                                    <span className="text">Purchase now</span>
-                                </button>
-                            </div>
+                            <SubscriptionCard 
+                                info={p.description} 
+                                name={p.name} 
+                                price={p.pricePerMonth}
+                                onClick={() => handleClick(p.id, p.pricePerMonth)}/>
                         </div>
                     </div>
                     ): <p></p>}

@@ -1,0 +1,32 @@
+.subscription-card {
+    width: 300px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 20px;
+  }
+  
+  .subscription-card h2 {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+  
+  .subscription-card p {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 20px;
+  }
+  
+  .subscription-card button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .subscription-card button:hover {
+    background-color: #0056b3;
+  }
+  
