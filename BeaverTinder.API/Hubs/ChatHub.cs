@@ -1,5 +1,6 @@
 ﻿using BeaverTinder.Domain.Entities;
 using BeaverTinder.Infrastructure.Database;
+using BeaverTinder.Shared.Files;
 using MassTransit.Mediator;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
@@ -42,7 +43,11 @@ namespace BeaverTinder.API.Hubs
             return (await _userManager.FindByIdAsync(id))?.UserName;
         }
 
-        public async Task SendPrivateMessage(string senderUserName, string message, string receiverUserName, string groupName)
+        public async Task SendPrivateMessage(string senderUserName, 
+            string message,
+            IEnumerable<FileModel> files,
+            string receiverUserName,
+            string groupName)
         {
             var room = _dbContext.Rooms.FirstOrDefault(r => r.Name == groupName);
 
@@ -62,6 +67,7 @@ namespace BeaverTinder.API.Hubs
                 RoomId = room.Id
             });
             await _dbContext.SaveChangesAsync();
+            await _mediator.Send(files);
             await Clients.Group(groupName).SendAsync("ReceivePrivateMessage", senderUserName, message);
         }
         

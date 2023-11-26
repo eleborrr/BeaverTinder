@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-namespace BeaverTinder.Application.Services.S3;
+namespace BeaverTinder.Shared.Files;
 
 public class FileModel
 {
     public IFormFile FormFile { get; set; }
-
 }
