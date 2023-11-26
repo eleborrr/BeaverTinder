@@ -1,6 +1,7 @@
 ﻿using BeaverTinder.Domain.Entities;
 using BeaverTinder.Infrastructure.Database;
 using BeaverTinder.Shared.Files;
+using BeaverTinder.Shared.Message;
 using MassTransit.Mediator;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
@@ -68,8 +69,8 @@ namespace BeaverTinder.API.Hubs
             });
             await _dbContext.SaveChangesAsync();
             await _mediator.Send(files);
-            await Clients.Group(groupName).SendAsync("ReceivePrivateMessage", senderUserName, message);
-        }
+            await Clients.Group(groupName).SendAsync("Receive", senderUserName, 
+                new SendMessageSignalRDto(message, files));        }
         
         
         public override async Task OnConnectedAsync()

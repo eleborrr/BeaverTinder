@@ -3,6 +3,7 @@ using BeaverTinder.Application.Dto.SupportChat;
 using BeaverTinder.Domain.Entities;
 using BeaverTinder.Infrastructure.Database;
 using BeaverTinder.Shared.Files;
+using BeaverTinder.Shared.Message;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
@@ -53,7 +54,9 @@ public class SupportChatHub : Hub
         };
         await _mediator.Send(new SaveMessageByDtoBusCommand(dto));
         await _mediator.Send(files);
-        await Clients.Group(groupName).SendAsync("Receive", senderUserName, message);
+        
+        await Clients.Group(groupName).SendAsync("Receive", senderUserName, 
+            new SendMessageSignalRDto(message, files));
     }
 
     public async Task ConnectToRoom(string roomName)
