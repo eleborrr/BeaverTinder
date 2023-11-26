@@ -38,6 +38,7 @@ public class GetNextBeaverHandler : IQueryHandler<GetNextBeaverQuery, SearchUser
 
             var filteredBeavers = _userManager.Users.AsEnumerable()
                 .Where(u => !likes.Any(l => l.UserId == request.CurrentUser.Id && l.LikedUserId == u.Id ) && u.Id != request.CurrentUser.Id) // проверяем чтобы не попадались лайкнутые
+                .Where(u => u.IsSearching)
                 .OrderBy(u => Math.Abs(_serviceManager.GeolocationService.GetDistance(request.CurrentUser, u).Result))
                 .ThenBy(u => request.CurrentUser.DateOfBirth.Year - u.DateOfBirth.Year)
                 .Take(10)

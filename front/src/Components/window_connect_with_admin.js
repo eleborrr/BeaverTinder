@@ -5,6 +5,7 @@ import React, { useCallback, useEffect, useState, useRef} from 'react';
 import { useParams } from "react-router-dom";
 import './../assets/css/chat_with_admin.css'
 import ServerURL from './server_url';
+import { FileUpload } from "./file_uploader";
 
 const ChatWindow = () => {
   const token = Cookies.get('token');
@@ -43,8 +44,9 @@ const ChatWindow = () => {
     elem.appendChild(author);
     elem.appendChild(content);
 
-    document.getElementById("messagesList").appendChild(elem);
+    document.getElementById("messagesList-admin").appendChild(elem);
   },[nickname])
+
   const togglePopup = () => {
     setIsOpen(!isOpen);
   }
@@ -74,7 +76,7 @@ const ChatWindow = () => {
             elem.appendChild(author);
             elem.appendChild(content);
 
-            document.getElementById("messagesList").appendChild(elem);
+            document.getElementById("messagesList-admin").appendChild(elem);
         });
 
         connection.start().then(res => {connection.invoke("ConnectToRoom", `${roomData.roomName}`)
@@ -86,10 +88,10 @@ const ChatWindow = () => {
         //     var a = document.getElementById("sendButton");
         //     console.log(a);
         //   });
-        document.getElementById('sendButton').addEventListener("click", function (event) {
+        document.getElementById('sendButton-admin').addEventListener("click", function (event) {
             console.log("Sended");
-            var message = document.getElementById("messageInput").value;
-            document.getElementById("messageInput").value = "";
+            var message = document.getElementById("messageInput-admin").value;
+            document.getElementById("messageInput-admin").value = "";
             messagesListRef.current.scrollTop = messagesListRef.current.scrollHeight;
             connection.invoke("SendPrivateMessage", `${roomData.senderName}`, message, `${roomData.receiverName}`, `${roomData.roomName}`).catch(function (err) {
                 return console.error(err.toString());
@@ -141,22 +143,31 @@ const ChatWindow = () => {
                 <h5>Connect with administration </h5>
                 <button className='close-button' onClick={togglePopup}>&times;</button>
             </div>
-            <div className='chat-messages'>
+            <div className='chat-messages-admin'>
 
                 <div 
                     ref={messagesListRef} 
-                    id="messagesList" 
+                    id="messagesList-admin" 
                     className='chat-messages__content main-content log-reg-inner'>
                     
                 </div>
+                <div id="files-admin" className="files-admin"></div>
             
-                <input
-                type="text"
-                id="messageInput"
-                value={newMessage}
-                onChange={(e) => setNewMessage(e.target.value)}
-                />
-                <input type='submit' id="sendButton" className='chat-form__submit' value='Send' />
+                <div  className='chat-admin-input'>
+                    <textarea
+                        className="input-admin"
+                        type="text"
+                        id="messageInput-admin"
+                        value={newMessage}
+                        onChange={(e) => setNewMessage(e.target.value)}
+                    />
+                    <FileUpload 
+                        sendButtonId="sendButton-admin"
+                        addFilesArea="files-admin"
+                        idForDiv="admin"
+                    />
+                    <input type='submit' id="sendButton-admin" className='chat-form__submit-admin' value='Send' />
+                </div>
             </div>
           </div>
         </div>

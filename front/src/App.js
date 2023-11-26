@@ -55,6 +55,7 @@ function App() {
         <Route path='/support_chat/:nickname' element={<SupportChatPage />} />
         <Route path='/profile' element={<ProfilePage />} />
         <Route path='/afterCallback' element={<OAuthAfterCallback />} />
+        <Route path='/test' element={<ChatForTwoPage />} />
         <Route path='*' element={<PageNotFound />}
         />
       </Routes>
