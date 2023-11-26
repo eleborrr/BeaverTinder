@@ -38,4 +38,7 @@
       <ProjectReference Include="..\BeaverTinder.SupportChat\BeaverTinder.SupportChat.csproj" />
     </ItemGroup>
 
+
+
+
 </Project>

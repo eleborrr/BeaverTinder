@@ -1,5 +1,6 @@
 ﻿using BeaverTinder.Domain.Entities;
 using BeaverTinder.Infrastructure.Database;
+using MassTransit.Mediator;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
@@ -10,11 +11,13 @@ namespace BeaverTinder.API.Hubs
     {
         private readonly ApplicationDbContext _dbContext;
         private readonly UserManager<User> _userManager;
+        private readonly IMediator _mediator;
 
-        public ChatHub(ApplicationDbContext dbContext, UserManager<User> userManager)
+        public ChatHub(ApplicationDbContext dbContext, UserManager<User> userManager, IMediator mediator)
         {
             _dbContext = dbContext;
             _userManager = userManager;
+            _mediator = mediator;
         }
         
         public async Task GetGroupMessages(string roomName)
