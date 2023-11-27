@@ -6,6 +6,7 @@ import Cookies from "js-cookie";
 import './../assets/css/chat_for_two.css';
 import * as signalR from "@microsoft/signalr";
 import ServerURL from "../Components/server_url";
+import { FileUpload } from "../Components/file_uploader";
 
 const ChatForTwoPage = () => {
     const navigate = useNavigate();
@@ -20,7 +21,7 @@ const ChatForTwoPage = () => {
     }, [navigate, token])
 
     const [message, setMessage] = useState('');
-    const callbackSignalR = useCallback((roomData) => {
+    /*const callbackSignalR = useCallback((roomData) => {
 
         let connection = new signalR.HubConnectionBuilder().withUrl(`${ServerURL}/chatHub`).build();
 
@@ -64,9 +65,9 @@ const ChatForTwoPage = () => {
             });
             event.preventDefault();
         });
-    }, [nickname])
+    }, [nickname])*/
 
-    useEffect(() => {
+    /*useEffect(() => {
         let room;
         axiosInstance.get(`/im/chat?username=${nickname}`,
         {
@@ -80,7 +81,7 @@ const ChatForTwoPage = () => {
             callbackSignalR(room);
         })
         .catch(); 
-    }, [callbackSignalR, nickname, token])
+    }, [callbackSignalR, nickname, token])*/
 
     
     
@@ -91,15 +92,44 @@ const ChatForTwoPage = () => {
                 <a href="/chats" className="backto-home"><i className="fas fa-chevron-left"></i> Back to chats</a>
             </div>
             <div className='chat-messages'>
-
                 <div id="messagesList" className='chat-messages__content'>
                     
                 </div>
             </div>
+            <div className="files">
+                <div className="files-list" id="files-list">
+
+                </div>
+            </div>
             <div className='chat-input'>
-                    <input type='text' hidden={true} value={uid} readOnly={true} />
-                    <input type='text' autoComplete="off" id='messageInput' className='chat-form__input' placeholder='Введите сообщение' value={message} onChange={(e) => setMessage(e.target.value)} />
-                    <input type='submit' id="sendButton" className='chat-form__submit' value='Send' />
+                    <input 
+                        type='text' 
+                        hidden={true} 
+                        value={uid} 
+                        readOnly={true} 
+                    />
+                    <div className="on-input">
+                        <textarea 
+                            type='text'
+                            autoComplete="off" 
+                            id='messageInput' 
+                            className='chat-form__input' 
+                            placeholder='Введите сообщение' 
+                            value={message} 
+                            onChange={(e) => setMessage(e.target.value)} 
+                        />
+                    </div>
+                    <FileUpload 
+                        sendButtonId="sendButton" 
+                        addFilesArea="files-list"
+                        idForDiv="chat"
+                    />
+                    <input type='submit' 
+                        id="sendButton" 
+                        className='chat-form__submit' 
+                        value='Send' 
+                    />
+                    
             </div>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js"></script>
         </div>
