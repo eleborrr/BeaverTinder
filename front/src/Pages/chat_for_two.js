@@ -12,6 +12,7 @@ const ChatForTwoPage = () => {
     const navigate = useNavigate();
     const token = Cookies.get('token');
     const uid = jwtDecode(token).Id;
+    const [files, setFiles] = useState([]);
     const { nickname } = useParams();
 
     useEffect(() => {
@@ -21,7 +22,7 @@ const ChatForTwoPage = () => {
     }, [navigate, token])
 
     const [message, setMessage] = useState('');
-    /*const callbackSignalR = useCallback((roomData) => {
+    const callbackSignalR = useCallback((roomData) => {
 
         let connection = new signalR.HubConnectionBuilder().withUrl(`${ServerURL}/chatHub`).build();
 
@@ -60,14 +61,14 @@ const ChatForTwoPage = () => {
 
         document.getElementById("sendButton").addEventListener("click", function (event) { 
             var message = document.getElementById("messageInput").value;
-            connection.invoke("SendPrivateMessage", `${roomData.senderName}`, message, `${roomData.recieverName}`, `${roomData.roomName}`).catch(function (err) { 
+            connection.invoke("SendPrivateMessage", `${roomData.senderName}`, message, files, `${roomData.recieverName}`, `${roomData.roomName}`).catch(function (err) { 
                 return console.error(err.toString());
             });
             event.preventDefault();
         });
-    }, [nickname])*/
+    }, [nickname])
 
-    /*useEffect(() => {
+    useEffect(() => {
         let room;
         axiosInstance.get(`/im/chat?username=${nickname}`,
         {
@@ -81,10 +82,112 @@ const ChatForTwoPage = () => {
             callbackSignalR(room);
         })
         .catch(); 
-    }, [callbackSignalR, nickname, token])*/
+    }, [callbackSignalR, nickname, token])
 
+    const createFileElement = (fileData, fileId) => {
+        // Create a <div> element to hold the file details and controls
+        const fileDiv = document.createElement('div');
+        fileDiv.classList.add('file-item');
+        fileDiv.id=`file-${fileId}`;
+        
+        // Create an <img> element for file preview (if applicable)
+        const fileImage = document.createElement('img');
+        fileImage.src = fileData.dataUrl;
+        fileDiv.appendChild(fileImage);
+        
+        // Create a <span> element for file name
+        const fileName = document.createElement('span');
+        fileName.textContent = fileData.name;
+        fileName.classList.add("file-description");
+        fileDiv.appendChild(fileName);
+        
+        // Create a <span> element for file size
+        const fileSize = document.createElement('span');
+        fileSize.textContent = `${(fileData.size / 1024).toFixed(2)} KB`;
+        fileSize.classList.add("file-description");
+        fileDiv.appendChild(fileSize);
+        
+        // Create a <button> element for removing the file
+        const removeButton = document.createElement('button');
+        removeButton.innerHTML  = '&times;';
+        removeButton.classList.add('remove-btn');
+        fileDiv.appendChild(removeButton);
+        
+        return fileDiv;
+    };
+      
+    const handleFileChange = (e) => {
+
+        setFiles([...files, ...Array.from(e.target.files)]);
+        let newFiles = Array.from(e.target.files);
+        console.log(newFiles);
+        newFiles.forEach((file, index) => {
+
+            const fileData = {
+                name: file.name,
+                size: file.size,
+                type: file.type,
+                dataUrl: e.target.result,
+            };
+            const fileElement = createFileElement(fileData, index);
+            
+            document.getElementById("files-list").appendChild(fileElement);
+
+            const removeButton = fileElement.querySelector('.remove-btn');
+            removeButton.addEventListener('click', () => handleRemoveFile(index));
+        });
+        console.log(files);
+    };
     
+    const handleRemoveFile = (id) => {
+        const updatedFiles = files.filter((file, index) => index !== id);
+        setFiles(updatedFiles);
+        
+        const fileToRemove = document.getElementById(`file-${id}`);
+        console.log(id)
+        console.log(document.getElementById(`file-${id}`))
+        if (fileToRemove) {
+          fileToRemove.remove();
+        }
+      };
     
+      const setOnFileLoad =  useCallback(async (e) => {
+        let button = document.getElementById("sendButton")
+        
+        if (!button || button === null)
+            return;
+
+        button.addEventListener("click", async function (event) { 
+          
+            console.log(files);
+           if (files.length === 0)
+             return;
+            const formData = new FormData();
+            files.forEach(file => formData.append("files", file))
+            try{
+                const res = await axiosInstance.post("/test", formData,
+                {
+                    headers : {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                });
+                console.log(res);
+            } catch (e){
+                console.log(e);
+            }
+
+            setFiles([]);
+            let addArea = document.getElementById("files-list")
+            while (addArea.firstChild) {
+                addArea.removeChild(addArea.firstChild);
+            }
+            event.preventDefault();
+        });
+    },[]);
+
+    useEffect(() => {
+        setOnFileLoad();
+    },[]);
 
     return(
         <div className='chat'>
@@ -119,11 +222,12 @@ const ChatForTwoPage = () => {
                             onChange={(e) => setMessage(e.target.value)} 
                         />
                     </div>
-                    <FileUpload 
-                        sendButtonId="sendButton" 
-                        addFilesArea="files-list"
-                        idForDiv="chat"
-                    />
+                    <div className="uploader-container" id="chat">
+                        <label htmlFor="fileInput" className="file-inputer">
+                            <i className="fas fa-paperclip"></i>
+                        </label>
+                        <input type="file" multiple id="fileInput" style={{display: "none"}} onChange={handleFileChange}/>
+                    </div>
                     <input type='submit' 
                         id="sendButton" 
                         className='chat-form__submit' 
