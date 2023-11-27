@@ -54,6 +54,25 @@ services:
       ConnectionStrings__BeaverTinderDatabase: Data Source=mssql;Initial Catalog=BeaverTinderDatabase;User=sa;Password=superPuperPassword!15641;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False
     volumes:
       - ~/.aspnet/https:/https:ro
+  minio:
+    image: minio/minio:latest
+    command: server --console-address ":9001" /data/
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      Minio__AccessKey: F7l1mZ14Pno43XicMUHY
+      Minio__SecretKey: Aaz371CWmcr650RLk6xRJSeG0rPw9CB2okThDlwX
+      Minio__Endpoint: 
+      MINIO_ROOT_USER: ozontech
+      MINIO_ROOT_PASSWORD: minio123
+    volumes:
+      - minio-storage:/data
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
+      interval: 30s
+      timeout: 20s
+      retries: 3
   react:
     image: front
     build:

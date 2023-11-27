@@ -4,12 +4,15 @@ namespace BeaverTinder.S3.ServicesExtensions.S3;
 
 public static class ServiceCollectionExtension
 {
-    public static IServiceCollection AddS3Client(this IServiceCollection services)
+    private static readonly IConfiguration _configuration;
+    
+    public static IServiceCollection AddS3Client(this IServiceCollection services, IConfiguration configuration)
     {
-        var accessKey = "F7l1mZ14Pno43XicMUHY";
-        var secretKey = "Aaz371CWmcr650RLk6xRJSeG0rPw9CB2okThDlwX";
-        var endpoint = "localhost:9000";
-        
+        var minioConfiguration = configuration.GetSection("Minio");
+        var accessKey = minioConfiguration["AccessKey"];
+        var secretKey = minioConfiguration["SecretKey"];
+        var endpoint = minioConfiguration["Endpoint"];
+
         var minioClient = new MinioClient().WithEndpoint(endpoint)
             .WithCredentials(accessKey, secretKey)
             .Build();

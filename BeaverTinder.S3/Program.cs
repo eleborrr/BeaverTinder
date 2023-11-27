@@ -9,7 +9,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddS3Client();
+builder.Services.AddS3Client(builder.Configuration);
 
 var app = builder.Build();
 
