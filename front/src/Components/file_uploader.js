@@ -44,7 +44,7 @@ export const FileUpload = ({sendButtonId, addFilesArea, idForDiv}) => {
         console.log(addFilesAreaI)
         console.log(sendButtonId)
         setOnFileLoad()
-        const element = document.getElementById(`${idForDiv}`); // Замените 'yourElementId' на фактический ID вашего элемента
+        const element = document.getElementById(`${idForDiv}`); 
 
         element.addEventListener('mouseover', () => {
         console.log(`${addFilesArea}`);
