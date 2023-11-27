@@ -7,6 +7,7 @@ import './../assets/css/chat_for_two.css';
 import * as signalR from "@microsoft/signalr";
 import ServerURL from "../Components/server_url";
 import { FileUpload } from "../Components/file_uploader";
+import "../assets/css/file_uploader.css"
 
 const ChatForTwoPage = () => {
     const navigate = useNavigate();
