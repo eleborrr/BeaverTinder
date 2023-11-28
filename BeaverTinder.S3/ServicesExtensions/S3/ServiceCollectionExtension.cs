@@ -1,22 +1,29 @@
 ﻿using Minio;
+using Minio.DataModel.Args;
 
 namespace BeaverTinder.S3.ServicesExtensions.S3;
 
 public static class ServiceCollectionExtension
 {
-    private static readonly IConfiguration _configuration;
-    
     public static IServiceCollection AddS3Client(this IServiceCollection services, IConfiguration configuration)
     {
         var minioConfiguration = configuration.GetSection("Minio");
-        var accessKey = minioConfiguration["AccessKey"];
-        var secretKey = minioConfiguration["SecretKey"];
+        var user = minioConfiguration["User"];
+        var password = minioConfiguration["Password"];
         var endpoint = minioConfiguration["Endpoint"];
 
         var minioClient = new MinioClient().WithEndpoint(endpoint)
-            .WithCredentials(accessKey, secretKey)
+            .WithCredentials(user, password)
             .Build();
-
+        //
+        // var bucketName = "my-bucket";
+        //
+        // var putObjectArgs = new MakeBucketArgs()
+        //     .WithBucket(bucketName);
+        //
+        // minioClient.MakeBucketAsync(putObjectArgs).Wait();
+        
+        
         services.AddSingleton<IMinioClient>(o => minioClient);
         return services;
     }

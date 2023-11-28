@@ -4,6 +4,6 @@ namespace BeaverTinder.Domain.Repositories.Abstractions;
 
 public interface ILikeRepository
 {
-    public Task<IEnumerable<Like>> GetAllAsync(CancellationToken cancellationToken);
+    public Task<IEnumerable<Like>> GetAll();
     public Task AddAsync(Like like);
 }

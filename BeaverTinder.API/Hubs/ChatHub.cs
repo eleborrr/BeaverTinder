@@ -2,8 +2,10 @@
 using BeaverTinder.Infrastructure.Database;
 using BeaverTinder.Shared.Files;
 using BeaverTinder.Shared.Message;
-using MassTransit.Mediator;
+using MassTransit;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,13 +15,13 @@ namespace BeaverTinder.API.Hubs
     {
         private readonly ApplicationDbContext _dbContext;
         private readonly UserManager<User> _userManager;
-        private readonly IMediator _mediator;
+        private readonly IBus _bus;
 
-        public ChatHub(ApplicationDbContext dbContext, UserManager<User> userManager, IMediator mediator)
+        public ChatHub(ApplicationDbContext dbContext, UserManager<User> userManager, IMediator mediator, IBus bus)
         {
             _dbContext = dbContext;
             _userManager = userManager;
-            _mediator = mediator;
+            _bus = bus;
         }
         
         public async Task GetGroupMessages(string roomName)
@@ -46,7 +48,7 @@ namespace BeaverTinder.API.Hubs
 
         public async Task SendPrivateMessage(string senderUserName, 
             string message,
-            IEnumerable<FileModel> files,
+            [FromForm] IEnumerable<FormFile> files,
             string receiverUserName,
             string groupName)
         {
@@ -55,10 +57,15 @@ namespace BeaverTinder.API.Hubs
             var sender = await _userManager.FindByNameAsync(senderUserName);
             var receiver = await _userManager.FindByNameAsync(receiverUserName);
 
+            Console.WriteLine(senderUserName);
+            Console.WriteLine(message);
+            Console.WriteLine(files.Count());
+            Console.WriteLine(receiverUserName);
+            Console.WriteLine(groupName);
             if (receiver is null || sender is null || room is null)
                 return;
-            
-            _dbContext.Messages.Add(new Message()
+
+            _dbContext.Messages.Add(new Message
             {
                 Id = Guid.NewGuid().ToString(),
                 Content = message,
@@ -67,10 +74,16 @@ namespace BeaverTinder.API.Hubs
                 ReceiverId = receiver.Id,
                 RoomId = room.Id
             });
+            
             await _dbContext.SaveChangesAsync();
-            await _mediator.Send(files);
+            foreach (var file in files)
+            {
+                await _bus.Publish(file);
+            }
+            Console.WriteLine("mass transit used");
             await Clients.Group(groupName).SendAsync("Receive", senderUserName, 
-                new SendMessageSignalRDto(message, files));        }
+                message);        
+        }
         
         
         public override async Task OnConnectedAsync()

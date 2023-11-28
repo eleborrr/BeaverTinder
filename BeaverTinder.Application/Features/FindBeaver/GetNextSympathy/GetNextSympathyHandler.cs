@@ -23,7 +23,7 @@ public class GetNextSympathyHandler : IQueryHandler<GetNextSympathyQuery, Search
         GetNextSympathyQuery request,
         CancellationToken cancellationToken)
     {
-        var likes = (await _repositoryManager.LikeRepository.GetAllAsync(default)).ToList();
+        var likes = (await _repositoryManager.LikeRepository.GetAll()).ToList();
         
 
         var filteredBeavers = _userManager.Users.AsEnumerable()

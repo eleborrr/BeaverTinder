@@ -15,7 +15,7 @@ public class GetAllLikesHandler: IQueryHandler<GetAllLikesQuery, IEnumerable<Dom
 
     public async Task<Result<IEnumerable<Domain.Entities.Like>>> Handle(GetAllLikesQuery request, CancellationToken cancellationToken)
     {
-        var likes = await _repositoryManager.LikeRepository.GetAllAsync(default);
+        var likes = await _repositoryManager.LikeRepository.GetAll();
         return new Result<IEnumerable<Domain.Entities.Like>>(
             likes, true, null);
     }

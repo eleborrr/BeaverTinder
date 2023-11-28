@@ -33,7 +33,7 @@ services:
       MessageBroker__Password: mypa55w0rd!
       MessageBroker__Hostname: rabbitmq
       MessageBroker__Port: 5672
-      ConnectionStrings__BeaverTinderDatabase: Data Source=mssql;Initial Catalog=BeaverTinderDatabase;User=sa;Password=superPuperPassword!15641;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False
+      ConnectionStrings__BeaverTinderDatabase: Data Source=mssql;Initial Catalog=BeaverTinderDatabase;User=sa;Password=superPuperPassword!15641;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;MultipleActiveResultSets=true;
     volumes:
       - ~/.aspnet/https:/https:ro
   supportconsumer:
@@ -51,7 +51,30 @@ services:
       MessageBroker__Password: mypa55w0rd!
       MessageBroker__Hostname: rabbitmq
       MessageBroker__Port: 5672
-      ConnectionStrings__BeaverTinderDatabase: Data Source=mssql;Initial Catalog=BeaverTinderDatabase;User=sa;Password=superPuperPassword!15641;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False
+      ConnectionStrings__BeaverTinderDatabase: Data Source=mssql;Initial Catalog=BeaverTinderDatabase;User=sa;Password=superPuperPassword!15641;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;MultipleActiveResultSets=true;
+    volumes:
+      - ~/.aspnet/https:/https:ro
+  s3:
+    image: s3
+    depends_on:
+      - mssql
+      - rabbitmq
+      - minio
+    build:
+      context: ./
+      dockerfile: DockerfileS3
+    ports:
+      - "4042:80"
+    environment:
+      MessageBroker__Username: rabbitsa
+      MessageBroker__Password: mypa55w0rd!
+      MessageBroker__Hostname: rabbitmq
+      MessageBroker__Port: 5672
+      Minio__User: ozontech
+      Minio__Password: minio123
+      Minio__AccessKey: F7l1mZ14Pno43XicMUHY
+      Minio__SecretKey: Aaz371CWmcr650RLk6xRJSeG0rPw9CB2okThDlwX
+      Minio__Endpoint: minio:9000
     volumes:
       - ~/.aspnet/https:/https:ro
   minio:
@@ -61,13 +84,10 @@ services:
       - "9000:9000"
       - "9001:9001"
     environment:
-      Minio__AccessKey: F7l1mZ14Pno43XicMUHY
-      Minio__SecretKey: Aaz371CWmcr650RLk6xRJSeG0rPw9CB2okThDlwX
-      Minio__Endpoint: 
       MINIO_ROOT_USER: ozontech
       MINIO_ROOT_PASSWORD: minio123
     volumes:
-      - minio-storage:/data
+      - ~/minio/data:/data
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
       interval: 30s

@@ -1,3 +1,4 @@
+using BeaverTinder.S3.ServicesExtensions.RabbitMq;
 using BeaverTinder.S3.ServicesExtensions.S3;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +11,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddS3Client(builder.Configuration);
+builder.Services.AddMasstransitRabbitMq(builder.Configuration);
 
 var app = builder.Build();
 

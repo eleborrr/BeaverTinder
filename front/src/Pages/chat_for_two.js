@@ -61,7 +61,7 @@ const ChatForTwoPage = () => {
 
         document.getElementById("sendButton").addEventListener("click", function (event) { 
             var message = document.getElementById("messageInput").value;
-            connection.invoke("SendPrivateMessage", `${roomData.senderName}`, message, files, `${roomData.recieverName}`, `${roomData.roomName}`).catch(function (err) { 
+            connection.invoke("SendPrivateMessage", `${roomData.senderName}`, message, files, `${roomData.receiverName}`, `${roomData.roomName}`).catch(function (err) { 
                 return console.error(err.toString());
             });
             event.preventDefault();
