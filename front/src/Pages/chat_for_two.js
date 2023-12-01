@@ -136,6 +136,7 @@ const ChatForTwoPage = () => {
             const removeButton = fileElement.querySelector('.remove-btn');
             removeButton.addEventListener('click', () => handleRemoveFile(index));
         });
+        setFiles(newFiles);
         console.log(files);
     };
     

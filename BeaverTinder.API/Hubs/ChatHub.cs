@@ -48,7 +48,7 @@ namespace BeaverTinder.API.Hubs
 
         public async Task SendPrivateMessage(string senderUserName, 
             string message,
-            [FromForm] IEnumerable<FormFile> files,
+            IEnumerable<IFormFile> files,
             string receiverUserName,
             string groupName)
         {
@@ -82,7 +82,7 @@ namespace BeaverTinder.API.Hubs
             }
             Console.WriteLine("mass transit used");
             await Clients.Group(groupName).SendAsync("Receive", senderUserName, 
-                message);        
+                message);
         }
         
         

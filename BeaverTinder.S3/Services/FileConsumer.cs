@@ -5,24 +5,29 @@ using MassTransit;
 
 namespace BeaverTinder.S3.Services;
 
-public class FileConsumer: IConsumer<FileModel>
+public class FileConsumer: IConsumer<IFormFile>
 {
     private readonly IMinioClient  _minioClient;
     private readonly string _accessKey = "F7l1mZ14Pno43XicMUHY";
     private readonly string _secretKey = "Aaz371CWmcr650RLk6xRJSeG0rPw9CB2okThDlwX";
     private readonly string _bucketName = "my-bucket";
-    
-    public async Task Consume(ConsumeContext<FileModel> context)
+
+    public FileConsumer(IMinioClient minioClient)
+    {
+        _minioClient = minioClient;
+    }
+
+    public async Task Consume(ConsumeContext<IFormFile> context)
     {
         Console.WriteLine(context.Message);
         var file = context.Message;
         try
         {
             var bucketName = "my-bucket";
-            var objectName = file.FormFile.FileName;
-            var contentType = file.FormFile.ContentType;
+            var objectName = file.FileName;
+            var contentType = file.ContentType;
 
-            file.FormFile.OpenReadStream().Position = 0;
+            file.OpenReadStream().Position = 0;
             // var _bytes = new byte[file.FormFile.Length];
             // var file_Stream = file.FormFile.OpenReadStream().Read(_bytes, 5, 5);
 
@@ -30,9 +35,9 @@ public class FileConsumer: IConsumer<FileModel>
             var putObjectArgs = new PutObjectArgs()
                 .WithBucket(bucketName)
                 .WithObject(objectName)
-                .WithStreamData(file.FormFile.OpenReadStream())
+                .WithStreamData(file.OpenReadStream())
                 .WithContentType(contentType)
-                .WithObjectSize(file.FormFile.Length);
+                .WithObjectSize(file.Length);
             await _minioClient.PutObjectAsync(putObjectArgs);
 
         }
