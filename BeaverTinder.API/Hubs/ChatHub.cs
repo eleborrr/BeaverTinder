@@ -45,10 +45,15 @@ namespace BeaverTinder.API.Hubs
         {
             return (await _userManager.FindByIdAsync(id))?.UserName;
         }
-
+        
+        public class FilesModel
+        {
+            public IFormFile[] FormFiles { get; set; } = default!;
+        }
+        
         public async Task SendPrivateMessage(string senderUserName, 
             string message,
-            IEnumerable<IFormFile> files,
+            [FromForm] FilesModel files,
             string receiverUserName,
             string groupName)
         {
@@ -59,7 +64,7 @@ namespace BeaverTinder.API.Hubs
 
             Console.WriteLine(senderUserName);
             Console.WriteLine(message);
-            Console.WriteLine(files.Count());
+            Console.WriteLine(files.FormFiles.Length);
             Console.WriteLine(receiverUserName);
             Console.WriteLine(groupName);
             if (receiver is null || sender is null || room is null)
@@ -76,12 +81,12 @@ namespace BeaverTinder.API.Hubs
             });
             
             await _dbContext.SaveChangesAsync();
-            foreach (var file in files)
+            foreach (var file in files.FormFiles)
             {
                 await _bus.Publish(file);
             }
             Console.WriteLine("mass transit used");
-            await Clients.Group(groupName).SendAsync("Receive", senderUserName, 
+            await Clients.Group(groupName).SendAsync("ReceivePrivateMessage", senderUserName, 
                 message);
         }
         

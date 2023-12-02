@@ -62,7 +62,14 @@ const ChatForTwoPage = () => {
 
         document.getElementById("sendButton").addEventListener("click", function (event) { 
             var message = document.getElementById("messageInput").value;
-            connection.invoke("SendPrivateMessage", `${roomData.senderName}`, message, files, `${roomData.receiverName}`, `${roomData.roomName}`).catch(function (err) { 
+            document.getElementById("messageInput").value = "";
+            const formData = new FormData();
+            formData.append("formFiles", Array.from(files));
+            connection.invoke("SendPrivateMessage", `${roomData.senderName}`, message, formData, `${roomData.receiverName}`, `${roomData.roomName}`).catch(function (err) { 
+                console.log("error sending message");
+                console.log("form data:");
+                console.log(formData);
+                console.log(files);
                 return console.error(err.toString());
             });
             event.preventDefault();
@@ -117,11 +124,12 @@ const ChatForTwoPage = () => {
         return fileDiv;
     };
       
-    const handleFileChange = (e) => {
-
+    const  handleFileChange = (e) => {
+        console.log(e.target.files);
         setFiles([...files, ...Array.from(e.target.files)]);
         let newFiles = Array.from(e.target.files);
         console.log(newFiles);
+        console.log(files);
         newFiles.forEach((file, index) => {
 
             const fileData = {
@@ -137,8 +145,6 @@ const ChatForTwoPage = () => {
             const removeButton = fileElement.querySelector('.remove-btn');
             removeButton.addEventListener('click', () => handleRemoveFile(index));
         });
-        setFiles(newFiles);
-        console.log(files);
     };
     
     const handleRemoveFile = (id) => {
@@ -146,50 +152,10 @@ const ChatForTwoPage = () => {
         setFiles(updatedFiles);
         
         const fileToRemove = document.getElementById(`file-${id}`);
-        console.log(id)
-        console.log(document.getElementById(`file-${id}`))
         if (fileToRemove) {
           fileToRemove.remove();
         }
       };
-    
-      const setOnFileLoad =  useCallback(async (e) => {
-        let button = document.getElementById("sendButton")
-        
-        if (!button || button === null)
-            return;
-
-        button.addEventListener("click", async function (event) { 
-          
-            console.log(files);
-           if (files.length === 0)
-             return;
-            const formData = new FormData();
-            files.forEach(file => formData.append("files", file))
-            try{
-                const res = await axiosInstance.post("/test", formData,
-                {
-                    headers : {
-                        'Content-Type': 'multipart/form-data'
-                    }
-                });
-                console.log(res);
-            } catch (e){
-                console.log(e);
-            }
-
-            setFiles([]);
-            let addArea = document.getElementById("files-list")
-            while (addArea.firstChild) {
-                addArea.removeChild(addArea.firstChild);
-            }
-            event.preventDefault();
-        });
-    },[]);
-
-    useEffect(() => {
-        setOnFileLoad();
-    },[]);
 
     return(
         <div className='chat'>
