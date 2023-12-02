@@ -27,27 +27,48 @@ const ChatForTwoPage = () => {
     }, [navigate, token])
 
     const handleSend = useCallback((event) => {
-        const formData = new FormData();
-        formData.append("FormFiles", files);
-        console.log(formData);
-        for (let pair of formData.entries()) {
-            console.log(pair[0]+ ', '+ pair[1]);
-          }
+        const reader = new FileReader();
+        let totalArrayBuffer = new ArrayBuffer();
+        const arrayFiles= Array.from(files);
         if (message === "" && files.length === 0)
                 return;
-        connection.invoke("SendPrivateMessage", 
+        function readFilesSequentially(index) {
+            console.log("start");
+        if (index < arrayFiles.length) {
+            const file = arrayFiles[index];
+            console.log(file);
+            reader.onloadend = function(event) {
+            console.log(event.target);
+            console.log(event.target.result);
+            const arrayBuffer = event.target.result;
+            const combinedArrayBuffer = new Uint8Array(totalArrayBuffer.byteLength + arrayBuffer.byteLength);
+            combinedArrayBuffer.set(new Uint8Array(totalArrayBuffer), 0);
+            combinedArrayBuffer.set(new Uint8Array(arrayBuffer), totalArrayBuffer.byteLength);
+            totalArrayBuffer = combinedArrayBuffer.buffer;
+            readFilesSequentially(index + 1); // Read the next file recursively
+            };
+        reader.readAsArrayBuffer(file);
+        } else {
+            console.log("start to back");
+            console.log(Array.from(totalArrayBuffer));
+            console.log(totalArrayBuffer);
+            connection.invoke("SendPrivateMessage", 
                             `${roomData.senderName}`,
                             message, 
-                            formData, 
+                            Array.from(new Uint8Array(totalArrayBuffer)),   
                             `${roomData.receiverName}`,
                             `${roomData.roomName}`)
                 .catch(function (err) { 
             console.log("error sending message");
             console.log("form data:");
-            console.log(formData);
             console.log(files);
             return console.error(err.toString());
         });
+        }
+        }
+
+        readFilesSequentially(0);
+        
         setMessage("");
         event.preventDefault();
     },[connection, message, files])
