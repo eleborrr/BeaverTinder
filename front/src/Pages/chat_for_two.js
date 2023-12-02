@@ -14,6 +14,8 @@ const ChatForTwoPage = () => {
     const token = Cookies.get('token');
     const uid = jwtDecode(token).Id;
     const [files, setFiles] = useState([]);
+    const [roomData, setRoomData] = useState([]);
+    const [connection, setConnection] = useState(null);
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([]);
     const { nickname } = useParams();
@@ -24,8 +26,34 @@ const ChatForTwoPage = () => {
         }
     }, [navigate, token])
 
-    const callbackSignalR = useCallback((roomData) => {
+    const handleSend = useCallback((event) => {
+        const formData = new FormData();
+        formData.append("FormFiles", files);
+        console.log(formData);
+        for (let pair of formData.entries()) {
+            console.log(pair[0]+ ', '+ pair[1]);
+          }
+        if (message === "" && files.length === 0)
+                return;
+        connection.invoke("SendPrivateMessage", 
+                            `${roomData.senderName}`,
+                            message, 
+                            formData, 
+                            `${roomData.receiverName}`,
+                            `${roomData.roomName}`)
+                .catch(function (err) { 
+            console.log("error sending message");
+            console.log("form data:");
+            console.log(formData);
+            console.log(files);
+            return console.error(err.toString());
+        });
+        setMessage("");
+        event.preventDefault();
+    },[connection, message, files])
 
+    const callbackSignalR = useCallback((roomData) => {
+        setRoomData(roomData);
         let connection = new signalR.HubConnectionBuilder()
                 .withUrl(`${ServerURL}/chatHub`)
                 .build();
@@ -37,8 +65,6 @@ const ChatForTwoPage = () => {
             });
         });
 
-        
-
         connection.on("ReceivePrivateMessage", function (user, message){
             console.log("normal chat recieved");
             let newMessage = 
@@ -49,31 +75,8 @@ const ChatForTwoPage = () => {
             };
             setMessages(prev => [...prev, newMessage])
         });
-
-        document.getElementById("sendButton").addEventListener("click", function (event) { 
+        setConnection(connection);
             
-            const formData = new FormData();
-            formData.append("FormFiles", files);
-            console.log(message);
-            console.log(files);
-            console.log(formData);
-            return;
-            connection.invoke("SendPrivateMessage", 
-                                `${roomData.senderName}`,
-                                message, 
-                                formData, 
-                                `${roomData.receiverName}`,
-                                `${roomData.roomName}`)
-                    .catch(function (err) { 
-                console.log("error sending message");
-                console.log("form data:");
-                console.log(formData);
-                console.log(files);
-                return console.error(err.toString());
-            });
-            setMessage("");
-            event.preventDefault();
-        });
     }, [nickname])
 
     useEffect(() => {
@@ -165,6 +168,7 @@ const ChatForTwoPage = () => {
                         id="sendButton" 
                         className='chat-form__submit' 
                         value='Send' 
+                        onClick={(event) => handleSend(event)}
                     />
                     
             </div>
