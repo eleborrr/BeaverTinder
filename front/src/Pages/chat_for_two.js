@@ -14,6 +14,8 @@ const ChatForTwoPage = () => {
     const token = Cookies.get('token');
     const uid = jwtDecode(token).Id;
     const [files, setFiles] = useState([]);
+    const [message, setMessage] = useState('');
+    const [messages, setMessages] = useState([]);
     const { nickname } = useParams();
 
     useEffect(() => {
@@ -22,56 +24,54 @@ const ChatForTwoPage = () => {
         }
     }, [navigate, token])
 
-    const [message, setMessage] = useState('');
     const callbackSignalR = useCallback((roomData) => {
 
-        let connection = new signalR.HubConnectionBuilder().withUrl(`${ServerURL}/chatHub`).build();
+        let connection = new signalR.HubConnectionBuilder()
+                .withUrl(`${ServerURL}/chatHub`)
+                .build();
+
+        connection.start().then(res => {
+            connection.invoke("GetGroupMessages", `${roomData.roomName}`)
+                    .catch(function (err) {
+                return console.error(err.toString());
+            });
+        });
+
+        
 
         connection.on("ReceivePrivateMessage", function (user, message){
             console.log("normal chat recieved");
-            var elem = document.createElement("div");
-            var author = document.createElement("span");
-            var content = document.createElement("span");
-            if(user === nickname){
-                elem.className="message-from";
-
-                author.className = "message-from";
-            }
-            else{
-                elem.className="message-to";
-
-                author.className = "message-to";
-            }
-            author.textContent = user + ":";
-
-            content.className = "message-text";
-            content.textContent = message;
-
-            elem.appendChild(author);
-            elem.appendChild(content);
-
-            document.getElementById("messagesList").appendChild(elem);
-
+            let newMessage = 
+            {
+                belongsToSender : user === nickname,
+                message : message,
+                senderName : user
+            };
+            setMessages(prev => [...prev, newMessage])
         });
 
-
-        connection.start().then(res => {connection.invoke("GetGroupMessages", `${roomData.roomName}`)
-            .catch(function (err) {
-                return console.error(err.toString());
-            })});
-
         document.getElementById("sendButton").addEventListener("click", function (event) { 
-            var message = document.getElementById("messageInput").value;
-            document.getElementById("messageInput").value = "";
+            
             const formData = new FormData();
-            formData.append("formFiles", Array.from(files));
-            connection.invoke("SendPrivateMessage", `${roomData.senderName}`, message, formData, `${roomData.receiverName}`, `${roomData.roomName}`).catch(function (err) { 
+            formData.append("FormFiles", files);
+            console.log(message);
+            console.log(files);
+            console.log(formData);
+            return;
+            connection.invoke("SendPrivateMessage", 
+                                `${roomData.senderName}`,
+                                message, 
+                                formData, 
+                                `${roomData.receiverName}`,
+                                `${roomData.roomName}`)
+                    .catch(function (err) { 
                 console.log("error sending message");
                 console.log("form data:");
                 console.log(formData);
                 console.log(files);
                 return console.error(err.toString());
             });
+            setMessage("");
             event.preventDefault();
         });
     }, [nickname])
@@ -91,70 +91,17 @@ const ChatForTwoPage = () => {
         })
         .catch(); 
     }, [callbackSignalR, nickname, token])
-
-    const createFileElement = (fileData, fileId) => {
-        // Create a <div> element to hold the file details and controls
-        const fileDiv = document.createElement('div');
-        fileDiv.classList.add('file-item');
-        fileDiv.id=`file-${fileId}`;
-        
-        // Create an <img> element for file preview (if applicable)
-        const fileImage = document.createElement('img');
-        fileImage.src = fileData.dataUrl;
-        fileDiv.appendChild(fileImage);
-        
-        // Create a <span> element for file name
-        const fileName = document.createElement('span');
-        fileName.textContent = fileData.name;
-        fileName.classList.add("file-description");
-        fileDiv.appendChild(fileName);
-        
-        // Create a <span> element for file size
-        const fileSize = document.createElement('span');
-        fileSize.textContent = `${(fileData.size / 1024).toFixed(2)} KB`;
-        fileSize.classList.add("file-description");
-        fileDiv.appendChild(fileSize);
-        
-        // Create a <button> element for removing the file
-        const removeButton = document.createElement('button');
-        removeButton.innerHTML  = '&times;';
-        removeButton.classList.add('remove-btn');
-        fileDiv.appendChild(removeButton);
-        
-        return fileDiv;
-    };
       
     const  handleFileChange = (e) => {
-        console.log(e.target.files);
-        setFiles([...files, ...Array.from(e.target.files)]);
-        let newFiles = Array.from(e.target.files);
-        console.log(newFiles);
+        let newArray = [ ...files, ...Array.from(e.target.files) ];
+        setFiles(newArray);
+        console.log(newArray);
         console.log(files);
-        newFiles.forEach((file, index) => {
-
-            const fileData = {
-                name: file.name,
-                size: file.size,
-                type: file.type,
-                dataUrl: e.target.result,
-            };
-            const fileElement = createFileElement(fileData, index);
-            
-            document.getElementById("files-list").appendChild(fileElement);
-
-            const removeButton = fileElement.querySelector('.remove-btn');
-            removeButton.addEventListener('click', () => handleRemoveFile(index));
-        });
     };
     
     const handleRemoveFile = (id) => {
         const updatedFiles = files.filter((file, index) => index !== id);
         setFiles(updatedFiles);
-        
-        const fileToRemove = document.getElementById(`file-${id}`);
-        if (fileToRemove) {
-          fileToRemove.remove();
-        }
       };
 
     return(
@@ -164,12 +111,30 @@ const ChatForTwoPage = () => {
             </div>
             <div className='chat-messages'>
                 <div id="messagesList" className='chat-messages__content'>
-                    
+                    {
+                        messages.map((mes, index) => (
+                            <Message 
+                                key={index}
+                                senderName={mes.senderName}
+                                message={mes.message}
+                                belongsToSender={mes.belongsToSender}
+                            />
+                        ))
+                    }
                 </div>
             </div>
             <div className="files">
                 <div className="files-list" id="files-list">
-
+                    {
+                        files.map((fileData, index) => (
+                            <File 
+                                name={fileData.name}
+                                size={fileData.size}
+                                fileId={index}
+                                dataUrl={fileData.dataUrl}
+                                onClick={() => handleRemoveFile(index)}/>
+                        ))
+                    }
                 </div>
             </div>
             <div className='chat-input'>
@@ -208,4 +173,25 @@ const ChatForTwoPage = () => {
     )
 }
 
+const Message = ({ senderName, message, belongsToSender }) => {
+
+    return (
+        <div className={belongsToSender ? "message-from" : "message-to"}>
+            <span className={belongsToSender ? "message-from" : "message-to"}> {senderName}: </span>
+            <span className="message-text"> {message} </span>
+        </div>
+    )
+}
+
+const File = ({ name, size, fileId, type, dataUrl, onClick }) => {
+
+    return (
+        <div className="file-item" id={fileId} key={fileId}>
+            <img src={dataUrl} key={fileId}/>
+            <span className="file-description"> {name} </span>
+            <span className="file-description"> {`${(size / 1024).toFixed(2)} KB`} </span>
+            <button className="remove-btn" onClick={onClick}>&times;</button>
+        </div>
+    )
+}
 export default ChatForTwoPage;
