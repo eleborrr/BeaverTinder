@@ -19,14 +19,10 @@ namespace BeaverTinder.API.Controllers;
 [Route("[controller]")]
 public class FilesController: Controller
 {
-    private readonly UserManager<User> _userManager;
-    private readonly IMediator _mediator;
     private readonly IBus _bus;
 
     public FilesController(UserManager<User> userManager, IMediator mediator, IBus bus)
     {
-        _userManager = userManager;
-        _mediator = mediator;
         _bus = bus;
     }
 
