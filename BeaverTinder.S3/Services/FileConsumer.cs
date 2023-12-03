@@ -24,10 +24,24 @@ public class FileConsumer: IConsumer<FileMessage>
         // try
         // {
             context.Message.Deconstruct(out var buffer, out var fileIdentifier, out var bucketIdentifier);
-        
-            var stream = new MemoryStream(buffer);
             
             var bucketName = "my-bucket";
+            
+            foreach (var fileModelSend in buffer)
+            {
+                var stream = new MemoryStream(fileModelSend.BytesArray);
+                
+                var putObjectArgs = new PutObjectArgs()
+                    .WithBucket(bucketName)
+                    .WithObject(fileIdentifier)
+                    .WithStreamData(stream)
+                    .WithContentType("text")
+                    .WithObjectSize(stream.Length);
+                await _minioClient.PutObjectAsync(putObjectArgs);
+            }
+            
+            
+           
             // var objectName = file.FileName;
             // var contentType = file.ContentType;
             //
@@ -36,13 +50,7 @@ public class FileConsumer: IConsumer<FileMessage>
             // var file_Stream = file.FormFile.OpenReadStream().Read(_bytes, 5, 5);
 
 
-            var putObjectArgs = new PutObjectArgs()
-                .WithBucket(bucketName)
-                .WithObject(fileIdentifier)
-                .WithStreamData(stream)
-                .WithContentType("text")
-                .WithObjectSize(stream.Length);
-            await _minioClient.PutObjectAsync(putObjectArgs);
+            
 
         // }
         // catch (Exception)

@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import * as signalR from "@microsoft/signalr";
 import jwtDecode from "jwt-decode";
 import Cookies from "js-cookie";
-import FileDisplay from "../Components/file_dicsplay";
+import FileDisplay from "../Components/file_display";
 import ServerURL from "../Components/server_url";
 import './../assets/css/chat_for_two.css';
 import "../assets/css/file_uploader.css";
@@ -18,6 +18,7 @@ const ChatForTwoPage = () => {
     const [connection, setConnection] = useState(null);
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([]);
+    const [filesToLoad, setFilesToLoad] = useState([]);
     const { nickname } = useParams();
 
     useEffect(() => {
@@ -26,52 +27,30 @@ const ChatForTwoPage = () => {
         }
     }, [navigate, token])
 
-    const handleSend = useCallback((event) => {
-        const reader = new FileReader();
-        let totalArrayBuffer = new ArrayBuffer();
-        const arrayFiles= Array.from(files);
-        if (message === "" && files.length === 0)
+    const handleSend = (event) => {
+        
+        if (message === "" && filesToLoad.length === 0)
                 return;
-        function readFilesSequentially(index) {
-            console.log("start");
-            if (index < arrayFiles.length) {
-                const file = arrayFiles[index];
-                console.log(file);
-                reader.onloadend = function(event) {
-                    console.log(event.target);
-                    console.log(event.target.result);
-                    const arrayBuffer = event.target.result;
-                    const combinedArrayBuffer = new Uint8Array(totalArrayBuffer.byteLength + arrayBuffer.byteLength);
-                    combinedArrayBuffer.set(new Uint8Array(totalArrayBuffer), 0);
-                    combinedArrayBuffer.set(new Uint8Array(arrayBuffer), totalArrayBuffer.byteLength);
-                    totalArrayBuffer = combinedArrayBuffer.buffer;
-                    readFilesSequentially(index + 1); // Read the next file recursively
-                };
-                reader.readAsArrayBuffer(file);
-            } else {
-                console.log("start to back");
-                console.log(Array.from(totalArrayBuffer));
-                console.log(totalArrayBuffer);
+                console.log("files to load");
+                console.log(filesToLoad);
                 connection.invoke("SendPrivateMessage", 
                                 `${roomData.senderName}`,
                                 message, 
-                                Array.from(new Uint8Array(totalArrayBuffer)),   
+                                filesToLoad,   
                                 `${roomData.receiverName}`,
                                 `${roomData.roomName}`)
                     .catch(function (err) { 
                 console.log("error sending message");
                 console.log("form data:");
-                console.log(files);
+                console.log(files); 
                 return console.error(err.toString());
                 });
-            }
-        }
-
-        readFilesSequentially(0);
         
         setMessage("");
+        setFiles([]);
+        setFilesToLoad([]);
         event.preventDefault();
-    },[connection, message, files])
+    }
 
     const callbackSignalR = useCallback((roomData) => {
         setRoomData(roomData);
@@ -118,15 +97,33 @@ const ChatForTwoPage = () => {
     }, [callbackSignalR, nickname, token])
       
     const  handleFileChange = (e) => {
-        let newArray = [ ...files, ...Array.from(e.target.files) ];
-        setFiles(newArray);
-        console.log(newArray);
-        console.log(files);
+        if (e.target.files)
+        {
+            Array.from(e.target.files).forEach(inputFile => {
+                setFiles((prev) => [...prev, inputFile]);
+
+                let reader = new FileReader();
+                reader.onload = () => {
+                    let newFile = 
+                        {
+                            //name: file.name,
+                            BytesArray: Array.from(new Uint8Array(reader.result))
+                        }
+                    setFilesToLoad(prev => [...prev, newFile]);
+                }
+                reader.readAsArrayBuffer(inputFile);
+            })
+            
+        }
+        
+        
     };
     
     const handleRemoveFile = (id) => {
         const updatedFiles = files.filter((file, index) => index !== id);
+        const updatedFilesToLoad = filesToLoad.filter((file, index) => index !== id);
         setFiles(updatedFiles);
+        setFilesToLoad(updatedFilesToLoad);
       };
 
     return(
@@ -193,7 +190,10 @@ const ChatForTwoPage = () => {
                         <label htmlFor="fileInput" className="file-inputer">
                             <i className="fas fa-paperclip"></i>
                         </label>
-                        <input type="file" multiple id="fileInput" style={{display: "none"}} onChange={handleFileChange}/>
+                        <input type="file"
+                         id="fileInput"
+                         style={{display: "none"}} 
+                         multiple onChange={handleFileChange}/>
                     </div>
                     <input type='submit' 
                         id="sendButton" 

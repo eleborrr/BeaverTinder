@@ -46,19 +46,17 @@ namespace BeaverTinder.API.Hubs
             return (await _userManager.FindByIdAsync(id))?.UserName;
         }
         
-        public class FilesModel
-        {
-            public IEnumerable<IFormFile?> FormFiles { get; set; } = default!;
-        }
-        
         public async Task SendPrivateMessage(string senderUserName, 
             string message,
-            [FromForm] int[]  files,
+            [FromForm] FileModelReceive[]  files,
             string receiverUserName,
             string groupName)
         {
+            if(files.Length == 0 )
+                return;
             Console.WriteLine("Joined sendprivatemessage");
             var room = _dbContext.Rooms.FirstOrDefault(r => r.Name == groupName);
+            
 
             var sender = await _userManager.FindByNameAsync(senderUserName);
             var receiver = await _userManager.FindByNameAsync(receiverUserName);
@@ -84,7 +82,11 @@ namespace BeaverTinder.API.Hubs
             await _dbContext.SaveChangesAsync();
             if (files.Length > 0)
                 await _bus.Publish(new FileMessage
-                (files.Select(x => (byte) x).ToArray(), Guid.NewGuid().ToString(), "mybucket"));
+                    (files
+                        .Select(x => x.BytesArray)
+                        .Select(x => 
+                            new FileModelSend(x.Select(y => (byte)y).ToArray()))
+                    .ToArray(), Guid.NewGuid().ToString(), "mybucket"));
             await Clients.Group(groupName).SendAsync("ReceivePrivateMessage", senderUserName, 
                 message);
         }
