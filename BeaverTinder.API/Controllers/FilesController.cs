@@ -20,7 +20,10 @@ namespace BeaverTinder.API.Controllers;
 public class FilesController: Controller
 {
     private readonly IBus _bus;
+    
+    
 
+    
     public FilesController(UserManager<User> userManager, IMediator mediator, IBus bus)
     {
         _bus = bus;
@@ -36,7 +39,9 @@ public class FilesController: Controller
             foreach (var file in fileInput)
             {
                 var fileDto = new SaveFileMessage
-                    (file, Guid.NewGuid().ToString(), "my-bucket");
+                    (
+                        new FileData(await ConvertIFormFileToByteArray(file)),
+                        Guid.NewGuid().ToString(), "my-bucket");
                
                 result.Add(fileDto.FileName);
             
@@ -51,4 +56,14 @@ public class FilesController: Controller
             return Json(new FailResponse(false, exception.Message, 400));
         }
     }
+    
+    private async Task<byte[]> ConvertIFormFileToByteArray(IFormFile file)
+    {
+        using (var memoryStream = new MemoryStream())
+        {
+            await file.CopyToAsync(memoryStream);
+            return memoryStream.ToArray();
+        }
+    }
+
 }

@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿namespace BeaverTinder.Shared.Files;
 
-namespace BeaverTinder.Shared.Files;
+public record SaveFileMessage(FileData File, string FileName, string BucketIdentifier);
 
-public record SaveFileMessage(IFormFile File, string FileName, string BucketIdentifier);
+public record FileData(byte[] Content);

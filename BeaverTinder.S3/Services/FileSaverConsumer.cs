@@ -29,15 +29,15 @@ public class FileSaverConsumer: IConsumer<SaveFileMessage>
             var putObjectArgs = new PutObjectArgs()
                 .WithBucket(bucketName)
                 .WithObject(fileIdentifier)
-                .WithStreamData(file.OpenReadStream())
+                .WithStreamData(new MemoryStream(file.Content))
                 .WithContentType("text")
-                .WithObjectSize(file.Length);
+                .WithObjectSize(file.Content.Length);
             await _minioClient.PutObjectAsync(putObjectArgs);
 
         }
-        catch (Exception)
+        catch (Exception e)
         {
-            Console.WriteLine("AAAAAAA");
+            Console.WriteLine(e);
         }
     }
 }

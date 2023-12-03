@@ -59,7 +59,7 @@ namespace BeaverTinder.API.Hubs
         public async Task SendPrivateMessage(string senderUserName, 
             string message,
             List<string>? filenames, 
-        string receiverUserName,
+            string receiverUserName,
             string groupName)
         {
             Console.WriteLine("Joined sendprivatemessage");
@@ -71,7 +71,7 @@ namespace BeaverTinder.API.Hubs
 
             Console.WriteLine(senderUserName);
             Console.WriteLine(message);
-            // Console.WriteLine(files);
+            Console.WriteLine(filenames.Count());
             Console.WriteLine(receiverUserName);
             Console.WriteLine(groupName);
             if (receiver is null || sender is null || room is null)

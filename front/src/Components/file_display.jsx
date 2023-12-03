@@ -1,16 +1,16 @@
 import { useEffect, useState } from 'react';
+import FilesServerURL from './files_server_url';
 
-const FileDisplay = ({fileBytes}) => {
-    const [fileBA, setFileBA] = useState(fileBytes);
+const FileDisplay = ({fileName}) => {
+    const [fileN, setFileN] = useState(fileName);
 
     useEffect(() => {
-      setFileBA(fileBytes); // обновляем состояние при изменении пропсов
+      setFileN(fileName); // обновляем состояние при изменении пропсов
     }, [fileBytes]);
 
     const isImage = () => {
-      const mimeType = 'image/jpeg'; // Replace with actual detection based on the file
-      return mimeType.startsWith('image/');
-      };
+      return true;
+    };
 
     const downloadFile = () => {
         // Симулируем скачивание файла при нажатии
@@ -24,12 +24,12 @@ const FileDisplay = ({fileBytes}) => {
         // Чистим ссылку после скачивания
         document.body.removeChild(link);
         window.URL.revokeObjectURL(url);
-      };
+    };
 
     return (
         <div>
           {isImage() ? (
-            <img src={`data:image/jpeg;base64,${fileBA}`} alt="Изображение" />
+            <img src={`${FilesServerURL}/api/files/my-bucket/${fileN}`} alt="Изображение" />
           ) : (
             <img src="icon-file.png" alt="Файл" onClick={downloadFile} style={{cursor: "pointer"}} />
           )}

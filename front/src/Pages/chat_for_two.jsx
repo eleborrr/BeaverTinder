@@ -18,8 +18,7 @@ const ChatForTwoPage = () => {
     const [connection, setConnection] = useState(null);
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([]);
-    const [filesToLoad, setFilesToLoad] = useState([]);
-    const [nameFiles, setNameFiles] = useState([]);
+    const [filenames, setFileNames] = useState([]);
     const { nickname } = useParams();
 
     useEffect(() => {
@@ -30,19 +29,17 @@ const ChatForTwoPage = () => {
 
     const handleSend = (event) => {
         
-        if (message === "" && filesToLoad.length === 0)
+        if (message === "" && files.length === 0)
                 return;
         if (files.length !== 0)
         {   
             console.log("sending files");   
             SendFiles();
         }
-        console.log("files to load");
-        console.log(filesToLoad);
         connection.invoke("SendPrivateMessage", 
                         `${roomData.senderName}`,
                         message,
-
+                        filenames,
                         `${roomData.receiverName}`,
                         `${roomData.roomName}`)
             .catch(function (err) { 
@@ -54,7 +51,6 @@ const ChatForTwoPage = () => {
         
         setMessage("");
         setFiles([]);
-        setFilesToLoad([]);
         event.preventDefault();
     }
 
@@ -71,14 +67,15 @@ const ChatForTwoPage = () => {
             });
         });
         
-            connection.on("ReceivePrivateMessage", function (user, message, file){
+            connection.on("ReceivePrivateMessage", function (user, message, listFiles){
             let newMessage = 
             {
                 belongsToSender : user === nickname,
                 message : message,
                 senderName : user,
-                file: file
+                files: listFiles
             };
+            console.log(listFiles);
             setMessages(prev => [...prev, newMessage])
         });
         setConnection(connection);
@@ -108,15 +105,12 @@ const ChatForTwoPage = () => {
     
     const handleRemoveFile = (id) => {
         const updatedFiles = files.filter((file, index) => index !== id);
-        const updatedFilesToLoad = filesToLoad.filter((file, index) => index !== id);
         setFiles(updatedFiles);
-        setFilesToLoad(updatedFilesToLoad);
       };
 
     const SendFiles = async () => {
         const formData = new FormData();
         for (let i = 0; i < files.length; i++) {
-            console.log(files[i])
             formData.append(`file${i}`, files[i]);
           }
         try{
@@ -127,14 +121,12 @@ const ChatForTwoPage = () => {
                 }
               })
               .then(res => {
-                console.log(res.data);
-                setNameFiles(res.data);
+                console.log(res);
+                setFileNames(res.data);
               })
               .catch(err => {
                 console.log("ошибка в отправлении")
-                console.log(err)}
-                
-                );
+                console.log(err)});
         } catch (e){
             console.log(e);
         }
@@ -157,9 +149,11 @@ const ChatForTwoPage = () => {
                                     belongsToSender={mes.belongsToSender}
                                 />
                                 {
-                                    mes.file.length !== 0 
+                                    Array.from(mes.files).length !== 0 
                                     ? 
-                                    <FileDisplay fileBytes={mes.file}/>
+                                        mes.files.map((fileN, index) => (
+                                            <FileDisplay fileName={fileN}/>
+                                        ))
                                     :
                                     <></>
                                 }
