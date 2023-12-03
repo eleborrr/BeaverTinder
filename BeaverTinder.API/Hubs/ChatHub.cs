@@ -1,4 +1,6 @@
-﻿using BeaverTinder.Domain.Entities;
+﻿using BeaverTinder.Application.Dto.SupportChat;
+using BeaverTinder.Application.Features.Chat.SaveMessage;
+using BeaverTinder.Domain.Entities;
 using BeaverTinder.Infrastructure.Database;
 using BeaverTinder.Shared.Files;
 using MassTransit;
@@ -15,11 +17,13 @@ namespace BeaverTinder.API.Hubs
         private readonly ApplicationDbContext _dbContext;
         private readonly UserManager<User> _userManager;
         private readonly IBus _bus;
+        private readonly IMediator _mediator;
 
         public ChatHub(ApplicationDbContext dbContext, UserManager<User> userManager, IMediator mediator, IBus bus)
         {
             _dbContext = dbContext;
             _userManager = userManager;
+            _mediator = mediator;
             _bus = bus;
         }
         
@@ -89,13 +93,24 @@ namespace BeaverTinder.API.Hubs
             _dbContext.Messages.Add(newMessage);
 
             var file = new SaveFileMessage
-                (files.Select(x => (byte)x).ToArray(), Guid.NewGuid().ToString(), "mybucket");
+                (files.Select(x => (byte)x).ToArray(), Guid.NewGuid().ToString(), "my-bucket");
             _dbContext.Files.Add(new FileToMessage
             {
                 FileGuidName = file.FileIdentifier + ".txt",
                 MessageId = newMessage.Id
             });
             await _dbContext.SaveChangesAsync();
+            
+            var dto = new ChatMessageDto()
+            {
+                Content = message,
+                RoomId = room.Id,
+                SenderId = sender.Id,
+                ReceiverId = receiver.Id,
+                Timestamp = DateTime.Now
+            };
+            await _mediator.Send(new SaveChatMessageByDtoBusCommand(dto));
+            
             if (files.Length > 0)
                 await _bus.Publish(file);
             
@@ -103,7 +118,6 @@ namespace BeaverTinder.API.Hubs
             await Clients.Group(groupName).SendAsync("ReceivePrivateMessage", senderUserName, 
                 message, new List<string>{file.FileIdentifier});
         }
-        
         
         public override async Task OnConnectedAsync()
         {

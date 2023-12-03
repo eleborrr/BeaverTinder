@@ -1,5 +1,5 @@
-﻿using Application.SupportChat.SaveMessageByDtoBus;
-using BeaverTinder.Application.Dto.SupportChat;
+﻿using BeaverTinder.Application.Dto.SupportChat;
+using BeaverTinder.Application.Features.SupportChat.SaveMessageByDtoBus;
 using BeaverTinder.Domain.Entities;
 using BeaverTinder.Infrastructure.Database;
 using BeaverTinder.Shared.Files;
@@ -44,7 +44,7 @@ public class SupportChatHub : Hub
             return;
         }
         
-        var dto = new SupportChatMessageDto()
+        var dto = new ChatMessageDto()
         {
             Content = message,
             RoomId = room.Id,
