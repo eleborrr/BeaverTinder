@@ -1,13 +1,13 @@
-import { useCallback, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
 import { axiosInstance } from "../Components/axios_server";
+import { useNavigate, useParams } from "react-router-dom";
+import { useCallback, useEffect, useState } from "react";
+import * as signalR from "@microsoft/signalr";
 import jwtDecode from "jwt-decode";
 import Cookies from "js-cookie";
-import './../assets/css/chat_for_two.css';
-import * as signalR from "@microsoft/signalr";
+import FileDisplay from "../Components/file_dicsplay";
 import ServerURL from "../Components/server_url";
-import { FileUpload } from "../Components/file_uploader";
-import "../assets/css/file_uploader.css"
+import './../assets/css/chat_for_two.css';
+import "../assets/css/file_uploader.css";
 
 const ChatForTwoPage = () => {
     const navigate = useNavigate();
@@ -34,37 +34,37 @@ const ChatForTwoPage = () => {
                 return;
         function readFilesSequentially(index) {
             console.log("start");
-        if (index < arrayFiles.length) {
-            const file = arrayFiles[index];
-            console.log(file);
-            reader.onloadend = function(event) {
-            console.log(event.target);
-            console.log(event.target.result);
-            const arrayBuffer = event.target.result;
-            const combinedArrayBuffer = new Uint8Array(totalArrayBuffer.byteLength + arrayBuffer.byteLength);
-            combinedArrayBuffer.set(new Uint8Array(totalArrayBuffer), 0);
-            combinedArrayBuffer.set(new Uint8Array(arrayBuffer), totalArrayBuffer.byteLength);
-            totalArrayBuffer = combinedArrayBuffer.buffer;
-            readFilesSequentially(index + 1); // Read the next file recursively
-            };
-        reader.readAsArrayBuffer(file);
-        } else {
-            console.log("start to back");
-            console.log(Array.from(totalArrayBuffer));
-            console.log(totalArrayBuffer);
-            connection.invoke("SendPrivateMessage", 
-                            `${roomData.senderName}`,
-                            message, 
-                            Array.from(new Uint8Array(totalArrayBuffer)),   
-                            `${roomData.receiverName}`,
-                            `${roomData.roomName}`)
-                .catch(function (err) { 
-            console.log("error sending message");
-            console.log("form data:");
-            console.log(files);
-            return console.error(err.toString());
-        });
-        }
+            if (index < arrayFiles.length) {
+                const file = arrayFiles[index];
+                console.log(file);
+                reader.onloadend = function(event) {
+                    console.log(event.target);
+                    console.log(event.target.result);
+                    const arrayBuffer = event.target.result;
+                    const combinedArrayBuffer = new Uint8Array(totalArrayBuffer.byteLength + arrayBuffer.byteLength);
+                    combinedArrayBuffer.set(new Uint8Array(totalArrayBuffer), 0);
+                    combinedArrayBuffer.set(new Uint8Array(arrayBuffer), totalArrayBuffer.byteLength);
+                    totalArrayBuffer = combinedArrayBuffer.buffer;
+                    readFilesSequentially(index + 1); // Read the next file recursively
+                };
+                reader.readAsArrayBuffer(file);
+            } else {
+                console.log("start to back");
+                console.log(Array.from(totalArrayBuffer));
+                console.log(totalArrayBuffer);
+                connection.invoke("SendPrivateMessage", 
+                                `${roomData.senderName}`,
+                                message, 
+                                Array.from(new Uint8Array(totalArrayBuffer)),   
+                                `${roomData.receiverName}`,
+                                `${roomData.roomName}`)
+                    .catch(function (err) { 
+                console.log("error sending message");
+                console.log("form data:");
+                console.log(files);
+                return console.error(err.toString());
+                });
+            }
         }
 
         readFilesSequentially(0);
@@ -86,13 +86,14 @@ const ChatForTwoPage = () => {
             });
         });
 
-        connection.on("ReceivePrivateMessage", function (user, message){
+        connection.on("ReceivePrivateMessage", function (user, message, file){
             console.log("normal chat recieved");
             let newMessage = 
             {
                 belongsToSender : user === nickname,
                 message : message,
-                senderName : user
+                senderName : user,
+                file: file
             };
             setMessages(prev => [...prev, newMessage])
         });
@@ -137,12 +138,21 @@ const ChatForTwoPage = () => {
                 <div id="messagesList" className='chat-messages__content'>
                     {
                         messages.map((mes, index) => (
-                            <Message 
-                                key={index}
-                                senderName={mes.senderName}
-                                message={mes.message}
-                                belongsToSender={mes.belongsToSender}
-                            />
+                            <>
+                                <Message 
+                                    key={index}
+                                    senderName={mes.senderName}
+                                    message={mes.message}
+                                    belongsToSender={mes.belongsToSender}
+                                />
+                                {
+                                    mes.file 
+                                    ? 
+                                    <FileDisplay fileBytes={mes.file}/>
+                                    :
+                                    <></>
+                                }
+                            </>
                         ))
                     }
                 </div>
