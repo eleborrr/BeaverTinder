@@ -64,9 +64,8 @@ const ChatForTwoPage = () => {
                 return console.error(err.toString());
             });
         });
-
-        connection.on("ReceivePrivateMessage", function (user, message, file){
-            console.log("normal chat recieved");
+        
+            connection.on("ReceivePrivateMessage", function (user, message, file){
             let newMessage = 
             {
                 belongsToSender : user === nickname,

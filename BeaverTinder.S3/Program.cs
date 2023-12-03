@@ -1,3 +1,4 @@
+using BeaverTinder.S3.Services;
 using BeaverTinder.S3.ServicesExtensions.RabbitMq;
 using BeaverTinder.S3.ServicesExtensions.S3;
 
@@ -14,6 +15,15 @@ builder.Services.AddS3Client(builder.Configuration);
 builder.Services.AddMasstransitRabbitMq(builder.Configuration);
 
 var app = builder.Build();
+
+app.MapGet("api/files/{bucketName}/{fileName}", async (string[] fileNames, FileGetterService storageService) =>
+{
+    var stream = await storageService.GetFiles(fileNames);
+
+    return stream is not null
+        ? Results.Ok(stream)
+        : Results.NotFound();
+});
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

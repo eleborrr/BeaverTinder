@@ -1,27 +1,28 @@
 ﻿using BeaverTinder.Application.Dto.MediatR;
+using BeaverTinder.Application.Features.SupportChat.SaveMessageByDtoBus;
 using BeaverTinder.Application.Services.Abstractions.Cqrs.Commands;
 using BeaverTinder.Domain.Entities;
 using MassTransit;
 using MediatR;
 
-namespace BeaverTinder.Application.Features.SupportChat.SaveMessageByDtoBus;
+namespace BeaverTinder.Application.Features.Chat.SaveMessage;
 
-public class SaveMessageByDtoBusHandler : ICommandHandler<SaveMessageByDtoBusCommand, Unit>
+public class SaveChatMessageByDtoBusHandler: ICommandHandler<SaveChatMessageByDtoBusCommand, Unit>
 {
     private readonly IBus _bus;
 
-    public SaveMessageByDtoBusHandler(IBus bus)
+    public SaveChatMessageByDtoBusHandler(IBus bus)
     {
         _bus = bus;
     }
-
+    
     public async Task<Result<Unit>> Handle(
-        SaveMessageByDtoBusCommand request,
+        SaveChatMessageByDtoBusCommand request,
         CancellationToken cancellationToken)
     {
         try
         {
-            var entity = new SupportChatMessage
+            var entity = new Message()
             {
                 SenderId = request.Message.SenderId,
                 ReceiverId = request.Message.ReceiverId,

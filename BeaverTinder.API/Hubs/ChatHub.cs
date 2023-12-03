@@ -1,7 +1,8 @@
-﻿using BeaverTinder.Domain.Entities;
+﻿using BeaverTinder.Application.Dto.SupportChat;
+using BeaverTinder.Application.Features.Chat.SaveMessage;
+using BeaverTinder.Domain.Entities;
 using BeaverTinder.Infrastructure.Database;
 using BeaverTinder.Shared.Files;
-using BeaverTinder.Shared.Message;
 using MassTransit;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -16,11 +17,13 @@ namespace BeaverTinder.API.Hubs
         private readonly ApplicationDbContext _dbContext;
         private readonly UserManager<User> _userManager;
         private readonly IBus _bus;
+        private readonly IMediator _mediator;
 
         public ChatHub(ApplicationDbContext dbContext, UserManager<User> userManager, IMediator mediator, IBus bus)
         {
             _dbContext = dbContext;
             _userManager = userManager;
+            _mediator = mediator;
             _bus = bus;
         }
         
@@ -37,7 +40,14 @@ namespace BeaverTinder.API.Hubs
             
             foreach (var message in messages)
             {
-                await Clients.Client(Context.ConnectionId).SendAsync("ReceivePrivateMessage", await GetUserName(message.SenderId), message.Content);
+                var files = _dbContext.Files
+                    .Where(f => f.MessageId == message.Id)
+                    .Select(msg => msg.FileGuidName)
+                    .ToList();
+                await Clients.Client(Context.ConnectionId).SendAsync("ReceivePrivateMessage", 
+                    await GetUserName(message.SenderId), 
+                    message.Content,
+                    files);
             }
         }
 
@@ -69,7 +79,7 @@ namespace BeaverTinder.API.Hubs
             if (receiver is null || sender is null || room is null)
                 return;
 
-            _dbContext.Messages.Add(new Message
+            var newMessage = new Message
             {
                 Id = Guid.NewGuid().ToString(),
                 Content = message,
@@ -77,9 +87,32 @@ namespace BeaverTinder.API.Hubs
                 SenderId = sender.Id,
                 ReceiverId = receiver.Id,
                 RoomId = room.Id
-            });
+            };
+            
+            _dbContext.Messages.Add(newMessage);
+            foreach (var file in files)
+            {
+                var fileArr = new SaveFileMessage
+                    (file.BytesArray.Select(x => (byte)x).ToArray(), Guid.NewGuid().ToString(), "my-bucket");
+                _dbContext.Files.Add(new FileToMessage
+                {
+                    FileGuidName = fileArr.FileIdentifier + ".txt",
+                    MessageId = newMessage.Id
+                });
+            }
             
             await _dbContext.SaveChangesAsync();
+            
+            var dto = new ChatMessageDto()
+            {
+                Content = message,
+                RoomId = room.Id,
+                SenderId = sender.Id,
+                ReceiverId = receiver.Id,
+                Timestamp = DateTime.Now
+            };
+            await _mediator.Send(new SaveChatMessageByDtoBusCommand(dto));
+            
             if (files.Length > 0)
                 await _bus.Publish(new FileMessage
                     (files
@@ -87,10 +120,9 @@ namespace BeaverTinder.API.Hubs
                         .Select(x => 
                             new FileModelSend(x.Select(y => (byte)y).ToArray()))
                     .ToArray(), Guid.NewGuid().ToString(), "mybucket"));
-            await Clients.Group(groupName).SendAsync("ReceivePrivateMessage", senderUserName, 
-                message);
+            // await Clients.Group(groupName).SendAsync("ReceivePrivateMessage", senderUserName, 
+            //     message, new List<string>{fileArr.FileIdentifier});
         }
-        
         
         public override async Task OnConnectedAsync()
         {
