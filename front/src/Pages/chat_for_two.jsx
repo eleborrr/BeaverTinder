@@ -19,6 +19,7 @@ const ChatForTwoPage = () => {
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([]);
     const [filesToLoad, setFilesToLoad] = useState([]);
+    const [nameFiles, setNameFiles] = useState([]);
     const { nickname } = useParams();
 
     useEffect(() => {
@@ -31,20 +32,25 @@ const ChatForTwoPage = () => {
         
         if (message === "" && filesToLoad.length === 0)
                 return;
-                console.log("files to load");
-                console.log(filesToLoad);
-                connection.invoke("SendPrivateMessage", 
-                                `${roomData.senderName}`,
-                                message, 
-                                filesToLoad,   
-                                `${roomData.receiverName}`,
-                                `${roomData.roomName}`)
-                    .catch(function (err) { 
-                console.log("error sending message");
-                console.log("form data:");
-                console.log(files); 
-                return console.error(err.toString());
-                });
+        if (files.length !== 0)
+        {   
+            console.log("sending files");   
+            SendFiles();
+        }
+        console.log("files to load");
+        console.log(filesToLoad);
+        connection.invoke("SendPrivateMessage", 
+                        `${roomData.senderName}`,
+                        message,
+
+                        `${roomData.receiverName}`,
+                        `${roomData.roomName}`)
+            .catch(function (err) { 
+        console.log("error sending message");
+        console.log("form data:");
+        console.log(files); 
+        return console.error(err.toString());
+        });
         
         setMessage("");
         setFiles([]);
@@ -97,25 +103,7 @@ const ChatForTwoPage = () => {
       
     const  handleFileChange = (e) => {
         if (e.target.files)
-        {
-            Array.from(e.target.files).forEach(inputFile => {
-                setFiles((prev) => [...prev, inputFile]);
-
-                let reader = new FileReader();
-                reader.onload = () => {
-                    let newFile = 
-                        {
-                            //name: file.name,
-                            BytesArray: Array.from(new Uint8Array(reader.result))
-                        }
-                    setFilesToLoad(prev => [...prev, newFile]);
-                }
-                reader.readAsArrayBuffer(inputFile);
-            })
-            
-        }
-        
-        
+            setFiles((prev) => [...prev, ...Array.from(e.target.files)])
     };
     
     const handleRemoveFile = (id) => {
@@ -124,6 +112,33 @@ const ChatForTwoPage = () => {
         setFiles(updatedFiles);
         setFilesToLoad(updatedFilesToLoad);
       };
+
+    const SendFiles = async () => {
+        const formData = new FormData();
+        for (let i = 0; i < files.length; i++) {
+            console.log(files[i])
+            formData.append(`file${i}`, files[i]);
+          }
+        try{
+            await axiosInstance.post("/uploadFile", formData, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'multipart/form-data'
+                }
+              })
+              .then(res => {
+                console.log(res.data);
+                setNameFiles(res.data);
+              })
+              .catch(err => {
+                console.log("ошибка в отправлении")
+                console.log(err)}
+                
+                );
+        } catch (e){
+            console.log(e);
+        }
+    } 
 
     return(
         <div className='chat'>
@@ -142,7 +157,7 @@ const ChatForTwoPage = () => {
                                     belongsToSender={mes.belongsToSender}
                                 />
                                 {
-                                    mes.file 
+                                    mes.file.length !== 0 
                                     ? 
                                     <FileDisplay fileBytes={mes.file}/>
                                     :

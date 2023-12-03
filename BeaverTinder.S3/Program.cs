@@ -1,6 +1,7 @@
 using BeaverTinder.S3.Services;
 using BeaverTinder.S3.ServicesExtensions.RabbitMq;
 using BeaverTinder.S3.ServicesExtensions.S3;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,7 +17,7 @@ builder.Services.AddMasstransitRabbitMq(builder.Configuration);
 
 var app = builder.Build();
 
-app.MapGet("api/files/{bucketName}/{fileName}", async (string[] fileNames, FileGetterService storageService) =>
+app.MapGet("api/files/{bucketName}/{fileName}", async (string[] fileNames, [FromServices] FileGetterService storageService) =>
 {
     var stream = await storageService.GetFiles(fileNames);
 

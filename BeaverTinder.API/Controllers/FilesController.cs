@@ -27,8 +27,9 @@ public class FilesController: Controller
     }
 
     [HttpPost("/uploadFile")]
-    public async Task<JsonResult> UploadFile([FromBody] IFormFileCollection fileInput)
-    {
+    public async Task<JsonResult> UploadFile()
+    {   
+        var fileInput = Request.Form.Files;
         try
         {
             var result = new List<string>();
