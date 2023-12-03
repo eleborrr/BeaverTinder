@@ -11,12 +11,10 @@ public class FileGetterService
     private readonly string _accessKey = "F7l1mZ14Pno43XicMUHY";
     private readonly string _secretKey = "Aaz371CWmcr650RLk6xRJSeG0rPw9CB2okThDlwX";
     private readonly string _bucketName = "my-bucket";
-    private readonly IBus _bus;
 
-    public FileGetterService(IMinioClient minioClient, IBus bus)
+    public FileGetterService(IMinioClient minioClient)
     {
         _minioClient = minioClient;
-        _bus = bus;
     }
     
     public async Task<List<Stream>> GetFiles(IEnumerable<string> fileNames)
