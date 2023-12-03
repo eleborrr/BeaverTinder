@@ -19,43 +19,25 @@ public class FileSaverConsumer: IConsumer<SaveFileMessage>
 
     public async Task Consume(ConsumeContext<SaveFileMessage> context)
     {
-        // Console.WriteLine(context.Message);
-        // var file = context.Message;
-        // try
-        // {
-            context.Message.Deconstruct(out var buffer, out var fileIdentifier, out var bucketIdentifier);
+        Console.WriteLine(context.Message);
+        try
+        {
+            context.Message.Deconstruct(out var file, out var fileIdentifier, out var bucketIdentifier);
             
             var bucketName = "my-bucket";
             
-            foreach (var fileModelSend in buffer)
-            {
-                var stream = new MemoryStream(fileModelSend.BytesArray);
-                
-                var putObjectArgs = new PutObjectArgs()
-                    .WithBucket(bucketName)
-                    .WithObject(fileIdentifier)
-                    .WithStreamData(stream)
-                    .WithContentType("text")
-                    .WithObjectSize(stream.Length);
-                await _minioClient.PutObjectAsync(putObjectArgs);
-            }
-            
-            
-           
-            // var objectName = file.FileName;
-            // var contentType = file.ContentType;
-            //
-            // file.OpenReadStream().Position = 0;
-            // var _bytes = new byte[file.FormFile.Length];
-            // var file_Stream = file.FormFile.OpenReadStream().Read(_bytes, 5, 5);
+            var putObjectArgs = new PutObjectArgs()
+                .WithBucket(bucketName)
+                .WithObject(fileIdentifier)
+                .WithStreamData(file.OpenReadStream())
+                .WithContentType("text")
+                .WithObjectSize(file.Length);
+            await _minioClient.PutObjectAsync(putObjectArgs);
 
-
-            
-
-        // }
-        // catch (Exception)
-        // {
-        //     Console.WriteLine("AAAAAAA");
-        // }
+        }
+        catch (Exception)
+        {
+            Console.WriteLine("AAAAAAA");
+        }
     }
 }

@@ -58,12 +58,9 @@ namespace BeaverTinder.API.Hubs
         
         public async Task SendPrivateMessage(string senderUserName, 
             string message,
-            [FromForm] FileModelReceive[]  files,
             string receiverUserName,
             string groupName)
         {
-            if(files.Length == 0 )
-                return;
             Console.WriteLine("Joined sendprivatemessage");
             var room = _dbContext.Rooms.FirstOrDefault(r => r.Name == groupName);
             
@@ -73,7 +70,7 @@ namespace BeaverTinder.API.Hubs
 
             Console.WriteLine(senderUserName);
             Console.WriteLine(message);
-            Console.WriteLine(files);
+            // Console.WriteLine(files);
             Console.WriteLine(receiverUserName);
             Console.WriteLine(groupName);
             if (receiver is null || sender is null || room is null)
@@ -90,18 +87,6 @@ namespace BeaverTinder.API.Hubs
             };
             
             _dbContext.Messages.Add(newMessage);
-            foreach (var file in files)
-            {
-                var fileArr = new SaveFileMessage
-                    (file.BytesArray.Select(x => (byte)x).ToArray(), Guid.NewGuid().ToString(), "my-bucket");
-                _dbContext.Files.Add(new FileToMessage
-                {
-                    FileGuidName = fileArr.FileIdentifier + ".txt",
-                    MessageId = newMessage.Id
-                });
-            }
-            
-            await _dbContext.SaveChangesAsync();
             
             var dto = new ChatMessageDto()
             {
@@ -113,15 +98,8 @@ namespace BeaverTinder.API.Hubs
             };
             await _mediator.Send(new SaveChatMessageByDtoBusCommand(dto));
             
-            if (files.Length > 0)
-                await _bus.Publish(new FileMessage
-                    (files
-                        .Select(x => x.BytesArray)
-                        .Select(x => 
-                            new FileModelSend(x.Select(y => (byte)y).ToArray()))
-                    .ToArray(), Guid.NewGuid().ToString(), "mybucket"));
-            // await Clients.Group(groupName).SendAsync("ReceivePrivateMessage", senderUserName, 
-            //     message, new List<string>{fileArr.FileIdentifier});
+            await Clients.Group(groupName).SendAsync("ReceivePrivateMessage", senderUserName, 
+                message);
         }
         
         public override async Task OnConnectedAsync()
