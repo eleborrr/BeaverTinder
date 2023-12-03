@@ -5,7 +5,7 @@ using MassTransit;
 
 namespace BeaverTinder.S3.Services;
 
-public class FileConsumer: IConsumer<IFormFile>
+public class FileConsumer: IConsumer<FileMessage>
 {
     private readonly IMinioClient  _minioClient;
     private readonly string _accessKey = "F7l1mZ14Pno43XicMUHY";
@@ -17,33 +17,37 @@ public class FileConsumer: IConsumer<IFormFile>
         _minioClient = minioClient;
     }
 
-    public async Task Consume(ConsumeContext<IFormFile> context)
+    public async Task Consume(ConsumeContext<FileMessage> context)
     {
-        Console.WriteLine(context.Message);
-        var file = context.Message;
-        try
-        {
+        // Console.WriteLine(context.Message);
+        // var file = context.Message;
+        // try
+        // {
+            context.Message.Deconstruct(out var buffer, out var fileIdentifier, out var bucketIdentifier);
+        
+            var stream = new MemoryStream(buffer);
+            
             var bucketName = "my-bucket";
-            var objectName = file.FileName;
-            var contentType = file.ContentType;
-
-            file.OpenReadStream().Position = 0;
+            // var objectName = file.FileName;
+            // var contentType = file.ContentType;
+            //
+            // file.OpenReadStream().Position = 0;
             // var _bytes = new byte[file.FormFile.Length];
             // var file_Stream = file.FormFile.OpenReadStream().Read(_bytes, 5, 5);
 
 
             var putObjectArgs = new PutObjectArgs()
                 .WithBucket(bucketName)
-                .WithObject(objectName)
-                .WithStreamData(file.OpenReadStream())
-                .WithContentType(contentType)
-                .WithObjectSize(file.Length);
+                .WithObject(fileIdentifier)
+                .WithStreamData(stream)
+                .WithContentType("text")
+                .WithObjectSize(stream.Length);
             await _minioClient.PutObjectAsync(putObjectArgs);
 
-        }
-        catch (Exception)
-        {
-            Console.WriteLine("AAAAAAA");
-        }
+        // }
+        // catch (Exception)
+        // {
+        //     Console.WriteLine("AAAAAAA");
+        // }
     }
 }

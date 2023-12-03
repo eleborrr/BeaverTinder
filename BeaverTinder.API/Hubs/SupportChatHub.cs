@@ -29,7 +29,7 @@ public class SupportChatHub : Hub
     public async Task SendPrivateMessage(
         string senderUserName,
         string message,
-        IEnumerable<FormFile> files,
+        IEnumerable<FileMessage> files,
         string receiverUserName,
         string groupName)
     {

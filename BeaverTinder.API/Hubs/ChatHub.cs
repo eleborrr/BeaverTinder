@@ -57,6 +57,7 @@ namespace BeaverTinder.API.Hubs
             string receiverUserName,
             string groupName)
         {
+            Console.WriteLine("Joined sendprivatemessage");
             var room = _dbContext.Rooms.FirstOrDefault(r => r.Name == groupName);
 
             var sender = await _userManager.FindByNameAsync(senderUserName);
@@ -82,8 +83,8 @@ namespace BeaverTinder.API.Hubs
             
             await _dbContext.SaveChangesAsync();
             if (files.Length > 0)
-                await _bus.Publish(files);
-            Console.WriteLine("mass transit used");
+                await _bus.Publish(new FileMessage
+                (files.Select(x => (byte) x).ToArray(), Guid.NewGuid().ToString(), "mybucket"));
             await Clients.Group(groupName).SendAsync("ReceivePrivateMessage", senderUserName, 
                 message);
         }
