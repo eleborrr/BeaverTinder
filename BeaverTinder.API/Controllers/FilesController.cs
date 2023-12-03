@@ -31,23 +31,23 @@ public class FilesController: Controller
     }
 
     [HttpPost("/uploadFile")]
-    public async Task<JsonResult> UploadFile([FromBody] IFormFile fileInput)
+    public async Task<JsonResult> UploadFile([FromBody] IFormFileCollection fileInput)
     {
         try
         {
-            var file = new SaveFileMessage
-                (fileInput, Guid.NewGuid().ToString(), "my-bucket");
-            _dbContext.Files.Add(new FileToMessage
+            var result = new List<string>();
+            foreach (var file in fileInput)
             {
-                FileGuidName = file.FileIdentifier + ".txt",
-                MessageId = newMessage.Id
-            });
-            await _dbContext.SaveChangesAsync();
+                var fileDto = new SaveFileMessage
+                    (file, Guid.NewGuid().ToString(), "my-bucket");
+               
+                result.Add(fileDto.FileName);
             
-            if (fileInput.Length > 0)
-                await _bus.Publish(file);
+                if (file.Length > 0)
+                    await _bus.Publish(fileDto);
+            }
             
-            return Json(file.FileIdentifier);
+            return Json(result);
         }
         catch (Exception exception)
         {

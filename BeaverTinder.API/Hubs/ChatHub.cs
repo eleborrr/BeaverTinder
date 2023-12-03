@@ -58,7 +58,8 @@ namespace BeaverTinder.API.Hubs
         
         public async Task SendPrivateMessage(string senderUserName, 
             string message,
-            string receiverUserName,
+            List<string>? filenames, 
+        string receiverUserName,
             string groupName)
         {
             Console.WriteLine("Joined sendprivatemessage");
@@ -85,7 +86,17 @@ namespace BeaverTinder.API.Hubs
                 ReceiverId = receiver.Id,
                 RoomId = room.Id
             };
+
+            foreach (var filename in filenames)
+            {
+                _dbContext.Files.Add(new FileToMessage
+                {
+                    FileGuidName = filename,
+                    MessageId = newMessage.Id
+                });
+            }
             
+            await _dbContext.SaveChangesAsync();
             _dbContext.Messages.Add(newMessage);
             
             var dto = new ChatMessageDto()
@@ -99,7 +110,7 @@ namespace BeaverTinder.API.Hubs
             await _mediator.Send(new SaveChatMessageByDtoBusCommand(dto));
             
             await Clients.Group(groupName).SendAsync("ReceivePrivateMessage", senderUserName, 
-                message);
+                message, filenames);
         }
         
         public override async Task OnConnectedAsync()
