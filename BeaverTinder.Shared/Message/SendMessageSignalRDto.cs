@@ -3,4 +3,4 @@ using Microsoft.AspNetCore.Http;
 
 namespace BeaverTinder.Shared.Message;
 
-public record SendMessageSignalRDto(string msg, IEnumerable<FormFile> files);
+public record SendMessageSignalRDto(string msg, IEnumerable<FileMessage> files);

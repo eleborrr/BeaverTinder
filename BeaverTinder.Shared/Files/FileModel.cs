@@ -2,7 +2,4 @@
 
 namespace BeaverTinder.Shared.Files;
 
-public class FileModel
-{
-    public IFormFile FormFile { get; set; }
-}
+public record FileMessage(byte[] Bytes, string FileIdentifier, string BucketIdentifier);
