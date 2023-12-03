@@ -19,7 +19,7 @@ public static class ServiceCollectionExtensions
         
         services.AddMassTransit(busConfigurator =>
         {
-            busConfigurator.AddConsumer<FileConsumer>();
+            busConfigurator.AddConsumer<FileSaverConsumer>();
             
             busConfigurator.UsingRabbitMq((context, configurator) =>
             {

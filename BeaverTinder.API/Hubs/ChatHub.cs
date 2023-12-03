@@ -1,7 +1,6 @@
 ﻿using BeaverTinder.Domain.Entities;
 using BeaverTinder.Infrastructure.Database;
 using BeaverTinder.Shared.Files;
-using BeaverTinder.Shared.Message;
 using MassTransit;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -37,7 +36,14 @@ namespace BeaverTinder.API.Hubs
             
             foreach (var message in messages)
             {
-                await Clients.Client(Context.ConnectionId).SendAsync("ReceivePrivateMessage", await GetUserName(message.SenderId), message.Content);
+                var files = _dbContext.Files
+                    .Where(f => f.MessageId == message.Id)
+                    .Select(msg => msg.FileGuidName)
+                    .ToList();
+                await Clients.Client(Context.ConnectionId).SendAsync("ReceivePrivateMessage", 
+                    await GetUserName(message.SenderId), 
+                    message.Content,
+                    files);
             }
         }
 
@@ -57,7 +63,6 @@ namespace BeaverTinder.API.Hubs
             string receiverUserName,
             string groupName)
         {
-            Console.WriteLine("Joined sendprivatemessage");
             var room = _dbContext.Rooms.FirstOrDefault(r => r.Name == groupName);
 
             var sender = await _userManager.FindByNameAsync(senderUserName);
@@ -71,7 +76,7 @@ namespace BeaverTinder.API.Hubs
             if (receiver is null || sender is null || room is null)
                 return;
 
-            _dbContext.Messages.Add(new Message
+            var newMessage = new Message
             {
                 Id = Guid.NewGuid().ToString(),
                 Content = message,
@@ -79,14 +84,24 @@ namespace BeaverTinder.API.Hubs
                 SenderId = sender.Id,
                 ReceiverId = receiver.Id,
                 RoomId = room.Id
-            });
+            };
             
+            _dbContext.Messages.Add(newMessage);
+
+            var file = new SaveFileMessage
+                (files.Select(x => (byte)x).ToArray(), Guid.NewGuid().ToString(), "mybucket");
+            _dbContext.Files.Add(new FileToMessage
+            {
+                FileGuidName = file.FileIdentifier + ".txt",
+                MessageId = newMessage.Id
+            });
             await _dbContext.SaveChangesAsync();
             if (files.Length > 0)
-                await _bus.Publish(new FileMessage
-                (files.Select(x => (byte) x).ToArray(), Guid.NewGuid().ToString(), "mybucket"));
+                await _bus.Publish(file);
+            
+            
             await Clients.Group(groupName).SendAsync("ReceivePrivateMessage", senderUserName, 
-                message);
+                message, new List<string>{file.FileIdentifier});
         }
         
         

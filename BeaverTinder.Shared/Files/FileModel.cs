@@ -2,4 +2,4 @@
 
 namespace BeaverTinder.Shared.Files;
 
-public record FileMessage(byte[] Bytes, string FileIdentifier, string BucketIdentifier);
+public record SaveFileMessage(byte[] Bytes, string FileIdentifier, string BucketIdentifier);
