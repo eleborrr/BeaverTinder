@@ -33,8 +33,8 @@ public class FilesController: Controller
     public async Task<JsonResult> UploadFile()
     {   
         var fileInput = Request.Form.Files;
-        try
-        {
+        // try
+        // {
             var result = new List<string>();
             foreach (var file in fileInput)
             {
@@ -50,11 +50,11 @@ public class FilesController: Controller
             }
             
             return Json(result);
-        }
-        catch (Exception exception)
-        {
-            return Json(new FailResponse(false, exception.Message, 400));
-        }
+        // }
+        // catch (Exception exception)
+        // {
+        //     return Json(new FailResponse(false, exception.Message, 400));
+        // }
     }
     
     private async Task<byte[]> ConvertIFormFileToByteArray(IFormFile file)

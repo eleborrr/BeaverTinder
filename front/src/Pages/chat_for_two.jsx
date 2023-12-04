@@ -27,6 +27,12 @@ const ChatForTwoPage = () => {
         }
     }, [navigate, token])
 
+    useEffect(() => {
+        if(filenames.length > 0) {
+            callSendMessageSignalR();
+        }
+    }, [filenames]);
+
     const handleSend = (event) => {
         
         if (message === "" && files.length === 0)
@@ -36,22 +42,30 @@ const ChatForTwoPage = () => {
             console.log("sending files");   
             SendFiles();
         }
-        connection.invoke("SendPrivateMessage", 
-                        `${roomData.senderName}`,
-                        message,
-                        filenames,
-                        `${roomData.receiverName}`,
-                        `${roomData.roomName}`)
-            .catch(function (err) { 
-        console.log("error sending message");
-        console.log("form data:");
-        console.log(files); 
-        return console.error(err.toString());
-        });
+        else{
+            callSendMessageSignalR()
+        }
         
         setMessage("");
         setFiles([]);
         event.preventDefault();
+    }
+    
+    const callSendMessageSignalR = () =>{
+        console.log(filenames);
+        connection.invoke("SendPrivateMessage",
+            `${roomData.senderName}`,
+            message,
+            filenames,
+            `${roomData.receiverName}`,
+            `${roomData.roomName}`)
+            .catch(function (err) {
+                console.log("error sending message");
+                console.log("form data:");
+                console.log(files);
+                console.log(filenames);
+                return console.error(err.toString());
+            });
     }
 
     const callbackSignalR = useCallback((roomData) => {
@@ -67,7 +81,7 @@ const ChatForTwoPage = () => {
             });
         });
         
-            connection.on("ReceivePrivateMessage", function (user, message, listFiles){
+        connection.on("ReceivePrivateMessage", function (user, message, listFiles){
             let newMessage = 
             {
                 belongsToSender : user === nickname,
@@ -121,7 +135,7 @@ const ChatForTwoPage = () => {
                 }
               })
               .then(res => {
-                console.log(res);
+                console.log(res.data);
                 setFileNames(res.data);
               })
               .catch(err => {

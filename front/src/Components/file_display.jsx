@@ -6,7 +6,7 @@ const FileDisplay = ({fileName}) => {
 
     useEffect(() => {
       setFileN(fileName); // обновляем состояние при изменении пропсов
-    }, [fileBytes]);
+    }, []);
 
     const isImage = () => {
       return true;

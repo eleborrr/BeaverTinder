@@ -91,13 +91,13 @@ namespace BeaverTinder.API.Hubs
             {
                 _dbContext.Files.Add(new FileToMessage
                 {
+                    Id = Guid.NewGuid().ToString(),
                     FileGuidName = filename,
                     MessageId = newMessage.Id
                 });
             }
-            
-            await _dbContext.SaveChangesAsync();
             _dbContext.Messages.Add(newMessage);
+            await _dbContext.SaveChangesAsync();
             
             var dto = new ChatMessageDto()
             {
