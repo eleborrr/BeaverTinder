@@ -1,36 +1,52 @@
 import { useEffect, useState } from 'react';
 import FilesServerURL from './files_server_url';
+import { axiosInstance } from "../Components/axios_server";
 
 const FileDisplay = ({fileName}) => {
-    const [fileN, setFileN] = useState(fileName);
+    const [imgBytes, setImgBytes] = useState();
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        setFileN(fileName); // обновляем состояние при изменении пропсов
-    }, []);
+        axiosInstance.get(`${FilesServerURL}/api/files/my-bucket?filename=${fileName}`)
+            .then(response => {
+                setImgBytes(response.data);
+                setLoading(false);
+            })
+    }, [imgBytes]);
 
     const isImage = () => {
         return true;
     };
 
 
+    const downloadFile = () => {
+        // Симулируем скачивание файла при нажатии
+        const blob = new Blob([fileBA]);
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'file';
+        document.body.appendChild(link);
+        link.click();
+        // Чистим ссылку после скачивания
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+    };
 
-    function GetImageJPGFromByteArray(fileN) {
-        fetch(`${FilesServerURL}/api/files/my-bucket?filename=${fileN}`, {
-        })
-    .then(response => {
-            const blob = new Blob([new Uint8Array(response.data)], {type: 'image/jpg'});
-            const imageUrl = URL.createObjectURL(blob);
-            return imageUrl;
-        })
+    if (loading) {
+        return <div>Loading...</div>;
+    } else {
+        return (
+            <div>
+                {isImage() ? (
+                    <img src={`data:image/jpg;base64,${imgBytes}`} alt="Изображение" />
+                ) : (
+                    <img src="icon-file.png" alt="Файл" onClick={downloadFile} style={{cursor: "pointer"}} />
+                )}
+            </div>
+        );
     }
-
-    return (
-        <div>
-            { (
-                <img src={GetImageJPGFromByteArray(fileN)} alt="Изображение" />
-            )}
-        </div>
-    );
+    
 }
 
 export default FileDisplay;
