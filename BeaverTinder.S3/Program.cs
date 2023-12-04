@@ -15,16 +15,39 @@ builder.Services.AddScoped<FileGetterService>();
 builder.Services.AddS3Client(builder.Configuration);
 builder.Services.AddMasstransitRabbitMq(builder.Configuration);
 
+
+var testSpesific = "testSpesific";
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: testSpesific, policyBuilder =>
+    {
+        policyBuilder.WithOrigins("http://localhost:3000")
+            .AllowAnyHeader()
+            .AllowCredentials()
+            .AllowAnyMethod();
+        policyBuilder.WithOrigins("https://oauth.vk.com")
+            .AllowAnyHeader()
+            .AllowCredentials()
+            .AllowAnyMethod();
+        policyBuilder.WithOrigins("https://localhost:7015")
+            .AllowAnyHeader()
+            .AllowCredentials()
+            .AllowAnyMethod();
+    });
+
+});
+
 var app = builder.Build();
 
-app.MapGet("api/files/{bucketName}/{fileName}", async (string[] fileNames, [FromServices] FileGetterService storageService) =>
+app.MapGet("api/files/{bucketName}", async ([FromQuery] string fileName, [FromServices] FileGetterService storageService) =>
 {
-    var stream = await storageService.GetFiles(fileNames);
-
-    return stream is not null
-        ? Results.Ok(stream)
+    var bytes = await storageService.GetFiles(fileName);
+    return bytes is not null
+        ? Results.Ok(bytes)
         : Results.NotFound();
 });
+
+app.UseCors(testSpesific);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

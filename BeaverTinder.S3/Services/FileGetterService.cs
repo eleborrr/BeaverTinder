@@ -1,5 +1,4 @@
-﻿using BeaverTinder.Shared.Files;
-using MassTransit;
+﻿using Microsoft.AspNetCore.Mvc;
 using Minio;
 using Minio.DataModel.Args;
 
@@ -17,23 +16,49 @@ public class FileGetterService
         _minioClient = minioClient;
     }
     
-    public async Task<List<Stream>> GetFiles(IEnumerable<string> fileNames)
+    public async Task<byte[]> GetFiles(string fileName)
     {
-        var res = new List<Stream>();
-        foreach (var fileName in fileNames)
-        {
-            var _stream = new MemoryStream();   
-            var getObjArgs = new GetObjectArgs()
-                .WithBucket(_bucketName)
-                .WithObject(fileName)
-                .WithCallbackStream(stream =>
-                {
-                    stream.CopyTo(_stream);
-                });
-            await _minioClient.GetObjectAsync(getObjArgs);
-            res.Add(_stream);
-        }
+        Console.WriteLine(fileName);
+        Console.WriteLine("trying to read " + fileName);
+        var memoryStream = new MemoryStream();   
+        var getObjArgs = new GetObjectArgs()
+            .WithBucket(_bucketName)
+            .WithObject(fileName)
+            .WithCallbackStream(stream =>
+            {
+                stream.CopyTo(memoryStream);
+            });
+        await _minioClient.GetObjectAsync(getObjArgs);
+        memoryStream.Position = 0;
 
-        return res;
+        return memoryStream.GetBuffer();
+    }
+    
+    private static string GetContentType(string fileName)
+    {
+        if (fileName.Contains(".jpg"))
+        {
+            return "image/jpg";
+        }
+        else if (fileName.Contains(".jpeg"))
+        {
+            return "image/jpeg";
+        }
+        else if (fileName.Contains(".png"))
+        {
+            return "image/png";
+        }
+        else if (fileName.Contains(".gif"))
+        {
+            return "image/gif";
+        }
+        else if (fileName.Contains(".pdf"))
+        {
+            return "application/pdf";
+        }
+        else
+        {
+            return "application/octet-stream";
+        }
     }
 }
