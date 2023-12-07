@@ -39,7 +39,7 @@ const FileDisplay = ({fileName}) => {
         return (
             <div>
                 {isImage() ? (
-                    <img src={`data:image/jpg;base64,${imgBytes}`} alt="Изображение" />
+                    <img src={`data:image/jpg;base64,${imgBytes}`} width={100} height={100} alt="Изображение" />
                 ) : (
                     <img src="icon-file.png" alt="Файл" onClick={downloadFile} style={{cursor: "pointer"}} />
                 )}
