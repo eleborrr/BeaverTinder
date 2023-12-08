@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BeaverTinder.S3.Configs;
 using Minio;
 using Minio.DataModel.Args;
 
@@ -7,22 +7,19 @@ namespace BeaverTinder.S3.Services;
 public class FileGetterService
 {
     private readonly IMinioClient  _minioClient;
-    private readonly string _accessKey = "F7l1mZ14Pno43XicMUHY";
-    private readonly string _secretKey = "Aaz371CWmcr650RLk6xRJSeG0rPw9CB2okThDlwX";
-    private readonly string _bucketName = "my-bucket";
+    private readonly S3Config _s3Config;
 
-    public FileGetterService(IMinioClient minioClient)
+    public FileGetterService(IMinioClient minioClient, S3Config s3Config)
     {
         _minioClient = minioClient;
+        _s3Config = s3Config;
     }
     
     public async Task<byte[]> GetFiles(string fileName)
     {
-        Console.WriteLine(fileName);
-        Console.WriteLine("trying to read " + fileName);
         var memoryStream = new MemoryStream();   
         var getObjArgs = new GetObjectArgs()
-            .WithBucket(_bucketName)
+            .WithBucket(_s3Config.BucketName)
             .WithObject(fileName)
             .WithCallbackStream(stream =>
             {
@@ -40,25 +37,27 @@ public class FileGetterService
         {
             return "image/jpg";
         }
-        else if (fileName.Contains(".jpeg"))
+
+        if (fileName.Contains(".jpeg"))
         {
             return "image/jpeg";
         }
-        else if (fileName.Contains(".png"))
+
+        if (fileName.Contains(".png"))
         {
             return "image/png";
         }
-        else if (fileName.Contains(".gif"))
+
+        if (fileName.Contains(".gif"))
         {
             return "image/gif";
         }
-        else if (fileName.Contains(".pdf"))
+
+        if (fileName.Contains(".pdf"))
         {
             return "application/pdf";
         }
-        else
-        {
-            return "application/octet-stream";
-        }
+
+        return "application/octet-stream";
     }
 }

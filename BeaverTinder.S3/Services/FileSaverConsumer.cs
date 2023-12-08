@@ -1,4 +1,5 @@
-﻿using BeaverTinder.Shared.Files;
+﻿using BeaverTinder.S3.Configs;
+using BeaverTinder.Shared.Files;
 using Minio;
 using Minio.DataModel.Args;
 using MassTransit;
@@ -8,26 +9,22 @@ namespace BeaverTinder.S3.Services;
 public class FileSaverConsumer: IConsumer<SaveFileMessage>
 {
     private readonly IMinioClient  _minioClient;
-    private readonly string _accessKey = "F7l1mZ14Pno43XicMUHY";
-    private readonly string _secretKey = "Aaz371CWmcr650RLk6xRJSeG0rPw9CB2okThDlwX";
-    private readonly string _bucketName = "my-bucket";
+    private readonly S3Config _s3Config;
 
-    public FileSaverConsumer(IMinioClient minioClient)
+    public FileSaverConsumer(IMinioClient minioClient, S3Config s3Config)
     {
         _minioClient = minioClient;
+        _s3Config = s3Config;
     }
 
     public async Task Consume(ConsumeContext<SaveFileMessage> context)
     {
-        Console.WriteLine(context.Message);
         try
         {
             context.Message.Deconstruct(out var file, out var fileIdentifier, out var bucketIdentifier);
             
-            var bucketName = "my-bucket";
-            
             var putObjectArgs = new PutObjectArgs()
-                .WithBucket(bucketName)
+                .WithBucket(_s3Config.BucketName)
                 .WithObject(fileIdentifier)
                 .WithStreamData(new MemoryStream(file.Content))
                 .WithContentType("text")
