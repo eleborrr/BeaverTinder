@@ -6,7 +6,7 @@ namespace BeaverTinder.S3.ServicesExtensions.S3;
 
 public static class ServiceCollectionExtension
 {
-    public static IServiceCollection AddS3Client(this IServiceCollection services, IConfiguration configuration)
+    public static async Task<IServiceCollection> AddS3Client(this IServiceCollection services, IConfiguration configuration)
     {
         var minioConfiguration = configuration.GetSection("Minio");
 
@@ -19,6 +19,9 @@ public static class ServiceCollectionExtension
         var minioClient = new MinioClient().WithEndpoint(s3Config.Endpoint)
             .WithCredentials(s3Config.User, s3Config.Password)
             .Build();
+
+        if (!await minioClient.BucketExistsAsync(new BucketExistsArgs().WithBucket(minioConfiguration["BucketName"])))
+            await minioClient.MakeBucketAsync(new MakeBucketArgs().WithBucket(minioConfiguration["BucketName"]));
         
         services.AddSingleton<IMinioClient>(o => minioClient);
         return services;

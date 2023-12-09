@@ -20,19 +20,26 @@ public class FilesController: Controller
     {
         _bus = bus;
     }
+    
+    public class FileUploadModel
+    {
+        public IFormFileCollection Files { get; set; } = default!;
+        public Dictionary<string, string> Metadata { get; set; } = default!;
+    }
 
     [HttpPost("/uploadFile")]
-    public async Task<JsonResult> UploadFile([FromBody] Dictionary<string, string> metadata)
+    public async Task<JsonResult> UploadFile(
+        [FromForm] FileUploadModel model)
     {   
-        var fileInput = Request.Form.Files;
+        // var fileInput = Request.Form.Files;
         // try
         // {
             var result = new List<string>();
-            foreach (var file in fileInput)
+            foreach (var file in model.Files)
             {
                 var fileDto = new SaveFileMessage
                     (new FileData(await ConvertIFormFileToByteArray(file)),
-                        metadata,
+                        model.Metadata,
                         Guid.NewGuid().ToString(),
                         "my-bucket");
                
