@@ -21,36 +21,43 @@ const ChatForTwoPage = () => {
     const [filenames, setFileNames] = useState([]);
     const { nickname } = useParams();
 
+    // отправка неавторизованного пользователя на страницу авторизации
     useEffect(() => {
         if (!token){
             navigate("/login");
         }
     }, [navigate, token])
 
+    // TODO: типа траггерится, когда получаем имена файлов, да? Тогда после отправки надо обнулять FileNames
+    // TODO: а ещё сообщение сейчас уже стерлось, поэтому изменил (строки 50 - 56) handleSend (строка 42)
     useEffect(() => {
         if(filenames.length > 0) {
             callSendMessageSignalR();
+            setFileNames([]);
+            setMessage("");
         }
     }, [filenames]);
+
 
     const handleSend = (event) => {
         
         if (message === "" && files.length === 0)
                 return;
-        if (files.length !== 0)
+        if (files.length !== 0) 
         {   
             console.log("sending files");   
             SendFiles();
+            setFiles([]);
         }
         else{
-            callSendMessageSignalR()
+            callSendMessageSignalR();
+            setMessage("");
         }
-        
-        setMessage("");
-        setFiles([]);
+
         event.preventDefault();
     }
     
+    // отправка сообщения
     const callSendMessageSignalR = () =>{
         console.log(filenames);
         connection.invoke("SendPrivateMessage",
@@ -68,6 +75,7 @@ const ChatForTwoPage = () => {
             });
     }
 
+    // инициализация соединения с Chat Hub-ом
     const callbackSignalR = useCallback((roomData) => {
         setRoomData(roomData);
         let connection = new signalR.HubConnectionBuilder()
@@ -96,7 +104,8 @@ const ChatForTwoPage = () => {
             
     }, [nickname])
 
-    useEffect(() => {
+    // получаем данные о комнате signalaR для чата
+    useEffect(() => { 
         let room;
         axiosInstance.get(`/im/chat?username=${nickname}`,
         {
@@ -112,31 +121,41 @@ const ChatForTwoPage = () => {
         .catch(); 
     }, [callbackSignalR, nickname, token])
       
-    const  handleFileChange = (e) => {
+    // обработка прикрепления файла(ов)
+    const  handleFileChange = (e) => { 
         if (e.target.files)
             setFiles((prev) => [...prev, ...Array.from(e.target.files)])
     };
     
-    const handleRemoveFile = (id) => {
+    // удаление файла
+    const handleRemoveFile = (id) => { 
         const updatedFiles = files.filter((file, index) => index !== id);
         setFiles(updatedFiles);
       };
 
-    const SendFiles = async () => {
+    const metadata = {
+    name: 'File Metadata',
+    description: 'Description of the file'
+    };
+    // отправка файлов
+    const SendFiles = async () => {  
         const formData = new FormData();
+        Object.keys(metadata).forEach(key => {
+            formData.append(`Metadata[${key}]`, metadata[key]);
+          });
         for (let i = 0; i < files.length; i++) {
-            formData.append(`file${i}`, files[i]);
+            formData.append(`Files`, files[i]);
           }
         try{
             await axiosInstance.post("/uploadFile", formData, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    'Content-Type': 'multipart/form-data'
-                }
-              })
-              .then(res => {
-                console.log(res.data);
-                setFileNames(res.data);
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'multipart/form-data'
+                    }
+                })
+                .then(res => {
+                    console.log(res.data);
+                    setFileNames(res.data);
               })
               .catch(err => {
                 console.log("ошибка в отправлении")
