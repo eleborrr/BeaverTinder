@@ -1,15 +1,7 @@
-﻿using BeaverTinder.Application.Dto.Chat;
-using BeaverTinder.Application.Dto.ResponsesAbstraction;
-using BeaverTinder.Application.Features.Chat.AddChat;
-using BeaverTinder.Application.Features.Chat.GetChatById;
-using BeaverTinder.Application.Features.Like.GetIsMutualSympathy;
-using BeaverTinder.Domain.Entities;
+﻿using BeaverTinder.Domain.Entities;
 using BeaverTinder.Shared.Files;
 using MassTransit;
-using MediaToolkit;
-using MediaToolkit.Model;
 using MediatR;
-using MetadataExtractor;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -30,7 +22,7 @@ public class FilesController: Controller
     }
 
     [HttpPost("/uploadFile")]
-    public async Task<JsonResult> UploadFile()
+    public async Task<JsonResult> UploadFile([FromBody] Dictionary<string, string> metadata)
     {   
         var fileInput = Request.Form.Files;
         // try
@@ -38,10 +30,11 @@ public class FilesController: Controller
             var result = new List<string>();
             foreach (var file in fileInput)
             {
-                var metadata = ImageMetadataReader.ReadMetadata(file);
                 var fileDto = new SaveFileMessage
-                    (new FileData(await ConvertIFormFileToByteArray(file)), 
-                        Guid.NewGuid().ToString(), "my-bucket");
+                    (new FileData(await ConvertIFormFileToByteArray(file)),
+                        metadata,
+                        Guid.NewGuid().ToString(),
+                        "my-bucket");
                
                 result.Add(fileDto.FileName);
             

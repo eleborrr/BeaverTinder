@@ -21,16 +21,16 @@ public class FileSaverConsumer: IConsumer<SaveFileMessage>
     {
         try
         {
-            context.Message.Deconstruct(out var file, out var fileIdentifier, out var bucketIdentifier);
+            context.Message.Deconstruct(out var file, out var metadata,out var fileIdentifier, out var bucketIdentifier);
             
             var putObjectArgs = new PutObjectArgs()
                 .WithBucket(_s3Config.BucketName)
                 .WithObject(fileIdentifier)
                 .WithStreamData(new MemoryStream(file.Content))
                 .WithContentType("text")
-                .WithObjectSize(file.Content.Length);
+                .WithObjectSize(file.Content.Length)
+                .WithHeaders(metadata);
             await _minioClient.PutObjectAsync(putObjectArgs);
-
         }
         catch (Exception e)
         {
