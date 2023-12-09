@@ -62,18 +62,12 @@ namespace BeaverTinder.API.Hubs
             string receiverUserName,
             string groupName)
         {
-            Console.WriteLine("Joined sendprivatemessage");
             var room = _dbContext.Rooms.FirstOrDefault(r => r.Name == groupName);
             
 
             var sender = await _userManager.FindByNameAsync(senderUserName);
             var receiver = await _userManager.FindByNameAsync(receiverUserName);
-
-            Console.WriteLine(senderUserName);
-            Console.WriteLine(message);
-            Console.WriteLine(filenames.Count());
-            Console.WriteLine(receiverUserName);
-            Console.WriteLine(groupName);
+            
             if (receiver is null || sender is null || room is null)
                 return;
 

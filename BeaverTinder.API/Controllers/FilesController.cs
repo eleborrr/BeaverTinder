@@ -6,7 +6,10 @@ using BeaverTinder.Application.Features.Like.GetIsMutualSympathy;
 using BeaverTinder.Domain.Entities;
 using BeaverTinder.Shared.Files;
 using MassTransit;
+using MediaToolkit;
+using MediaToolkit.Model;
 using MediatR;
+using MetadataExtractor;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -20,9 +23,6 @@ namespace BeaverTinder.API.Controllers;
 public class FilesController: Controller
 {
     private readonly IBus _bus;
-    
-    
-
     
     public FilesController(UserManager<User> userManager, IMediator mediator, IBus bus)
     {
@@ -38,9 +38,9 @@ public class FilesController: Controller
             var result = new List<string>();
             foreach (var file in fileInput)
             {
+                var metadata = ImageMetadataReader.ReadMetadata(file);
                 var fileDto = new SaveFileMessage
-                    (
-                        new FileData(await ConvertIFormFileToByteArray(file)),
+                    (new FileData(await ConvertIFormFileToByteArray(file)), 
                         Guid.NewGuid().ToString(), "my-bucket");
                
                 result.Add(fileDto.FileName);
