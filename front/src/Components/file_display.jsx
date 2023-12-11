@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import FilesServerURL from './files_server_url';
 import { axiosInstance } from "../Components/axios_server";
 
-const FileDisplay = ({fileName}) => {
+const FileDisplay = ({fileName, belongsToSender}) => {
     const [imgBytes, setImgBytes] = useState();
     const [loading, setLoading] = useState(true);
 
@@ -12,6 +12,7 @@ const FileDisplay = ({fileName}) => {
                 setImgBytes(response.data);
                 setLoading(false);
             })
+            console.log(!belongsToSender);
     }, [imgBytes]);
 
     const isImage = () => {
@@ -37,9 +38,9 @@ const FileDisplay = ({fileName}) => {
         return <div>Loading...</div>;
     } else {
         return (
-            <div>
+            <div className={belongsToSender ? "message-from" : "message-to"}>
                 {isImage() ? (
-                    <img src={`data:image/jpg;base64,${imgBytes}`} width={100} height={100} alt="Изображение" />
+                    <img className={belongsToSender ? "message-from" : "message-to"} src={`data:image/jpg;base64,${imgBytes}`}  alt="Изображение" />
                 ) : (
                     <img src="icon-file.png" alt="Файл" onClick={downloadFile} style={{cursor: "pointer"}} />
                 )}

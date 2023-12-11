@@ -201,7 +201,7 @@ const ChatForTwoPage = () => {
                                     Array.from(mes.files).length !== 0 
                                     ? 
                                         mes.files.map((fileN, index) => (
-                                            <FileDisplay fileName={fileN}/>
+                                            <FileDisplay fileName={fileN} belongsToSender={mes.belongsToSender}/>
                                         ))
                                     :
                                     <></>
