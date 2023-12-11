@@ -1,6 +1,6 @@
 import { axiosInstance } from "../Components/axios_server";
 import { useNavigate, useParams } from "react-router-dom";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import * as id3 from '//unpkg.com/id3js@^2/lib/id3.js';
 import * as signalR from "@microsoft/signalr";
 import jwtDecode from "jwt-decode";
@@ -21,6 +21,18 @@ const ChatForTwoPage = () => {
     const [messages, setMessages] = useState([]);
     const [filenames, setFileNames] = useState([]);
     const { nickname } = useParams();
+    
+
+    const messageEl = useRef(null);
+ 
+  useEffect(() => {
+    if (messageEl) {
+      messageEl.current.addEventListener('DOMNodeInserted', event => {
+        const { currentTarget: target } = event;
+        target.scroll({ top: target.scrollHeight, behavior: 'smooth' });
+      });
+    }
+  }, [])
 
     // отправка неавторизованного пользователя на страницу авторизации
     useEffect(() => {
@@ -187,7 +199,7 @@ const ChatForTwoPage = () => {
                 <a href="/chats" className="backto-home"><i className="fas fa-chevron-left"></i> Back to chats</a>
             </div>
             <div className='chat-messages'>
-                <div id="messagesList" className='chat-messages__content'>
+                <div id="messagesList" className='chat-messages__content' ref={messageEl}>
                     {
                         messages.map((mes, index) => (
                             <>
