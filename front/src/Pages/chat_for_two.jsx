@@ -21,7 +21,7 @@ const ChatForTwoPage = () => {
     const [messages, setMessages] = useState([]);
     const [filenames, setFileNames] = useState([]);
     const { nickname } = useParams();
-
+    
     // константы для метаданных о файле
     const [openForm, setOpenForm] = useState(false);
     const [fileType, setFileType] = useState('audio');
@@ -34,6 +34,17 @@ const ChatForTwoPage = () => {
     const [creationDate, setCreationDate] = useState('');
     const [description, setDescription] = useState('');
 
+    const messageEl = useRef(null);
+ 
+    useEffect(() => {
+      if (messageEl) {
+        messageEl.current.addEventListener('DOMNodeInserted', event => {
+          const { currentTarget: target } = event;
+          target.scroll({ top: target.scrollHeight, behavior: 'smooth' });
+        });
+      }
+    }, [])
+    
     // отправка неавторизованного пользователя на страницу авторизации
     useEffect(() => {
         if (!token){
@@ -199,7 +210,7 @@ const ChatForTwoPage = () => {
                 <a href="/chats" className="backto-home"><i className="fas fa-chevron-left"></i> Back to chats</a>
             </div>
             <div className='chat-messages'>
-                <div id="messagesList" className='chat-messages__content'>
+                <div id="messagesList" className='chat-messages__content' ref={messageEl}>
                     {
                         messages.map((mes, index) => (
                             <>

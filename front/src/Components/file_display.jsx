@@ -12,7 +12,6 @@ const FileDisplay = ({fileName, belongsToSender}) => {
                 setImgBytes(response.data);
                 setLoading(false);
             })
-            console.log(!belongsToSender);
     }, [imgBytes]);
 
     const isImage = () => {
