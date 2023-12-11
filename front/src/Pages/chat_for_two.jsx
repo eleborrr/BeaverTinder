@@ -1,6 +1,7 @@
 import { axiosInstance } from "../Components/axios_server";
 import { useNavigate, useParams } from "react-router-dom";
 import { useCallback, useEffect, useState } from "react";
+import * as id3 from '//unpkg.com/id3js@^2/lib/id3.js';
 import * as signalR from "@microsoft/signalr";
 import jwtDecode from "jwt-decode";
 import Cookies from "js-cookie";
@@ -59,7 +60,6 @@ const ChatForTwoPage = () => {
     
     // отправка сообщения
     const callSendMessageSignalR = () =>{
-        console.log(filenames);
         connection.invoke("SendPrivateMessage",
             `${roomData.senderName}`,
             message,
@@ -97,7 +97,6 @@ const ChatForTwoPage = () => {
                 senderName : user,
                 files: listFiles
             };
-            console.log(listFiles);
             setMessages(prev => [...prev, newMessage])
         });
         setConnection(connection);
@@ -121,10 +120,26 @@ const ChatForTwoPage = () => {
         .catch(); 
     }, [callbackSignalR, nickname, token])
       
+    const jsmediatags = window.jsmediatags;
     // обработка прикрепления файла(ов)
-    const  handleFileChange = (e) => { 
+    const handleFileChange = async (e) => { 
         if (e.target.files)
+        {
             setFiles((prev) => [...prev, ...Array.from(e.target.files)])
+            for (let i = 0; i < Array.from(e.target.files).length; i++) {
+                console.log(Array.from(e.target.files)[i]);
+                var file = e.target.files[i];
+                jsmediatags.read(file, {
+                    onSuccess: function(tag) {
+                      console.log(tag);
+                    },
+                    onError: function(error) {
+                      console.log(error);
+                    }
+                  });
+              }
+        }
+            
     };
     
     // удаление файла
@@ -137,6 +152,7 @@ const ChatForTwoPage = () => {
     name: 'File Metadata',
     description: 'Description of the file'
     };
+
     // отправка файлов
     const SendFiles = async () => {  
         const formData = new FormData();

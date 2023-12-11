@@ -1,6 +1,7 @@
 module.exports = {
     resolve: {
       fallback: {
+        "os": false,
         "fs": false,
         "tls": false,
         "net": false,
@@ -11,7 +12,7 @@ module.exports = {
         "stream": false,
         "crypto": false,
         "crypto-browserify": false,
-        
+        "buffer": require.resolve("buffer/")
       } 
     },
     }
