@@ -1,7 +1,6 @@
 import { axiosInstance } from "../Components/axios_server";
 import { useNavigate, useParams } from "react-router-dom";
 import { useCallback, useEffect, useState } from "react";
-import * as id3 from '//unpkg.com/id3js@^2/lib/id3.js';
 import * as signalR from "@microsoft/signalr";
 import jwtDecode from "jwt-decode";
 import Cookies from "js-cookie";
@@ -9,6 +8,7 @@ import FileDisplay from "../Components/file_display";
 import ServerURL from "../Components/server_url";
 import './../assets/css/chat_for_two.css';
 import "../assets/css/file_uploader.css";
+import FileMetadataForm from "../Components/metadata-files";
 
 const ChatForTwoPage = () => {
     const navigate = useNavigate();
@@ -22,6 +22,18 @@ const ChatForTwoPage = () => {
     const [filenames, setFileNames] = useState([]);
     const { nickname } = useParams();
 
+    // константы для метаданных о файле
+    const [openForm, setOpenForm] = useState(false);
+    const [fileType, setFileType] = useState('audio');
+    const [duration, setDuration] = useState('');
+    const [title, setTitle] = useState('');
+    const [author, setAuthor] = useState('');
+    const [studio, setStudio] = useState('');
+    const [fileSize, setFileSize] = useState('');
+    const [charCount, setCharCount] = useState('');
+    const [creationDate, setCreationDate] = useState('');
+    const [description, setDescription] = useState('');
+
     // отправка неавторизованного пользователя на страницу авторизации
     useEffect(() => {
         if (!token){
@@ -29,37 +41,20 @@ const ChatForTwoPage = () => {
         }
     }, [navigate, token])
 
-    // TODO: типа траггерится, когда получаем имена файлов, да? Тогда после отправки надо обнулять FileNames
-    // TODO: а ещё сообщение сейчас уже стерлось, поэтому изменил (строки 50 - 56) handleSend (строка 42)
-    useEffect(() => {
-        if(filenames.length > 0) {
-            callSendMessageSignalR();
-            setFileNames([]);
-            setMessage("");
-        }
-    }, [filenames]);
-
-
     const handleSend = (event) => {
         
-        if (message === "" && files.length === 0)
+        if (message === "")
                 return;
-        if (files.length !== 0) 
-        {   
-            console.log("sending files");   
-            SendFiles();
-            setFiles([]);
-        }
-        else{
-            callSendMessageSignalR();
-            setMessage("");
-        }
+
+        callSendMessageSignalR();
+        setMessage("");
 
         event.preventDefault();
     }
     
     // отправка сообщения
     const callSendMessageSignalR = () =>{
+        console.log(filenames);
         connection.invoke("SendPrivateMessage",
             `${roomData.senderName}`,
             message,
@@ -120,24 +115,15 @@ const ChatForTwoPage = () => {
         .catch(); 
     }, [callbackSignalR, nickname, token])
       
-    const jsmediatags = window.jsmediatags;
     // обработка прикрепления файла(ов)
     const handleFileChange = async (e) => { 
         if (e.target.files)
         {
-            setFiles((prev) => [...prev, ...Array.from(e.target.files)])
-            for (let i = 0; i < Array.from(e.target.files).length; i++) {
-                console.log(Array.from(e.target.files)[i]);
-                var file = e.target.files[i];
-                jsmediatags.read(file, {
-                    onSuccess: function(tag) {
-                      console.log(tag);
-                    },
-                    onError: function(error) {
-                      console.log(error);
-                    }
-                  });
-              }
+            let file = e.target.files[0];
+            setFiles((prev) => [...prev, file]);
+            setFileType(file.type);
+            setFileSize(file.size)
+            setOpenForm(true);
         }
             
     };
@@ -146,36 +132,62 @@ const ChatForTwoPage = () => {
     const handleRemoveFile = (id) => { 
         const updatedFiles = files.filter((file, index) => index !== id);
         setFiles(updatedFiles);
+        setOpenForm(false);
       };
 
     const metadata = {
-    name: 'File Metadata',
-    description: 'Description of the file'
+        fileType: fileType,
+        duration: duration,
+        title: title,
+        author: author,
+        studio: studio,
+        fileSize: fileSize,
+        charCount: charCount,
+        creationDate: creationDate,
+        description: description
     };
 
+    const onSubmitFileMetadata = () =>{
+        setOpenForm(false);
+        SendFiles();
+        setFiles([]);
+    }
+    
     // отправка файлов
     const SendFiles = async () => {  
         const formData = new FormData();
         Object.keys(metadata).forEach(key => {
-            formData.append(`Metadata[${key}]`, metadata[key]);
-          });
+            if (metadata[key] != '')
+                formData.append(`Metadata[${key}]`, metadata[key]);
+        });
+        setFileType('');
+        setDuration('');
+        setTitle('');
+        setAuthor('');
+        setStudio('');
+        setFileSize('');
+        setCharCount('');
+        setCreationDate('');
+        setDescription('');
         for (let i = 0; i < files.length; i++) {
             formData.append(`Files`, files[i]);
           }
         try{
-            await axiosInstance.post("/uploadFile", formData, {
+            axiosInstance.post("/uploadFile", formData, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                         'Content-Type': 'multipart/form-data'
                     }
                 })
                 .then(res => {
+                    console.log('файл отправлен успешно')
                     console.log(res.data);
-                    setFileNames(res.data);
+                    setFileNames(prev => [...prev, res.data]);
               })
               .catch(err => {
                 console.log("ошибка в отправлении")
                 console.log(err)});
+            console.log('АЛО НАХУЙ ТЫ РАБОТАЕШЬ ИЛИ НЕТ?!!!!!')
         } catch (e){
             console.log(e);
         }
@@ -211,6 +223,25 @@ const ChatForTwoPage = () => {
                     }
                 </div>
             </div>
+            <FileMetadataForm 
+                fileType={fileType}
+                duration={duration}
+                setDuration={setDuration}
+                title={title}
+                setTitle={setTitle}
+                author={author}
+                setAuthor={setAuthor}
+                studio={studio}
+                setStudio={setStudio}
+                fileSize={fileSize}
+                charCount={charCount}
+                setCharCount={setCharCount}
+                creationDate={creationDate}
+                setCreationDate={setCreationDate}
+                description={description}
+                setDescription={setDescription}
+                handleSubmit={onSubmitFileMetadata}
+                isOpen={openForm}/>
             <div className="files">
                 <div className="files-list" id="files-list">
                     {
@@ -248,9 +279,10 @@ const ChatForTwoPage = () => {
                             <i className="fas fa-paperclip"></i>
                         </label>
                         <input type="file"
-                         id="fileInput"
-                         style={{display: "none"}} 
-                         multiple onChange={handleFileChange}/>
+                            id="fileInput"
+                            style={{display: "none"}} 
+                            onChange={handleFileChange}
+                            disabled={files.length >= 1}/>
                     </div>
                     <input type='submit' 
                         id="sendButton" 
