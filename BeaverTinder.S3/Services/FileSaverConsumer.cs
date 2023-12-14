@@ -22,6 +22,14 @@ public class FileSaverConsumer: IConsumer<SaveFileMessage>
         try
         {
             context.Message.Deconstruct(out var file, out var metadata,out var fileIdentifier, out var bucketIdentifier);
+
+            foreach (var data in metadata)
+            {
+                Console.WriteLine();
+                Console.WriteLine($"{data.Key} : {data.Value}");
+                Console.WriteLine();
+            }
+            Console.WriteLine("-------------");
             
             var putObjectArgs = new PutObjectArgs()
                 .WithBucket(_s3Config.BucketName)

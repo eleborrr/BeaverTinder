@@ -31,15 +31,8 @@ public class FileGetterService
         var statObjectArgs = new StatObjectArgs()
             .WithBucket(_s3Config.BucketName)
             .WithObject(fileName);
-        
-        var objectStat = await _minioClient.StatObjectAsync(statObjectArgs).ConfigureAwait(false);
 
-        Console.WriteLine($"-----> METADATA OF {fileName} <-------");
-        foreach (var metadata in objectStat.MetaData)
-        {
-            Console.WriteLine($"{metadata.Key} : {metadata.Value}");
-        }
-        Console.WriteLine($"-----> END OF METADATA <-------");
+        var objectStat = await _minioClient.StatObjectAsync(statObjectArgs).ConfigureAwait(false);
         return memoryStream.GetBuffer();
     }
     
