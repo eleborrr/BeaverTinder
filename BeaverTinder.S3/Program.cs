@@ -1,5 +1,6 @@
 using BeaverTinder.S3.Services;
 using BeaverTinder.S3.ServicesExtensions.RabbitMq;
+using BeaverTinder.S3.ServicesExtensions.Redis;
 using BeaverTinder.S3.ServicesExtensions.S3;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,6 +14,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<FileGetterService>();
 builder.Services.AddS3Client(builder.Configuration);
+builder.Services.AddRedis(builder.Configuration);
 builder.Services.AddMasstransitRabbitMq(builder.Configuration);
 
 

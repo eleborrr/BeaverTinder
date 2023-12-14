@@ -32,7 +32,7 @@ public class FileSaverConsumer: IConsumer<SaveFileMessage>
             Console.WriteLine("-------------");
             
             var putObjectArgs = new PutObjectArgs()
-                .WithBucket(_s3Config.BucketName)
+                .WithBucket(_s3Config.MainBucketName)
                 .WithObject(fileIdentifier)
                 .WithStreamData(new MemoryStream(file.Content))
                 .WithContentType("text")

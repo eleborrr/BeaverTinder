@@ -1,4 +1,5 @@
-﻿using BeaverTinder.Domain.Entities;
+﻿using BeaverTinder.Application.Dto.ResponsesAbstraction;
+using BeaverTinder.Domain.Entities;
 using BeaverTinder.Shared.Files;
 using MassTransit;
 using MediatR;
@@ -31,9 +32,9 @@ public class FilesController: Controller
     public async Task<JsonResult> UploadFile(
         [FromForm] FileUploadModel model)
     {   
-        // var fileInput = Request.Form.Files;
-        // try
-        // {
+        var fileInput = Request.Form.Files;
+        try
+        {
             var result = new List<string>();
             foreach (var file in model.Files)
             {
@@ -50,11 +51,11 @@ public class FilesController: Controller
             }
             
             return Json(result);
-        // }
-        // catch (Exception exception)
-        // {
-        //     return Json(new FailResponse(false, exception.Message, 400));
-        // }
+        }
+        catch (Exception exception)
+        {
+            return Json(new FailResponse(false, exception.Message, 400));
+        }
     }
     
     private async Task<byte[]> ConvertIFormFileToByteArray(IFormFile file)
