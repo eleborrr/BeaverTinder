@@ -2,4 +2,4 @@
 
 namespace BeaverTinder.Application.Features.Redis.SaveCache;
 
-public record SaveCacheCommand(string Key, string Data) : ICommand;
+public record SaveMetadataRedisCommand(string Key, Dictionary<string, string> Data) : ICommand;

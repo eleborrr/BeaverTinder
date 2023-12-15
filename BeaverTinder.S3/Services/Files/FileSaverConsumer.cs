@@ -27,7 +27,7 @@ public class FileSaverConsumer: IConsumer<SaveFileMessage>
             context.Message.Deconstruct(out var file, out var metadata,out var fileIdentifier, out var bucketIdentifier);
 
             // save metadata in redis via mediator.
-            await _mediator.Send(new SaveCacheCommand(fileIdentifier, Convert.ToBase64String(file.Content)));
+            await _mediator.Send(new SaveMetadataRedisCommand(fileIdentifier, metadata));
             // If success ->
             // set 1 for file counter in redis            
             

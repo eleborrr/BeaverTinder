@@ -2,4 +2,4 @@
 
 namespace BeaverTinder.Application.Features.Redis.GetCache;
 
-public record GetCacheQuery(string DataId): IQuery<>;
+public record GetCacheQuery(string DataKey): IQuery<Dictionary<string, string>>;

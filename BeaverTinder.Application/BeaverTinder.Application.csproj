@@ -15,6 +15,7 @@
       <PackageReference Include="JetBrains.Annotations" Version="10.1.5" />
       <PackageReference Include="MassTransit.Abstractions" Version="8.1.2-develop.1567" />
       <PackageReference Include="MediatR" Version="12.1.1" />
+      <PackageReference Include="NRedisStack" Version="0.10.1" />
       <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.21.0" />
     </ItemGroup>
 
