@@ -1,6 +1,5 @@
-﻿namespace BeaverTinder.Application.Features.Redis.UpdateCache;
+﻿using BeaverTinder.Application.Services.Abstractions.Cqrs.Commands;
 
-public class UpdateCacheCommand
-{
-    
-}
+namespace BeaverTinder.Application.Features.Redis.UpdateCache;
+
+public record UpdateCacheCommand(string DataKey, string Value): ICommand;
