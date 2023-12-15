@@ -33,6 +33,8 @@ services:
       MessageBroker__Password: mypa55w0rd!
       MessageBroker__Hostname: rabbitmq
       MessageBroker__Port: 5672
+      MongoDb__ConnectionString: mongodb://localhost:27017
+      MongoDb__DatabaseName: Metadata
       ConnectionStrings__BeaverTinderDatabase: Data Source=mssql;Initial Catalog=BeaverTinderDatabase;User=sa;Password=superPuperPassword!15641;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;MultipleActiveResultSets=true;
     volumes:
       - ~/.aspnet/https:/https:ro
