@@ -32,10 +32,10 @@ public class FilesController: Controller
     public async Task<JsonResult> UploadFile(
         [FromForm] FileUploadModel model)
     {   
-        var fileInput = Request.Form.Files;
         try
         {
             var result = new List<string>();
+            // pass in Service all files; Send them with IBus to S3 service; With redis save cache;  ??
             foreach (var file in model.Files)
             {
                 var fileDto = new SaveFileMessage
@@ -48,6 +48,7 @@ public class FilesController: Controller
             
                 if (file.Length > 0)
                     await _bus.Publish(fileDto);
+                
             }
             
             return Json(result);
@@ -58,13 +59,11 @@ public class FilesController: Controller
         }
     }
     
-    private async Task<byte[]> ConvertIFormFileToByteArray(IFormFile file)
+    private static async Task<byte[]> ConvertIFormFileToByteArray(IFormFile file)
     {
-        using (var memoryStream = new MemoryStream())
-        {
-            await file.CopyToAsync(memoryStream);
-            return memoryStream.ToArray();
-        }
+        using var memoryStream = new MemoryStream();
+        await file.CopyToAsync(memoryStream);
+        return memoryStream.ToArray();
     }
 
 }

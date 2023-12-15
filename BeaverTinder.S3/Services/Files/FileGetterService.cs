@@ -19,7 +19,7 @@ public class FileGetterService
     {
         var memoryStream = new MemoryStream();   
         var getObjArgs = new GetObjectArgs()
-            .WithBucket(_s3Config.BucketName)
+            .WithBucket(_s3Config.MainBucketName)
             .WithObject(fileName)
             .WithCallbackStream(stream =>
             {
@@ -29,7 +29,7 @@ public class FileGetterService
         memoryStream.Position = 0;
         
         var statObjectArgs = new StatObjectArgs()
-            .WithBucket(_s3Config.BucketName)
+            .WithBucket(_s3Config.MainBucketName)
             .WithObject(fileName);
 
         var objectStat = await _minioClient.StatObjectAsync(statObjectArgs).ConfigureAwait(false);
