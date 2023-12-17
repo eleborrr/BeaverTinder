@@ -1,4 +1,5 @@
 ﻿using BeaverTinder.Application.Features.MongoDb.SaveMetadata;
+using BeaverTinder.Application.Features.Redis.DeleteCache;
 using BeaverTinder.Application.Features.Redis.SaveCache;
 using BeaverTinder.S3.Configs;
 using BeaverTinder.Shared.Files;
@@ -85,6 +86,7 @@ public class FileSaverConsumer: IConsumer<SaveFileMessage>
     private void MoveMetadataInMongo(string fileIdentifier, Dictionary<string, string> metadata)
     {
         _mediator.Send(new SaveMetadataMongoCommand(new MetadataDto(fileIdentifier, metadata)));
+        _mediator.Send(new DeleteCacheFromRedisCommand(fileIdentifier));
     }
 
     private void IncrementFileCounterRedis()
