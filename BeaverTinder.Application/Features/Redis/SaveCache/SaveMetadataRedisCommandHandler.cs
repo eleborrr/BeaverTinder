@@ -23,7 +23,7 @@ public class SaveMetadataRedisCommandHandler: ICommandHandler<SaveMetadataRedisC
             var metadata = request.Data
                 .Select(data => new HashEntry(data.Key, data.Value))
                 .ToArray();
-            
+                        
             db.HashSet(request.Key, metadata);
             
             return Task.FromResult(new Result(true));

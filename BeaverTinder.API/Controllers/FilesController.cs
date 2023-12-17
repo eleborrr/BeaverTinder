@@ -42,7 +42,8 @@ public class FilesController: Controller
                     (new FileData(await ConvertIFormFileToByteArray(file)),
                         model.Metadata,
                         Guid.NewGuid().ToString(),
-                        "my-bucket");
+                        "mainBucket",
+                        "temporaryBucket");
                
                 result.Add(fileDto.FileName);
             

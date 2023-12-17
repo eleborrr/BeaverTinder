@@ -77,7 +77,8 @@ services:
       Minio__AccessKey: F7l1mZ14Pno43XicMUHY
       Minio__SecretKey: Aaz371CWmcr650RLk6xRJSeG0rPw9CB2okThDlwX
       Minio__Endpoint: minio:9000
-      Minio__BucketName: my-bucket
+      Minio__MainBucketname: main-bucket
+      Minio__TemporaryBucketName: temporary-bucket
     volumes:
       - ~/.aspnet/https:/https:ro
   minio:

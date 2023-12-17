@@ -1,6 +1,8 @@
-﻿using BeaverTinder.Application.Features.Redis.SaveCache;
+﻿using BeaverTinder.Application.Features.MongoDb.SaveMetadata;
+using BeaverTinder.Application.Features.Redis.SaveCache;
 using BeaverTinder.S3.Configs;
 using BeaverTinder.Shared.Files;
+using BeaverTinder.Shared.Mongo;
 using MassTransit;
 using MediatR;
 using Microsoft.Extensions.Caching.Distributed;
@@ -24,30 +26,69 @@ public class FileSaverConsumer: IConsumer<SaveFileMessage>
     {
         try
         {
-            context.Message.Deconstruct(out var file, out var metadata,out var fileIdentifier, out var bucketIdentifier);
+            context.Message.Deconstruct(out var file, out var metadata,out var fileIdentifier, out var mainBucketIdentifier, out var temporaryBucketIdentifier);
 
             // save metadata in redis via mediator.
             await _mediator.Send(new SaveMetadataRedisCommand(fileIdentifier, metadata));
-            // If success ->
+            
             // set 1 for file counter in redis            
+            IncrementFileCounterRedis();
             
             // save file
-            var putObjectArgs = new PutObjectArgs()
-                .WithBucket(bucketIdentifier)
-                .WithObject(fileIdentifier)
-                .WithStreamData(new MemoryStream(file.Content))
-                .WithContentType("text")
-                .WithObjectSize(file.Content.Length);
-            await _minioClient.PutObjectAsync(putObjectArgs); // if success ->
-            // If success ->
+            await SaveFileInBucket(temporaryBucketIdentifier, fileIdentifier, file);
             
             // set 2 for file counter in redis
-            // move file in another bucket, metadata in mongo 
+            IncrementFileCounterRedis();
 
+            // move file in another bucket, metadata in mongo 
+            await MoveFromBucketToBucket(temporaryBucketIdentifier, fileIdentifier, mainBucketIdentifier);
+            MoveMetadataInMongo(fileIdentifier, metadata);
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
         }
+    }
+
+    private async Task SaveFileInBucket(string bucketIdentifier, string fileIdentifier, FileData file)
+    {
+        var putObjectArgs = new PutObjectArgs()
+            .WithBucket(bucketIdentifier)
+            .WithObject(fileIdentifier)
+            .WithStreamData(new MemoryStream(file.Content))
+            .WithContentType("text")
+            .WithObjectSize(file.Content.Length);
+        await _minioClient.PutObjectAsync(putObjectArgs);   
+    }
+
+    private async Task MoveFromBucketToBucket(string sourceBucket, string fileIdentifier, string destinationBucket)
+    {
+        // Copy the file to another bucket
+        var cpSrcArgs = new CopySourceObjectArgs()
+            .WithBucket(sourceBucket)
+            .WithObject(fileIdentifier);
+
+        var copyObjectArgs = new CopyObjectArgs()
+            .WithBucket(destinationBucket)
+            .WithObject(fileIdentifier)
+            .WithCopyObjectSource(cpSrcArgs);
+        await _minioClient.CopyObjectAsync(copyObjectArgs);
+
+        // Delete the original file
+        var removeObjectArgs = new RemoveObjectArgs()
+            .WithBucket(sourceBucket)
+            .WithObject(fileIdentifier);
+        
+        await _minioClient.RemoveObjectAsync(removeObjectArgs);
+    }
+
+    private void MoveMetadataInMongo(string fileIdentifier, Dictionary<string, string> metadata)
+    {
+        _mediator.Send(new SaveMetadataMongoCommand(new MetadataDto(fileIdentifier, metadata)));
+    }
+
+    private void IncrementFileCounterRedis()
+    {
+        
     }
 }
