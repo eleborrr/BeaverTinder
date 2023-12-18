@@ -2,7 +2,7 @@
 using Minio;
 using Minio.DataModel.Args;
 
-namespace BeaverTinder.S3.Services;
+namespace BeaverTinder.S3.Services.Files;
 
 public class FileGetterService
 {

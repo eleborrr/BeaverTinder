@@ -1,14 +1,14 @@
 ﻿using BeaverTinder.Application.Features.MongoDb.SaveMetadata;
 using BeaverTinder.Application.Features.Redis.DeleteCache;
 using BeaverTinder.Application.Features.Redis.SaveCache;
-using BeaverTinder.S3.Configs;
+using BeaverTinder.S3.Clients.MongoClient;
 using BeaverTinder.Shared.Files;
 using BeaverTinder.Shared.Mongo;
 using MassTransit;
 using MediatR;
-using Microsoft.Extensions.Caching.Distributed;
 using Minio;
 using Minio.DataModel.Args;
+using StackExchange.Redis;
 
 namespace BeaverTinder.S3.Services.Files;
 
@@ -16,19 +16,26 @@ public class FileSaverConsumer: IConsumer<SaveFileMessage>
 {
     private readonly IMinioClient  _minioClient;
     private readonly IMediator _mediator;
+    private readonly IMongoDbClient _mongoClient;
+    private readonly IConnectionMultiplexer _connectionMultiplexer;
 
-    public FileSaverConsumer(IMinioClient minioClient, IMediator mediator)
+    public FileSaverConsumer(IMinioClient minioClient, IMediator mediator, IMongoDbClient mongoClient, IConnectionMultiplexer connectionMultiplexer)
     {
         _minioClient = minioClient;
         _mediator = mediator;
+        _mongoClient = mongoClient;
+        _connectionMultiplexer = connectionMultiplexer;
     }
 
     public async Task Consume(ConsumeContext<SaveFileMessage> context)
     {
         try
         {
+            Console.WriteLine();
+            Console.WriteLine("message deconstructing...");
             context.Message.Deconstruct(out var file, out var metadata,out var fileIdentifier, out var mainBucketIdentifier, out var temporaryBucketIdentifier);
 
+            Console.WriteLine("saving metadata in redis...");
             // save metadata in redis via mediator.
             await _mediator.Send(new SaveMetadataRedisCommand(fileIdentifier, metadata));
             
@@ -36,13 +43,20 @@ public class FileSaverConsumer: IConsumer<SaveFileMessage>
             IncrementFileCounterRedis();
             
             // save file
+            
+            Console.WriteLine("saving file...");
             await SaveFileInBucket(temporaryBucketIdentifier, fileIdentifier, file);
             
             // set 2 for file counter in redis
             IncrementFileCounterRedis();
 
-            // move file in another bucket, metadata in mongo 
+            // move file in another bucket, metadata in mongo
+            
+            Console.WriteLine("saving file in main bucket...");
+            await SaveFileInBucket(mainBucketIdentifier, fileIdentifier, file);
+            Console.WriteLine("removing file from temp...");
             await MoveFromBucketToBucket(temporaryBucketIdentifier, fileIdentifier, mainBucketIdentifier);
+            Console.WriteLine("saving metadata in mongo...");
             MoveMetadataInMongo(fileIdentifier, metadata);
         }
         catch (Exception e)
@@ -65,15 +79,16 @@ public class FileSaverConsumer: IConsumer<SaveFileMessage>
     private async Task MoveFromBucketToBucket(string sourceBucket, string fileIdentifier, string destinationBucket)
     {
         // Copy the file to another bucket
-        var cpSrcArgs = new CopySourceObjectArgs()
-            .WithBucket(sourceBucket)
-            .WithObject(fileIdentifier);
-
-        var copyObjectArgs = new CopyObjectArgs()
-            .WithBucket(destinationBucket)
-            .WithObject(fileIdentifier)
-            .WithCopyObjectSource(cpSrcArgs);
-        await _minioClient.CopyObjectAsync(copyObjectArgs);
+        // var cpSrcArgs = new CopySourceObjectArgs()
+        //     .WithBucket(sourceBucket)
+        //     .WithObject(fileIdentifier);
+        //
+        // var copyObjectArgs = new CopyObjectArgs()
+        //     .WithBucket(destinationBucket)
+        //     .WithObject(fileIdentifier)
+        //     .WithContentType("text")
+        //     .WithCopyObjectSource(cpSrcArgs);
+        // await _minioClient.CopyObjectAsync(copyObjectArgs);
 
         // Delete the original file
         var removeObjectArgs = new RemoveObjectArgs()
@@ -85,8 +100,16 @@ public class FileSaverConsumer: IConsumer<SaveFileMessage>
 
     private void MoveMetadataInMongo(string fileIdentifier, Dictionary<string, string> metadata)
     {
-        _mediator.Send(new SaveMetadataMongoCommand(new MetadataDto(fileIdentifier, metadata)));
-        _mediator.Send(new DeleteCacheFromRedisCommand(fileIdentifier));
+        Console.WriteLine("saving in mongo...");
+        _mongoClient.CreateAsync(new MetadataDto(fileIdentifier, metadata));
+
+        Console.WriteLine("deleting from redis...");
+        var db = _connectionMultiplexer.GetDatabase();
+
+        var result = db.KeyDelete(fileIdentifier);
+
+        // _mediator.Send(new SaveMetadataMongoCommand(new MetadataDto(fileIdentifier, metadata)));
+        // _mediator.Send(new DeleteCacheFromRedisCommand(fileIdentifier));
     }
 
     private void IncrementFileCounterRedis()

@@ -1,6 +1,5 @@
 ﻿using BeaverTinder.Application.Dto.MediatR;
 using BeaverTinder.Application.Services.Abstractions.Cqrs.Commands;
-using Microsoft.Extensions.Caching.Distributed;
 using StackExchange.Redis;
 
 namespace BeaverTinder.Application.Features.Redis.SaveCache;

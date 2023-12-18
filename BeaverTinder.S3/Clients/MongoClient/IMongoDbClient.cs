@@ -1,6 +1,6 @@
 ﻿using BeaverTinder.Shared.Mongo;
 
-namespace BeaverTinder.Application.Clients.MongoClient;
+namespace BeaverTinder.S3.Clients.MongoClient;
 
 public interface IMongoDbClient
 {

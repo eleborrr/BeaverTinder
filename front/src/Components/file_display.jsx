@@ -7,7 +7,7 @@ const FileDisplay = ({fileName, belongsToSender}) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        axiosInstance.get(`${FilesServerURL}/api/files/my-bucket?filename=${fileName}`)
+        axiosInstance.get(`${FilesServerURL}/api/files/main-bucket?filename=${fileName}`)
             .then(response => {
                 setImgBytes(response.data);
                 setLoading(false);

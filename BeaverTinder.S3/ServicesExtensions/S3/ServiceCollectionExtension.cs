@@ -10,7 +10,7 @@ public static class ServiceCollectionExtension
     {
         var minioConfiguration = configuration.GetSection("Minio");
 
-        var s3Config = new S3Config(minioConfiguration["BucketName"],  minioConfiguration["TemporaryBucketName"],
+        var s3Config = new S3Config(minioConfiguration["MainBucketName"],  minioConfiguration["TemporaryBucketName"],
             minioConfiguration["SecretKey"],
             minioConfiguration["AccessKey"], minioConfiguration["Endpoint"],
             minioConfiguration["User"], minioConfiguration["Password"]);

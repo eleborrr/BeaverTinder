@@ -1,4 +1,4 @@
-﻿using BeaverTinder.S3.Configs;
+﻿using StackExchange.Redis;
 
 namespace BeaverTinder.S3.ServicesExtensions.Redis;
 
@@ -14,11 +14,20 @@ public static class ServiceCollectionExtension
         //     Username = configuration["MessageBroker:Username"]!,
         //     Port = configuration["MessageBroker:Port"]!
         // };
+        Console.WriteLine($"{configuration["Redis:Host"]}: " +
+                          $"{configuration["Redis:Port"]}");
+        services.AddSingleton<IConnectionMultiplexer>(sp => 
+            ConnectionMultiplexer.Connect(new ConfigurationOptions
+            {
+                EndPoints = { $"{configuration["Redis:Host"]}: " +
+                              $"{configuration["Redis:Port"]}" },
+                AbortOnConnectFail = false,
+            }));
         
-        services.AddStackExchangeRedisCache(options => {
-            options.Configuration = "localhost";
-            options.InstanceName = "local";
-        });
+        // services.AddStackExchangeRedisCache(options => {
+        //     options.Configuration = "localhost";
+        //     options.InstanceName = "local";
+        // });
         return services;
     }
     

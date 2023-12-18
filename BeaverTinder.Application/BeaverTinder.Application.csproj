@@ -31,9 +31,6 @@
 
 
 
-    <ItemGroup>
-      <Folder Include="Clients\" />
-    </ItemGroup>
 
 
 

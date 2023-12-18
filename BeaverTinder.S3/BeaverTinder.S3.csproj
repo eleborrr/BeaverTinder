@@ -10,6 +10,7 @@
     <ItemGroup>
         <PackageReference Include="MassTransit" Version="8.1.2" />
         <PackageReference Include="MassTransit.RabbitMQ" Version="8.1.2" />
+        <PackageReference Include="MediatR" Version="12.2.0" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.4" />
         <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="8.0.0" />
         <PackageReference Include="Minio" Version="6.0.1" />
@@ -26,6 +27,8 @@
         <Link>.dockerignore</Link>
       </Content>
     </ItemGroup>
+
+
 
 
 

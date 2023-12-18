@@ -3,7 +3,7 @@ using BeaverTinder.Shared.Mongo;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
-namespace BeaverTinder.Application.Clients.MongoClient;
+namespace BeaverTinder.S3.Clients.MongoClient;
 
 public class MongoDbClient: IMongoDbClient
 {

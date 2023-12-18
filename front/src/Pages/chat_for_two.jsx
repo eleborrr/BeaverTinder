@@ -65,7 +65,11 @@ const ChatForTwoPage = () => {
     
     // отправка сообщения
     const callSendMessageSignalR = () =>{
+        console.log(`${roomData.senderName}`);
+        console.log(message);
         console.log(filenames);
+        console.log(`${roomData.receiverName}`);
+        console.log(`${roomData.roomName}`);
         connection.invoke("SendPrivateMessage",
             `${roomData.senderName}`,
             message,
@@ -73,10 +77,12 @@ const ChatForTwoPage = () => {
             `${roomData.receiverName}`,
             `${roomData.roomName}`)
             .catch(function (err) {
-                console.log("error sending message");
-                console.log("form data:");
-                console.log(files);
+                console.log("error sending message:");
+                console.log(`${roomData.senderName}`);
+                console.log(message);
                 console.log(filenames);
+                console.log(`${roomData.receiverName}`);
+                console.log(`${roomData.roomName}`);
                 return console.error(err.toString());
             });
     }

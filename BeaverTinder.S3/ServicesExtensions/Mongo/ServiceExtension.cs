@@ -1,8 +1,7 @@
-﻿using BeaverTinder.Application.Clients.MongoClient;
-using BeaverTinder.Application.Configs;
-using StackExchange.Redis;
+﻿using BeaverTinder.Application.Configs;
+using BeaverTinder.S3.Clients.MongoClient;
 
-namespace BeaverTinder.API.ServicesExtensions.Mongo;
+namespace BeaverTinder.S3.ServicesExtensions.Mongo;
 
 public static class ServiceCollectionExtension
 {
@@ -10,7 +9,7 @@ public static class ServiceCollectionExtension
         IConfiguration configuration)
     {
         services.Configure<MongoDbConfig>
-            (configuration.GetSection("MongoDbConfig"));
+            (configuration.GetSection("Mongo"));
 
         services.AddScoped<IMongoDbClient, MongoDbClient>();
         
