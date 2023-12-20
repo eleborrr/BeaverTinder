@@ -14,8 +14,7 @@ public static class ServiceCollectionExtension
         //     Username = configuration["MessageBroker:Username"]!,
         //     Port = configuration["MessageBroker:Port"]!
         // };
-        Console.WriteLine($"{configuration["Redis:Host"]}: " +
-                          $"{configuration["Redis:Port"]}");
+        
         services.AddSingleton<IConnectionMultiplexer>(sp => 
             ConnectionMultiplexer.Connect(new ConfigurationOptions
             {

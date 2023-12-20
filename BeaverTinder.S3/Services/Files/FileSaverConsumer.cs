@@ -1,6 +1,7 @@
 ﻿using BeaverTinder.Application.Features.MongoDb.SaveMetadata;
 using BeaverTinder.Application.Features.Redis.DeleteCache;
 using BeaverTinder.Application.Features.Redis.SaveCache;
+using BeaverTinder.Application.Services.Abstractions;
 using BeaverTinder.S3.Clients.MongoClient;
 using BeaverTinder.Shared.Files;
 using BeaverTinder.Shared.Mongo;
@@ -16,15 +17,13 @@ public class FileSaverConsumer: IConsumer<SaveFileMessage>
 {
     private readonly IMinioClient  _minioClient;
     private readonly IMediator _mediator;
-    private readonly IMongoDbClient _mongoClient;
-    private readonly IConnectionMultiplexer _connectionMultiplexer;
+    private readonly IMongoDbClient _mongoDbClient;
 
-    public FileSaverConsumer(IMinioClient minioClient, IMediator mediator, IMongoDbClient mongoClient, IConnectionMultiplexer connectionMultiplexer)
+    public FileSaverConsumer(IMinioClient minioClient, IMediator mediator, IMongoDbClient mongoDbClient)
     {
         _minioClient = minioClient;
         _mediator = mediator;
-        _mongoClient = mongoClient;
-        _connectionMultiplexer = connectionMultiplexer;
+        _mongoDbClient = mongoDbClient;
     }
 
     public async Task Consume(ConsumeContext<SaveFileMessage> context)
@@ -73,7 +72,7 @@ public class FileSaverConsumer: IConsumer<SaveFileMessage>
             .WithStreamData(new MemoryStream(file.Content))
             .WithContentType("text")
             .WithObjectSize(file.Content.Length);
-        await _minioClient.PutObjectAsync(putObjectArgs);   
+        await _minioClient.PutObjectAsync(putObjectArgs);
     }
 
     private async Task MoveFromBucketToBucket(string sourceBucket, string fileIdentifier, string destinationBucket)
@@ -100,16 +99,13 @@ public class FileSaverConsumer: IConsumer<SaveFileMessage>
 
     private void MoveMetadataInMongo(string fileIdentifier, Dictionary<string, string> metadata)
     {
-        Console.WriteLine("saving in mongo...");
-        _mongoClient.CreateAsync(new MetadataDto(fileIdentifier, metadata));
-
-        Console.WriteLine("deleting from redis...");
-        var db = _connectionMultiplexer.GetDatabase();
-
-        var result = db.KeyDelete(fileIdentifier);
-
+        _mongoDbClient.CreateAsync(new MetadataDto()
+        {
+            Key = fileIdentifier,
+            Data = metadata
+        });
         // _mediator.Send(new SaveMetadataMongoCommand(new MetadataDto(fileIdentifier, metadata)));
-        // _mediator.Send(new DeleteCacheFromRedisCommand(fileIdentifier));
+        _mediator.Send(new DeleteCacheFromRedisCommand(fileIdentifier));
     }
 
     private void IncrementFileCounterRedis()

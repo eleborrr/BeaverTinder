@@ -10,6 +10,8 @@ const FileDisplay = ({fileName, belongsToSender}) => {
         axiosInstance.get(`${FilesServerURL}/api/files/main-bucket?filename=${fileName}`)
             .then(response => {
                 setImgBytes(response.data);
+                console.log(response);
+                console.log(response.data)
                 setLoading(false);
             })
     }, [imgBytes]);

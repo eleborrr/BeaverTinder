@@ -1,4 +1,5 @@
 ﻿using BeaverTinder.Application.Configs;
+using BeaverTinder.Application.Services.Abstractions;
 using BeaverTinder.Shared.Mongo;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;

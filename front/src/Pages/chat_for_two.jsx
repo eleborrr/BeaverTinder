@@ -199,7 +199,7 @@ const ChatForTwoPage = () => {
                 .then(res => {
                     console.log('файл отправлен успешно')
                     console.log(res.data);
-                    setFileNames(prev => [...prev, res.data]);
+                    setFileNames(res.data);
               })
               .catch(err => {
                 console.log("ошибка в отправлении")
