@@ -1,6 +1,6 @@
 import { axiosInstance } from "../Components/axios_server";
 import { useNavigate, useParams } from "react-router-dom";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import * as signalR from "@microsoft/signalr";
 import jwtDecode from "jwt-decode";
 import Cookies from "js-cookie";
@@ -65,7 +65,11 @@ const ChatForTwoPage = () => {
     
     // отправка сообщения
     const callSendMessageSignalR = () =>{
+        console.log(`${roomData.senderName}`);
+        console.log(message);
         console.log(filenames);
+        console.log(`${roomData.receiverName}`);
+        console.log(`${roomData.roomName}`);
         connection.invoke("SendPrivateMessage",
             `${roomData.senderName}`,
             message,
@@ -73,10 +77,12 @@ const ChatForTwoPage = () => {
             `${roomData.receiverName}`,
             `${roomData.roomName}`)
             .catch(function (err) {
-                console.log("error sending message");
-                console.log("form data:");
-                console.log(files);
+                console.log("error sending message:");
+                console.log(`${roomData.senderName}`);
+                console.log(message);
                 console.log(filenames);
+                console.log(`${roomData.receiverName}`);
+                console.log(`${roomData.roomName}`);
                 return console.error(err.toString());
             });
     }
@@ -193,7 +199,7 @@ const ChatForTwoPage = () => {
                 .then(res => {
                     console.log('файл отправлен успешно')
                     console.log(res.data);
-                    setFileNames(prev => [...prev, res.data]);
+                    setFileNames(res.data);
               })
               .catch(err => {
                 console.log("ошибка в отправлении")

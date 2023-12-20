@@ -10,7 +10,8 @@ public static class ServiceCollectionExtension
     {
         var minioConfiguration = configuration.GetSection("Minio");
 
-        var s3Config = new S3Config(minioConfiguration["BucketName"], minioConfiguration["SecretKey"],
+        var s3Config = new S3Config(minioConfiguration["MainBucketName"],  minioConfiguration["TemporaryBucketName"],
+            minioConfiguration["SecretKey"],
             minioConfiguration["AccessKey"], minioConfiguration["Endpoint"],
             minioConfiguration["User"], minioConfiguration["Password"]);
 
@@ -20,8 +21,11 @@ public static class ServiceCollectionExtension
             .WithCredentials(s3Config.User, s3Config.Password)
             .Build();
 
-        if (!await minioClient.BucketExistsAsync(new BucketExistsArgs().WithBucket(minioConfiguration["BucketName"])))
-            await minioClient.MakeBucketAsync(new MakeBucketArgs().WithBucket(minioConfiguration["BucketName"]));
+        if (!await minioClient.BucketExistsAsync(new BucketExistsArgs().WithBucket(s3Config.MainBucketName)))
+            await minioClient.MakeBucketAsync(new MakeBucketArgs().WithBucket(s3Config.MainBucketName));
+        
+        if (!await minioClient.BucketExistsAsync(new BucketExistsArgs().WithBucket(s3Config.TemporaryBucketName)))
+            await minioClient.MakeBucketAsync(new MakeBucketArgs().WithBucket(s3Config.TemporaryBucketName));
         
         services.AddSingleton<IMinioClient>(o => minioClient);
         return services;

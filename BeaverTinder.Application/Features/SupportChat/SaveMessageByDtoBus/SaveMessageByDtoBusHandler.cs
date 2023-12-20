@@ -34,6 +34,7 @@ public class SaveMessageByDtoBusHandler : ICommandHandler<SaveMessageByDtoBusCom
         }
         catch (Exception e)
         {
+            Console.WriteLine(e.Message);
             return new Result<Unit>(new Unit(), false, e.Message);
         }
         

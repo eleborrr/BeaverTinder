@@ -1,5 +1,6 @@
 ﻿using BeaverTinder.Application.Configs;
 using BeaverTinder.S3.Services;
+using BeaverTinder.S3.Services.Files;
 using MassTransit;
 
 namespace BeaverTinder.S3.ServicesExtensions.RabbitMq;

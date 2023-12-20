@@ -1,4 +1,5 @@
-﻿using BeaverTinder.Domain.Entities;
+﻿using BeaverTinder.Application.Dto.ResponsesAbstraction;
+using BeaverTinder.Domain.Entities;
 using BeaverTinder.Shared.Files;
 using MassTransit;
 using MediatR;
@@ -31,39 +32,39 @@ public class FilesController: Controller
     public async Task<JsonResult> UploadFile(
         [FromForm] FileUploadModel model)
     {   
-        // var fileInput = Request.Form.Files;
-        // try
-        // {
+        try
+        {
             var result = new List<string>();
+            // pass in Service all files; Send them with IBus to S3 service; With redis save cache;  ??
             foreach (var file in model.Files)
             {
                 var fileDto = new SaveFileMessage
                     (new FileData(await ConvertIFormFileToByteArray(file)),
                         model.Metadata,
                         Guid.NewGuid().ToString(),
-                        "my-bucket");
+                        "main-bucket",
+                        "temporary-bucket");
                
                 result.Add(fileDto.FileName);
             
                 if (file.Length > 0)
                     await _bus.Publish(fileDto);
+                
             }
             
             return Json(result);
-        // }
-        // catch (Exception exception)
-        // {
-        //     return Json(new FailResponse(false, exception.Message, 400));
-        // }
+        }
+        catch (Exception exception)
+        {
+            return Json(new FailResponse(false, exception.Message, 400));
+        }
     }
     
-    private async Task<byte[]> ConvertIFormFileToByteArray(IFormFile file)
+    private static async Task<byte[]> ConvertIFormFileToByteArray(IFormFile file)
     {
-        using (var memoryStream = new MemoryStream())
-        {
-            await file.CopyToAsync(memoryStream);
-            return memoryStream.ToArray();
-        }
+        using var memoryStream = new MemoryStream();
+        await file.CopyToAsync(memoryStream);
+        return memoryStream.ToArray();
     }
 
 }
