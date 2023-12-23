@@ -25,7 +25,6 @@ const ChatForTwoPage = () => {
     const [connection, setConnection] = useState(null);
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([]);
-    const [filenames, setFileNames] = useState([]);
     const { nickname } = useParams();
     
     // константы для метаданных о файле
@@ -39,6 +38,7 @@ const ChatForTwoPage = () => {
     const [charCount, setCharCount] = useState('');
     const [creationDate, setCreationDate] = useState('');
     const [description, setDescription] = useState('');
+    const [fileName, setFileName] = useState('');
 
     const messageEl = useRef(null);
  
@@ -58,28 +58,30 @@ const ChatForTwoPage = () => {
         }
     }, [navigate, token])
 
-    const handleSend = (event) => {
+    const handleSend = async (event) => {
         
         if (message === "")
                 return;
 
-        callSendMessageSignalR();
+        await callSendMessageSignalR();
         setMessage("");
 
         event.preventDefault();
     }
     
     // отправка сообщения
-    const callSendMessageSignalR = () =>{
+    const callSendMessageSignalR = async () =>{
+        const filenames2 = await SendFiles();
+        setFiles([]);
         connection.invoke("SendPrivateMessage",
             `${roomData.senderName}`,
             message,
-            filenames,
+            filenames2,
             `${roomData.receiverName}`,
             `${roomData.roomName}`)
             .catch(function (err) {
                 console.log("error sending message");
-                console.log(filenames);
+                console.log(filenames2);
                 console.log(`${roomData.receiverName}`);
                 console.log(`${roomData.roomName}`);
                 return console.error(err.toString());
@@ -136,10 +138,12 @@ const ChatForTwoPage = () => {
         if (e.target.files)
         {
             let file = e.target.files[0];
-            setFiles((prev) => [...prev, file]);
+            console.log([file]);
+            setFiles([file]);
             setFileType(file.type);
-            setFileSize(file.size)
-            setOpenForm(true);
+            setFileSize(file.size);
+            setFileName(file.name);
+            setOpenForm(true);  
         }
             
     };
@@ -152,6 +156,7 @@ const ChatForTwoPage = () => {
       };
 
     const metadata = {
+        fileName: fileName,
         fileType: fileType,
         duration: duration,
         title: title,
@@ -165,8 +170,6 @@ const ChatForTwoPage = () => {
 
     const onSubmitFileMetadata = () =>{
         setOpenForm(false);
-        SendFiles();
-        setFiles([]);
     }
     
     // отправка файлов
@@ -185,24 +188,23 @@ const ChatForTwoPage = () => {
         setCharCount('');
         setCreationDate('');
         setDescription('');
+        console.log(files);
         for (let i = 0; i < files.length; i++) {
             formData.append(`Files`, files[i]);
           }
         try{
-            axiosInstance.post("/uploadFile", formData, {
+            const res = await axiosInstance.post("/uploadFile", formData, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                         'Content-Type': 'multipart/form-data'
                     }
                 })
-                .then(res => {
-                    console.log('файл отправлен успешно')
-                    console.log(res.data);
-                    setFileNames(res.data);
-              })
-              .catch(err => {
-                console.log("ошибка в отправлении")
-                console.log(err)});
+                .catch(err => {
+                    console.log("ошибка в отправлении")
+                    console.log(err)});
+            console.log('файл отправлен успешно')
+            console.log(res.data);
+            return res.data;
         } catch (e){
             console.log(e);
         }
@@ -228,7 +230,9 @@ const ChatForTwoPage = () => {
                                     Array.from(mes.files).length !== 0 
                                     ? 
                                         mes.files.map((fileN, index) => (
-                                            <FileDisplay fileName={fileN} belongsToSender={mes.belongsToSender}/>
+                                            <FileDisplay 
+                                                fileName={fileN} 
+                                                belongsToSender={mes.belongsToSender}/>
                                         ))
                                     :
                                     <></>

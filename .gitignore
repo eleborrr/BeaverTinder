@@ -158,3 +158,6 @@ sftp-config.json
 */.idea/
 BeaverTinder.sln.DotSettings.user
 .idea/
+
+#mogo-folder
+mongo-data/
