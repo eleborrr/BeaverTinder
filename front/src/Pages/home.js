@@ -6,14 +6,16 @@ import firstPicture from '../assets/images/about/01.jpg'
 import secondPicture from '../assets/images/about/02.jpg'
 import thirdPicture from '../assets/images/about/03.jpg'
 import fourthPicture from '../assets/images/about/04.jpg'
+import TokenName from "../Components/token_constant_name";
 
 const HomePage = () => {
     const navigate = useNavigate();
-    const token = Cookies.get('token');
+    const token = Cookies.get(TokenName);
 
 
     useEffect(() => {
         if (!token){
+			Cookies.remove(TokenName);
             navigate("/login");
         }
     }, [navigate, token])

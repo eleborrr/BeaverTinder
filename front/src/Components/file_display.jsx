@@ -9,34 +9,72 @@ const FileDisplay = ({fileName, belongsToSender}) => {
     const [metadata, setMetadata] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        axiosInstance.get(`${FilesServerURL}/api/files/main-bucket?filename=${fileName}`)
-            .then(response => {
-                setImgBytes(response.data.bytesArray);
-                setMetadata(response.data.metadata);
-                console.log(response.data)
-                setLoading(false);
-            })
+    useEffect( () => {
+        const fetchData = async () => {
+            let trying = 0; 
+            let success = false; 
+            while (!success && trying < 5) { 
+                try {
+                    // Отправляем запрос и ждем ответ
+                    const response = await axiosInstance.get(`${FilesServerURL}/api/files/main-bucket?filename=${fileName}`);
+                    setImgBytes(response.data.bytesArray); 
+                    setMetadata(response.data.metadata); 
+                    console.log(response.data); 
+                    success = true; 
+                    setLoading(false); 
+                } catch (error) {
+                    console.log("Не удалось получить файл"); 
+                    trying++; 
+                }
+                if (!success)
+                    await new Promise(resolve => setTimeout(resolve, 500)); 
+            }
+        };
+    
+        fetchData();
     }, []);
 
     const isImage = () => {
-        return metadata.data.fileType == 'image/jpeg';
+        const imageTypeRegex = /^image\/*/;
+
+        return imageTypeRegex.test(metadata.data.fileType);
     };
 
 
     const downloadFile = () => {
-        // Симулируем скачивание файла при нажатии
-        const blob = new Blob([imgBytes], { type: metadata.data.fileType });
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        // задаём имя файла
-        link.download = metadata.data.fileName;
-        document.body.appendChild(link);
-        link.click();
-        // Чистим ссылку после скачивания
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(url);
+        const binaryString = atob(imgBytes);
+
+        if (binaryString.length === 0) {
+            console.error('Массив байтов PDF пуст');
+        } else {
+            const byteArray = new Uint8Array(binaryString.length);
+            for (let i = 0; i < binaryString.length; i++) {
+                byteArray[i] = binaryString.charCodeAt(i);
+            }
+
+            // Создание Blob из Uint8Array
+            const blob = new Blob([byteArray], { type: metadata.data.fileType });
+
+            // Использование FileReader для чтения blob и создания ссылки для скачивания
+            const reader = new FileReader();
+            reader.onload = () => {
+                const url = reader.result;
+                if (!url) {
+                    console.error('Не удалось создать URL-объект');
+                } else {
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = metadata.data.fileName || 'документ.pdf';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                }
+            };
+            reader.onerror = (error) => {
+                console.error('Ошибка при чтении blob:', error);
+            };
+            reader.readAsDataURL(blob);
+        }
     };
 
     if (loading) {

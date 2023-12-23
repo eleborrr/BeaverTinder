@@ -9,10 +9,11 @@ import ServerURL from "../Components/server_url";
 import './../assets/css/chat_for_two.css';
 import "../assets/css/file_uploader.css";
 import FileMetadataForm from "../Components/metadata-files";
+import TokenName from "../Components/token_constant_name";
 
 const ChatForTwoPage = () => {
     const navigate = useNavigate();
-    const token = Cookies.get('token');
+    const token = Cookies.get(TokenName);
 
     useEffect(()=> {
         if (token !== undefined && token !== null)
@@ -69,7 +70,7 @@ const ChatForTwoPage = () => {
         event.preventDefault();
     }
     
-    // отправка сообщения
+    // отправка сообщения`
     const callSendMessageSignalR = async () =>{
         const filenames2 = await SendFiles();
         setFiles([]);
@@ -135,9 +136,16 @@ const ChatForTwoPage = () => {
       
     // обработка прикрепления файла(ов)
     const handleFileChange = async (e) => { 
+        if (e.target.files && e.target.files[0] && e.target.files[0].type === "application/x-msdownload")
+        {
+            alert("You can not provide .exe files cause of protection");
+            return;
+        }
         if (e.target.files)
         {
             let file = e.target.files[0];
+            if (file == undefined)
+                return;
             console.log([file]);
             setFiles([file]);
             setFileType(file.type);
@@ -299,6 +307,7 @@ const ChatForTwoPage = () => {
                         </label>
                         <input type="file"
                             id="fileInput"
+                            accept="*/*" 
                             style={{display: "none"}} 
                             onChange={handleFileChange}
                             disabled={files.length >= 1}/>

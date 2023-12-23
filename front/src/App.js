@@ -19,14 +19,15 @@ import ProfilePage from './Pages/profile';
 import ChatWindow from './Components/window_connect_with_admin';
 import SupporChatsPage from './Pages/admin/support-chats';
 import './assets/css/App.css';
+import TokenName from './Components/token_constant_name';
 
 function App() {
-  const token = Cookies.get('token');
+  const token = Cookies.get(TokenName);
   const CheckAllowForChatWithAdmin = () =>{
     
     if(token === undefined || token === null)
     {
-      console.log(token);
+      Cookies.remove(TokenName);
       return false;
     }
       
