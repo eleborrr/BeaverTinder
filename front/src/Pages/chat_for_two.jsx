@@ -71,7 +71,6 @@ const ChatForTwoPage = () => {
     
     // отправка сообщения
     const callSendMessageSignalR = () =>{
-        console.log("filenames why you running now");
         connection.invoke("SendPrivateMessage",
             `${roomData.senderName}`,
             message,
@@ -81,6 +80,8 @@ const ChatForTwoPage = () => {
             .catch(function (err) {
                 console.log("error sending message");
                 console.log(filenames);
+                console.log(`${roomData.receiverName}`);
+                console.log(`${roomData.roomName}`);
                 return console.error(err.toString());
             });
     }

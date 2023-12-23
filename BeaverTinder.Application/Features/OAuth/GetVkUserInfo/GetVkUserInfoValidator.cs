@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using BeaverTinder.Application.Features.OAuth.GetVkUserInfo;
+using FluentValidation;
 
 namespace Application.OAuth.GetVkUserInfo;
 

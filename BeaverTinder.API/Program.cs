@@ -45,9 +45,8 @@ builder.Services.AddCustomServices(builder.Configuration);
 
 builder.Services.AddMediatR(configuration =>
 {
-    configuration.RegisterServicesFromAssembly(ApllicationAssemblyReference.Assembly);
+    configuration.RegisterServicesFromAssembly(AplicationAssemblyReference.Assembly);
     configuration.RegisterServicesFromAssembly(typeof(Program).Assembly);
-
 });
 
 builder.Services.AddCustomAuth(builder.Configuration);

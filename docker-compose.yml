@@ -75,7 +75,13 @@ services:
       Minio__AccessKey: F7l1mZ14Pno43XicMUHY
       Minio__SecretKey: Aaz371CWmcr650RLk6xRJSeG0rPw9CB2okThDlwX
       Minio__Endpoint: minio:9000
-      Minio__BucketName: my-bucket
+      Minio__MainBucketName: main-bucket
+      Minio__TemporaryBucketName: temporary-bucket
+      Redis__Host: redis
+      Redis__Port: 6379
+      Mongo__ConnectionString: mongodb://mongo:27017
+      Mongo__DatabaseName: Metadata
+      Mongo__MetadataCollectionName: Metadata
     volumes:
       - ~/.aspnet/https:/https:ro
   minio:
@@ -94,6 +100,22 @@ services:
       interval: 30s
       timeout: 20s
       retries: 3
+  redis:
+    image: redis:latest
+    restart: always
+    ports:
+      - '6379:6379'
+    environment:
+      - REDIS_PASSWORD=my-password
+      - REDIS_PORT=6379
+      - REDIS_DATABASES=16
+  mongo:
+    hostname: mongo
+    image: mongo:latest
+    ports:
+      - '27017:27017'
+    volumes:
+      - ./mongo-data:/data/db
   react:
     image: front
     build:

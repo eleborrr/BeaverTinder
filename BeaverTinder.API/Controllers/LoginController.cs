@@ -8,6 +8,7 @@ using AspNet.Security.OAuth.Vkontakte;
 using BeaverTinder.Application.Dto.Authentication.Login;
 using BeaverTinder.Application.Dto.Vk;
 using BeaverTinder.Application.Features.OAuth.GetUserFromToVkById;
+using BeaverTinder.Application.Features.OAuth.GetVkUserInfo;
 using BeaverTinder.Application.Features.OAuth.Login;
 using BeaverTinder.Application.Services.Abstractions;
 using BeaverTinder.Domain.Entities;
