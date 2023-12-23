@@ -15,8 +15,10 @@ public sealed class RepositoryManager : IRepositoryManager
     private readonly Lazy<IMessageRepository> _lazyMessageRepository;
     private readonly Lazy<ISupportChatMessageRepository> _lazySupportChatMessageRepository;
     private readonly Lazy<ISupportRoomRepository> _lazySupportRoomRepository;
+    private readonly Lazy<IFileToMessageRepository> _lazyFileToMessageRepository;
     public RepositoryManager(ApplicationDbContext dbContext)
     {
+        _lazyFileToMessageRepository = new Lazy<IFileToMessageRepository>(() => new FileToMessageRepository(dbContext));
         _lazyGeolocationRepository = new Lazy<IGeolocationRepository>(() => new GeolocationRepository(dbContext));
         _lazyLikeRepository = new Lazy<ILikeRepository>(() => new LikeRepository(dbContext));
         _lazyUnitOfWork = new Lazy<IUnitOfWork>(() => new UnitOfWork(dbContext));
@@ -32,6 +34,7 @@ public sealed class RepositoryManager : IRepositoryManager
         _lazySupportRoomRepository = new Lazy<ISupportRoomRepository>(() => new SupportRoomRepository(dbContext));
     }
 
+    public IFileToMessageRepository FileToMessageRepository => _lazyFileToMessageRepository.Value;
     public ILikeRepository LikeRepository => _lazyLikeRepository.Value;
     public IGeolocationRepository GeolocationRepository => _lazyGeolocationRepository.Value;
     public IUnitOfWork UnitOfWork => _lazyUnitOfWork.Value;

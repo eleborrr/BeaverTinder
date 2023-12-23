@@ -2,6 +2,6 @@
 using BeaverTinder.Application.Services.Abstractions.Cqrs.Commands;
 using MediatR;
 
-namespace Application.SupportChat.SaveMessageByDtoBus;
+namespace BeaverTinder.Application.Features.SupportChat.SaveMessageByDtoBus;
 
-public record SaveMessageByDtoBusCommand(SupportChatMessageDto Message) : ICommand<Unit>, ICommand<SupportChatMessageDto>;
+public record SaveMessageByDtoBusCommand(ChatMessageDto Message) : ICommand<Unit>, ICommand<ChatMessageDto>;

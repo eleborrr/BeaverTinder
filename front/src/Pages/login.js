@@ -4,6 +4,7 @@ import Cookies from 'js-cookie';
 import {axiosInstance} from "./../Components/axios_server"; 
 import vk from './../assets/images/login/vk.png' 
 import './../assets/css/login.css' 
+import TokenName from "../Components/token_constant_name";
  
 const LoginPage = () => { 
  
@@ -37,7 +38,7 @@ const LoginPage = () => {
                 setErrorsLogin('')
             } 
             else{ 
-                Cookies.set('token', res.data.message); 
+                Cookies.set(TokenName, res.data.message, {expires: 1}); 
                 document.location.replace(`/home`);
             } 
         }) 
@@ -47,9 +48,12 @@ const LoginPage = () => {
     }; 
  
     useEffect(() => { 
-        if(Cookies.get('token')){ 
+        if(Cookies.get(TokenName)){ 
             navigate('/home'); 
+            Cookies.set(TokenName, "error");
         } 
+        Cookies.set(TokenName, "error");
+        Cookies.remove(TokenName);
     }) 
 
     const HandleEnterPress = (event) => {

@@ -1,5 +1,4 @@
-﻿using Application.SupportChat.SaveMessageByDtoBus;
-using BeaverTinder.Application.Dto.MediatR;
+﻿using BeaverTinder.Application.Dto.MediatR;
 using BeaverTinder.Application.Services.Abstractions.Cqrs.Commands;
 using BeaverTinder.Domain.Entities;
 using MassTransit;
@@ -35,6 +34,7 @@ public class SaveMessageByDtoBusHandler : ICommandHandler<SaveMessageByDtoBusCom
         }
         catch (Exception e)
         {
+            Console.WriteLine(e.Message);
             return new Result<Unit>(new Unit(), false, e.Message);
         }
         

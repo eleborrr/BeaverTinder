@@ -10,8 +10,8 @@ internal sealed class LikeRepository: ILikeRepository
     
     public LikeRepository(ApplicationDbContext applicationDbContext) => _applicationDbContext = applicationDbContext;
     
-    public async Task<IEnumerable<Like>> GetAllAsync(CancellationToken cancellationToken) =>
-        await _applicationDbContext.Likes.ToListAsync(cancellationToken);
+    public Task<IEnumerable<Like>> GetAll() =>
+        Task.FromResult(_applicationDbContext.Likes.AsEnumerable());
     
     public async Task<Like?> GetByIdAsync(int ownerId, CancellationToken cancellationToken = default) =>
         await _applicationDbContext.Likes.FirstOrDefaultAsync(x => x.Id == ownerId, cancellationToken);

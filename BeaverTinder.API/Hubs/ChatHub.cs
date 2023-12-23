@@ -1,6 +1,12 @@
-﻿using BeaverTinder.Domain.Entities;
+﻿using BeaverTinder.Application.Dto.SupportChat;
+using BeaverTinder.Application.Features.Chat.SaveMessage;
+using BeaverTinder.Domain.Entities;
 using BeaverTinder.Infrastructure.Database;
+using BeaverTinder.Shared.Files;
+using MassTransit;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,11 +16,15 @@ namespace BeaverTinder.API.Hubs
     {
         private readonly ApplicationDbContext _dbContext;
         private readonly UserManager<User> _userManager;
+        private readonly IBus _bus;
+        private readonly IMediator _mediator;
 
-        public ChatHub(ApplicationDbContext dbContext, UserManager<User> userManager)
+        public ChatHub(ApplicationDbContext dbContext, UserManager<User> userManager, IMediator mediator, IBus bus)
         {
             _dbContext = dbContext;
             _userManager = userManager;
+            _mediator = mediator;
+            _bus = bus;
         }
         
         public async Task GetGroupMessages(string roomName)
@@ -30,7 +40,14 @@ namespace BeaverTinder.API.Hubs
             
             foreach (var message in messages)
             {
-                await Clients.Client(Context.ConnectionId).SendAsync("ReceivePrivateMessage", await GetUserName(message.SenderId), message.Content);
+                var files = _dbContext.Files
+                    .Where(f => f.MessageId == message.Id)
+                    .Select(msg => msg.FileGuidName)
+                    .ToList();
+                await Clients.Client(Context.ConnectionId).SendAsync("ReceivePrivateMessage", 
+                    await GetUserName(message.SenderId), 
+                    message.Content,
+                    files);
             }
         }
 
@@ -38,18 +55,29 @@ namespace BeaverTinder.API.Hubs
         {
             return (await _userManager.FindByIdAsync(id))?.UserName;
         }
-
-        public async Task SendPrivateMessage(string senderUserName, string message, string receiverUserName, string groupName)
+        
+        public async Task SendPrivateMessage(string senderUserName, 
+            string message,
+            List<string>? filenames, 
+            string receiverUserName,
+            string groupName)
         {
+            Console.WriteLine("joined in sendprivate msg");
             var room = _dbContext.Rooms.FirstOrDefault(r => r.Name == groupName);
+            
 
             var sender = await _userManager.FindByNameAsync(senderUserName);
             var receiver = await _userManager.FindByNameAsync(receiverUserName);
-
+            
+            Console.WriteLine("checking sender, receiver, room");
+            Console.WriteLine(room);
+            Console.WriteLine(sender);
+            Console.WriteLine(receiver);
+            
             if (receiver is null || sender is null || room is null)
                 return;
-            
-            _dbContext.Messages.Add(new Message()
+
+            var newMessage = new Message
             {
                 Id = Guid.NewGuid().ToString(),
                 Content = message,
@@ -57,11 +85,37 @@ namespace BeaverTinder.API.Hubs
                 SenderId = sender.Id,
                 ReceiverId = receiver.Id,
                 RoomId = room.Id
-            });
+            };
+            Console.WriteLine(filenames);
+            foreach (var filename in filenames)
+            {
+                Console.WriteLine(filename);
+                _dbContext.Files.Add(new FileToMessage
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    FileGuidName = filename,
+                    MessageId = newMessage.Id
+                });
+            }
+
+            Console.WriteLine("saving msg");
+            _dbContext.Messages.Add(newMessage);
             await _dbContext.SaveChangesAsync();
-            await Clients.Group(groupName).SendAsync("ReceivePrivateMessage", senderUserName, message);
+            
+            var dto = new ChatMessageDto()
+            {
+                Content = message,
+                RoomId = room.Id,
+                SenderId = sender.Id,
+                ReceiverId = receiver.Id,
+                Timestamp = DateTime.Now
+            };
+            Console.WriteLine("sending in file consumer");
+            await _mediator.Send(new SaveChatMessageByDtoBusCommand(dto));
+            Console.WriteLine("send in file consumer");
+            await Clients.Group(groupName).SendAsync("ReceivePrivateMessage", senderUserName, 
+                message, filenames);
         }
-        
         
         public override async Task OnConnectedAsync()
         {

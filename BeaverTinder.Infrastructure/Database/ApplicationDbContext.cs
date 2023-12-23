@@ -8,6 +8,7 @@ public sealed class ApplicationDbContext: IdentityDbContext<User>
 {
     public DbSet<Like> Likes { get; set; }
     public DbSet<Message> Messages { get; set; }
+    public DbSet<FileToMessage> Files { get; set; }
     public DbSet<SupportChatMessage> SupportChatMessages { get; set; }
     public DbSet<Room> Rooms { get; set; }
     public DbSet<SupportRoom> SupportRooms { get; set; }
@@ -23,7 +24,7 @@ public sealed class ApplicationDbContext: IdentityDbContext<User>
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)
     { 
-        Database.Migrate();
+        // Database.Migrate();
     }
     protected override void OnModelCreating(ModelBuilder builder)
     {

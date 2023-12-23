@@ -63,7 +63,7 @@ public class SupportChatController : Controller
         var chatRoom = (await _mediator.Send(new GetSupportChatByIdQuery(user!.Id, secondUser!.Id), cancellationToken));
         if (!chatRoom.IsSuccess)
             chatRoom = await _mediator.Send(
-                new CreateSupportChatByIdCommand(user!.Id, secondUser.Id),
+                new CreateSupportChatByIdCommand(user.Id, secondUser.Id),
                 cancellationToken);
         
         var history = (await _mediator.Send(

@@ -19,11 +19,18 @@ import ProfilePage from './Pages/profile';
 import ChatWindow from './Components/window_connect_with_admin';
 import SupporChatsPage from './Pages/admin/support-chats';
 import './assets/css/App.css';
+import TokenName from './Components/token_constant_name';
 
 function App() {
+  const token = Cookies.get(TokenName);
   const CheckAllowForChatWithAdmin = () =>{
+    
     if(token === undefined || token === null)
+    {
+      Cookies.remove(TokenName);
       return false;
+    }
+      
     try {
       const decodedToken = jwtDecode(token);
       if (!decodedToken["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"])
@@ -33,9 +40,10 @@ function App() {
       return true;
     } catch (error) {
       Cookies.remove('token');
+      return false;
     }
   }
-  let token = Cookies.get('token');
+  
   return (
     <>
       <HeaderApp />
@@ -55,6 +63,7 @@ function App() {
         <Route path='/support_chat/:nickname' element={<SupportChatPage />} />
         <Route path='/profile' element={<ProfilePage />} />
         <Route path='/afterCallback' element={<OAuthAfterCallback />} />
+        <Route path='/test' element={<ChatForTwoPage />} />
         <Route path='*' element={<PageNotFound />}
         />
       </Routes>

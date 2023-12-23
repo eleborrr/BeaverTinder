@@ -50,14 +50,14 @@ public class SupportChatService : ISupportChatService
         return Task.FromResult(rooms);
     }
 
-    public async Task<IEnumerable<SupportChatMessageDto>> GetChatHistory(string userId, string secondUserId)
+    public async Task<IEnumerable<ChatMessageDto>> GetChatHistory(string userId, string secondUserId)
     {
         var room = await GetChatById(userId, secondUserId);
         var messages = _repositoryManager.SupportChatMessageRepository.GetAll().Where(msg => msg.RoomId == room.Id)
             .ToList();
         if (messages.Count == 0)
-            return Array.Empty<SupportChatMessageDto>();
-        var result = await Task.WhenAll(messages.Select(async m => new SupportChatMessageDto()
+            return Array.Empty<ChatMessageDto>();
+        var result = await Task.WhenAll(messages.Select(async m => new ChatMessageDto()
         {
             Timestamp = m.Timestamp,
             Content = m.Content,
@@ -70,7 +70,7 @@ public class SupportChatService : ISupportChatService
         return result;
     }
 
-    public async Task SaveMessageAsync(SupportChatMessageDto message)
+    public async Task SaveMessageAsync(ChatMessageDto message)
     {
         var entity = new SupportChatMessage()
         {
