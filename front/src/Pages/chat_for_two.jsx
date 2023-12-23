@@ -1,6 +1,6 @@
 import { axiosInstance } from "../Components/axios_server";
 import { useNavigate, useParams } from "react-router-dom";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import * as signalR from "@microsoft/signalr";
 import jwtDecode from "jwt-decode";
 import Cookies from "js-cookie";
@@ -13,7 +13,13 @@ import FileMetadataForm from "../Components/metadata-files";
 const ChatForTwoPage = () => {
     const navigate = useNavigate();
     const token = Cookies.get('token');
-    const uid = jwtDecode(token).Id;
+
+    useEffect(()=> {
+        if (token !== undefined && token !== null)
+            setUid( jwtDecode(token).Id);
+    },[])
+    
+    const [uid, setUid] = useState('') 
     const [files, setFiles] = useState([]);
     const [roomData, setRoomData] = useState([]);
     const [connection, setConnection] = useState(null);
@@ -37,12 +43,12 @@ const ChatForTwoPage = () => {
     const messageEl = useRef(null);
  
     useEffect(() => {
-      if (messageEl) {
-        messageEl.current.addEventListener('DOMNodeInserted', event => {
-          const { currentTarget: target } = event;
-          target.scroll({ top: target.scrollHeight, behavior: 'smooth' });
-        });
-      }
+        if (messageEl) {
+            messageEl.current.addEventListener('DOMNodeInserted', event => {
+                const { currentTarget: target } = event;
+                target.scroll({ top: target.scrollHeight, behavior: 'smooth' });
+            });
+        }
     }, [])
     
     // отправка неавторизованного пользователя на страницу авторизации
@@ -65,7 +71,7 @@ const ChatForTwoPage = () => {
     
     // отправка сообщения
     const callSendMessageSignalR = () =>{
-        console.log(filenames);
+        console.log("filenames why you running now");
         connection.invoke("SendPrivateMessage",
             `${roomData.senderName}`,
             message,
@@ -74,8 +80,6 @@ const ChatForTwoPage = () => {
             `${roomData.roomName}`)
             .catch(function (err) {
                 console.log("error sending message");
-                console.log("form data:");
-                console.log(files);
                 console.log(filenames);
                 return console.error(err.toString());
             });
@@ -193,12 +197,11 @@ const ChatForTwoPage = () => {
                 .then(res => {
                     console.log('файл отправлен успешно')
                     console.log(res.data);
-                    setFileNames(prev => [...prev, res.data]);
+                    setFileNames(res.data);
               })
               .catch(err => {
                 console.log("ошибка в отправлении")
                 console.log(err)});
-            console.log('АЛО НАХУЙ ТЫ РАБОТАЕШЬ ИЛИ НЕТ?!!!!!')
         } catch (e){
             console.log(e);
         }

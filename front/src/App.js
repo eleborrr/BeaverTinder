@@ -21,9 +21,15 @@ import SupporChatsPage from './Pages/admin/support-chats';
 import './assets/css/App.css';
 
 function App() {
+  const token = Cookies.get('token');
   const CheckAllowForChatWithAdmin = () =>{
+    
     if(token === undefined || token === null)
+    {
+      console.log(token);
       return false;
+    }
+      
     try {
       const decodedToken = jwtDecode(token);
       if (!decodedToken["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"])
@@ -33,9 +39,10 @@ function App() {
       return true;
     } catch (error) {
       Cookies.remove('token');
+      return false;
     }
   }
-  let token = Cookies.get('token');
+  
   return (
     <>
       <HeaderApp />
