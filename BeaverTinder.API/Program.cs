@@ -73,6 +73,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+using var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope();
+
+await using var dbContext = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+await dbContext.Database.MigrateAsync();
 
 app.MapHub<ChatHub>("/chatHub");
 app.MapHub<SupportChatHub>("/supportChatHub");

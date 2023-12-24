@@ -61,18 +61,18 @@ namespace BeaverTinder.Infrastructure.Migrations
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "Files",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    MessageId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    FileGuidName = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Files", x => x.Id);
-                });
+            // migrationBuilder.CreateTable(
+            //     name: "Files",
+            //     columns: table => new
+            //     {
+            //         Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+            //         MessageId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+            //         FileGuidName = table.Column<string>(type: "nvarchar(max)", nullable: false)
+            //     },
+            //     constraints: table =>
+            //     {
+            //         table.PrimaryKey("PK_Files", x => x.Id);
+            //     });
 
             migrationBuilder.CreateTable(
                 name: "Geolocations",

@@ -27,26 +27,33 @@ const LikePage = () =>
     }, [navigate, token])
 
     const GetGeolocation = useCallback((prof) => {
-        axiosInstance.post("/geolocation",{
-            userId : prof.id
-        },
-         {
-            headers: {
-                Authorization: `Bearer ${token}`,
-                Accept: 'application/json'
+        try
+        {
+            axiosInstance.post("/geolocation",{
+                userId : prof.id
             },
-        })
-        .then(res => {
-            if (res.data){
-                if (res.data.longtitude){
-                    setLong(res.data.longtitude);
+             {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    Accept: 'application/json'
+                },
+            })
+            .then(res => {
+                if (res.data){
+                    if (res.data.longtitude){
+                        setLong(res.data.longtitude);
+                    }
+                    if (res.data.latitude){
+                        setLant(res.data.latitude);
+                    }
                 }
-                if (res.data.latitude){
-                    setLant(res.data.latitude);
-                }
-            }
-        })
-        .catch()
+            })
+            .catch( e => {
+                console.log("geolocation is not availible");
+            })
+        } catch(e){
+            console.log("geolocation is not availible");
+        }
     }, [token])
 
     const GetNewBearer = useCallback(() => {

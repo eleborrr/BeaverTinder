@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minio-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: minio
+  template:
+    metadata:
+      labels:
+        app: minio
+    spec:
+      containers:
+      - name: minio
+        image: minio/minio:latest
+        env:
+          - name: MINIO_ROOT_USER
+            value: ozontech
+          - name: MINIO_ROOT_PASSWORD
+            value: minio123
+        args:
+          - server
+          - --console-address
+          - ":9001" 
+          - /data/
+        ports:
+        - containerPort: 9000
+          name: minio-msg-port
+        - containerPort: 9001
+          name: minio-mgmt-port
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: minio-balancer
+spec:
+  type: LoadBalancer
+  selector:
+    app: minio
+  ports:
+  - name: minio-msg-port
+    protocol: TCP
+    port: 9000
+    targetPort: 9000
+  - name: minio-mgmt-port
+    protocol: TCP
+    port: 9001
+    targetPort: 9001
+

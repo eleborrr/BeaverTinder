@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: s3-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: s3
+  template:
+    metadata:
+      labels:
+        app: s3
+    spec:
+      containers:
+      - name: s3
+        image: andrewkhoryakov/beaver-tinder-s3
+        env:
+          - name: MessageBroker__Username
+            value: rabbitsa
+          - name: MessageBroker__Password
+            value: mypa55w0rd!
+          - name: MessageBroker__Hostname
+            value: rabbitmq-balancer
+          - name: MessageBroker__Port
+            value: "5672"
+          - name: Minio__User
+            value: ozontech
+          - name: Minio__Password
+            value: minio123
+          - name: Minio__AccessKey
+            value: F7l1mZ14Pno43XicMUHY
+          - name: Minio__SecretKey
+            value: Aaz371CWmcr650RLk6xRJSeG0rPw9CB2okThDlwX
+          - name: Minio__Endpoint
+            value: minio-balancer:9000
+          - name: Minio__MainBucketName
+            value: main-bucket
+          - name: Minio__TemporaryBucketName
+            value: temporary-bucket
+          - name: Redis__Host
+            value: redis-balancer
+          - name: Redis__Port
+            value: "6379"
+          - name: Mongo__ConnectionString
+            value: mongodb://mongo-balancer:27017
+          - name: Mongo__DatabaseName
+            value: Metadata
+          - name: Mongo__MetadataCollectionName
+            value: Metadata
+        ports:
+          - containerPort: 4042
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: s3-balancer
+spec:
+  type: LoadBalancer
+  selector:
+    app: s3
+  ports:
+  - protocol: TCP
+    port: 4042
+    targetPort: 80
+  
+

@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: front-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: front
+  template:
+    metadata:
+      labels:
+        app: front
+    spec:
+      containers:
+      - name: front
+        image: andrewkhoryakov/beaver-tinder-front
+        ports:
+        - containerPort: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: front-balancer
+spec:
+  type: LoadBalancer
+  selector:
+    app: front
+  ports:
+  - port: 3000
+    targetPort: 3000
+

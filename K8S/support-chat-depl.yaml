@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: support-chat-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: support-chat
+  template:
+    metadata:
+      labels:
+        app: support-chat
+    spec:
+      containers:
+      - name: support-chat
+        image: andrewkhoryakov/beaver-tinder-support-consumer
+        env:
+          - name: MessageBroker__Username
+            value: rabbitsa
+          - name: MessageBroker__Password
+            value: mypa55w0rd!
+          - name: MessageBroker__Hostname
+            value: rabbitmq-balancer
+          - name: MessageBroker__Port
+            value: "5672"
+          - name: ConnectionStrings__BeaverTinderDatabase
+            value: Data Source=mssql-balancer;Initial Catalog=BeaverTinderDatabase;User=sa;Password=superPuperPassword!15641;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;MultipleActiveResultSets=true;
+        ports:
+          - containerPort: 4041
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: support-chat-balancer
+spec:
+  type: LoadBalancer
+  selector:
+    app: web
+  ports:
+  - protocol: TCP
+    port: 4041
+    targetPort: 80
+  
+

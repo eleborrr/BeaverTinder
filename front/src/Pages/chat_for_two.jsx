@@ -182,6 +182,8 @@ const ChatForTwoPage = () => {
     
     // отправка файлов
     const SendFiles = async () => {  
+        if (files.length === 0)
+            return [];
         const formData = new FormData();
         Object.keys(metadata).forEach(key => {
             if (metadata[key] != '')
