@@ -15,10 +15,6 @@ public static class ServiceCollectionExtension
             Username = configuration["MessageBroker:Username"]!,
             Port = configuration["MessageBroker:Port"]!
         };
-        Console.WriteLine($"user: {rabbitConfiguration.Username}\n" +
-                          $"Password: {rabbitConfiguration.Password}\n"+
-                          $"Hostname: {rabbitConfiguration.Hostname}\n" +
-                          $"Port: {rabbitConfiguration.Port}\n");
         
         services.AddMassTransit(busConfigurator =>
         {

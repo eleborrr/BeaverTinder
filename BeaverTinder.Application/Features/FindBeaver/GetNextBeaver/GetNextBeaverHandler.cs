@@ -34,10 +34,11 @@ public class GetNextBeaverHandler : IQueryHandler<GetNextBeaverQuery, SearchUser
         _memoryCache.TryGetValue(request.CurrentUser!.Id, out List<User>? likesCache);
         if (likesCache == null)
         {
-            var likes = await _repositoryManager.LikeRepository.GetAllAsync(default); // ???
+            var likes = (await _repositoryManager.LikeRepository.GetAll()).ToList(); // ???
 
-            var filteredBeavers = _userManager.Users.AsEnumerable()
+            var filteredBeavers = _userManager.Users.ToList()
                 .Where(u => !likes.Any(l => l.UserId == request.CurrentUser.Id && l.LikedUserId == u.Id ) && u.Id != request.CurrentUser.Id) // проверяем чтобы не попадались лайкнутые
+                .Where(u => u.IsSearching)
                 .OrderBy(u => Math.Abs(_serviceManager.GeolocationService.GetDistance(request.CurrentUser, u).Result))
                 .ThenBy(u => request.CurrentUser.DateOfBirth.Year - u.DateOfBirth.Year)
                 .Take(10)

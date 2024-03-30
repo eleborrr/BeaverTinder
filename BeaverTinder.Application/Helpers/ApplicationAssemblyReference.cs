@@ -2,7 +2,7 @@
 
 namespace BeaverTinder.Application.Helpers;
 
-public static class ApllicationAssemblyReference
+public static class AplicationAssemblyReference
 {
-    public static readonly Assembly Assembly = typeof(ApllicationAssemblyReference).Assembly;
+    public static readonly Assembly Assembly = typeof(AplicationAssemblyReference).Assembly;
 }

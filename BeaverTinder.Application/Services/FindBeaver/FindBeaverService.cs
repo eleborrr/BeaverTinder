@@ -54,7 +54,7 @@ public class FindBeaverService : IFindBeaverService
         _memoryCache.TryGetValue(currentUser.Id, out List<User>? likesCache);
         if (likesCache == null)
         {
-            var likes = await _repositoryManager.LikeRepository.GetAllAsync(default); // ???
+            var likes = await _repositoryManager.LikeRepository.GetAll(); // ???
 
             var filteredBeavers = _userManager.Users.AsEnumerable()
                 .Where(u => !likes.Any(l => l.UserId == currentUser.Id && l.LikedUserId == u.Id) &&
@@ -143,7 +143,7 @@ public class FindBeaverService : IFindBeaverService
                 StatusCode = 400
             };
         var likes = (await _repositoryManager.LikeRepository
-            .GetAllAsync(default)).ToList();
+            .GetAll()).ToList();
 
 
         var filteredBeavers = _userManager.Users.AsEnumerable()

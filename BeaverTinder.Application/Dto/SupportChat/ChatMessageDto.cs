@@ -1,6 +1,6 @@
 ﻿namespace BeaverTinder.Application.Dto.SupportChat;
 
-public class SupportChatMessageDto
+public class ChatMessageDto
 {
     public string Content { get; set; } = default!;
     public DateTime Timestamp { get; set; }

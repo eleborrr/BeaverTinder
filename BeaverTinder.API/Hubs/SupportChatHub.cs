@@ -1,7 +1,9 @@
-﻿using Application.SupportChat.SaveMessageByDtoBus;
-using BeaverTinder.Application.Dto.SupportChat;
+﻿using BeaverTinder.Application.Dto.SupportChat;
+using BeaverTinder.Application.Features.SupportChat.SaveMessageByDtoBus;
 using BeaverTinder.Domain.Entities;
 using BeaverTinder.Infrastructure.Database;
+using BeaverTinder.Shared.Files;
+using BeaverTinder.Shared.Message;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
@@ -26,7 +28,8 @@ public class SupportChatHub : Hub
 
     public async Task SendPrivateMessage(
         string senderUserName,
-        string message, 
+        string message,
+        IEnumerable<SaveFileMessage> files,
         string receiverUserName,
         string groupName)
     {
@@ -41,7 +44,7 @@ public class SupportChatHub : Hub
             return;
         }
         
-        var dto = new SupportChatMessageDto()
+        var dto = new ChatMessageDto()
         {
             Content = message,
             RoomId = room.Id,
@@ -50,7 +53,10 @@ public class SupportChatHub : Hub
             Timestamp = DateTime.Now
         };
         await _mediator.Send(new SaveMessageByDtoBusCommand(dto));
-        await Clients.Group(groupName).SendAsync("Receive", senderUserName, message);
+        await _mediator.Send(files);
+        
+        await Clients.Group(groupName).SendAsync("Receive", senderUserName, 
+            new SendMessageSignalRDto(message, files));
     }
 
     public async Task ConnectToRoom(string roomName)
