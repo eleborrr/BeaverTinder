@@ -1,4 +1,4 @@
-﻿namespace BeaverTinder.Domain.Entities;
+﻿namespace BeaverTinder.Subscription.Core.Entities;
 
 public class UserSubscription
 {

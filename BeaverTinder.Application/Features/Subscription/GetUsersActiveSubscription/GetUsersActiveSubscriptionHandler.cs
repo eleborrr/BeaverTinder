@@ -57,6 +57,8 @@ public class GetUsersActiveSubscriptionHandler:
                 Expires = _defaultDateTime
             }, true);
         }
+        
+        //GRPC?
         var sub = await _repositoryManager
             .SubscriptionRepository.GetBySubscriptionIdAsync(userSub.SubsId);
         return new Result<SubscriptionInfoDto>(new SubscriptionInfoDto

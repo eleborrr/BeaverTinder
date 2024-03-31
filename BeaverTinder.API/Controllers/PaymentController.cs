@@ -38,7 +38,6 @@ public class PaymentController : Controller
         {
             return new JsonResult(response);
         }
-            //TODO: фича Subscriptions
         await _mediator.Send(
             new AddSubscriptionCommand(command.SubsId, command.UserId),
             cancellationToken);

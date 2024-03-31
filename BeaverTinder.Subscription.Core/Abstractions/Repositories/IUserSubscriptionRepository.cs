@@ -1,6 +1,6 @@
-﻿using BeaverTinder.Domain.Entities;
+﻿using BeaverTinder.Subscription.Core.Entities;
 
-namespace BeaverTinder.Domain.Repositories.Abstractions;
+namespace BeaverTinder.Subscription.Core.Abstractions.Repositories;
 
 public interface IUserSubscriptionRepository
 {

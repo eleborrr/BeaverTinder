@@ -1,4 +1,4 @@
-﻿namespace BeaverTinder.Domain.Entities;
+﻿namespace BeaverTinder.Payment.Core.Entities;
 
 public class Payment
 {

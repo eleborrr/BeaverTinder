@@ -1,11 +1,7 @@
 ﻿using System.Security.Claims;
-using BeaverTinder.Application.Dto.Subscription;
-using BeaverTinder.Application.Services.Abstractions.Subscriptions;
-using BeaverTinder.Domain.Entities;
-using BeaverTinder.Domain.Repositories.Abstractions;
 using Microsoft.AspNetCore.Identity;
 
-namespace BeaverTinder.Application.Services.Subscriptions;
+namespace BeaverTinder.Subscription.Services;
 
 public class SubscriptionService : ISubscriptionService
 {

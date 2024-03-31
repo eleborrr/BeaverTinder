@@ -1,36 +1,37 @@
-﻿using BeaverTinder.Domain.Entities;
-using BeaverTinder.Domain.Repositories.Abstractions;
+﻿using BeaverTinder.Subscription.Core.Abstractions.Repositories;
+using BeaverTinder.Subscription.Core.Entities;
+using BeaverTinder.Subscription.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
-namespace BeaverTinder.Infrastructure.Database.Repositories;
+namespace BeaverTinder.Subscription.Infrastructure.Repositories;
 
 public class UserSubscriptionRepository : IUserSubscriptionRepository
 {
-    private readonly ApplicationDbContext _applicationDbContext;
+    private readonly SubscriptionDbContext _dbContext;
 
-    public UserSubscriptionRepository(ApplicationDbContext applicationDbContext)
+    public UserSubscriptionRepository(SubscriptionDbContext dbContext)
     {
-        _applicationDbContext = applicationDbContext;
+        _dbContext = dbContext;
     }
     
     public async Task<IEnumerable<UserSubscription>> GetAllAsync(CancellationToken cancellationToken)
     {
-        return await _applicationDbContext.UserSubscriptions.ToListAsync(cancellationToken);
+        return await _dbContext.UserSubscriptions.ToListAsync(cancellationToken);
     }
 
     public async Task<List<UserSubscription>> GetSubscriptionsByUserIdAsync(string userId)
     {
-        return await _applicationDbContext.UserSubscriptions.Where(x => x.UserId == userId).ToListAsync();
+        return await _dbContext.UserSubscriptions.Where(x => x.UserId == userId).ToListAsync();
     }
     
     public async Task<List<UserSubscription>> GetActiveSubscriptionsByUserIdAsync(string userId)
     {
-        return await _applicationDbContext.UserSubscriptions.Where(x => x.UserId == userId && x.Active).ToListAsync();
+        return await _dbContext.UserSubscriptions.Where(x => x.UserId == userId && x.Active).ToListAsync();
     }
 
     public async Task<UserSubscription?> GetUserSubscriptionByUserIdAndSubsIdAsync(int subsId, string userId)
     {
-        return await _applicationDbContext.UserSubscriptions.FirstOrDefaultAsync(x =>
+        return await _dbContext.UserSubscriptions.FirstOrDefaultAsync(x =>
             x.UserId == userId && x.SubsId == subsId);
     }
 
@@ -43,25 +44,25 @@ public class UserSubscriptionRepository : IUserSubscriptionRepository
             SubsId = subsId,
             UserId = userId
         };
-        await _applicationDbContext.UserSubscriptions.AddAsync(userSub);
-        await _applicationDbContext.SaveChangesAsync();
+        await _dbContext.UserSubscriptions.AddAsync(userSub);
+        await _dbContext.SaveChangesAsync();
     }
 
     public async Task UpdateUserSubAsync(int subsId, string userId)
     {
-        var sub = await _applicationDbContext.UserSubscriptions.FirstOrDefaultAsync(x =>
+        var sub = await _dbContext.UserSubscriptions.FirstOrDefaultAsync(x =>
             x.SubsId == subsId && x.UserId == userId);
         
         if (!sub!.Active)
         {
             sub.Active = true;
             sub.Expires = DateTime.Now + TimeSpan.FromDays(30);
-            await _applicationDbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
         }
     }
 
     public async Task SaveAsync()
     {
-        await _applicationDbContext.SaveChangesAsync();
+        await _dbContext.SaveChangesAsync();
     }
 }

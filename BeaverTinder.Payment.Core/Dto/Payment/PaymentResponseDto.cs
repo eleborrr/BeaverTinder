@@ -1,4 +1,4 @@
-﻿namespace BeaverTinder.Application.Dto.Payment;
+﻿namespace BeaverTinder.Payment.Core.Dto.Payment;
 
 public class PaymentResponseDto
 {

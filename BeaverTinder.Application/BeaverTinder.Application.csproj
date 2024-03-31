@@ -19,19 +19,10 @@
       <PackageReference Include="NRedisStack" Version="0.10.1" />
       <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.21.0" />
     </ItemGroup>
-
-
-
-
+    
     <ItemGroup>
       <ProjectReference Include="..\BeaverTinder.Domain\BeaverTinder.Domain.csproj" />
       <ProjectReference Include="..\BeaverTinder.Shared\BeaverTinder.Shared.csproj" />
     </ItemGroup>
-
-
-
-
-
-
 
 </Project>
