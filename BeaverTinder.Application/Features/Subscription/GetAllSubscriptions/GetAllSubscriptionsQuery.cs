@@ -1,5 +1,5 @@
-﻿using BeaverTinder.Application.Dto.Subscription;
-using BeaverTinder.Application.Services.Abstractions.Cqrs.Queries;
+﻿using BeaverTinder.Application.Services.Abstractions.Cqrs.Queries;
+using BeaverTinder.Shared.Dto.Subscription;
 
 namespace BeaverTinder.Application.Features.Subscription.GetAllSubscriptions;
 

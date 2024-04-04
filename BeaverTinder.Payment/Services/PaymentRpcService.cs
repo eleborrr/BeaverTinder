@@ -1,46 +1,49 @@
-﻿using BeaverTinder.Payment.Infrastructure.Persistence;
+﻿using BeaverTinder.Payment.Core.Dto.Payment;
+using BeaverTinder.Payment.Infrastructure.Persistence;
+using Grpc.Core;
+using grpcServices;
 
 namespace BeaverTinder.Payment.Services;
 
-public class PaymentService
+public class PaymentRpcService: grpcServices.Payment.PaymentBase
 {
     private readonly PaymentDbContext _dbContext;
 
-    public PaymentService(PaymentDbContext dbContext)
+    public PaymentRpcService(PaymentDbContext dbContext)
     {
         _dbContext = dbContext;
     }
 
-    public async Task<PaymentDto> ProcessPayment(PaymentRequestDto paymentRequest)
+    public override async Task<PaymentResponse> Add(PaymentMsg paymentRequest, ServerCallContext context)
     {
         await Task.Delay(2000);
         if (CheckBillingInfoIsCorrect(paymentRequest.CardNumber, paymentRequest.Month, paymentRequest.Year))
         {
-            return new PaymentDto
+            return new PaymentResponse()
             {
-                StatusCode = PaymentResponseStatus.InvalidData
+                Successful = false,
+                Message = "Billing info is incorrect"
             };
         }
 
-        var payment = new PaymentDto
+        var payment = new Core.Entities.Payment()
         {
             Amount = paymentRequest.Amount,
             PaymentDate = DateTime.Now,
-            StatusCode = PaymentResponseStatus.Ok,
-            SubsId = paymentRequest.SubsId,
+            SubsId = paymentRequest.SubId,
             UserId = paymentRequest.UserId
         };
 
-        await _dbContext.Payments.AddAsync(new Core.Entities.Payment
-        {
-            Amount = payment.Amount,
-            PaymentDate = payment.PaymentDate,
-            SubsId = payment.SubsId,
-            UserId = payment.UserId
-        });
+        
+        
+        await _dbContext.Payments.AddAsync(payment);
         await _dbContext.SaveChangesAsync();
 
-        return payment;
+        return new PaymentResponse()
+        {
+            PaymentId = payment.Id,
+            Successful = true
+        };
     }
 
     private static bool CheckBillingInfoIsCorrect(string number, int month, int year)

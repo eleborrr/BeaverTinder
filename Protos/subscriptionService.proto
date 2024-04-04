@@ -1,0 +1,66 @@
+syntax = "proto3";
+
+option csharp_namespace = "grpcServices";
+
+package services;
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+service Subscription{
+    rpc AddUserSubscription(UpdateSubscriptionMsg) returns (UpdateSubscriptionResponse);
+    rpc GetActiveSubscriptionsByUserId(GetActiveUserSubscriptionRequest) returns (GetActiveUserSubscriptionsListResponse);
+    rpc GetAll(google.protobuf.Empty) returns (SubscriptionsList);
+}
+
+message SubscriptionIdMsg{
+    int32 subId = 1;
+}
+
+message UserIdMsg{
+    string userId = 1;
+}
+
+message SubscriptionsList {
+    repeated SubscriptionMsg subscriptions = 1;
+}
+
+message SubscriptionMsg{
+    int32 subscriptionId = 1;
+    string name = 2;
+    int32 roleId = 3;
+    string roleName = 4;
+    string description = 5;
+    double pricePerMonth = 6;
+    bool active = 7;
+    google.protobuf.Timestamp expires = 8;
+}
+
+message GetActiveUserSubscriptionRequest{
+    string userId = 1;
+}
+
+message GetActiveUserSubscriptionsListResponse{
+    repeated SubscriptionInfoMsg subscriptions = 1;
+}
+
+message SubscriptionInfoMsg{
+    int32 id = 1; 
+    string name = 2;
+    bool active = 3;
+    google.protobuf.Timestamp expires = 4;
+}
+
+message UpdateSubscriptionMsg{
+    int32 subscriptionId = 1;
+    string userId = 2;
+}
+
+message UpdateSubscriptionResponse{
+    bool result = 1;
+    string message = 2;
+    optional string roleName = 3;
+}
+
+
+

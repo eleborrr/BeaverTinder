@@ -32,7 +32,7 @@ public class UserSubscriptionRepository : IUserSubscriptionRepository
     public async Task<UserSubscription?> GetUserSubscriptionByUserIdAndSubsIdAsync(int subsId, string userId)
     {
         return await _dbContext.UserSubscriptions.FirstOrDefaultAsync(x =>
-            x.UserId == userId && x.SubsId == subsId);
+            x.UserId == userId && x.SubId == subsId);
     }
 
     public async Task AddUserSubscriptionAsync(int subsId, string userId)
@@ -41,7 +41,7 @@ public class UserSubscriptionRepository : IUserSubscriptionRepository
         {
             Active = true,
             Expires = DateTime.Now + TimeSpan.FromDays(30),
-            SubsId = subsId,
+            SubId = subsId,
             UserId = userId
         };
         await _dbContext.UserSubscriptions.AddAsync(userSub);
@@ -51,7 +51,7 @@ public class UserSubscriptionRepository : IUserSubscriptionRepository
     public async Task UpdateUserSubAsync(int subsId, string userId)
     {
         var sub = await _dbContext.UserSubscriptions.FirstOrDefaultAsync(x =>
-            x.SubsId == subsId && x.UserId == userId);
+            x.SubId == subsId && x.UserId == userId);
         
         if (!sub!.Active)
         {

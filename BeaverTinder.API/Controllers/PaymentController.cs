@@ -1,8 +1,8 @@
 using System.Security;
 using Application.Subscription.AddSubscription;
-using BeaverTinder.Application.Dto.Payment;
 using BeaverTinder.Application.Features.Payment.AddPayment;
 using BeaverTinder.Domain.Entities;
+using BeaverTinder.Shared.Dto.Payment;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;

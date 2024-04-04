@@ -1,5 +1,5 @@
-﻿using BeaverTinder.Application.Dto.Payment;
-using BeaverTinder.Application.Services.Abstractions.Cqrs.Commands;
+﻿using BeaverTinder.Application.Services.Abstractions.Cqrs.Commands;
+using BeaverTinder.Shared.Dto.Payment;
 using JetBrains.Annotations;
 
 namespace BeaverTinder.Application.Features.Payment.AddPayment;

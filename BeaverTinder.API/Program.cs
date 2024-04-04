@@ -1,5 +1,6 @@
 using BeaverTinder.API.Hubs;
 using BeaverTinder.API.ServicesExtensions.Auth;
+using BeaverTinder.API.ServicesExtensions.Grpc;
 using BeaverTinder.API.ServicesExtensions.MassTransit;
 using BeaverTinder.API.ServicesExtensions.SecurityAndCors;
 using BeaverTinder.API.ServicesExtensions.Services;
@@ -12,15 +13,11 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddMemoryCache();
 builder.Services.AddSignalR();
 builder.Configuration.AddEnvironmentVariables();
 
-
-
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddMvc();
@@ -53,6 +50,8 @@ builder.Services.AddCustomAuth(builder.Configuration);
 
 builder.Services.AddMasstransitRabbitMq(builder.Configuration);
 
+builder.Services.ConfigureGrpc();
+
 builder.Services.AddCustomSwaggerGenerator();
 
 const string testSpesific = "testSpesific";
@@ -67,7 +66,6 @@ builder.Services.AddCustomCors(testSpesific);
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

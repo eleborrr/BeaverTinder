@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using JetBrains.Annotations;
 
-namespace BeaverTinder.Application.Dto.Payment;
+namespace BeaverTinder.Shared.Dto.Payment;
 
 public class PaymentRequestDto
 {

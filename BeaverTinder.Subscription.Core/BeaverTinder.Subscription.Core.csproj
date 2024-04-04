@@ -7,7 +7,16 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Folder Include="Abstractions\Services\" />
       <Folder Include="Dto\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\BeaverTinder.Shared\BeaverTinder.Shared.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\BeaverTinder.Shared\BeaverTinder.Shared.csproj" />
     </ItemGroup>
 
 </Project>

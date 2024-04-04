@@ -35,7 +35,7 @@ public sealed class SubscriptionDbContext: DbContext
                 RoleName = "UserMoreLikesAndMap"
             }
         );
-        builder.Entity<UserSubscription>().HasKey(u => new { u.UserId, u.SubsId});
+        builder.Entity<UserSubscription>().HasKey(u => new { u.UserId, SubsId = u.SubId});
         base.OnModelCreating(builder);
         
         

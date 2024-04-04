@@ -1,6 +1,6 @@
-using BeaverTinder.Application.Dto.Subscription;
 using BeaverTinder.Application.Features.Subscription.GetAllSubscriptions;
 using BeaverTinder.Domain.Entities;
+using BeaverTinder.Shared.Dto.Subscription;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 

@@ -1,9 +1,10 @@
 ﻿using Application.Subscription.GetUsersActiveSubscription;
 using BeaverTinder.Application.Dto.MediatR;
-using BeaverTinder.Application.Dto.Subscription;
 using BeaverTinder.Application.Services.Abstractions.Cqrs.Queries;
 using BeaverTinder.Domain.Entities;
 using BeaverTinder.Domain.Repositories.Abstractions;
+using BeaverTinder.Shared.Dto.Subscription;
+using grpcServices;
 using Microsoft.AspNetCore.Identity;
 
 namespace BeaverTinder.Application.Features.Subscription.GetUsersActiveSubscription;
@@ -13,15 +14,17 @@ public class GetUsersActiveSubscriptionHandler:
 {
     private readonly UserManager<User> _userManager;
     private readonly IRepositoryManager _repositoryManager;
+    private readonly grpcServices.Subscription.SubscriptionClient _subscriptionClient;
     private readonly DateTime _defaultDateTime =
         new(10, 10, 10, 0, 0, 0, DateTimeKind.Utc);
 
     public GetUsersActiveSubscriptionHandler(
         UserManager<User> userManager,
-        IRepositoryManager repositoryManager)
+        IRepositoryManager repositoryManager, grpcServices.Subscription.SubscriptionClient subscriptionClient)
     {
         _userManager = userManager;
         _repositoryManager = repositoryManager;
+        _subscriptionClient = subscriptionClient;
     }
 
     public async Task<Result<SubscriptionInfoDto>> Handle(
@@ -29,8 +32,15 @@ public class GetUsersActiveSubscriptionHandler:
         CancellationToken cancellationToken)
     {
         var user = await _userManager.FindByIdAsync(request.UserId);
-        var roles = await _userManager.GetRolesAsync(user!);
-        if (roles.Any(c => c == "Admin"))
+        if (user is null)
+            return new Result<SubscriptionInfoDto>(null, false, "User not found");
+        
+        var userSubs = await _subscriptionClient.GetActiveSubscriptionsByUserIdAsync(new GetActiveUserSubscriptionRequest()
+        {
+            UserId = request.UserId
+        }, cancellationToken: cancellationToken);
+        
+        if (userSubs.Subscriptions.Any(c => c.Name == "Admin"))
         {
             return new Result<SubscriptionInfoDto>(new SubscriptionInfoDto
             {
@@ -38,7 +48,7 @@ public class GetUsersActiveSubscriptionHandler:
                 Expires = _defaultDateTime
             }, true);
         }
-        if (roles.Any(c => c == "Moderator"))
+        if (userSubs.Subscriptions.Any(c => c.Name == "Moderator"))
         {
             return new Result<SubscriptionInfoDto>(new SubscriptionInfoDto
             {
@@ -46,10 +56,12 @@ public class GetUsersActiveSubscriptionHandler:
                 Expires = _defaultDateTime
             }, true);
         }
-        var userSub = (await _repositoryManager
-                .UserSubscriptionRepository.GetActiveSubscriptionsByUserIdAsync(request.UserId))
-            .FirstOrDefault();
-        if (userSub == null)
+
+        var userSub = await _subscriptionClient.GetActiveSubscriptionsByUserIdAsync(new GetActiveUserSubscriptionRequest
+            {
+                UserId = request.UserId
+            }, cancellationToken: cancellationToken);
+        if (userSub == null || userSubs.Subscriptions.Count == 0)
         {
             return new Result<SubscriptionInfoDto>(new SubscriptionInfoDto
             {
@@ -57,14 +69,12 @@ public class GetUsersActiveSubscriptionHandler:
                 Expires = _defaultDateTime
             }, true);
         }
-        
-        //GRPC?
-        var sub = await _repositoryManager
-            .SubscriptionRepository.GetBySubscriptionIdAsync(userSub.SubsId);
+
+        var sub = userSubs.Subscriptions.First();
         return new Result<SubscriptionInfoDto>(new SubscriptionInfoDto
         {
-            Name = sub!.Name,
-            Expires = userSub.Expires
+            Name = sub.Name,
+            Expires = sub.Expires.ToDateTime()
         }, true);
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace BeaverTinder.Application.Dto.Subscription;
+﻿namespace BeaverTinder.Shared.Dto.Subscription;
 
 public class SubscriptionInfoDto
 {
