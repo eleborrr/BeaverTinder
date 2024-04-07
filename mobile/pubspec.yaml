@@ -63,8 +63,6 @@ flutter:
   assets:
     - lib/images/
     - lib/images/home/
-    - lib/images/logo.png
-    - lib/images/pageheader.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
