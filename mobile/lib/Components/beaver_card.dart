@@ -30,8 +30,8 @@ class BeaverCard extends StatelessWidget {
               children: [
                 Image.asset(
                   profile['image'],
-                  width: 100,
-                  height: 100,
+                  width: 300,
+                  height: 300,
                   fit: BoxFit.cover,
                 ),
                 Text(

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/Components/beaver_button.dart';
 import 'package:mobile/Components/beaver_textfield.dart';
-import 'package:mobile/Pages/register_page.dart';
+import 'package:provider/provider.dart';
 
-import '../Components/beaver_drawer.dart';
+import '../Components/shared/beaver_auth_provider.dart';
 
 class LoginPage extends StatelessWidget {
-  LoginPage({super.key});
+  LoginPage({
+    super.key});
 
   //text editing conroller
 
@@ -15,7 +16,12 @@ class LoginPage extends StatelessWidget {
 
   // sign user in method
   signUserIn(BuildContext context) {
+    var authProvider = Provider.of<AuthProvider>(context, listen: false);
+    authProvider.setJwtToken("Bearer Not implemented");
 
+    Navigator.pushReplacementNamed(
+        context, '/home'
+    );
   }
 
    goToSignUp(BuildContext context) {
