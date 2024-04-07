@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/Components/home/home_card.dart';
+import 'package:mobile/Components/shared/beaver_scaffold.dart';
 import 'package:mobile/styles/home_style.dart';
+
+import '../Components/beaver_drawer.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -30,14 +33,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const HomeStyles().MainColor(),
-        centerTitle: true,
-        title: Text(
-          "Home page",
-        style: const HomeStyles().getMainTextStyle()),
-      ),
+    return BeaverScaffold(
+      title: "Home Page",
       body: Container(
         decoration: const BoxDecoration(
             image: DecorationImage(

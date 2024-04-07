@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/Components/shared/beaver_scaffold.dart';
 import '../Components/beaver_card.dart';
 import '../Components/beaver_drawer.dart';
 
@@ -61,11 +62,8 @@ class _LikePageState extends State<LikePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      drawer: BeaverDrawer(),
-      appBar: AppBar(
-        title: Text('Like Page'),
-      ),
+    return BeaverScaffold(
+      title: "Like Page",
       body: cards.isEmpty
           ? Center(
         child: CircularProgressIndicator(),
