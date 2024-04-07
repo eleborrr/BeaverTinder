@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/Components/beaver_button.dart';
-import 'package:mobile/Components/beaver_textfield.dart';
+import 'package:mobile/Components/shared/beaver_button.dart';
+import 'package:mobile/Components/shared/beaver_textfield.dart';
 import 'package:provider/provider.dart';
 
 import '../Components/shared/beaver_auth_provider.dart';

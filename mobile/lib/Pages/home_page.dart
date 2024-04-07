@@ -3,7 +3,7 @@ import 'package:mobile/Components/home/home_card.dart';
 import 'package:mobile/Components/shared/beaver_scaffold.dart';
 import 'package:mobile/styles/home_style.dart';
 
-import '../Components/beaver_drawer.dart';
+import '../Components/shared/beaver_drawer.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

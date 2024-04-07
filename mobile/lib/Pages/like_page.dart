@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/Components/shared/beaver_scaffold.dart';
-import '../Components/beaver_card.dart';
-import '../Components/beaver_drawer.dart';
+import '../Components/like/beaver_card.dart';
+import '../Components/shared/beaver_drawer.dart';
 
 class LikePage extends StatefulWidget {
   const LikePage({super.key});

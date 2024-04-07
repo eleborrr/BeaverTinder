@@ -2,9 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-import '../Components/beaver_button.dart';
-import '../Components/beaver_drawer.dart';
-import '../Components/beaver_textfield.dart';
+import '../Components/shared/beaver_button.dart';
+import '../Components/shared/beaver_drawer.dart';
+import '../Components/shared/beaver_textfield.dart';
 
 class RegisterPage extends StatelessWidget {
 
