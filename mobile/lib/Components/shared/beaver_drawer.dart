@@ -44,6 +44,22 @@ class BeaverDrawer extends StatelessWidget {
               Navigator.pushNamed(context, '/chats');
             },
           ),
+          _buildListTile(
+            context,
+            title: 'Shops Page',
+            onTap: () {
+              Navigator.of(context).pop();
+              Navigator.pushNamed(context, '/shops');
+            },
+          ),
+          _buildListTile(
+            context,
+            title: 'Profile Page',
+            onTap: () {
+              Navigator.of(context).pop();
+              Navigator.pushNamed(context, '/profile');
+            },
+          ),
         ],
       ),
     );

@@ -3,8 +3,11 @@ import 'package:mobile/Components/shared/beaver_auth_provider.dart';
 import 'package:mobile/Components/shared/beaver_splash_screen.dart';
 import 'package:mobile/Pages/chats_page.dart';
 import 'package:mobile/Pages/home_page.dart';
+import 'package:mobile/Pages/subscription_page.dart';
+import 'Components/shared/beaver_drawer.dart';
 import 'Pages/like_page.dart';
 import 'Pages/login_page.dart';
+import 'Pages/profile_page.dart';
 import 'Pages/register_page.dart';
 import 'package:provider/provider.dart';
 
@@ -26,7 +29,9 @@ class MyApp extends StatelessWidget {
           '/register': (context) => RegisterPage(),
           '/like': (context) => const LikePage(),
           '/home': (context) => const HomePage(),
-          '/chats': (context) => const ChatsPage()
+          '/chats': (context) => const ChatsPage(),
+          '/shops': (context) => SubscriptionPage(),
+          '/profile': (context) => ProfilePage()
         },
         home: BeaverSplashScreen(), // Используйте MainPage как вашу домашнюю страницу
       ),

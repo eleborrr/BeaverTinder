@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../styles/home_style.dart';
-import '../beaver_drawer.dart';
-
+import 'beaver_drawer.dart';
 class BeaverScaffold extends StatelessWidget {
   final Widget? body;
   final String title;
