@@ -125,7 +125,7 @@ class _ChatsPageState extends State<ChatsPage> {
               itemBuilder: (context, index) {
                 final chat = _chatsView[index];
                 return ListTile(
-                  onTap: () => Navigator.pushNamed(context, chat['userName']), // Навигация при выборе чата
+                  onTap: () => Navigator.pushNamed(context, '/chat', arguments: {'id': chat['userName']}), // Навигация при выборе чата
                   leading: CircleAvatar(
                     child: Image.asset(chat['image']), // Изображение профиля
                   ),

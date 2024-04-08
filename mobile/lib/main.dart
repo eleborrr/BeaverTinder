@@ -5,6 +5,7 @@ import 'package:mobile/Pages/chats_page.dart';
 import 'package:mobile/Pages/home_page.dart';
 import 'package:mobile/Pages/subscription_page.dart';
 import 'Components/shared/beaver_drawer.dart';
+import 'Pages/chat_for_two.dart';
 import 'Pages/like_page.dart';
 import 'Pages/login_page.dart';
 import 'Pages/profile_page.dart';
@@ -30,8 +31,14 @@ class MyApp extends StatelessWidget {
           '/like': (context) => const LikePage(),
           '/home': (context) => const HomePage(),
           '/chats': (context) => const ChatsPage(),
+          '/chat': (context) {
+            final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+            final chatId = args['id'];
+            return ChatPage(chatId: chatId);
+          },
           '/shops': (context) => SubscriptionPage(),
-          '/profile': (context) => ProfilePage()
+          '/profile': (context) => const ProfilePage(),
+
         },
         home: BeaverSplashScreen(), // Используйте MainPage как вашу домашнюю страницу
       ),
