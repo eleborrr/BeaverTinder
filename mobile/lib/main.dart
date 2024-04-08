@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/Components/shared/beaver_auth_provider.dart';
 import 'package:mobile/Components/shared/beaver_splash_screen.dart';
+import 'package:mobile/Pages/chats_page.dart';
 import 'package:mobile/Pages/home_page.dart';
-import 'Components/beaver_drawer.dart';
 import 'Pages/like_page.dart';
 import 'Pages/login_page.dart';
 import 'Pages/register_page.dart';
@@ -25,7 +25,8 @@ class MyApp extends StatelessWidget {
           '/login': (context) => LoginPage(),
           '/register': (context) => RegisterPage(),
           '/like': (context) => const LikePage(),
-          '/home': (context) => const HomePage()
+          '/home': (context) => const HomePage(),
+          '/chats': (context) => const ChatsPage()
         },
         home: BeaverSplashScreen(), // Используйте MainPage как вашу домашнюю страницу
       ),

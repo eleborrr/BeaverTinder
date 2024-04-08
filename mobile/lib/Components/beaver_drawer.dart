@@ -7,6 +7,7 @@ class BeaverDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
+      backgroundColor: Colors.white,
       child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
@@ -33,6 +34,14 @@ class BeaverDrawer extends StatelessWidget {
             onTap: () {
               Navigator.of(context).pop();
               Navigator.pushNamed(context, '/like');
+            },
+          ),
+          _buildListTile(
+            context,
+            title: 'Chats',
+            onTap: () {
+              Navigator.of(context).pop();
+              Navigator.pushNamed(context, '/chats');
             },
           ),
         ],

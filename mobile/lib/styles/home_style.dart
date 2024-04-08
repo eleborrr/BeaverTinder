@@ -22,5 +22,5 @@ class HomeStyles extends StatelessWidget {
 
   Color MainColor() {
     return const Color(0xfff24570);
- }
+  }
 }
