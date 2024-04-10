@@ -60,6 +60,16 @@ public class UserSubscriptionRepository : IUserSubscriptionRepository
             await _dbContext.SaveChangesAsync();
         }
     }
+    
+    public async Task DeleteUserSub(int subId, string userId)
+    {
+        var sub = await _dbContext.UserSubscriptions.FirstOrDefaultAsync(x =>
+            x.SubId == subId && x.UserId == userId);
+        if (sub is null)
+            return;
+        _dbContext.UserSubscriptions.Remove(sub);
+    }
+
 
     public async Task SaveAsync()
     {

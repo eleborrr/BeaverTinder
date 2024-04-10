@@ -2,6 +2,7 @@
 using BeaverTinder.Application.Features.SupportChat.SaveMessageByDtoBus;
 using BeaverTinder.Domain.Entities;
 using BeaverTinder.Infrastructure.Database;
+using BeaverTinder.Infrastructure.Database.Contexts;
 using BeaverTinder.Shared.Files;
 using BeaverTinder.Shared.Message;
 using MediatR;

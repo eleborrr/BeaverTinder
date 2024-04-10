@@ -8,6 +8,7 @@ using BeaverTinder.API.ServicesExtensions.Swagger;
 using BeaverTinder.Application.Helpers;
 using BeaverTinder.Domain.Entities;
 using BeaverTinder.Infrastructure.Database;
+using BeaverTinder.Infrastructure.Database.Contexts;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -50,7 +51,7 @@ builder.Services.AddCustomAuth(builder.Configuration);
 
 builder.Services.AddMasstransitRabbitMq(builder.Configuration);
 
-builder.Services.ConfigureGrpc();
+builder.Services.ConfigureGrpc(builder.Configuration);
 
 builder.Services.AddCustomSwaggerGenerator();
 

@@ -9,9 +9,18 @@ import "google/protobuf/timestamp.proto";
 
 service Payment{
     rpc Add(PaymentMsg) returns (PaymentResponse);
+    rpc Prepare() returns (PhaseResponse);
+    rpc Refund(RefundRequest) returns (PhaseResponse);
     //    rpc SendMsg(Msg) returns (google.protobuf.Empty);
 }
 
+message PhaseResponse{
+    bool result = 1;
+}
+
+message RefundRequest{
+    int32 paymentId = 1;
+}
 
 message PaymentMsg{
     double amount = 1;

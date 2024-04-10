@@ -1,6 +1,6 @@
 using System.Security;
-using Application.Subscription.AddSubscription;
-using BeaverTinder.Application.Features.Payment.AddPayment;
+using BeaverTinder.Application.Dto.MediatR;
+using BeaverTinder.Application.Services.Abstractions.TransactionManager;
 using BeaverTinder.Domain.Entities;
 using BeaverTinder.Shared.Dto.Payment;
 using MediatR;
@@ -17,11 +17,13 @@ public class PaymentController : Controller
 {
     private readonly UserManager<User> _userManager;
     private readonly IMediator _mediator;
+    private readonly ITransactionManager _transactionManager;
 
-    public PaymentController(UserManager<User> userManager, IMediator mediator)
+    public PaymentController(UserManager<User> userManager, IMediator mediator, ITransactionManager transactionManager)
     {
         _userManager = userManager;
         _mediator = mediator;
+        _transactionManager = transactionManager;
     }
     
     // GET
@@ -29,22 +31,30 @@ public class PaymentController : Controller
     [HttpPost("pay")]
     public async Task<JsonResult> Pay([FromBody] PaymentRequestDto model, CancellationToken cancellationToken)
     {
-        var command = new AddPaymentCommand(model.UserId, model.CardNumber, model.Month, model.Amount, model.Year, model.Code, model.SubsId);
+        //Phase 1 - Prepare
+        var isServicesReady = _transactionManager.CheckReadyServicesAsync();
         
-        var user = await GetUserFromJwt();
-        command.UserId = user.Id;
-        var response = await _mediator.Send(command, cancellationToken);
-        if (response.IsFailure)
+        var transactionState = new Result(false, "Services in pending state");
+        if (isServicesReady)
         {
-            return new JsonResult(response);
+            var prepared = await _transactionManager.PrepareServicesAsync(model);
+            if (prepared.IsSuccess)
+            {
+                transactionState = await _transactionManager.CommitAsync(model);
+            }
+
+            if (!transactionState.IsSuccess)
+            {
+                await _transactionManager.RollbackAsync(model);
+                return Json(transactionState);
+            }
+
+            return Json(transactionState);
         }
-        await _mediator.Send(
-            new AddSubscriptionCommand(command.SubsId, command.UserId),
-            cancellationToken);
-        return Json(response);
+
+        return Json(transactionState);
     }
     
-    //TODO: фича User??
     private async Task<User> GetUserFromJwt()
     {
         var s = User.Claims.FirstOrDefault(c => c.Type == "Id");

@@ -74,7 +74,8 @@ public class GetUsersActiveSubscriptionHandler:
         return new Result<SubscriptionInfoDto>(new SubscriptionInfoDto
         {
             Name = sub.Name,
-            Expires = sub.Expires.ToDateTime()
+            Expires = sub.Expires.ToDateTime(),
+            
         }, true);
     }
 }

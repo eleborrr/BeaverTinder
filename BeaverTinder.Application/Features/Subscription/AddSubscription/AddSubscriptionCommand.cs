@@ -1,5 +1,5 @@
 ﻿using BeaverTinder.Application.Services.Abstractions.Cqrs.Commands;
 
-namespace Application.Subscription.AddSubscription;
+namespace BeaverTinder.Application.Features.Subscription.AddSubscription;
 
 public record AddSubscriptionCommand(int SubscriptionId, string UserId): ICommand;

@@ -1,5 +1,6 @@
 ﻿using BeaverTinder.Payment.Core.Dto.Payment;
 using BeaverTinder.Payment.Infrastructure.Persistence;
+using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using grpcServices;
 
@@ -33,11 +34,10 @@ public class PaymentRpcService: grpcServices.Payment.PaymentBase
             SubsId = paymentRequest.SubId,
             UserId = paymentRequest.UserId
         };
-
-        
         
         await _dbContext.Payments.AddAsync(payment);
         await _dbContext.SaveChangesAsync();
+
 
         return new PaymentResponse()
         {
@@ -45,6 +45,26 @@ public class PaymentRpcService: grpcServices.Payment.PaymentBase
             Successful = true
         };
     }
+    
+    public override async Task<PhaseResponse> Refund(RefundRequest refundRequest, ServerCallContext context)
+    {
+        await Task.Delay(2000);
+
+
+        var payment = _dbContext.Payments.FirstOrDefault(payment => payment.Id == refundRequest.PaymentId);
+
+        if (payment is null)
+            return new PhaseResponse { Result = true };
+        
+        _dbContext.Payments.Remove(payment);
+        await _dbContext.SaveChangesAsync();
+
+        return new PhaseResponse()
+        {
+            Result = true
+        };
+    }
+
 
     private static bool CheckBillingInfoIsCorrect(string number, int month, int year)
     {

@@ -7,11 +7,13 @@ namespace BeaverTinder.API.ServicesExtensions.Grpc;
 
 public static class ServicesCollectionExtension
 {
-    public static IServiceCollection ConfigureGrpc(this IServiceCollection services)
+    public static IServiceCollection ConfigureGrpc(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddGrpc();
-        var client = services.AddGrpcClient<Payments.PaymentsClient>(o => o.Address = new Uri(builder.Configuration.GetSection("Grpc")["PaymentsAddress"]));
-
+        services.AddGrpcClient<grpcServices.Payment.PaymentClient>
+            (o => o.Address = new Uri(configuration.GetSection("Grpc")["PaymentsAddress"]));
+        services.AddGrpcClient<grpcServices.Subscription.SubscriptionClient>
+            (o => o.Address = new Uri(configuration.GetSection("Grpc")["SubscriptionAddress"]));
         return services;
     }
 }

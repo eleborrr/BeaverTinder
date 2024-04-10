@@ -1,5 +1,6 @@
 ﻿using BeaverTinder.Domain.Entities;
 using BeaverTinder.Domain.Repositories.Abstractions;
+using BeaverTinder.Infrastructure.Database.Contexts;
 using Microsoft.EntityFrameworkCore;
 
 namespace BeaverTinder.Infrastructure.Database.Repositories;

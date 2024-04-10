@@ -1,5 +1,4 @@
 ﻿using System.Security.Claims;
-using Application.Subscription.AddSubscription;
 using BeaverTinder.Application.Dto.MediatR;
 using BeaverTinder.Application.Services.Abstractions.Cqrs.Commands;
 using BeaverTinder.Domain.Entities;

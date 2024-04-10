@@ -1,13 +1,7 @@
-﻿using System.Security.Claims;
-using BeaverTinder.Shared.Dto.Subscription;
-using BeaverTinder.Subscription.Core.Abstractions.Repositories;
-using BeaverTinder.Subscription.Core.Abstractions.Services.Subscriptions;
-using BeaverTinder.Subscription.Infrastructure.Persistence;
-using Google.Protobuf.Collections;
+﻿using BeaverTinder.Subscription.Core.Abstractions.Repositories;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using grpcServices;
-using Microsoft.AspNetCore.Identity;
 
 namespace BeaverTinder.Subscription.Services;
 
@@ -15,9 +9,12 @@ public class SubscriptionRpcService : grpcServices.Subscription.SubscriptionBase
 {
     private readonly ISubscriptionRepository _subscriptionRepository;
     private readonly IUserSubscriptionRepository _userSubscriptionRepository;
-    // private readonly UserManager<User> _userManager;
-    private readonly DateTime _defaultDateTime =
-        new(10, 10, 10, 0, 0, 0, DateTimeKind.Utc);
+    
+    public SubscriptionRpcService(ISubscriptionRepository repository, IUserSubscriptionRepository userSubscriptionRepository)
+    {
+        _subscriptionRepository = repository;
+        _userSubscriptionRepository = userSubscriptionRepository;
+    }
 
     public override async Task<SubscriptionsList> GetAll(Empty request, ServerCallContext context)
     {
@@ -103,9 +100,9 @@ public class SubscriptionRpcService : grpcServices.Subscription.SubscriptionBase
         return result;
     }
 
-    public SubscriptionRpcService(ISubscriptionRepository repository, IUserSubscriptionRepository userSubscriptionRepository)  //UserManager<User> userManager,
+    public override async Task<RefundMsg> RefundUserSubscription(UpdateSubscriptionMsg request, ServerCallContext context)
     {
-        _subscriptionRepository = repository;
-        _userSubscriptionRepository = userSubscriptionRepository;
+        await _userSubscriptionRepository.DeleteUserSub(request.SubscriptionId, request.UserId);
+        return new RefundMsg { Result = true };
     }
 }
