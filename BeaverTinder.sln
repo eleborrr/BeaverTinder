@@ -21,6 +21,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeaverTinder.Shared", "BeaverTinder.Shared\BeaverTinder.Shared.csproj", "{E6A935EC-3E64-4A28-A6C8-F885E1737536}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BeaverTinder.Payment", "BeaverTinder.Payment", "{44D097B5-CFAA-421A-B7CA-B3F88BA51391}"
+	ProjectSection(SolutionItems) = preProject
+		BeaverTinder.Payment\DockerfilePayment = BeaverTinder.Payment\DockerfilePayment
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeaverTinder.Payment.Infrastructure", "BeaverTinder.Payment.Infrastructure\BeaverTinder.Payment.Infrastructure.csproj", "{67CF93B5-24C9-4995-AFB0-113FBAB876A4}"
 EndProject

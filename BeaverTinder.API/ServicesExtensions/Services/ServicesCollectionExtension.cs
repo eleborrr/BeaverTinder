@@ -2,6 +2,8 @@
 using BeaverTinder.Application.Helpers.JwtGenerator;
 using BeaverTinder.Application.Services;
 using BeaverTinder.Application.Services.Abstractions;
+using BeaverTinder.Application.Services.Abstractions.TransactionManager;
+using BeaverTinder.Application.Services.TransactionManager;
 using BeaverTinder.Domain.Repositories.Abstractions;
 using BeaverTinder.Infrastructure.Database.Repositories;
 using MassTransit;
@@ -17,6 +19,7 @@ public static class ServicesCollectionExtension
         services.AddScoped<IRepositoryManager, RepositoryManager>();
         services.AddScoped<IServiceManager , ServiceManager>();
         services.AddScoped<HttpClient>();
+        services.AddScoped<ITransactionManager, TransactionManager>();
 
         services.AddSingleton<IPublishEndpoint>(provider => provider.GetRequiredService<IBusControl>());
         services.Configure<EmailConfig>(configuration.GetSection("SmtpSettings"));

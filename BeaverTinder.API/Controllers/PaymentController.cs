@@ -33,7 +33,7 @@ public class PaymentController : Controller
     {
         //Phase 1 - Prepare
         var isServicesReady = _transactionManager.CheckReadyServicesAsync();
-        
+        Console.WriteLine("beginning payment");
         var transactionState = new Result(false, "Services in pending state");
         if (isServicesReady)
         {
@@ -51,6 +51,7 @@ public class PaymentController : Controller
 
             return Json(transactionState);
         }
+        Console.WriteLine("services not ready");
 
         return Json(transactionState);
     }

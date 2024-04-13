@@ -1,0 +1,23 @@
+﻿FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
+WORKDIR /app
+EXPOSE 80
+EXPOSE 443
+
+FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
+WORKDIR /src
+COPY ["BeaverTinder.Subscription/BeaverTinder.Subscription.csproj", "BeaverTinder.Subscription/"]
+COPY ["BeaverTinder.Subscription.Core/BeaverTinder.Subscription.Core.csproj", "BeaverTinder.Subscription.Core/"]
+COPY ["BeaverTinder.Shared/BeaverTinder.Shared.csproj", "BeaverTinder.Shared/"]
+COPY ["BeaverTinder.Subscription.Infrastructure/BeaverTinder.Subscription.Infrastructure.csproj", "BeaverTinder.Subscription.Infrastructure/"]
+RUN dotnet restore "BeaverTinder.Subscription/BeaverTinder.Subscription.csproj"
+COPY . .
+WORKDIR "/src/BeaverTinder.Subscription"
+RUN dotnet build "BeaverTinder.Subscription.csproj" -c Release -o /app/build
+
+FROM build AS publish
+RUN dotnet publish "BeaverTinder.Subscription.csproj" -c Release -o /app/publish /p:UseAppHost=false
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "BeaverTinder.Subscription.dll"]

@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option csharp_namespace = "grpcServices";
+option csharp_namespace = "BeaverTinder.Shared";
 
 package services;
 
@@ -9,7 +9,7 @@ import "google/protobuf/timestamp.proto";
 
 service Payment{
     rpc Add(PaymentMsg) returns (PaymentResponse);
-    rpc Prepare() returns (PhaseResponse);
+    rpc Prepare(google.protobuf.Empty) returns (PhaseResponse);
     rpc Refund(RefundRequest) returns (PhaseResponse);
     //    rpc SendMsg(Msg) returns (google.protobuf.Empty);
 }

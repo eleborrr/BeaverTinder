@@ -1,15 +1,15 @@
 ﻿using BeaverTinder.Application.Dto.MediatR;
 using BeaverTinder.Application.Services.Abstractions.Cqrs.Commands;
 using BeaverTinder.Shared.Dto.Payment;
-using grpcServices;
+using BeaverTinder.Shared;
 
 namespace BeaverTinder.Application.Features.Payment.AddPayment;
 
 public class AddPaymentHandler : ICommandHandler<AddPaymentCommand, PaymentIdDto>
 {
-    private readonly grpcServices.Payment.PaymentClient _paymentClient;
+    private readonly BeaverTinder.Shared.Payment.PaymentClient _paymentClient;
 
-    public AddPaymentHandler(grpcServices.Payment.PaymentClient paymentClient)
+    public AddPaymentHandler(BeaverTinder.Shared.Payment.PaymentClient paymentClient)
     {
         _paymentClient = paymentClient;
     }
@@ -19,6 +19,7 @@ public class AddPaymentHandler : ICommandHandler<AddPaymentCommand, PaymentIdDto
         CancellationToken cancellationToken)
     {
         await Task.Delay(2000, cancellationToken);
+        Console.WriteLine("In payment handler");
         var paymentRes = await _paymentClient.AddAsync(new PaymentMsg
         {
             Amount = request.Amount,

@@ -1,11 +1,11 @@
-﻿using BeaverTinder.Subscription.Core.Abstractions.Repositories;
+﻿using BeaverTinder.Shared;
+using BeaverTinder.Subscription.Core.Abstractions.Repositories;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
-using grpcServices;
 
 namespace BeaverTinder.Subscription.Services;
 
-public class SubscriptionRpcService : grpcServices.Subscription.SubscriptionBase
+public class SubscriptionRpcService : BeaverTinder.Shared.Subscription.SubscriptionBase
 {
     private readonly ISubscriptionRepository _subscriptionRepository;
     private readonly IUserSubscriptionRepository _userSubscriptionRepository;
@@ -33,6 +33,8 @@ public class SubscriptionRpcService : grpcServices.Subscription.SubscriptionBase
         {
             result.Subscriptions.Add(subscription);
         }
+
+        Console.WriteLine(result.Subscriptions.Count);
 
         return result;
     }
@@ -75,7 +77,7 @@ public class SubscriptionRpcService : grpcServices.Subscription.SubscriptionBase
         };
     }
     
-    public override async Task<GetActiveUserSubscriptionsListResponse?> GetActiveSubscriptionsByUserId(GetActiveUserSubscriptionRequest request, ServerCallContext context)
+    public override async Task<GetActiveUserSubscriptionsListResponse> GetActiveSubscriptionsByUserId(GetActiveUserSubscriptionRequest request, ServerCallContext context)
     {
         var result = new GetActiveUserSubscriptionsListResponse();
         
@@ -83,7 +85,7 @@ public class SubscriptionRpcService : grpcServices.Subscription.SubscriptionBase
             .Where(sub => sub.Active).ToList();
         if (userSubs is null || userSubs.Count == 0)
         {
-            return null;
+            return result;
         }
 
         foreach (var sub in userSubs)
@@ -91,9 +93,9 @@ public class SubscriptionRpcService : grpcServices.Subscription.SubscriptionBase
             result.Subscriptions.Add(
                 new SubscriptionInfoMsg()
                 {
-                    Expires = Timestamp.FromDateTime(sub.Expires),
+                    Expires = Timestamp.FromDateTimeOffset(sub.Expires),
                     Name = sub.RoleName,
-                    Active = sub.Active
+                    Active = sub.Active,
                 });
         }
 

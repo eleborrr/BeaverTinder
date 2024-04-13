@@ -22,6 +22,9 @@ public class SubscriptionController : Controller
     {
         var query = new GetAllSubscriptionsQuery();
         var subscriptions = (await _mediator.Send(query)).Value;
-        return subscriptions!.ToList();
+        if (subscriptions is null)
+            return new List<SubscriptionInfoDto>();
+        
+        return subscriptions.ToList();
     }
 }

@@ -1,6 +1,5 @@
 using BeaverTinder.Domain.Repositories.Abstractions;
 using BeaverTinder.Infrastructure.Database;
-using BeaverTinder.Infrastructure.Database.Contexts;
 using BeaverTinder.Infrastructure.Database.Repositories;
 using BeaverTinder.SupportChat.ServicesExtensions.RabbitMq;
 using Microsoft.EntityFrameworkCore;

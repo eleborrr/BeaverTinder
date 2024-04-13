@@ -4,16 +4,16 @@ using BeaverTinder.Application.Features.Subscription.AddSubscription;
 using BeaverTinder.Application.Services.Abstractions.Cqrs.Commands;
 using BeaverTinder.Domain.Entities;
 using BeaverTinder.Domain.Repositories.Abstractions;
-using grpcServices;
+using BeaverTinder.Shared;
 using Microsoft.AspNetCore.Identity;
 
 namespace BeaverTinder.Application.Features.Subscription.RemoveUserSubscription;
 
 public class RemoveUserSubscriptionHandler: ICommandHandler<RemoveUserSubscriptionCommand>
 {
-    private readonly grpcServices.Subscription.SubscriptionClient _subscriptionClient;
+    private readonly BeaverTinder.Shared.Subscription.SubscriptionClient _subscriptionClient;
 
-    public RemoveUserSubscriptionHandler(grpcServices.Subscription.SubscriptionClient subscriptionClient)
+    public RemoveUserSubscriptionHandler(BeaverTinder.Shared.Subscription.SubscriptionClient subscriptionClient)
     {
         _subscriptionClient = subscriptionClient;
     }

@@ -8,7 +8,6 @@ using BeaverTinder.API.ServicesExtensions.Swagger;
 using BeaverTinder.Application.Helpers;
 using BeaverTinder.Domain.Entities;
 using BeaverTinder.Infrastructure.Database;
-using BeaverTinder.Infrastructure.Database.Contexts;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -39,6 +38,9 @@ builder.Services.AddIdentity<User, Role>(
 builder.Services.Configure<DataProtectionTokenProviderOptions>(
  o => o.TokenLifespan = TimeSpan.FromHours(24));
 
+
+builder.Services.ConfigureGrpc(builder.Configuration);
+
 builder.Services.AddCustomServices(builder.Configuration);
 
 builder.Services.AddMediatR(configuration =>
@@ -51,7 +53,6 @@ builder.Services.AddCustomAuth(builder.Configuration);
 
 builder.Services.AddMasstransitRabbitMq(builder.Configuration);
 
-builder.Services.ConfigureGrpc(builder.Configuration);
 
 builder.Services.AddCustomSwaggerGenerator();
 

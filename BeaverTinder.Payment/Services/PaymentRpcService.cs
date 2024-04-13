@@ -1,12 +1,12 @@
 ﻿using BeaverTinder.Payment.Core.Dto.Payment;
 using BeaverTinder.Payment.Infrastructure.Persistence;
+using BeaverTinder.Shared;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
-using grpcServices;
 
 namespace BeaverTinder.Payment.Services;
 
-public class PaymentRpcService: grpcServices.Payment.PaymentBase
+public class PaymentRpcService: BeaverTinder.Shared.Payment.PaymentBase
 {
     private readonly PaymentDbContext _dbContext;
 
@@ -17,6 +17,7 @@ public class PaymentRpcService: grpcServices.Payment.PaymentBase
 
     public override async Task<PaymentResponse> Add(PaymentMsg paymentRequest, ServerCallContext context)
     {
+        Console.WriteLine("Trying to add payment");
         await Task.Delay(2000);
         if (CheckBillingInfoIsCorrect(paymentRequest.CardNumber, paymentRequest.Month, paymentRequest.Year))
         {
@@ -45,7 +46,14 @@ public class PaymentRpcService: grpcServices.Payment.PaymentBase
             Successful = true
         };
     }
-    
+
+    public override async Task<PhaseResponse> Prepare(Empty request, ServerCallContext context)
+    {
+        await Task.Delay(2000);
+
+        return new PhaseResponse() { Result = true };
+    }
+
     public override async Task<PhaseResponse> Refund(RefundRequest refundRequest, ServerCallContext context)
     {
         await Task.Delay(2000);

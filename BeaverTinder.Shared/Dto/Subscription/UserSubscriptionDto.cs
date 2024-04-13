@@ -1,8 +1,8 @@
 ﻿namespace BeaverTinder.Shared.Dto.Subscription;
 
-public class SubscriptionInfoDto
+public class UserSubscriptionDto
 {
     public int Id { get; set; }
     public string Name { get; set; } = default!;
-    public double PricePerMonth { get; set; }
+    public DateTime Expires { get; set; }
 }

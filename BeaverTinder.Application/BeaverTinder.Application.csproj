@@ -30,11 +30,4 @@
       <ProjectReference Include="..\BeaverTinder.Domain\BeaverTinder.Domain.csproj" />
       <ProjectReference Include="..\BeaverTinder.Shared\BeaverTinder.Shared.csproj" />
     </ItemGroup>
-
-    <ItemGroup>
-        <Protobuf Include="..\Protos\subscriptionService.proto" GrpcServices="Client" />
-    </ItemGroup>
-    <ItemGroup>
-        <Protobuf Include="..\Protos\paymentService.proto" GrpcServices="Client" />
-    </ItemGroup>
 </Project>

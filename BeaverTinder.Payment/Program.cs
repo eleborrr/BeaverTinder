@@ -1,3 +1,7 @@
+using BeaverTinder.Payment.Infrastructure.Persistence;
+using BeaverTinder.Payment.Services;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -5,6 +9,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddGrpc();
+builder.Services.AddDbContext<PaymentDbContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("BeaverTinderDatabase"));
+    options.EnableSensitiveDataLogging();
+});
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
@@ -19,6 +29,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.MapGrpcService<PaymentRpcService>();
 
 app.MapControllers();
 

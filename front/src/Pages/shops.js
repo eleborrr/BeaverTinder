@@ -39,7 +39,11 @@ const ShopsPage = () => {
                     Accept : "application/json"
                 }
             })
-            .then(res => setPaymentArr(res.data));
+            .then(res => {
+                console.log(res.data)
+                setPaymentArr(res.data)});
+            console.log(paymentArr);
+
         }
         catch(e){
         }
@@ -66,7 +70,7 @@ const ShopsPage = () => {
             </div>
         </section>
          :
-            <PaymentForm onClose={onClose} userId={jwtDecode(token).Id[0]} subsId={subsId} amount={amount}/> 
+            <PaymentForm onClose={onClose} userId={jwtDecode(token).Id} subsId={subsId} amount={amount}/> 
         }
     </>
     )

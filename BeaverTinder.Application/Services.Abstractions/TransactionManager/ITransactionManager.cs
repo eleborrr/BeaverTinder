@@ -1,6 +1,5 @@
 ﻿using BeaverTinder.Application.Dto.MediatR;
 using BeaverTinder.Shared.Dto.Payment;
-using grpcServices;
 
 namespace BeaverTinder.Application.Services.Abstractions.TransactionManager;
 

@@ -4,16 +4,15 @@ using BeaverTinder.Domain.Repositories.Abstractions;
 using BeaverTinder.Shared.Dto.Subscription;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Net.Client;
-using grpcServices;
 
 namespace BeaverTinder.Application.Features.Subscription.GetAllSubscriptions;
 
 public class GetAllSubscriptionsHandler: IQueryHandler<GetAllSubscriptionsQuery, IEnumerable<SubscriptionInfoDto>>
 {
     private readonly IRepositoryManager _repositoryManager;
-    private readonly grpcServices.Subscription.SubscriptionClient _subscriptionClient;
+    private readonly BeaverTinder.Shared.Subscription.SubscriptionClient _subscriptionClient;
 
-    public GetAllSubscriptionsHandler(IRepositoryManager repositoryManager, grpcServices.Subscription.SubscriptionClient subscriptionClient)
+    public GetAllSubscriptionsHandler(IRepositoryManager repositoryManager, BeaverTinder.Shared.Subscription.SubscriptionClient subscriptionClient)
     {
         _repositoryManager = repositoryManager;
         _subscriptionClient = subscriptionClient;
@@ -23,12 +22,25 @@ public class GetAllSubscriptionsHandler: IQueryHandler<GetAllSubscriptionsQuery,
     {
         var subscriptions = await _subscriptionClient.GetAllAsync(new Empty(), cancellationToken: cancellationToken);
         if (subscriptions is null)
-            return new Result<IEnumerable<SubscriptionInfoDto>>(null, false, "");
+            return new Result<IEnumerable<SubscriptionInfoDto>>(null, false, "can't reach subscription service");
 
+        if (subscriptions.Subscriptions is null || subscriptions.Subscriptions.Count == 0)
+            return new Result<IEnumerable<SubscriptionInfoDto>>(null, true, "no subscriptions found");
+        Console.WriteLine("AAAAAAAAAAA");
+        Console.WriteLine(subscriptions);
+        Console.WriteLine(subscriptions.Subscriptions);
+        foreach (var subscription in subscriptions.Subscriptions)
+        {
+            Console.WriteLine(subscription.Name);
+            Console.WriteLine(subscription.PricePerMonth);
+            Console.WriteLine();
+        }
+        
         var result = subscriptions.Subscriptions.Select(sub => new SubscriptionInfoDto()
         {
+            Id = sub.SubscriptionId,
             Name = sub.Name,
-            Expires = sub.Expires.ToDateTime()
+            PricePerMonth = sub.PricePerMonth,
         });
         
         return new Result<IEnumerable<SubscriptionInfoDto>>(

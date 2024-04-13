@@ -1,7 +1,6 @@
 ﻿using BeaverTinder.Application.Dto.Image;
 using BeaverTinder.Domain.Entities;
 using BeaverTinder.Infrastructure.Database;
-using BeaverTinder.Infrastructure.Database.Contexts;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 

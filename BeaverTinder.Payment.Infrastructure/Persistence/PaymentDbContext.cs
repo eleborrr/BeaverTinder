@@ -8,6 +8,7 @@ public sealed class PaymentDbContext: DbContext
 
     public PaymentDbContext(DbContextOptions<PaymentDbContext> options)
         : base(options)
-    { 
+    {
+        Database.Migrate();
     }
 }

@@ -11,7 +11,7 @@ public sealed class SubscriptionDbContext: DbContext
     public SubscriptionDbContext(DbContextOptions<SubscriptionDbContext> options)
         : base(options)
     { 
-        // Database.Migrate();
+        Database.Migrate();
     }
     protected override void OnModelCreating(ModelBuilder builder)
     {

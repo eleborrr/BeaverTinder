@@ -37,12 +37,17 @@ public class UserSubscriptionRepository : IUserSubscriptionRepository
 
     public async Task AddUserSubscriptionAsync(int subsId, string userId)
     {
+        var subInfo = _dbContext.Subscriptions.First(s => s.Id == subsId);
         var userSub = new UserSubscription()
         {
             Active = true,
             Expires = DateTime.Now + TimeSpan.FromDays(30),
             SubId = subsId,
-            UserId = userId
+            UserId = userId,
+            Description = subInfo.Description,
+            RoleName = subInfo.RoleName,
+            PricePerMonth = subInfo.PricePerMonth,
+            RoleId = subInfo.RoleId
         };
         await _dbContext.UserSubscriptions.AddAsync(userSub);
         await _dbContext.SaveChangesAsync();

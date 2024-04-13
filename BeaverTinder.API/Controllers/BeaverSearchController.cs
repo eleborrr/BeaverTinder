@@ -62,7 +62,9 @@ public class BeaverSearchController: Controller
             new GetNextSympathyQuery(await GetUserFromJwt()),
             cancellationToken);
         var result = res.Value;
-        if (result is null || result.Successful)
+        if (result is null)
+            return Json(new FailResponse(false, "Something went frong...", 500));
+        if (result.Successful)
             return Json(new FailResponse(result.Successful, result.Message, result.StatusCode));
         
         var user = new SearchUserResultDto
