@@ -1,5 +1,6 @@
 using BeaverTinder.Application.Features.Subscription.GetAllSubscriptions;
 using BeaverTinder.Domain.Entities;
+using BeaverTinder.Shared.Dto.Subscription;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,10 +18,13 @@ public class SubscriptionController : Controller
     }
 
     [HttpGet("all")]
-    public async Task<List<Subscription>> GetAll()
+    public async Task<List<SubscriptionInfoDto>> GetAll()
     {
         var query = new GetAllSubscriptionsQuery();
         var subscriptions = (await _mediator.Send(query)).Value;
-        return subscriptions!.ToList();
+        if (subscriptions is null)
+            return new List<SubscriptionInfoDto>();
+        
+        return subscriptions.ToList();
     }
 }

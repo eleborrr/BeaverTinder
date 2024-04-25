@@ -1,12 +1,12 @@
-using Application.Subscription.GetUsersActiveSubscription;
 using BeaverTinder.Application.Dto.Account;
 using BeaverTinder.Application.Dto.AdminPage;
 using BeaverTinder.Application.Dto.Geolocation;
 using BeaverTinder.Application.Dto.ResponsesAbstraction;
-using BeaverTinder.Application.Dto.Subscription;
 using BeaverTinder.Application.Features.Geolocation.GetGeolocationById;
+using BeaverTinder.Application.Features.Subscription.GetUsersActiveSubscription;
 using BeaverTinder.Application.Services.Abstractions;
 using BeaverTinder.Domain.Entities;
+using BeaverTinder.Shared.Dto.Subscription;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -80,7 +80,7 @@ public class AccountController : Controller
             new GetUsersActiveSubscriptionQuery(userId),
             cancellationToken)).Value;
         
-        var model = new SubscriptionInfoDto
+        var model = new UserSubscriptionDto()
         {
             Name = subInfo!.Name,
             Expires = subInfo.Expires

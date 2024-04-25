@@ -11,6 +11,7 @@
     <ItemGroup>
         <PackageReference Include="AspNet.Security.OAuth.Vkontakte" Version="7.0.2" />
         <PackageReference Include="AspNetCore.Security.OAuth.Vkontakte" Version="1.0.1" />
+        <PackageReference Include="Grpc.AspNetCore" Version="2.62.0" />
         <PackageReference Include="MassTransit.RabbitMQ" Version="8.1.2-develop.1567" />
         <PackageReference Include="MediatR" Version="12.1.1" />
         <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.3.0" />
@@ -39,11 +40,4 @@
       <ProjectReference Include="..\BeaverTinder.Shared\BeaverTinder.Shared.csproj" />
       <ProjectReference Include="..\BeaverTinder.SupportChat\BeaverTinder.SupportChat.csproj" />
     </ItemGroup>
-
-
-
-
-
-
-
 </Project>

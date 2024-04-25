@@ -1,6 +1,6 @@
-﻿using BeaverTinder.Application.Dto.Subscription;
-using BeaverTinder.Application.Services.Abstractions.Cqrs.Queries;
+﻿using BeaverTinder.Application.Services.Abstractions.Cqrs.Queries;
+using BeaverTinder.Shared.Dto.Subscription;
 
-namespace Application.Subscription.GetUsersActiveSubscription;
+namespace BeaverTinder.Application.Features.Subscription.GetUsersActiveSubscription;
 
-public record GetUsersActiveSubscriptionQuery(string UserId): IQuery<SubscriptionInfoDto>;
+public record GetUsersActiveSubscriptionQuery(string UserId): IQuery<UserSubscriptionDto>;

@@ -5,8 +5,6 @@ using BeaverTinder.Application.Services.Abstractions.FindBeaver;
 using BeaverTinder.Application.Services.Abstractions.Geolocation;
 using BeaverTinder.Application.Services.Abstractions.Likes;
 using BeaverTinder.Application.Services.Abstractions.OAuth;
-using BeaverTinder.Application.Services.Abstractions.Payments;
-using BeaverTinder.Application.Services.Abstractions.Subscriptions;
 using BeaverTinder.Application.Services.Abstractions.SupportChat;
 using BeaverTinder.Application.Services.Abstractions.TwoFA;
 
@@ -20,8 +18,6 @@ public interface IServiceManager
     IGeolocationService GeolocationService { get; }
     IFindBeaverService FindBeaverService { get; }
     IAccountService AccountService { get; }
-    IPaymentService PaymentService { get; }
-    ISubscriptionService SubscriptionService { get; }
     IVkOAuthService VkOAuthService { get; }
     IChatService ChatService { get; }
     ISupportChatService SupportChatService { get; }

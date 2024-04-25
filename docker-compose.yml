@@ -54,6 +54,36 @@ services:
       ConnectionStrings__BeaverTinderDatabase: Data Source=mssql;Initial Catalog=BeaverTinderDatabase;User=sa;Password=superPuperPassword!15641;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;MultipleActiveResultSets=true;
     volumes:
       - ~/.aspnet/https:/https:ro
+  payment:
+    container_name: payment
+    image: payment-service
+    depends_on:
+      - mssql
+      - rabbitmq
+    build:
+      context: ./
+      dockerfile: DockerfilePayment
+    ports:
+      - "8084:84"
+    environment:
+      ConnectionStrings__BeaverTinderDatabase: Data Source=mssql;Initial Catalog=BeaverTinderDatabase;User=sa;Password=superPuperPassword!15641;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;MultipleActiveResultSets=true;
+    volumes:
+      - ~/.aspnet/https:/https:ro   
+  subscription:
+    image: subscription-service
+    container_name: subscription
+    depends_on:
+      - mssql
+      - rabbitmq
+    build:
+      context: ./
+      dockerfile: DockerfileSub
+    ports:
+      - "8083:83"
+    environment:
+      ConnectionStrings__BeaverTinderDatabase: Data Source=mssql;Initial Catalog=BeaverTinderDatabase;User=sa;Password=superPuperPassword!15641;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;MultipleActiveResultSets=true;
+    volumes:
+      - ~/.aspnet/https:/https:ro
   s3:
     image: s3
     depends_on:

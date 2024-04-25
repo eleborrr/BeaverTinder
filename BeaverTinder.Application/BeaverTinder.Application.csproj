@@ -12,6 +12,12 @@
     <ItemGroup>
       <PackageReference Include="AspNet.Security.OAuth.Vkontakte" Version="7.0.2" />
       <PackageReference Include="FluentValidation" Version="11.8.0" />
+      <PackageReference Include="Grpc.AspNetCore" Version="2.62.0" />
+      <PackageReference Include="Grpc.Net.Client" Version="2.62.0" />
+      <PackageReference Include="Grpc.Tools" Version="2.62.0">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
       <PackageReference Include="JetBrains.Annotations" Version="10.1.5" />
       <PackageReference Include="MassTransit.Abstractions" Version="8.1.2-develop.1567" />
       <PackageReference Include="MediatR" Version="12.1.1" />
@@ -19,19 +25,9 @@
       <PackageReference Include="NRedisStack" Version="0.10.1" />
       <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.21.0" />
     </ItemGroup>
-
-
-
-
+    
     <ItemGroup>
       <ProjectReference Include="..\BeaverTinder.Domain\BeaverTinder.Domain.csproj" />
       <ProjectReference Include="..\BeaverTinder.Shared\BeaverTinder.Shared.csproj" />
     </ItemGroup>
-
-
-
-
-
-
-
 </Project>

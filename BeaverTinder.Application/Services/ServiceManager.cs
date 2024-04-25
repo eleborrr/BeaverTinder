@@ -8,8 +8,6 @@ using BeaverTinder.Application.Services.Abstractions.FindBeaver;
 using BeaverTinder.Application.Services.Abstractions.Geolocation;
 using BeaverTinder.Application.Services.Abstractions.Likes;
 using BeaverTinder.Application.Services.Abstractions.OAuth;
-using BeaverTinder.Application.Services.Abstractions.Payments;
-using BeaverTinder.Application.Services.Abstractions.Subscriptions;
 using BeaverTinder.Application.Services.Abstractions.SupportChat;
 using BeaverTinder.Application.Services.Abstractions.TwoFA;
 using BeaverTinder.Application.Services.Account;
@@ -19,7 +17,6 @@ using BeaverTinder.Application.Services.FindBeaver;
 using BeaverTinder.Application.Services.Geolocation;
 using BeaverTinder.Application.Services.Likes;
 using BeaverTinder.Application.Services.OAuth;
-using BeaverTinder.Application.Services.Subscriptions;
 using BeaverTinder.Application.Services.SupportChat;
 using BeaverTinder.Application.Services.TwoFA;
 using BeaverTinder.Domain.Entities;
@@ -38,8 +35,6 @@ public class ServiceManager : IServiceManager
     private readonly Lazy<ILikeService> _likeService;
     private readonly Lazy<IGeolocationService> _geolocationService;
     private readonly Lazy<IFindBeaverService> _findBeaverService;
-    private readonly Lazy<IPaymentService> _paymentService;
-    private readonly Lazy<ISubscriptionService> _subscriptionService;
     private readonly Lazy<IAccountService> _accountService;
     private readonly Lazy<IVkOAuthService> _vkOAuthService;
     private readonly Lazy<IChatService> _chatService;
@@ -65,10 +60,6 @@ public class ServiceManager : IServiceManager
         _likeService = new Lazy<ILikeService>(() => new LikeService(repositoryManager));
         _findBeaverService = new Lazy<IFindBeaverService>(() =>
             new FindBeaverService(userManager, repositoryManager, memoryCache, LikeService, GeolocationService));
-        _paymentService = new Lazy<IPaymentService>(() =>
-            new global::BeaverTinder.Application.Services.PaymentService.PaymentService(repositoryManager));
-        _subscriptionService =
-            new Lazy<ISubscriptionService>(() => new SubscriptionService(repositoryManager, userManager));
         _vkOAuthService = new Lazy<IVkOAuthService>(() =>
             new VkOAuthService(repositoryManager, userManager, signInManager, jwtGenerator, client,
                 GeolocationService));
@@ -83,9 +74,7 @@ public class ServiceManager : IServiceManager
     public ITwoFaService TwoFaService => _twoFaService.Value;
     public ILikeService LikeService => _likeService.Value;
     public IFindBeaverService FindBeaverService => _findBeaverService.Value;
-    public IPaymentService PaymentService => _paymentService.Value;
     public IGeolocationService GeolocationService => _geolocationService.Value;
-    public ISubscriptionService SubscriptionService => _subscriptionService.Value;
     public IAccountService AccountService => _accountService.Value;
     public IVkOAuthService VkOAuthService => _vkOAuthService.Value;
     public IChatService ChatService => _chatService.Value;

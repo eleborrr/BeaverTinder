@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+option csharp_namespace = "BeaverTinder.Shared";
+
+package services;
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+service Payment{
+    rpc Add(PaymentMsg) returns (PaymentResponse);
+    rpc Prepare(google.protobuf.Empty) returns (PhaseResponse);
+    rpc Refund(RefundRequest) returns (PhaseResponse);
+    //    rpc SendMsg(Msg) returns (google.protobuf.Empty);
+}
+
+message PhaseResponse{
+    bool result = 1;
+}
+
+message RefundRequest{
+    int32 paymentId = 1;
+}
+
+message PaymentMsg{
+    double amount = 1;
+    int32 subId = 2;
+    string userId = 3;
+    string cardNumber = 4;
+    string code = 5;
+    int32 month = 6;
+    int32 year = 7;
+}
+
+message PaymentResponse{
+    optional int32 paymentId = 1;
+    bool successful = 2;
+    optional string message = 3;
+}
+
+
+
