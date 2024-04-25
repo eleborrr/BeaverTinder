@@ -24,12 +24,9 @@ public class AddSubscriptionHandler: ICommandHandler<AddSubscriptionCommand>
 
     public async Task<Result> Handle(AddSubscriptionCommand request, CancellationToken cancellationToken)
     {
-        Console.WriteLine("In add sub handler");
         var user = await _userManager.FindByIdAsync(request.UserId);
         if (user is null)
             return new Result(false, "User not found");
-        // var channel = GrpcChannel.ForAddress("dns:///subscription:8083");
-        // var _subscriptionClient = new grpcServices.Subscription.SubscriptionClient(channel);
         var updateSubResponse = await _subscriptionClient.AddUserSubscriptionAsync(new UpdateSubscriptionMsg()
         {
             SubscriptionId = request.SubscriptionId,

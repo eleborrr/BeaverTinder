@@ -17,7 +17,6 @@ public class PaymentRpcService: BeaverTinder.Shared.Payment.PaymentBase
 
     public override async Task<PaymentResponse> Add(PaymentMsg paymentRequest, ServerCallContext context)
     {
-        Console.WriteLine("Trying to add payment");
         await Task.Delay(2000);
         if (CheckBillingInfoIsCorrect(paymentRequest.CardNumber, paymentRequest.Month, paymentRequest.Year))
         {

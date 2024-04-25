@@ -2,11 +2,9 @@
 using BeaverTinder.Application.Features.Chat.SaveMessage;
 using BeaverTinder.Domain.Entities;
 using BeaverTinder.Infrastructure.Database;
-using BeaverTinder.Shared.Files;
 using MassTransit;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
@@ -62,17 +60,11 @@ namespace BeaverTinder.API.Hubs
             string receiverUserName,
             string groupName)
         {
-            Console.WriteLine("joined in sendprivate msg");
             var room = _dbContext.Rooms.FirstOrDefault(r => r.Name == groupName);
             
 
             var sender = await _userManager.FindByNameAsync(senderUserName);
             var receiver = await _userManager.FindByNameAsync(receiverUserName);
-            
-            Console.WriteLine("checking sender, receiver, room");
-            Console.WriteLine(room);
-            Console.WriteLine(sender);
-            Console.WriteLine(receiver);
             
             if (receiver is null || sender is null || room is null)
                 return;
@@ -86,10 +78,8 @@ namespace BeaverTinder.API.Hubs
                 ReceiverId = receiver.Id,
                 RoomId = room.Id
             };
-            Console.WriteLine(filenames);
             foreach (var filename in filenames)
             {
-                Console.WriteLine(filename);
                 _dbContext.Files.Add(new FileToMessage
                 {
                     Id = Guid.NewGuid().ToString(),
@@ -98,7 +88,6 @@ namespace BeaverTinder.API.Hubs
                 });
             }
 
-            Console.WriteLine("saving msg");
             _dbContext.Messages.Add(newMessage);
             await _dbContext.SaveChangesAsync();
             
@@ -110,9 +99,7 @@ namespace BeaverTinder.API.Hubs
                 ReceiverId = receiver.Id,
                 Timestamp = DateTime.Now
             };
-            Console.WriteLine("sending in file consumer");
             await _mediator.Send(new SaveChatMessageByDtoBusCommand(dto));
-            Console.WriteLine("send in file consumer");
             await Clients.Group(groupName).SendAsync("ReceivePrivateMessage", senderUserName, 
                 message, filenames);
         }

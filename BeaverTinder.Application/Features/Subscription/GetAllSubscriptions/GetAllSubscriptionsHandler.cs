@@ -26,15 +26,6 @@ public class GetAllSubscriptionsHandler: IQueryHandler<GetAllSubscriptionsQuery,
 
         if (subscriptions.Subscriptions is null || subscriptions.Subscriptions.Count == 0)
             return new Result<IEnumerable<SubscriptionInfoDto>>(null, true, "no subscriptions found");
-        Console.WriteLine("AAAAAAAAAAA");
-        Console.WriteLine(subscriptions);
-        Console.WriteLine(subscriptions.Subscriptions);
-        foreach (var subscription in subscriptions.Subscriptions)
-        {
-            Console.WriteLine(subscription.Name);
-            Console.WriteLine(subscription.PricePerMonth);
-            Console.WriteLine();
-        }
         
         var result = subscriptions.Subscriptions.Select(sub => new SubscriptionInfoDto()
         {

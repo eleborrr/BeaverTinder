@@ -19,7 +19,6 @@ public class AddPaymentHandler : ICommandHandler<AddPaymentCommand, PaymentIdDto
         CancellationToken cancellationToken)
     {
         await Task.Delay(2000, cancellationToken);
-        Console.WriteLine("In payment handler");
         var paymentRes = await _paymentClient.AddAsync(new PaymentMsg
         {
             Amount = request.Amount,

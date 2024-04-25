@@ -13,10 +13,6 @@ public static class ServicesCollectionExtension
             (o => o.Address = new Uri(configuration.GetSection("Grpc")["PaymentsAddress"]));
         services.AddGrpcClient<BeaverTinder.Shared.Subscription.SubscriptionClient>
             (o => o.Address = new Uri(configuration.GetSection("Grpc")["SubscriptionAddress"]));
-        // services.AddGrpc();
-        Console.WriteLine(configuration.GetSection("Grpc")["PaymentsAddress"]);
-        Console.WriteLine(configuration.GetSection("Grpc")["SubscriptionAddress"]);
-        Console.WriteLine("grpc clients configured");
         return services;
     }
 }
