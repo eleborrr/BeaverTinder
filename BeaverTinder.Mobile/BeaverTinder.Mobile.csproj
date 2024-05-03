@@ -15,10 +15,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Graphql\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <Content Include="..\.dockerignore">
         <Link>.dockerignore</Link>
       </Content>
@@ -26,6 +22,8 @@
 
     <ItemGroup>
       <ProjectReference Include="..\BeaverTinder.Application\BeaverTinder.Application.csproj" />
+      <ProjectReference Include="..\BeaverTinder.Subscription.Core\BeaverTinder.Subscription.Core.csproj" />
     </ItemGroup>
+
 
 </Project>
