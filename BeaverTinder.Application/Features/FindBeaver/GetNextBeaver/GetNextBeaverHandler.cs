@@ -13,7 +13,6 @@ namespace BeaverTinder.Application.Features.FindBeaver.GetNextBeaver;
 
 public class GetNextBeaverHandler : IQueryHandler<GetNextBeaverQuery, SearchUserResultDto>
 {
-    
     private readonly IMemoryCache _memoryCache;
     private readonly IRepositoryManager _repositoryManager;
     private readonly UserManager<User> _userManager;

@@ -40,7 +40,6 @@ public class BeaverSearchController: Controller
         if (!result!.Successful)
             return Json(new FailResponse(result.Successful, result.Message, result.StatusCode));
 
-        Console.WriteLine(result.DistanceInKm);
         var user = new SearchUserResultDto
         {
             Id = result.Id,
