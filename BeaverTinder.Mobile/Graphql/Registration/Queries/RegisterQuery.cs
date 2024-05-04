@@ -1,6 +1,7 @@
 ﻿using System.Web.Http.Results;
 using BeaverTinder.Application.Dto.Authentication.Register;
 using BeaverTinder.Application.Services.Abstractions;
+using Grpc.Core;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,6 +19,7 @@ public class RegisterQuery
 
     public async Task<RegisterResponseDto> Register(RegisterRequestDto model)
     {
-        return await _manager.AccountService.Register(model);
+        return new RegisterResponseDto(RegisterResponseStatus.Ok, "Valid");
+        // return await _manager.AccountService.Register(model);
     }
 }
