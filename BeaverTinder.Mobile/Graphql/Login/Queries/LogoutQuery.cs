@@ -6,7 +6,7 @@ namespace BeaverTinder.Mobile.Graphql.Login.Queries;
 public class LogoutQuery
 {
     private readonly SignInManager<User> _signInManager;
-
+    
     public LogoutQuery(SignInManager<User> signInManager)
     {
         _signInManager = signInManager;
