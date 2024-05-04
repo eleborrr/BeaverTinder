@@ -15,6 +15,6 @@ public interface IAccountService
 
     public Task<RegisterResponseDto> Register(RegisterRequestDto model, ModelStateDictionary modelState);
     public Task<IdentityResult> ResetPasswordAsync(string userId, string token, string newPassword);
-    public Task<EditUserResponseDto> EditAccount(User currentUser, EditUserRequestDto model, ModelStateDictionary modelState);
+    public Task<EditUserResponseDto> EditAccount(User currentUser, EditUserRequestDto model, ModelStateDictionary? modelState = default);
     public Task<IEnumerable<User>> GetAllMappedUsers();
 }

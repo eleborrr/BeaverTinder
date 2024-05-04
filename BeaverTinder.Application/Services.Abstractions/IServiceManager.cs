@@ -7,11 +7,14 @@ using BeaverTinder.Application.Services.Abstractions.Likes;
 using BeaverTinder.Application.Services.Abstractions.OAuth;
 using BeaverTinder.Application.Services.Abstractions.SupportChat;
 using BeaverTinder.Application.Services.Abstractions.TwoFA;
+using BeaverTinder.Domain.Entities;
+using Microsoft.AspNetCore.Identity;
 
 namespace BeaverTinder.Application.Services.Abstractions;
 
 public interface IServiceManager
 {
+    UserManager<User> UserManager { get; }
     IEmailService EmailService { get; }
     ITwoFaService TwoFaService { get; }
     ILikeService LikeService { get; }
