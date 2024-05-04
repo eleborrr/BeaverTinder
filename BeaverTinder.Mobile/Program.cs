@@ -1,7 +1,9 @@
 using BeaverTinder.API.ServicesExtensions.Auth;
 using BeaverTinder.API.ServicesExtensions.Grpc;
+using BeaverTinder.API.ServicesExtensions.MassTransit;
 using BeaverTinder.API.ServicesExtensions.SecurityAndCors;
 using BeaverTinder.API.ServicesExtensions.Services;
+using BeaverTinder.API.ServicesExtensions.Swagger;
 using BeaverTinder.Application.Helpers;
 using BeaverTinder.Domain.Entities;
 using BeaverTinder.Infrastructure.Database;
@@ -50,6 +52,10 @@ builder.Services.AddMediatR(configuration =>
 
 builder.Services.AddCustomAuth(builder.Configuration);
 
+builder.Services.AddMasstransitRabbitMq(builder.Configuration);
+
+
+builder.Services.AddCustomSwaggerGenerator();
 const string testSpesific = "testSpesific";
 
 builder.Services.AddCustomCors(testSpesific);

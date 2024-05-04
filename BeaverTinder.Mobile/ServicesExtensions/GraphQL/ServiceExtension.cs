@@ -1,4 +1,6 @@
 ﻿using System.Security.Claims;
+using BeaverTinder.Mobile.Graphql.Login.Queries;
+using BeaverTinder.Mobile.Graphql.Registration.Queries;
 using BeaverTinder.Mobile.Helpers;
 using BeaverTinder.Mobile.Helpers.Filters;
 using HotChocolate;
@@ -14,6 +16,7 @@ public static class ServicesCollectionExtension
     {
         services
             .AddGraphQLServer()
+            .AddQueryType<LoginQuery>()
             .AddErrorFilter(provider =>
             {
                 return new ServerErrorFilter(
@@ -38,7 +41,7 @@ public static class ServicesCollectionExtension
      
                 });
             })
-
+            .AddMutationType<RegisterMutation>()
             // .AddQueryType<TeacherQuery>()
             // .AddMutationType<TeacherMutation>()
             // .AddSubscriptionType<TeacherSubscription>();

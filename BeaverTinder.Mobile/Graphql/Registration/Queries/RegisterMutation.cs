@@ -7,11 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BeaverTinder.Mobile.Graphql.Registration.Queries;
 
-public class RegisterQuery
+public class RegisterMutation
 {
     private readonly IServiceManager _manager;
 
-    public RegisterQuery(IServiceManager manager)
+    public RegisterMutation(IServiceManager manager)
     {
         _manager = manager;
     }
@@ -19,7 +19,6 @@ public class RegisterQuery
 
     public async Task<RegisterResponseDto> Register(RegisterRequestDto model)
     {
-        return new RegisterResponseDto(RegisterResponseStatus.Ok, "Valid");
-        // return await _manager.AccountService.Register(model);
+        return await _manager.AccountService.Register(model);
     }
 }
