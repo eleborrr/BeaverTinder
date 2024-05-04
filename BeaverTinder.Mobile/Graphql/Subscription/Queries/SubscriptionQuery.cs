@@ -1,9 +1,8 @@
 ﻿using BeaverTinder.Application.Features.Subscription.GetAllSubscriptions;
 using BeaverTinder.Shared.Dto.Subscription;
-using BeaverTinder.Subscription.Core.Entities;
 using MediatR;
 
-namespace BeaverTinder.Mobile.Graphql.Subscription;
+namespace BeaverTinder.Mobile.Graphql.Subscription.Queries;
 
 public class SubscriptionQuery
 {
