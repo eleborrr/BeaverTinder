@@ -1,22 +1,23 @@
 ﻿using BeaverTinder.Application.Dto.Authentication.Login;
+using BeaverTinder.Application.Services.Abstractions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace BeaverTinder.Mobile.Graphql.Login.Queries;
 
 public class LoginQuery
 {
-    private readonly IMediator _mediator;
+    private readonly IServiceManager _manager;
 
-    public LoginQuery(IMediator mediator)
+    public LoginQuery(IServiceManager manager)
     {
-        _mediator = mediator;
+        _manager = manager;
     }
 
 
-    public async Task<JsonResult> Login(LoginRequestDto model)
+    public async Task<LoginResponseDto> Login(LoginRequestDto model)
     {
-        // return Json(await _serviceManager.AccountService.Login(model, ModelState));
-        throw new NotImplementedException();
+        return await _manager.AccountService.Login(model);
     }
 }

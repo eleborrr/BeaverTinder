@@ -1,5 +1,6 @@
 ﻿using System.Web.Http.Results;
 using BeaverTinder.Application.Dto.Authentication.Register;
+using BeaverTinder.Application.Services.Abstractions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,17 +8,16 @@ namespace BeaverTinder.Mobile.Graphql.Registration.Queries;
 
 public class RegisterQuery
 {
-    private readonly IMediator _mediator;
+    private readonly IServiceManager _manager;
 
-    public RegisterQuery(IMediator mediator)
+    public RegisterQuery(IServiceManager manager)
     {
-        _mediator = mediator;
+        _manager = manager;
     }
 
 
-    public async Task<JsonResult> Register(RegisterRequestDto model)
+    public async Task<RegisterResponseDto> Register(RegisterRequestDto model)
     {
-        // return Json(await _serviceManager.AccountService.Register(model, ModelState));
-        throw new NotImplementedException();
+        return await _manager.AccountService.Register(model);
     }
 }
