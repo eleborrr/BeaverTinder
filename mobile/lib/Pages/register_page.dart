@@ -21,7 +21,7 @@ class RegisterPage extends StatelessWidget {
   final geolocationController = TextEditingController();
 
   final HttpLink httpLink = HttpLink(
-    'YOUR_GRAPHQL_ENDPOINT', // Замените на URL вашего GraphQL сервера
+    'http://192.168.0.111:5292/graphql/', // Замените на URL вашего GraphQL сервера
   );
 
   void registerUser(BuildContext context) async {
@@ -45,26 +45,26 @@ class RegisterPage extends StatelessWidget {
 
     final MutationOptions options = MutationOptions(
       document: gql('''
-      mutation Register(\$input: RegisterInput!) {
-        register(input: \$input) {
-          // Поля, которые вам нужны из ответа сервера
+      mutation {
+        register(model: {
+          lastName: "$lastname",
+          firstName: "$firstname",
+          userName: "$username",
+          email: "$email",
+          dateOfBirth: "$birthdate",
+          password: "$password",
+          confirmPassword: "$cPassword",
+          gender: "$gender",
+          about: "$about",
+          latitude: 0,
+          longitude: 0
+        }) {
+          successful
+          message
+          statusCode
         }
       }
     '''),
-      variables: {
-        'input': {
-          'lastname': lastname,
-          'firstname': firstname,
-          'username': username,
-          'email': email,
-          'birthdate': birthdate,
-          'password': password,
-          'cPassword': cPassword,
-          'gender': gender,
-          'about': about,
-          'geolocation': geolocation,
-        },
-      },
     );
 
     final QueryResult result = await clientNotifier.value.mutate(options);
@@ -75,9 +75,10 @@ class RegisterPage extends StatelessWidget {
     } else {
       // Обработка успешного ответа
       // Например, перенаправление на другой экран
-      Navigator.pushNamed(context, '/home');
+      Navigator.pushNamed(context, '/login');
     }
   }
+
 
 
   goToSignIn(BuildContext context) {
