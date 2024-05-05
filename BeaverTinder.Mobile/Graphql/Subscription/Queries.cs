@@ -1,24 +1,11 @@
 ﻿using BeaverTinder.Application.Features.Subscription.GetAllSubscriptions;
-using BeaverTinder.Domain.Entities;
 using BeaverTinder.Shared.Dto.Subscription;
 using MediatR;
-using Microsoft.AspNetCore.Identity;
 
-namespace BeaverTinder.Mobile.Graphql.Login.Queries;
+namespace BeaverTinder.Mobile.Graphql.Queries;
 
-public class Queries
+public partial class Queries
 {
-    private readonly IServiceScopeFactory _scopeFactory;
-    public Queries(IServiceScopeFactory scopeFactory)
-    {
-        _scopeFactory = scopeFactory;
-    }
-    
-    public async Task<string> Logout()
-    {
-        return await Task.FromResult("logout success");
-    }
-    
     public async Task<List<SubscriptionInfoDto>> GetAllSubscriptions()
     {
         using var scope = _scopeFactory.CreateScope();
