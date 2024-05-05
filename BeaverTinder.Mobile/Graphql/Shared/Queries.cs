@@ -4,9 +4,9 @@ using BeaverTinder.Shared.Dto.Subscription;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 
-namespace BeaverTinder.Mobile.Graphql.Login.Queries;
+namespace BeaverTinder.Mobile.Graphql.Shared;
 
-public class Queries
+public partial class Queries
 {
     private readonly IServiceScopeFactory _scopeFactory;
     public Queries(IServiceScopeFactory scopeFactory)

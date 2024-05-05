@@ -1,31 +1,27 @@
 ﻿using BeaverTinder.Application.Features.Subscription.GetUsersActiveSubscription;
-using BeaverTinder.Shared.Dto.Subscription;
-using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using BeaverTinder.Shared.Dto.Subscription;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MediatR;
 
-namespace BeaverTinder.Mobile.Graphql.Profile.Queries;
+namespace BeaverTinder.Mobile.Graphql.Shared;
 
-[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-public class UserSubInfoQuery
+public partial class Queries
 {
-    private readonly IMediator _mediator;
-
-    public UserSubInfoQuery(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
-
+    
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<UserSubscriptionDto> GetUserSubInformation(
         [FromQuery] string userId,
         CancellationToken cancellationToken)
     {
-        var subInfo = (await _mediator.Send(
+        using var scope = _scopeFactory.CreateScope();
+        var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+        var subInfo = (await mediator.Send(
             new GetUsersActiveSubscriptionQuery(userId),
             cancellationToken)).Value;
         
-        var model = new UserSubscriptionDto()
+        var model = new UserSubscriptionDto
         {
             Name = subInfo!.Name,
             Expires = subInfo.Expires

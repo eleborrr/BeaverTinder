@@ -1,25 +1,20 @@
-﻿using BeaverTinder.Application.Dto.Geolocation;
-using BeaverTinder.Application.Features.Geolocation.GetGeolocationById;
-using BeaverTinder.Mobile.Helpers.PolicyStrings;
-using MediatR;
+﻿using BeaverTinder.Application.Features.Geolocation.GetGeolocationById;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using BeaverTinder.Mobile.Helpers.PolicyStrings;
+using BeaverTinder.Application.Dto.Geolocation;
 using Microsoft.AspNetCore.Authorization;
+using MediatR;
 
-namespace BeaverTinder.Mobile.Graphql.Profile.Queries;
+namespace BeaverTinder.Mobile.Graphql.Shared;
 
-[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-public class GeolocationByIdQuery
+public partial class Queries
 {
-    private readonly IMediator _mediator;
-
-    public GeolocationByIdQuery(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
-
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Authorize(Policy = PolicyStaticStrings.MapSubs)]
     public async Task<GeolocationResponseDto?> GetUserGeolocation(GetGeolocationRequestDto model)
     {
-        return (await _mediator.Send(new GetGeolocationByIdQuery(model.UserId))).Value;
+        using var scope = _scopeFactory.CreateScope();
+        var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+        return (await mediator.Send(new GetGeolocationByIdQuery(model.UserId))).Value;
     }
 }
