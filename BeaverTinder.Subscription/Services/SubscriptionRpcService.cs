@@ -1,6 +1,6 @@
-﻿using BeaverTinder.Shared;
-using BeaverTinder.Subscription.Core.Abstractions.Repositories;
+﻿using BeaverTinder.Subscription.Core.Abstractions.Repositories;
 using Google.Protobuf.WellKnownTypes;
+using BeaverTinder.Shared;
 using Grpc.Core;
 
 namespace BeaverTinder.Subscription.Services;
@@ -49,7 +49,7 @@ public class SubscriptionRpcService : BeaverTinder.Shared.Subscription.Subscript
             await _userSubscriptionRepository
                 .AddUserSubscriptionAsync(request.SubscriptionId, request.UserId);
            
-            return new UpdateSubscriptionResponse()
+            return new UpdateSubscriptionResponse
             {
                 Result = true,
                 Message = "Subscription successfully added",
@@ -61,7 +61,7 @@ public class SubscriptionRpcService : BeaverTinder.Shared.Subscription.Subscript
             var exp = userSub.Expires;
             userSub.Expires = exp + TimeSpan.FromDays(30);
             await _userSubscriptionRepository.SaveAsync();
-            return new UpdateSubscriptionResponse()
+            return new UpdateSubscriptionResponse
             {
                 Result = true,
                 Message = "Subscription successfully updated",
@@ -91,8 +91,9 @@ public class SubscriptionRpcService : BeaverTinder.Shared.Subscription.Subscript
         foreach (var sub in userSubs)
         {
             result.Subscriptions.Add(
-                new SubscriptionInfoMsg()
+                new SubscriptionInfoMsg
                 {
+                    Id = sub.SubId,
                     Expires = Timestamp.FromDateTimeOffset(sub.Expires),
                     Name = sub.RoleName,
                     Active = sub.Active,
