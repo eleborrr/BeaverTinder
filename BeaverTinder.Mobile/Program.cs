@@ -51,10 +51,6 @@ builder.Services.AddMediatR(configuration =>
     configuration.RegisterServicesFromAssembly(typeof(Program).Assembly);
 });
 
-
-builder.Services.AddMasstransitRabbitMq(builder.Configuration);
-
-
 builder.Services.AddCustomSwaggerGenerator();
 const string testSpesific = "testSpesific";
 
@@ -65,14 +61,6 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
  options.UseSqlServer(builder.Configuration.GetConnectionString("BeaverTinderDatabase"));
  options.EnableSensitiveDataLogging();
 });
-builder.Services.AddIdentity<User, Role>(
-     options =>
-     {
-         options.SignIn.RequireConfirmedAccount = false; // change in prod
-         options.SignIn.RequireConfirmedEmail = true;  // change in prod
-     })
- .AddDefaultTokenProviders()
- .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.Configure<DataProtectionTokenProviderOptions>(
  o => o.TokenLifespan = TimeSpan.FromHours(24));
 
@@ -87,8 +75,6 @@ builder.Services.AddMediatR(configuration =>
     configuration.RegisterServicesFromAssembly(typeof(Program).Assembly);
 });
 
-builder.Services.AddCustomAuth(builder.Configuration);
-
 builder.Services.AddMasstransitRabbitMq(builder.Configuration);
 
 
@@ -96,12 +82,6 @@ builder.Services.AddCustomSwaggerGenerator();
 
 
 var app = builder.Build();
-
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
 
 app.UseCors(testSpesific);
 
