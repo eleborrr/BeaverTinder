@@ -50,7 +50,7 @@ const HomePage = () => {
 								</div>
 								<div className="about__content">
 									<h4>Without VPN</h4>
-									<p>Use our site and don't mind about VPN ;).</p>
+									<p>Use our site and don’t mind about VPN ;).</p>
 								</div>
 							</div>
 						</div>
