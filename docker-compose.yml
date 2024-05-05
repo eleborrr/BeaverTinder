@@ -64,7 +64,7 @@ services:
       context: ./
       dockerfile: DockerfilePayment
     ports:
-      - "8084:84"
+      - "8084:80"
     environment:
       ConnectionStrings__BeaverTinderDatabase: Data Source=mssql;Initial Catalog=BeaverTinderDatabase;User=sa;Password=superPuperPassword!15641;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;MultipleActiveResultSets=true;
     volumes:
@@ -79,7 +79,7 @@ services:
       context: ./
       dockerfile: DockerfileSub
     ports:
-      - "8083:83"
+      - "8083:80"
     environment:
       ConnectionStrings__BeaverTinderDatabase: Data Source=mssql;Initial Catalog=BeaverTinderDatabase;User=sa;Password=superPuperPassword!15641;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;MultipleActiveResultSets=true;
     volumes:

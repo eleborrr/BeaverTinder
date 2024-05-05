@@ -37,6 +37,8 @@ public partial class Queries
             FirstName = user.FirstName,
             LastName = user.LastName,
             UserName = user.UserName!,
+            Password = "",
+            ConfirmPassword = "",
             Image = user.Image!,
             About = user.About ?? "",
             Gender = user.Gender,
