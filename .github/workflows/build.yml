@@ -61,4 +61,4 @@ jobs:
           cd front
           npm install
       - name: Run ESLint
-        run: npx eslint ./front
+        run: npx eslint .
