@@ -45,14 +45,17 @@ public class FileGetterService
         memoryStream.Position = 0;
 
         Console.WriteLine("trying to get metadata from mongo");
-        var metadata = await _mediator.Send(new GetMetadataMongoQuery(fileName));
-        if (metadata.IsFailure)
+        // var metadata = await _mediator.Send(new GetMetadataMongoQuery(fileName));
+        try
         {
-            Console.WriteLine(metadata.Error);
+            var metadata = await _mongoDbClient.GetAsync(fileName);
+            return new FileModelSendFront(memoryStream.GetBuffer(), metadata);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
             return null;
         }
-        var returnObj = new FileModelSendFront(memoryStream.GetBuffer(), metadata.Value);
-        return returnObj;
     }
     
     private static string GetContentType(string fileName)

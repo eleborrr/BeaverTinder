@@ -20,7 +20,6 @@ public static class ServicesCollectionExtension
         services.AddScoped<IServiceManager , ServiceManager>();
         services.AddScoped<HttpClient>();
         services.AddScoped<ITransactionManager, TransactionManager>();
-
         services.AddSingleton<IPublishEndpoint>(provider => provider.GetRequiredService<IBusControl>());
         services.Configure<EmailConfig>(configuration.GetSection("SmtpSettings"));
 

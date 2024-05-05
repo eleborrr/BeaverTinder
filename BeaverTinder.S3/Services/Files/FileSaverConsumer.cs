@@ -105,7 +105,7 @@ public class FileSaverConsumer: IConsumer<SaveFileMessage>
             Data = metadata
         });
         // _mediator.Send(new SaveMetadataMongoCommand(new MetadataDto(fileIdentifier, metadata)));
-        _mediator.Send(new DeleteCacheFromRedisCommand(fileIdentifier));
+        // _mediator.Send(new DeleteCacheFromRedisCommand(fileIdentifier));
     }
 
     private void IncrementFileCounterRedis()
