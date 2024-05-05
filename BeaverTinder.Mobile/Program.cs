@@ -22,6 +22,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddMvc();
 builder.Services.AddGraphQL(builder.Configuration, builder.Environment);
+builder.Services.AddCustomAuth(builder.Configuration);
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
@@ -50,7 +51,6 @@ builder.Services.AddMediatR(configuration =>
     configuration.RegisterServicesFromAssembly(typeof(Program).Assembly);
 });
 
-builder.Services.AddCustomAuth(builder.Configuration);
 
 builder.Services.AddMasstransitRabbitMq(builder.Configuration);
 
@@ -73,7 +73,6 @@ app.UseCors(testSpesific);
 app.UseHttpsRedirection();
 
 app.UseAuthentication(); 
-app.UseAuthorization();
 
 app.MapControllers();
 
