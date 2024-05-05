@@ -13,7 +13,7 @@
         <PackageReference Include="HotChocolate.AspNetCore" Version="13.9.0" />
         <PackageReference Include="HotChocolate.AspNetCore.Authorization" Version="13.9.0" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.4" />
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
     </ItemGroup>
 
     <ItemGroup>
@@ -28,6 +28,11 @@
 
 
 
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Graphql\Chat\" />
+      <Folder Include="Graphql\Payment\" />
     </ItemGroup>
 
 
