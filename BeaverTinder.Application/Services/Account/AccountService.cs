@@ -109,7 +109,7 @@ public class AccountService : IAccountService
         return res;
     }
 
-    public async Task<LoginResponseDto> Login(LoginRequestDto model, ModelStateDictionary modelState)
+    public async Task<LoginResponseDto> Login(LoginRequestDto model, ModelStateDictionary? modelState)
     {
         /* -> bool rememberMe = false;
         /*if (Request.Form.ContainsKey("RememberMe"))
@@ -118,7 +118,54 @@ public class AccountService : IAccountService
         }#1#
         model.RememberMe = rememberMe;*/
 
-        if (!modelState.IsValid) return new LoginResponseDto(LoginResponseStatus.Fail);
+        if (modelState is not null && !modelState.IsValid) return new LoginResponseDto(LoginResponseStatus.Fail);
+        
+        var signedUser = await _signInManager.UserManager.FindByNameAsync(model.UserName);
+        if (signedUser is null) return new LoginResponseDto(LoginResponseStatus.Fail);
+        
+        var result = await _signInManager.PasswordSignInAsync(signedUser.UserName!, model.Password, false,
+            lockoutOnFailure: false);
+
+
+        if (!result.Succeeded) return new LoginResponseDto(LoginResponseStatus.Fail);
+        
+        try
+        {
+            await _userManager.RemoveClaimAsync(signedUser, new Claim("Id", signedUser.Id));
+            await _userManager.RemoveClaimAsync(signedUser, new Claim(ClaimTypes.Role, "Admin"));
+            await _userManager.RemoveClaimAsync(signedUser, new Claim(ClaimTypes.Role, "User"));
+            await _userManager.RemoveClaimAsync(signedUser, new Claim(ClaimTypes.Role, "Moderator"));
+        }
+        catch (Exception)
+        {
+            // ignored
+        }
+                
+        await _signInManager.UserManager.AddClaimAsync(signedUser, new Claim("Id", signedUser.Id));
+        if (await _signInManager.UserManager.IsInRoleAsync(signedUser, "Admin"))
+        {
+                    
+            await _signInManager.UserManager.AddClaimAsync(signedUser, new Claim(ClaimTypes.Role, "Admin"));
+        }
+
+        else if (await _signInManager.UserManager.IsInRoleAsync(signedUser, "Moderator"))
+            await _signInManager.UserManager.AddClaimAsync(signedUser, new Claim(ClaimTypes.Role, "Moderator"));
+
+        else
+            await _userManager.AddClaimAsync(signedUser, new Claim(ClaimTypes.Role, "StandartUser"));
+
+        return new LoginResponseDto(LoginResponseStatus.Ok, await _jwtGenerator.GenerateJwtToken(signedUser.Id));
+
+    }
+    
+        public async Task<LoginResponseDto> Login(LoginRequestDto model)
+    {
+        /* -> bool rememberMe = false;
+        /*if (Request.Form.ContainsKey("RememberMe"))
+        {
+            bool.TryParse(Request.Form["RememberMe"], out rememberMe);
+        }#1#
+        model.RememberMe = rememberMe;*/
         
         var signedUser = await _signInManager.UserManager.FindByNameAsync(model.UserName);
         if (signedUser is null) return new LoginResponseDto(LoginResponseStatus.Fail);
@@ -158,9 +205,9 @@ public class AccountService : IAccountService
 
     }
 
-    public async Task<RegisterResponseDto> Register(RegisterRequestDto model, ModelStateDictionary modelState)
+    public async Task<RegisterResponseDto> Register(RegisterRequestDto model, ModelStateDictionary? modelState)
     {
-        if (!modelState.IsValid) return new RegisterResponseDto(RegisterResponseStatus.InvalidData);
+        if (modelState is not null && !modelState.IsValid) return new RegisterResponseDto(RegisterResponseStatus.InvalidData);
         var user = new User
         {
             LastName = model.LastName,
