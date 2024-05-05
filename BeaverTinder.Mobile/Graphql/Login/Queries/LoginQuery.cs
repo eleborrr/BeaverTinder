@@ -8,16 +8,18 @@ namespace BeaverTinder.Mobile.Graphql.Login.Queries;
 
 public class LoginQuery
 {
-    private readonly IServiceManager _manager;
+    private readonly IServiceScopeFactory _scopeFactory;
 
-    public LoginQuery(IServiceManager manager)
+    public LoginQuery(IServiceScopeFactory scopeFactory)
     {
-        _manager = manager;
+        _scopeFactory = scopeFactory;
     }
-
 
     public async Task<LoginResponseDto> Login(LoginRequestDto model)
     {
-        return await _manager.AccountService.Login(model);
+        using var scope = _scopeFactory.CreateScope();
+        var manager = scope.ServiceProvider.GetRequiredService<IServiceManager>();
+
+        return await manager.AccountService.Login(model);
     }
 }
