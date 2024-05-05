@@ -1,7 +1,10 @@
 ﻿using System.Security.Claims;
-using BeaverTinder.Mobile.Graphql.Login.Queries;
+using BeaverTinder.Mobile.Graphql.Shared;
 using BeaverTinder.Mobile.Helpers.Filters;
 using BeaverTinder.Mobile.Helpers.PolicyStrings;
+using HotChocolate;
+using HotChocolate.AspNetCore;
+using HotChocolate.AspNetCore.Authorization;
 
 namespace BeaverTinder.Mobile.ServicesExtensions.GraphQL;
 

@@ -1,32 +1,26 @@
-﻿using System.Security.Claims;
-using BeaverTinder.Application.Dto.Account;
-using BeaverTinder.Application.Services.Abstractions;
-using BeaverTinder.Domain.Entities;
-using BeaverTinder.Mobile.Errors;
+﻿using BeaverTinder.Application.Services.Abstractions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using BeaverTinder.Application.Dto.Account;
 using Microsoft.AspNetCore.Authorization;
+using BeaverTinder.Mobile.Errors;
+using System.Security.Claims;
 
-namespace BeaverTinder.Mobile.Graphql.Profile.Mutations;
+namespace BeaverTinder.Mobile.Graphql.Shared;
 
-[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-public class EditUserInfoMutation
+public partial class Mutations
 {
-    private readonly IServiceManager _serviceManager;
-
-    public EditUserInfoMutation(IServiceManager serviceManager)
-    {
-        _serviceManager = serviceManager;
-    }
-
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<EditUserResponseDto> EditAccount(EditUserRequestDto model, ClaimsPrincipal claimsPrincipal)
     {
+        using var scope = _scopeFactory.CreateScope();
+        var serviceManager = scope.ServiceProvider.GetRequiredService<IServiceManager>();
         var s = claimsPrincipal.FindFirstValue(ClaimTypes.NameIdentifier);
-        var user = await _serviceManager.UserManager.FindByIdAsync(s!);
+        var user = await serviceManager.UserManager.FindByIdAsync(s!);
 
         if (user is null)
             throw BeaverSearchError.WithMessage("User not found");
         
-        var b = await _serviceManager.AccountService.EditAccount(user, model);
+        var b = await serviceManager.AccountService.EditAccount(user, model);
         return b;
     }
 }
