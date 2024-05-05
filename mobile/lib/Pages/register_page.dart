@@ -19,6 +19,7 @@ class RegisterPage extends StatelessWidget {
   final genderController = TextEditingController();
   final aboutController = TextEditingController();
   final geolocationController = TextEditingController();
+  var selectedGender = "Male";
 
   final HttpLink httpLink = HttpLink(
     'http://192.168.0.111:5292/graphql/', // Замените на URL вашего GraphQL сервера
@@ -32,9 +33,7 @@ class RegisterPage extends StatelessWidget {
     final String birthdate = birthdateController.text;
     final String password = passwordController.text;
     final String cPassword = cPasswordController.text;
-    final String gender = genderController.text;
     final String about = aboutController.text;
-    final String geolocation = geolocationController.text;
 
     final ValueNotifier<GraphQLClient> clientNotifier = ValueNotifier(
       GraphQLClient(
@@ -54,7 +53,7 @@ class RegisterPage extends StatelessWidget {
           dateOfBirth: "$birthdate",
           password: "$password",
           confirmPassword: "$cPassword",
-          gender: "$gender",
+          gender: "$selectedGender",
           about: "$about",
           latitude: 0,
           longitude: 0
@@ -160,11 +159,22 @@ class RegisterPage extends StatelessWidget {
                   ),
 
                   const SizedBox(height: 10.0),
-
-                  BeaverTextField(
-                      controller: genderController,
-                      hintText: "Gender Man / Woman",
-                      obscureText: false
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        GestureDetector(
+                          onTap: () {
+                            selectedGender = "Male";
+                          },
+                          child: Image.asset("lib/images/male.png", width: 100, height: 100,),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            selectedGender = "Woman";
+                          },
+                          child: Image.asset("lib/images/woman.png", width: 100, height: 100,),
+                        ),
+                      ]
                   ),
 
                   const SizedBox(height: 10.0),
@@ -177,13 +187,7 @@ class RegisterPage extends StatelessWidget {
 
                   const SizedBox(height: 10.0),
 
-                  BeaverTextField(
-                      controller: geolocationController,
-                      hintText: "Geolocation",
-                      obscureText: false
-                  ),
-
-                  const SizedBox(height: 10.0),
+                  DatePicker
 
                   BeaverButton(
                     buttonText: "Sign Up",
