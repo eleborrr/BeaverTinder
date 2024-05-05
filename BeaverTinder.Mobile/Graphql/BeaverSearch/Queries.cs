@@ -9,7 +9,7 @@ using HotChocolate.Authorization;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 
-namespace BeaverTinder.Mobile.Graphql.Queries;
+namespace BeaverTinder.Mobile.Graphql.Shared;
 
 public partial class Queries
 {

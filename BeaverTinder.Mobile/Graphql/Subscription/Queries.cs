@@ -2,7 +2,7 @@
 using BeaverTinder.Shared.Dto.Subscription;
 using MediatR;
 
-namespace BeaverTinder.Mobile.Graphql.Queries;
+namespace BeaverTinder.Mobile.Graphql.Shared;
 
 public partial class Queries
 {

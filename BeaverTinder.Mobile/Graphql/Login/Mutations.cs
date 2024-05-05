@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace BeaverTinder.Mobile.Graphql.Mutations;
+namespace BeaverTinder.Mobile.Graphql.Shared;
 
 public partial class Mutations
 {

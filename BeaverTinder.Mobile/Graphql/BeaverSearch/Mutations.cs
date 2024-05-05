@@ -8,7 +8,7 @@ using HotChocolate.Authorization;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 
-namespace BeaverTinder.Mobile.Graphql.Mutations;
+namespace BeaverTinder.Mobile.Graphql.Shared;
 
 public partial class Mutations
 {
