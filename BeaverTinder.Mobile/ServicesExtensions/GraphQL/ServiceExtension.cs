@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
-using BeaverTinder.Mobile.Helpers;
+using BeaverTinder.Mobile.Graphql.Shared;
 using BeaverTinder.Mobile.Helpers.Filters;
+using BeaverTinder.Mobile.Helpers.PolicyStrings;
 using HotChocolate;
 using HotChocolate.AspNetCore;
 using HotChocolate.AspNetCore.Authorization;
@@ -14,6 +15,8 @@ public static class ServicesCollectionExtension
     {
         services
             .AddGraphQLServer()
+            .AddMutationType<Mutations>()
+            .AddQueryType<Queries>()
             .AddErrorFilter(provider =>
             {
                 return new ServerErrorFilter(
@@ -22,25 +25,22 @@ public static class ServicesCollectionExtension
             })
             .AddAuthorization(options => 
             {
-                options.AddPolicy("OnlyMapSubs", policy =>
+                options.AddPolicy(PolicyStaticStrings.MapSubs, policy =>
                 {
                     policy.RequireClaim(ClaimTypes.Role, "UserMoreLikesAndMap", "Moderator", "Admin");
                 });
-                options.AddPolicy("OnlyLikeSubs", policy =>
+                options.AddPolicy(PolicyStaticStrings.LikeSubs, policy =>
                 {
                     policy.RequireClaim(ClaimTypes.Role, "UserMoreLikes", "Moderator", "Admin");
                 });
-                options.AddPolicy("OnlyForAdmins", policy => {
+                options.AddPolicy(PolicyStaticStrings.ForAdmins, policy => {
                     policy.RequireClaim(ClaimTypes.Role, "Admin");
                 });
-                options.AddPolicy("OnlyForModerators", policy => {
+                options.AddPolicy(PolicyStaticStrings.ForModerators, policy => {
                     policy.RequireClaim(ClaimTypes.Role, "Moderator", "Admin");
      
                 });
             })
-
-            // .AddQueryType<TeacherQuery>()
-            // .AddMutationType<TeacherMutation>()
             // .AddSubscriptionType<TeacherSubscription>();
             ;
         return services;

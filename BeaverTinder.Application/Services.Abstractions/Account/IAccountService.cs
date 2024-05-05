@@ -11,10 +11,10 @@ public interface IAccountService
 {
     public Task SendConfirmationEmailAsync(string userId);
     public Task<IdentityResult> ConfirmEmailAsync(string? userEmail, string? token);
-    public Task<LoginResponseDto> Login(LoginRequestDto model, ModelStateDictionary modelState);
+    public Task<LoginResponseDto> Login(LoginRequestDto model, ModelStateDictionary? modelState = default);
 
-    public Task<RegisterResponseDto> Register(RegisterRequestDto model, ModelStateDictionary modelState);
+    public Task<RegisterResponseDto> Register(RegisterRequestDto model, ModelStateDictionary? modelState = default);
     public Task<IdentityResult> ResetPasswordAsync(string userId, string token, string newPassword);
-    public Task<EditUserResponseDto> EditAccount(User currentUser, EditUserRequestDto model, ModelStateDictionary modelState);
+    public Task<EditUserResponseDto> EditAccount(User currentUser, EditUserRequestDto model, ModelStateDictionary? modelState = default);
     public Task<IEnumerable<User>> GetAllMappedUsers();
 }

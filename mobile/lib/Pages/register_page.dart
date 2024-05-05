@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 
 import '../Components/shared/beaver_button.dart';
 import '../Components/shared/beaver_drawer.dart';
@@ -19,9 +20,65 @@ class RegisterPage extends StatelessWidget {
   final aboutController = TextEditingController();
   final geolocationController = TextEditingController();
 
-  registerUser(BuildContext context) {
+  final HttpLink httpLink = HttpLink(
+    'YOUR_GRAPHQL_ENDPOINT', // Замените на URL вашего GraphQL сервера
+  );
 
+  void registerUser(BuildContext context) async {
+    final String lastname = lastnameController.text;
+    final String firstname = firstnameController.text;
+    final String username = usernameController.text;
+    final String email = emailController.text;
+    final String birthdate = birthdateController.text;
+    final String password = passwordController.text;
+    final String cPassword = cPasswordController.text;
+    final String gender = genderController.text;
+    final String about = aboutController.text;
+    final String geolocation = geolocationController.text;
+
+    final ValueNotifier<GraphQLClient> clientNotifier = ValueNotifier(
+      GraphQLClient(
+        link: httpLink,
+        cache: GraphQLCache(),
+      ),
+    );
+
+    final MutationOptions options = MutationOptions(
+      document: gql('''
+      mutation Register(\$input: RegisterInput!) {
+        register(input: \$input) {
+          // Поля, которые вам нужны из ответа сервера
+        }
+      }
+    '''),
+      variables: {
+        'input': {
+          'lastname': lastname,
+          'firstname': firstname,
+          'username': username,
+          'email': email,
+          'birthdate': birthdate,
+          'password': password,
+          'cPassword': cPassword,
+          'gender': gender,
+          'about': about,
+          'geolocation': geolocation,
+        },
+      },
+    );
+
+    final QueryResult result = await clientNotifier.value.mutate(options);
+
+    // Обработка ответа от сервера
+    if (result.hasException) {
+      // Обработка ошибки
+    } else {
+      // Обработка успешного ответа
+      // Например, перенаправление на другой экран
+      Navigator.pushNamed(context, '/home');
+    }
   }
+
 
   goToSignIn(BuildContext context) {
     Navigator.pushNamed(
