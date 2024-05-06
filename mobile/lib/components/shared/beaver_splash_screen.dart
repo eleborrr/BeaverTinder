@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../navigation/navigation_routes.dart';
 import 'beaver_auth_provider.dart';
 
 class BeaverSplashScreen extends StatefulWidget {
@@ -24,9 +25,13 @@ class _BeaverSplashScreenState extends State<BeaverSplashScreen> {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     final token = authProvider.jwtToken;
     if (token != null) {
-      Navigator.pushReplacementNamed(context, '/home');
+      Navigator.of(context)
+        ..pop()
+        ..pushNamed(NavigationRoutes.home);
     } else {
-      Navigator.pushReplacementNamed(context, '/login');
+      Navigator.of(context)
+        ..pop()
+        ..pushNamed(NavigationRoutes.login);
     }
   }
 
