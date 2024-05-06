@@ -44,6 +44,7 @@ public class GetUsersActiveSubscriptionHandler:
         {
             return new Result<UserSubscriptionDto>(new UserSubscriptionDto
             {
+                Id = 3,
                 Name = "User",
                 Expires = _defaultDateTime
             }, true);
@@ -54,6 +55,7 @@ public class GetUsersActiveSubscriptionHandler:
         {
             return new Result<UserSubscriptionDto>(new UserSubscriptionDto
             {
+                Id = 0,
                 Name = "Admin",
                 Expires = _defaultDateTime
             }, true);
@@ -62,6 +64,7 @@ public class GetUsersActiveSubscriptionHandler:
         {
             return new Result<UserSubscriptionDto>(new UserSubscriptionDto
             {
+                Id = 1,
                 Name = "Moderator",
                 Expires = _defaultDateTime
             }, true);
@@ -70,6 +73,7 @@ public class GetUsersActiveSubscriptionHandler:
         var sub = userSubs.Subscriptions.First();
         return new Result<UserSubscriptionDto>(new UserSubscriptionDto
         {
+            Id = sub.Id,
             Name = sub.Name,
             Expires = sub.Expires.ToDateTime(),
         }, true);

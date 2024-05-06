@@ -22,6 +22,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddMvc();
 builder.Services.AddGraphQL(builder.Configuration, builder.Environment);
+builder.Services.AddCustomAuth(builder.Configuration);
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
@@ -50,30 +51,43 @@ builder.Services.AddMediatR(configuration =>
     configuration.RegisterServicesFromAssembly(typeof(Program).Assembly);
 });
 
-builder.Services.AddCustomAuth(builder.Configuration);
-
-builder.Services.AddMasstransitRabbitMq(builder.Configuration);
-
-
 builder.Services.AddCustomSwaggerGenerator();
 const string testSpesific = "testSpesific";
 
 builder.Services.AddCustomCors(testSpesific);
 
-var app = builder.Build();
-
-if (app.Environment.IsDevelopment())
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+ options.UseSqlServer(builder.Configuration.GetConnectionString("BeaverTinderDatabase"));
+ options.EnableSensitiveDataLogging();
+});
+builder.Services.Configure<DataProtectionTokenProviderOptions>(
+ o => o.TokenLifespan = TimeSpan.FromHours(24));
+
+
+builder.Services.ConfigureGrpc(builder.Configuration);
+
+builder.Services.AddCustomServices(builder.Configuration);
+
+builder.Services.AddMediatR(configuration =>
+{
+    configuration.RegisterServicesFromAssembly(AplicationAssemblyReference.Assembly);
+    configuration.RegisterServicesFromAssembly(typeof(Program).Assembly);
+});
+
+builder.Services.AddMasstransitRabbitMq(builder.Configuration);
+
+
+builder.Services.AddCustomSwaggerGenerator();
+
+
+var app = builder.Build();
 
 app.UseCors(testSpesific);
 
 app.UseHttpsRedirection();
 
 app.UseAuthentication(); 
-app.UseAuthorization();
 
 app.MapControllers();
 

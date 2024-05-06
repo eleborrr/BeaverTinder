@@ -14,7 +14,8 @@
         <PackageReference Include="HotChocolate.AspNetCore.Authorization" Version="13.9.0" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.4" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.4" />
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.4" />
     </ItemGroup>
 
     <ItemGroup>
@@ -28,9 +29,6 @@
       <ProjectReference Include="..\BeaverTinder.Application\BeaverTinder.Application.csproj" />
       <ProjectReference Include="..\BeaverTinder.Infrastructure\BeaverTinder.Infrastructure.csproj" />
       <ProjectReference Include="..\BeaverTinder.Subscription.Core\BeaverTinder.Subscription.Core.csproj" />
-
-
-
     </ItemGroup>
 
 

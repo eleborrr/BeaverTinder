@@ -251,9 +251,9 @@ public class AccountService : IAccountService
     public async Task<EditUserResponseDto> EditAccount(
         User currentUser,
         EditUserRequestDto model,
-        ModelStateDictionary modelState)
+        ModelStateDictionary? modelState)
     {
-        if (!modelState.IsValid) return new EditUserResponseDto(EditUserResponseStatus.InvalidData);
+        if (modelState is not null && !modelState.IsValid) return new EditUserResponseDto(EditUserResponseStatus.InvalidData);
         
         var passwordHash = model.Password == "" 
             ? currentUser.PasswordHash 
