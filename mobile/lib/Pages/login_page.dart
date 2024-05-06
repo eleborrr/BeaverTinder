@@ -3,6 +3,9 @@ import 'package:mobile/Components/shared/beaver_button.dart';
 import 'package:mobile/Components/shared/beaver_textfield.dart';
 import 'package:provider/provider.dart';
 
+import '../Components/server/UseCase.dart';
+import '../Components/server/auth_service.dart';
+import '../Components/server/dto/login/login_request_dto.dart';
 import '../Components/shared/beaver_auth_provider.dart';
 
 class LoginPage extends StatelessWidget {
@@ -15,8 +18,18 @@ class LoginPage extends StatelessWidget {
   final passwordController = TextEditingController();
 
   // sign user in method
-  signUserIn(BuildContext context) {
+  signUserIn(BuildContext context) async {
     var authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final String userName = usernameController.text;
+    final String password = passwordController.text;
+
+    final UseCase useCase = UseCase(dataService: AuthService());
+
+    final loginResponse = await useCase.dataService.login(LoginRequestDto(
+        userName,
+        password,
+        true));
+    
     authProvider.setJwtToken("Bearer Not implemented");
 
     Navigator.pushReplacementNamed(
