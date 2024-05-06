@@ -55,7 +55,7 @@ class RegisterPage extends StatelessWidget {
 
 
   goToSignIn(BuildContext context) {
-    Navigator.pushNamed(
+    Navigator.pushReplacementNamed(
         context, '/login'
     );
   }

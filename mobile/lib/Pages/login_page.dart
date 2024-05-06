@@ -29,7 +29,7 @@ class LoginPage extends StatelessWidget {
         userName,
         password,
         true));
-    
+
     authProvider.setJwtToken("Bearer Not implemented");
 
     Navigator.pushReplacementNamed(
@@ -38,7 +38,7 @@ class LoginPage extends StatelessWidget {
   }
 
    goToSignUp(BuildContext context) {
-    Navigator.pushNamed(
+    Navigator.pushReplacementNamed(
       context, '/register'
     );
   }
