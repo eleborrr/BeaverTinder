@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:mobile/Components/server/data_service.dart';
+import 'package:mobile/Components/server/auth_service.dart';
 import 'package:mobile/Components/server/dto/register/register_request_dto.dart';
 
 import '../Components/server/UseCase.dart';
@@ -36,7 +36,7 @@ class RegisterPage extends StatelessWidget {
     final double latitude = 0;
     final double longitude = 0;
 
-    final UseCase useCase = UseCase(dataService: DataService());
+    final UseCase useCase = UseCase(dataService: AuthService());
 
     final registerResponse = await useCase.dataService.register(RegisterRequestDto(
         lastname,

@@ -1,10 +1,10 @@
 import 'package:mobile/Components/server/dto/register/register_response_dto.dart';
 
-import 'data_service.dart';
+import 'auth_service.dart';
 import 'dto/register/register_request_dto.dart';
 
 class UseCase {
-  final DataService dataService;
+  final AuthService dataService;
 
   UseCase({required this.dataService});
 

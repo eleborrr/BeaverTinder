@@ -7,7 +7,7 @@ import 'package:mobile/Components/server/dto/login/login_response_dto.dart';
 import 'package:mobile/Components/server/dto/register/register_response_dto.dart';
 import 'package:mobile/Components/server/dto/register/register_request_dto.dart';
 
-class DataService {
+class AuthService {
   final HttpLink httpLink = HttpLink(
     'http://192.168.31.179:5292/graphql/', // Замените на URL вашего GraphQL сервера
   );
