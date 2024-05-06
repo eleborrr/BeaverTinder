@@ -2,7 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:mobile/Components/server/data_service.dart';
+import 'package:mobile/Components/server/dto/register/register_request_dto.dart';
 
+import '../Components/server/UseCase.dart';
 import '../Components/shared/beaver_button.dart';
 import '../Components/shared/beaver_drawer.dart';
 import '../Components/shared/beaver_textfield.dart';
@@ -30,8 +33,23 @@ class RegisterPage extends StatelessWidget {
     final String password = passwordController.text;
     final String cPassword = cPasswordController.text;
     final String about = aboutController.text;
+    final double latitude = 0;
+    final double longitude = 0;
 
+    final UseCase useCase = UseCase(dataService: DataService());
 
+    final registerResponse = await useCase.dataService.register(RegisterRequestDto(
+        lastname,
+        firstname,
+        username,
+        email,
+        password,
+        cPassword,
+        birthdate,
+        latitude,
+        longitude,
+        selectedGender,
+        about));
   }
 
 

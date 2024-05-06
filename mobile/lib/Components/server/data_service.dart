@@ -9,8 +9,9 @@ import 'package:mobile/Components/server/dto/register/register_request_dto.dart'
 
 class DataService {
   final HttpLink httpLink = HttpLink(
-    'http://192.168.56.1:5292/graphql/', // Замените на URL вашего GraphQL сервера
+    'http://192.168.31.179:5292/graphql/', // Замените на URL вашего GraphQL сервера
   );
+
 
   Future<LoginResponseDto> login(LoginRequestDto loginRequestDto) async {
     final ValueNotifier<GraphQLClient> clientNotifier = ValueNotifier(
