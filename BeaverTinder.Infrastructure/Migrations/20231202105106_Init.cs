@@ -118,22 +118,6 @@ namespace BeaverTinder.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Payments",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    SubsId = table.Column<int>(type: "int", nullable: false),
-                    Amount = table.Column<double>(type: "float", nullable: false),
-                    PaymentDate = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Payments", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Rooms",
                 columns: table => new
                 {
@@ -146,24 +130,7 @@ namespace BeaverTinder.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_Rooms", x => x.Id);
                 });
-
-            migrationBuilder.CreateTable(
-                name: "Subscriptions",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    RoleId = table.Column<int>(type: "int", nullable: false),
-                    RoleName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PricePerMonth = table.Column<double>(type: "float", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Subscriptions", x => x.Id);
-                });
-
+            
             migrationBuilder.CreateTable(
                 name: "SupportRooms",
                 columns: table => new
@@ -177,21 +144,7 @@ namespace BeaverTinder.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_SupportRooms", x => x.Id);
                 });
-
-            migrationBuilder.CreateTable(
-                name: "UserSubscriptions",
-                columns: table => new
-                {
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    SubsId = table.Column<int>(type: "int", nullable: false),
-                    Expires = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Active = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UserSubscriptions", x => new { x.UserId, x.SubsId });
-                });
-
+            
             migrationBuilder.CreateTable(
                 name: "UserToVks",
                 columns: table => new
@@ -371,15 +324,7 @@ namespace BeaverTinder.Infrastructure.Migrations
                 table: "AspNetUsers",
                 columns: new[] { "Id", "About", "AccessFailedCount", "ConcurrencyStamp", "DateOfBirth", "Email", "EmailConfirmed", "FirstName", "Gender", "Image", "IsBlocked", "IsSearching", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[] { "1", null, 0, "e6e69310-56db-49e1-9968-b095e0863baa", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, true, "Gleb", "Male", null, false, false, "Bober", false, null, null, "ADMIN", null, "dcc5b967-6f54-4c8b-aa25-fbd790f55476", false, "Admin" });
-
-            migrationBuilder.InsertData(
-                table: "Subscriptions",
-                columns: new[] { "Id", "Description", "Name", "PricePerMonth", "RoleId", "RoleName" },
-                values: new object[,]
-                {
-                    { 1, "Increase your allowed likes count to 40!", "More likes", 300.0, 4, "UserMoreLikes" },
-                    { 2, "Increase your allowed likes count to 50 and get the opportunity to see another beaver on the map!", "More likes and map", 500.0, 5, "UserMoreLikesAndMap" }
-                });
+            
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -465,16 +410,7 @@ namespace BeaverTinder.Infrastructure.Migrations
                 name: "Messages");
 
             migrationBuilder.DropTable(
-                name: "Payments");
-
-            migrationBuilder.DropTable(
-                name: "Subscriptions");
-
-            migrationBuilder.DropTable(
                 name: "SupportChatMessages");
-
-            migrationBuilder.DropTable(
-                name: "UserSubscriptions");
 
             migrationBuilder.DropTable(
                 name: "UserToVks");
