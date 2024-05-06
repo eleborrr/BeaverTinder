@@ -2,7 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:mobile/Components/server/data_service.dart';
+import 'package:mobile/Components/server/dto/register/register_request_dto.dart';
 
+import '../Components/server/UseCase.dart';
 import '../Components/shared/beaver_button.dart';
 import '../Components/shared/beaver_drawer.dart';
 import '../Components/shared/beaver_textfield.dart';
@@ -19,10 +22,7 @@ class RegisterPage extends StatelessWidget {
   final genderController = TextEditingController();
   final aboutController = TextEditingController();
   final geolocationController = TextEditingController();
-
-  final HttpLink httpLink = HttpLink(
-    'YOUR_GRAPHQL_ENDPOINT', // Замените на URL вашего GraphQL сервера
-  );
+  var selectedGender = "Male";
 
   void registerUser(BuildContext context) async {
     final String lastname = lastnameController.text;
@@ -32,52 +32,26 @@ class RegisterPage extends StatelessWidget {
     final String birthdate = birthdateController.text;
     final String password = passwordController.text;
     final String cPassword = cPasswordController.text;
-    final String gender = genderController.text;
     final String about = aboutController.text;
-    final String geolocation = geolocationController.text;
+    final double latitude = 0;
+    final double longitude = 0;
 
-    final ValueNotifier<GraphQLClient> clientNotifier = ValueNotifier(
-      GraphQLClient(
-        link: httpLink,
-        cache: GraphQLCache(),
-      ),
-    );
+    final UseCase useCase = UseCase(dataService: DataService());
 
-    final MutationOptions options = MutationOptions(
-      document: gql('''
-      mutation Register(\$input: RegisterInput!) {
-        register(input: \$input) {
-          // Поля, которые вам нужны из ответа сервера
-        }
-      }
-    '''),
-      variables: {
-        'input': {
-          'lastname': lastname,
-          'firstname': firstname,
-          'username': username,
-          'email': email,
-          'birthdate': birthdate,
-          'password': password,
-          'cPassword': cPassword,
-          'gender': gender,
-          'about': about,
-          'geolocation': geolocation,
-        },
-      },
-    );
-
-    final QueryResult result = await clientNotifier.value.mutate(options);
-
-    // Обработка ответа от сервера
-    if (result.hasException) {
-      // Обработка ошибки
-    } else {
-      // Обработка успешного ответа
-      // Например, перенаправление на другой экран
-      Navigator.pushNamed(context, '/home');
-    }
+    final registerResponse = await useCase.dataService.register(RegisterRequestDto(
+        lastname,
+        firstname,
+        username,
+        email,
+        password,
+        cPassword,
+        birthdate,
+        latitude,
+        longitude,
+        selectedGender,
+        about));
   }
+
 
 
   goToSignIn(BuildContext context) {
@@ -159,11 +133,22 @@ class RegisterPage extends StatelessWidget {
                   ),
 
                   const SizedBox(height: 10.0),
-
-                  BeaverTextField(
-                      controller: genderController,
-                      hintText: "Gender Man / Woman",
-                      obscureText: false
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        GestureDetector(
+                          onTap: () {
+                            selectedGender = "Male";
+                          },
+                          child: Image.asset("lib/images/male.png", width: 100, height: 100,),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            selectedGender = "Woman";
+                          },
+                          child: Image.asset("lib/images/woman.png", width: 100, height: 100,),
+                        ),
+                      ]
                   ),
 
                   const SizedBox(height: 10.0),
@@ -176,13 +161,6 @@ class RegisterPage extends StatelessWidget {
 
                   const SizedBox(height: 10.0),
 
-                  BeaverTextField(
-                      controller: geolocationController,
-                      hintText: "Geolocation",
-                      obscureText: false
-                  ),
-
-                  const SizedBox(height: 10.0),
 
                   BeaverButton(
                     buttonText: "Sign Up",
