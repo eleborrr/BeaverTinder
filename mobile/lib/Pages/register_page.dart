@@ -21,10 +21,6 @@ class RegisterPage extends StatelessWidget {
   final geolocationController = TextEditingController();
   var selectedGender = "Male";
 
-  final HttpLink httpLink = HttpLink(
-    'http://192.168.0.111:5292/graphql/', // Замените на URL вашего GraphQL сервера
-  );
-
   void registerUser(BuildContext context) async {
     final String lastname = lastnameController.text;
     final String firstname = firstnameController.text;
@@ -35,47 +31,7 @@ class RegisterPage extends StatelessWidget {
     final String cPassword = cPasswordController.text;
     final String about = aboutController.text;
 
-    final ValueNotifier<GraphQLClient> clientNotifier = ValueNotifier(
-      GraphQLClient(
-        link: httpLink,
-        cache: GraphQLCache(),
-      ),
-    );
 
-    final MutationOptions options = MutationOptions(
-      document: gql('''
-      mutation {
-        register(model: {
-          lastName: "$lastname",
-          firstName: "$firstname",
-          userName: "$username",
-          email: "$email",
-          dateOfBirth: "$birthdate",
-          password: "$password",
-          confirmPassword: "$cPassword",
-          gender: "$selectedGender",
-          about: "$about",
-          latitude: 0,
-          longitude: 0
-        }) {
-          successful
-          message
-          statusCode
-        }
-      }
-    '''),
-    );
-
-    final QueryResult result = await clientNotifier.value.mutate(options);
-
-    // Обработка ответа от сервера
-    if (result.hasException) {
-      // Обработка ошибки
-    } else {
-      // Обработка успешного ответа
-      // Например, перенаправление на другой экран
-      Navigator.pushNamed(context, '/login');
-    }
   }
 
 
@@ -187,7 +143,6 @@ class RegisterPage extends StatelessWidget {
 
                   const SizedBox(height: 10.0),
 
-                  DatePicker
 
                   BeaverButton(
                     buttonText: "Sign Up",
