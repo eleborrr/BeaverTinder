@@ -1,16 +1,14 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mobile/Pages/home_page.dart';
-import 'package:mobile/Pages/profile_page.dart';
-import 'package:mobile/Pages/register_page.dart';
-import 'package:mobile/block/block.dart';
-import 'package:mobile/components/shared/beaver_auth_provider.dart';
-import 'package:mobile/pages/chat_for_two.dart';
-import 'package:mobile/pages/chats_page.dart';
-import 'package:mobile/pages/like_page.dart';
-import 'package:mobile/pages/login_page.dart';
 import 'package:mobile/pages/subscription_page.dart';
-import 'package:provider/provider.dart';
+import 'package:mobile/Pages/register_page.dart';
+import 'package:mobile/Pages/profile_page.dart';
+import 'package:mobile/pages/chat_for_two.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobile/pages/login_page.dart';
+import 'package:mobile/pages/chats_page.dart';
+import 'package:mobile/Pages/home_page.dart';
+import 'package:mobile/pages/like_page.dart';
+import 'package:mobile/block/block.dart';
+import 'package:flutter/material.dart';
 import 'navigation_routes.dart';
 
 MaterialPageRoute? buildRoutes(RouteSettings settings) {
@@ -18,28 +16,19 @@ MaterialPageRoute? buildRoutes(RouteSettings settings) {
   return MaterialPageRoute(builder: (context) {
     final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
     final chatId = args == null ? "" : args['id'];
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
     return switch (settings.name) {
-      NavigationRoutes.home => ChangeNotifierProvider(
-        create: (_) => authProvider,
-          child: const HomePage()),
+      NavigationRoutes.home =>  const HomePage(),
       NavigationRoutes.register => BlocProvider(
           create: (_) => LoadingBloc(),
           child: RegisterPage()
       ),
-      NavigationRoutes.login => ChangeNotifierProvider(
-        create: (_) => authProvider,
-        child: BlocProvider(
+      NavigationRoutes.login => BlocProvider(
             create: (_) => LoadingBloc(),
             child: LoginPage()
-        ),
       ),
-      NavigationRoutes.like => ChangeNotifierProvider(
-        create: (_) => authProvider,
-        child: BlocProvider(
+      NavigationRoutes.like => BlocProvider(
             create: (_) => LoadingBloc(),
             child: LikePage()
-        ),
       ),
       NavigationRoutes.chats => BlocProvider(
           create: (_) => LoadingBloc(),

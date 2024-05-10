@@ -1,11 +1,11 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:mobile/Components/shared/beaver_scaffold.dart';
-import 'package:provider/provider.dart';
-import '../Components/shared/beaver_auth_provider.dart';
-import '../Components/shared/beaver_button.dart';
-import '../Components/shared/beaver_textfield.dart';
+import 'package:mobile/components/shared/beaver_scaffold.dart';
+import 'package:mobile/main.dart';
+import 'package:mobile/services/account_service.dart';
+import '../components/shared/beaver_auth_provider.dart';
+import '../components/shared/beaver_button.dart';
+import '../components/shared/beaver_textfield.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -17,6 +17,7 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   late String token;
   late bool changing;
+  final AccountServiceBase _accountService = getit<AccountServiceBase>();
 
   final lastnameController = TextEditingController();
   final firstnameController = TextEditingController();
@@ -32,7 +33,7 @@ class _ProfilePageState extends State<ProfilePage> {
   void initState() {
 
     super.initState();
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final authProvider = getit<AuthProvider>();
     token = authProvider.jwtToken!;
     changing = false;
     fetchUserData();

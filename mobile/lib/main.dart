@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+//import 'package:flutter/cupertino.dart';
 import 'package:mobile/components/shared/beaver_auth_provider.dart';
 import 'package:mobile/components/shared/beaver_splash_screen.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -12,24 +12,25 @@ final getit = GetIt.instance;
 final authProvider = AuthProvider();
 
 void setup() {
-  getit.registerSingleton<GraphQLClient>(
-      GraphQLClient(
-          link: AuthLink(getToken: () => 'Bearer token').concat(HttpLink('http://192.168.31.9:5292/graphql/')),
-          cache: GraphQLCache()
-      )
-  );
+  getit.registerSingleton<GraphQLClient>(GraphQLClient(
+      link: AuthLink(getToken: () => 'Bearer token')
+          .concat(HttpLink('http://192.168.31.9:5292/graphql/')),
+      cache: GraphQLCache()));
   getit.registerSingleton<AccountServiceBase>(AccountService());
+  getit.registerSingleton<AuthProvider>(AuthProvider());
 }
 
 void main() {
   setup();
-  runApp( ChangeNotifierProvider(
+  runApp(
+    ChangeNotifierProvider(
       create: (_) => authProvider,
-    child: MaterialApp(
-      onGenerateRoute: buildRoutes,
-      home: BeaverSplashScreen(),
+      child: MaterialApp(
+        onGenerateRoute: buildRoutes,
+        home: BeaverSplashScreen(),
+      ),
     ),
-  ));
+  );
   //runApp(const MyApp());
 }
 
