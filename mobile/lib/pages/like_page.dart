@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/Components/shared/beaver_scaffold.dart';
-import '../Components/like/beaver_card.dart';
-import '../Components/shared/beaver_drawer.dart';
+import 'package:mobile/main.dart';
+import '../components/like/beaver_card.dart';
+import '../components/shared/beaver_auth_provider.dart';
 
 class LikePage extends StatefulWidget {
-  const LikePage({super.key});
+
+  LikePage({super.key});
 
   @override
   _LikePageState createState() => _LikePageState();
@@ -62,8 +64,10 @@ class _LikePageState extends State<LikePage> {
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = getit<AuthProvider>();
+    final token = authProvider.jwtToken;
     return BeaverScaffold(
-      title: "Like Page",
+      title: token!,
       body: cards.isEmpty
           ? Center(
         child: CircularProgressIndicator(),

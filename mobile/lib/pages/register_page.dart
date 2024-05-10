@@ -7,7 +7,6 @@ import 'package:mobile/Components/server/dto/register/register_request_dto.dart'
 
 import '../Components/server/UseCase.dart';
 import '../Components/shared/beaver_button.dart';
-import '../Components/shared/beaver_drawer.dart';
 import '../Components/shared/beaver_textfield.dart';
 
 class RegisterPage extends StatelessWidget {

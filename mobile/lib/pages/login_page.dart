@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/Components/shared/beaver_button.dart';
-import 'package:mobile/Components/shared/beaver_textfield.dart';
-import 'package:provider/provider.dart';
+import 'package:mobile/components/shared/beaver_button.dart';
+import 'package:mobile/components/shared/beaver_textfield.dart';
+import 'package:mobile/main.dart';
+import '../components/shared/beaver_auth_provider.dart';
 
-import '../Components/server/UseCase.dart';
-import '../Components/server/auth_service.dart';
-import '../Components/server/dto/login/login_request_dto.dart';
-import '../Components/shared/beaver_auth_provider.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage({
@@ -19,7 +16,7 @@ class LoginPage extends StatelessWidget {
 
   // sign user in method
   signUserIn(BuildContext context) async {
-    var authProvider = Provider.of<AuthProvider>(context, listen: false);
+    var authProvider = getit<AuthProvider>();
     final String userName = usernameController.text;
     final String password = passwordController.text;
 
