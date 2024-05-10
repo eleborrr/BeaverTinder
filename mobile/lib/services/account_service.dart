@@ -44,7 +44,7 @@ class AccountService implements AccountServiceBase {
 
     return result.hasException
         ? const Result.fromFailure("Не удалось загрузить контент")
-        : Result.fromSuccess(User.fromJson(result.data));
+        : Result.fromSuccess(User.fromJson(result.data!["accountInformation"]));
   }
 
   @override

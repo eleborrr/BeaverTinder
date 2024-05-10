@@ -41,6 +41,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Future<void> fetchUserData() async {
+    var resp = await _accountService.getUserInfoAsync("5385e503-b6dc-4f99-8922-8de0b119307f");
     // Мокирование данных пользователя
     const response = '''
     {
@@ -56,15 +57,15 @@ class _ProfilePageState extends State<ProfilePage> {
       "gender": "Male"
     }
   ''';
-
+  print(resp.success);
     final Map<String, dynamic> userData = jsonDecode(response);
     setState(() {
-      usernameController.text = userData['userName'];
-      firstnameController.text = userData['firstName'];
-      lastnameController.text = userData['lastName'];
-      aboutController.text = userData['about'];
-      genderController.text = userData['gender'];
-      geolocationController.text = "${userData['latitude']}  ${userData['longitude']}";
+      usernameController.text = resp.success!.userName;//userData['userName'];
+      firstnameController.text = resp.success!.firstName;//userData['firstName'];
+      lastnameController.text = resp.success!.lastName;//userData['lastName'];
+      aboutController.text = resp.success!.about;//userData['about'];
+      genderController.text = resp.success!.gender;//userData['gender'];
+      geolocationController.text = "${resp.success!.latitude} ${resp.success!.longitude}";//"${userData['latitude']}  ${userData['longitude']}";
     });
   }
 

@@ -7,10 +7,10 @@ class User {
   final String image;
   final String about;
   final String gender;
-  final double latitude;
-  final double longitude;
+  final dynamic latitude;
+  final dynamic longitude;
   final String subName;
-  final DateTime subExpiresDateTime;
+  final String subExpiresDateTime;
 
   User({required this.firstName,
     required this.lastName,
