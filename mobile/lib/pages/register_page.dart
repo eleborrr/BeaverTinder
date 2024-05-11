@@ -1,15 +1,13 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:mobile/Components/server/auth_service.dart';
-import 'package:mobile/Components/server/dto/register/register_request_dto.dart';
+import 'package:mobile/dto/register/register_request_dto.dart';
+import 'package:mobile/main.dart';
+import 'package:mobile/services/auth_service.dart';
 
-import '../Components/server/UseCase.dart';
 import '../Components/shared/beaver_button.dart';
 import '../Components/shared/beaver_textfield.dart';
 
 class RegisterPage extends StatelessWidget {
+  final AuthServiceBase _authService = getit<AuthServiceBase>();
 
   final lastnameController = TextEditingController();
   final firstnameController = TextEditingController();
@@ -35,9 +33,7 @@ class RegisterPage extends StatelessWidget {
     final double latitude = 0;
     final double longitude = 0;
 
-    final UseCase useCase = UseCase(dataService: AuthService());
-
-    final registerResponse = await useCase.dataService.register(RegisterRequestDto(
+    final registerDto = RegisterRequestDto(
         lastname,
         firstname,
         username,
@@ -48,7 +44,19 @@ class RegisterPage extends StatelessWidget {
         latitude,
         longitude,
         selectedGender,
-        about));
+        about);
+
+    final registerResponse = await _authService.registerAsync(registerDto);
+
+    if(registerResponse.success == null)
+      {
+        return;
+      }
+
+    if(registerResponse.success!.successful)
+      {
+        goToSignIn(context);
+      }
   }
 
 

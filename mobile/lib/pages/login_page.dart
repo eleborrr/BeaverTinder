@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/components/shared/beaver_button.dart';
 import 'package:mobile/components/shared/beaver_textfield.dart';
+import 'package:mobile/dto/login/login_request_dto.dart';
 import 'package:mobile/main.dart';
 import '../components/shared/beaver_auth_provider.dart';
+import '../services/auth_service.dart';
 
 
 class LoginPage extends StatelessWidget {
   LoginPage({
     super.key});
+
+  final AuthServiceBase _authService = getit<AuthServiceBase>();
 
   //text editing conroller
 
@@ -20,18 +24,23 @@ class LoginPage extends StatelessWidget {
     final String userName = usernameController.text;
     final String password = passwordController.text;
 
-    final UseCase useCase = UseCase(dataService: AuthService());
+    final loginDto = LoginRequestDto(userName, password, true);
 
-    final loginResponse = await useCase.dataService.login(LoginRequestDto(
-        userName,
-        password,
-        true));
+    final loginResponse = await _authService.loginAsync(loginDto);
 
-    authProvider.setJwtToken("Bearer Not implemented");
 
+    if(loginResponse.success == null || !(loginResponse.success!.successful))
+    {
+      return;
+    }
+
+    final jwtToken = loginResponse.success!.message;
+    authProvider.setJwtToken('Bearer $jwtToken');
+    print(authProvider.jwtToken);
     Navigator.pushReplacementNamed(
         context, '/home'
     );
+
   }
 
    goToSignUp(BuildContext context) {
