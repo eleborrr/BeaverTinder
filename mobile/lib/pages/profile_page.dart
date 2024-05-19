@@ -58,7 +58,7 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   ''';
   print(resp.success);
-    final Map<String, dynamic> userData = jsonDecode(response);
+    final Map<String, dynamic> usData = jsonDecode(response);
     setState(() {
       usernameController.text = resp.success!.userName;//userData['userName'];
       firstnameController.text = resp.success!.firstName;//userData['firstName'];

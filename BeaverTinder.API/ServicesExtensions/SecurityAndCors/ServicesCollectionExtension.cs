@@ -20,6 +20,7 @@ public static class ServicesCollectionExtension
                     .AllowAnyHeader()
                     .AllowCredentials()
                     .AllowAnyMethod();
+                policyBuilder.WithOrigins("http://localhost:51319");
             });
 
         });

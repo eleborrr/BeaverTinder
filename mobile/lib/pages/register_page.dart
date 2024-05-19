@@ -1,57 +1,89 @@
-import 'package:flutter/cupertino.dart';
+import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:mobile/Components/server/auth_service.dart';
-import 'package:mobile/Components/server/dto/register/register_request_dto.dart';
+import 'package:mobile/dto/register/register_request_dto.dart';
+import 'package:mobile/main.dart';
+import 'package:mobile/services/auth_service.dart';
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
-import '../Components/server/UseCase.dart';
 import '../Components/shared/beaver_button.dart';
 import '../Components/shared/beaver_textfield.dart';
 
-class RegisterPage extends StatelessWidget {
+class RegisterPage extends StatefulWidget {
+  RegisterPage({super.key});
+
+  @override
+  State<RegisterPage> createState() => _RegisterPageState();
+}
+
+class _RegisterPageState extends State<RegisterPage> {
+  final AuthServiceBase _authService = getit<AuthServiceBase>();
+
+  final format = DateFormat("dd-MM-yyyy");
 
   final lastnameController = TextEditingController();
+
   final firstnameController = TextEditingController();
+
   final usernameController = TextEditingController();
+
   final emailController = TextEditingController();
-  final birthdateController = TextEditingController();
+
+  DateTime? birthdate;
+
   final passwordController = TextEditingController();
+
   final cPasswordController = TextEditingController();
+
   final genderController = TextEditingController();
+
   final aboutController = TextEditingController();
+
   final geolocationController = TextEditingController();
+
   var selectedGender = "Male";
 
   void registerUser(BuildContext context) async {
+
+
+    if(birthdate == null)
+      return;
+    print(DateFormat("dd.MM.yyyy").format(birthdate!));
     final String lastname = lastnameController.text;
     final String firstname = firstnameController.text;
     final String username = usernameController.text;
     final String email = emailController.text;
-    final String birthdate = birthdateController.text;
     final String password = passwordController.text;
     final String cPassword = cPasswordController.text;
     final String about = aboutController.text;
     final double latitude = 0;
     final double longitude = 0;
 
-    final UseCase useCase = UseCase(dataService: AuthService());
-
-    final registerResponse = await useCase.dataService.register(RegisterRequestDto(
+    final registerDto = RegisterRequestDto(
         lastname,
         firstname,
         username,
         email,
         password,
         cPassword,
-        birthdate,
+        DateFormat("dd.MM.yyyy").format(birthdate!),
         latitude,
         longitude,
         selectedGender,
-        about));
+        about);
+
+    final registerResponse = await _authService.registerAsync(registerDto);
+
+    if(registerResponse.success == null)
+      {
+        return;
+      }
+
+    if(registerResponse.success!.successful)
+      {
+        goToSignIn(context);
+      }
   }
-
-
 
   goToSignIn(BuildContext context) {
     Navigator.pushReplacementNamed(
@@ -59,7 +91,12 @@ class RegisterPage extends StatelessWidget {
     );
   }
 
-  RegisterPage({super.key});
+  changeDate(DateTime? date) {
+    if (date == null) {
+      return;
+    }
+    birthdate = date;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -95,7 +132,7 @@ class RegisterPage extends StatelessWidget {
 
                   BeaverTextField(
                     controller: usernameController,
-                    hintText: "Username",
+                    hintText: "User name",
                     obscureText: false,
                   ),
 
@@ -109,13 +146,39 @@ class RegisterPage extends StatelessWidget {
 
                   const SizedBox(height: 10.0),
 
-                  BeaverTextField(
-                    controller: birthdateController,
-                    hintText: "Birth date : dd.mm.yyyy",
-                    obscureText: false,
-                  ),
+                  Column(children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                      child: DateTimeField(
+                        format: format,
+                        decoration: InputDecoration(
+                          hintText: 'Select your birthdate',
+                          enabledBorder: const OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.grey),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.grey.shade400),
+                          ),
+                          fillColor: Colors.grey.shade200,
+                          filled: true,
+                        ),
+                        onShowPicker: (context, currentValue) async {
+                          final selectedDate = await showDatePicker(
+                            context: context,
+                            firstDate: DateTime(1900),
+                            initialDate: currentValue ?? DateTime(2000),
+                            lastDate: DateTime.now(),
+                          );
 
-                  const SizedBox(height: 10.0),
+                          changeDate(selectedDate);
+
+                          return selectedDate;
+                        },
+                        onSaved: (date) => changeDate(date),
+                      ),
+                    ),
+                  ]),
+              const SizedBox(height: 10.0),
 
                   BeaverTextField(
                       controller: passwordController,
@@ -191,6 +254,4 @@ class RegisterPage extends StatelessWidget {
 
     );
   }
-
-
 }
