@@ -7,11 +7,12 @@ import 'package:mobile/navigation/navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mobile/services/auth_service.dart';
+import 'package:mobile/services/subscription_service.dart';
 import 'package:provider/provider.dart';
 
 final getit = GetIt.instance;
 final authProvider = AuthProvider();
-const link = 'http://192.168.0.109:5292/graphql/';
+const link = 'http://192.168.0.10:8080/graphql/';
 
 void setup() {
   getit.registerSingleton<GraphQLClient>(GraphQLClient(
@@ -21,6 +22,7 @@ void setup() {
   getit.registerSingleton<AccountServiceBase>(AccountService());
   getit.registerSingleton<AuthProvider>(AuthProvider());
   getit.registerSingleton<AuthServiceBase>(AuthService());
+  getit.registerSingleton<SubscriptionServiceBase>(SubscriptionService());
 }
 
 void main() {

@@ -5,7 +5,6 @@ import 'package:mobile/main.dart';
 import 'package:mobile/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
 import '../Components/shared/beaver_button.dart';
 import '../Components/shared/beaver_textfield.dart';
 
@@ -44,8 +43,6 @@ class _RegisterPageState extends State<RegisterPage> {
   var selectedGender = "Male";
 
   void registerUser(BuildContext context) async {
-
-
     if(birthdate == null)
       return;
     print(DateFormat("dd.MM.yyyy").format(birthdate!));
