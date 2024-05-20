@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/components/shared/alert_window.dart';
 import 'package:mobile/components/shared/beaver_scaffold.dart';
 import 'package:mobile/main.dart';
 import 'package:mobile/navigation/navigation_routes.dart';
@@ -53,35 +54,6 @@ class _ProfilePageState extends State<ProfilePage> {
     });
   }
 
-  showAlertDialog(BuildContext context) {
-
-    // set up the button
-    Widget okButton = TextButton(
-      child: Text("OK"),
-      onPressed: () {
-        Navigator.of(context)
-          ..pop();
-      },
-    );
-
-    // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
-      title: Text("Error"),
-      content: Text("Geolocation is invalide, please retry again"),
-      actions: [
-        okButton,
-      ],
-    );
-
-    // show the dialog
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
-  }
-
   changeUser(BuildContext context) async {
       List<String> location = geolocationController.text.split(' ');
       double latitude = 0.0;
@@ -91,7 +63,7 @@ class _ProfilePageState extends State<ProfilePage> {
         latitude = double.parse(location[0]);
         longitude = double.parse(location[1]);
       } catch (e){
-        return showAlertDialog(context);
+        return showAlertDialog(context, "Geolocation is invalide, please retry again");
       }
 
       var newUserData = User(
