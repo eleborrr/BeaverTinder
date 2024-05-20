@@ -1,14 +1,21 @@
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mobile/components/shared/alert_window.dart';
+import 'package:mobile/dto/subscription/payment_request_dto.dart';
+import 'package:mobile/main.dart';
+import 'package:mobile/services/subscription_service.dart';
 
 class BeaverPaymentForm extends StatefulWidget {
   final VoidCallback onClose;
   final int userId;
   final int subsId;
-  final double amount;
+  final int amount;
 
-  BeaverPaymentForm({required this.onClose, required this.userId, required this.subsId, required this.amount});
+  BeaverPaymentForm({
+    required this.onClose,
+    required this.userId,
+    required this.subsId,
+    required this.amount
+  });
 
   @override
   _BeaverPaymentFormState createState() => _BeaverPaymentFormState();
@@ -19,30 +26,50 @@ class _BeaverPaymentFormState extends State<BeaverPaymentForm> {
   late int month;
   late int year;
   late String code;
+  final subscriptionService = getit<SubscriptionServiceBase>();
   String? err;
   bool downloading = false;
 
   void handleClick() async {
+      if (!validate())
+      {
+        showAlertDialog(context, err!);
+        return;
+      }
+
+      var request = PaymentRequestDto(
+          userId: "",
+          cardNumber: cardNumber,
+          month: month,
+          amount: double.parse(widget.amount.toString()),
+          year: year,
+          code: code,
+          subsId: widget.subsId
+      );
+      var res = await subscriptionService.paySubscriptionAsync(request);
+      if (res.success!.isFailure)
+        showAlertDialog(context, "Maybe something went wrong, login again and check your opportunities");
+      widget.onClose();
   }
 
   bool validate() {
-    if (!RegExp(r'[0-9]{13,16}').hasMatch(cardNumber)) {
+    if (!RegExp(r'^\d{13,16}$').hasMatch(cardNumber)) {
       err =
-      'неверный номер карты: пишите без пробелов, номер карты от 13 до 16 символов';
+      'Invalid card number: write without spaces, card number is between 13 and 16 signs';
       return false;
     }
-    if (!RegExp(r'[0-9]{3}').hasMatch(code)) {
-      err = 'неверный код карты: код карты с обратной стороны, 3 символа';
+    if (!RegExp(r'^\d{3,4}$').hasMatch(code)) {
+      err = 'Wrong CVV code: 3 or 4 signs';
       return false;
     }
     if (month < 1 || month > 12) {
-      err = 'неверно указан месяц: от 1 до 12';
+      err = 'Invalid month: from 1 to 12';
       return false;
     }
     final endDate = DateTime(year, month);
     final now = DateTime.now();
     if (endDate.isBefore(now)) {
-      err = 'срок действия карты истёк';
+      err = 'Card not actual';
       return false;
     }
     return true;
@@ -59,7 +86,7 @@ class _BeaverPaymentFormState extends State<BeaverPaymentForm> {
       child: Column(
         children: [
           Text(
-            'Детали оплаты',
+            'Payment details',
             style: TextStyle(
               fontSize: 18.0,
               fontWeight: FontWeight.bold,
@@ -74,7 +101,7 @@ class _BeaverPaymentFormState extends State<BeaverPaymentForm> {
               cardNumber = value;
             },
             decoration: InputDecoration(
-              labelText: 'Номер карты',
+              labelText: 'Card number',
             ),
           ),
           Row(
@@ -86,7 +113,7 @@ class _BeaverPaymentFormState extends State<BeaverPaymentForm> {
                   },
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
-                    labelText: 'Месяц',
+                    labelText: 'Month',
                   ),
                 ),
               ),
@@ -98,7 +125,7 @@ class _BeaverPaymentFormState extends State<BeaverPaymentForm> {
                   },
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
-                    labelText: 'Год',
+                    labelText: 'Year',
                   ),
                 ),
               ),
@@ -114,7 +141,7 @@ class _BeaverPaymentFormState extends State<BeaverPaymentForm> {
           ),
           ElevatedButton(
             onPressed: handleClick,
-            child: Text('Оплатить'),
+            child: Text('Pay'),
           ),
         ],
       ),

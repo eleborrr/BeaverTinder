@@ -1,11 +1,13 @@
 ﻿using BeaverTinder.Application.Features.Subscription.GetAllSubscriptions;
 using BeaverTinder.Shared.Dto.Subscription;
+using HotChocolate.Authorization;
 using MediatR;
 
 namespace BeaverTinder.Mobile.Graphql.Shared;
 
 public partial class Queries
 {
+    [Authorize]
     public async Task<List<SubscriptionInfoDto>> GetAllSubscriptions()
     {
         using var scope = _scopeFactory.CreateScope();

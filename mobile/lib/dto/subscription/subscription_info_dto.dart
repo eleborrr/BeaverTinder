@@ -1,9 +1,7 @@
-import 'package:mobile/dto/response_base_dto.dart';
-
 class SubscriptionInfoDto {
   final int id;
   final String name;
-  final double pricePerMonth;
+  final int pricePerMonth;
   final String description;
 
 

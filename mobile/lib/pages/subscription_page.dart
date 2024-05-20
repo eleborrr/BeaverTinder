@@ -3,8 +3,8 @@ import 'package:mobile/Components/shared/beaver_scaffold.dart';
 import 'package:mobile/dto/subscription/subscription_info_dto.dart';
 import 'package:mobile/services/subscription_service.dart';
 import 'package:mobile/main.dart';
-import '../Components/subscription/beaver_payment_form.dart';
-import '../Components/subscription/beaver_subscription_card.dart';
+import '../components/subscription/beaver_payment_form.dart';
+import '../components/subscription/beaver_subscription_card.dart';
 
 class SubscriptionPage extends StatefulWidget {
   @override
@@ -16,9 +16,9 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
   bool _disable = true;
   List<SubscriptionInfoDto>? _paymentArr;
   int? _subsId;
-  double? _amount;
+  int? _amount;
 
-  void handleClick(int subsId, double amount) {
+  void handleClick(int subsId, int amount) {
     setState(() {
       _disable = false;
       _subsId = subsId;
@@ -47,27 +47,6 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
     }
 
     _paymentArr = response.success;
-// Мок-данные для подписок
-//     _paymentArr = [
-//       {
-//         'id': 1,
-//         'name': 'Basic Subscription',
-//         'description': 'Basic features for beginners',
-//         'pricePerMonth': '9.99',
-//       },
-//       {
-//         'id': 2,
-//         'name': 'Premium Subscription',
-//         'description': 'Advanced features for professionals',
-//         'pricePerMonth': '19.99',
-//       },
-//       {
-//         'id': 3,
-//         'name': 'Pro Subscription',
-//         'description': 'Premium features for experts',
-//         'pricePerMonth': '29.99',
-//       },
-//     ];
 
     setState(() {}); // Обновляем состояние, чтобы перерисовать UI
   }
