@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
+import 'package:mobile/main.dart';
 import '../../navigation/navigation_routes.dart';
 import 'beaver_auth_provider.dart';
 
@@ -22,7 +21,7 @@ class _BeaverSplashScreenState extends State<BeaverSplashScreen> {
   }
 
   void _checkTokenAndNavigate() {
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final authProvider = getit<AuthProvider>();
     final token = authProvider.jwtToken;
     if (token != null) {
       Navigator.of(context)

@@ -1,4 +1,3 @@
-//import 'package:flutter/cupertino.dart';
 import 'package:mobile/components/shared/beaver_auth_provider.dart';
 import 'package:mobile/components/shared/beaver_splash_screen.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -9,6 +8,7 @@ import 'package:get_it/get_it.dart';
 import 'package:mobile/services/auth_service.dart';
 import 'package:mobile/services/chat_service.dart';
 import 'package:provider/provider.dart';
+import 'package:mobile/services/subscription_service.dart';
 
 final getit = GetIt.instance;
 const link = 'http://192.168.31.179:8080/graphql/';
@@ -27,6 +27,7 @@ void setup() {
 
   getit.registerSingleton<AuthServiceBase>(AuthService());
   getit.registerSingleton<ChatServiceBase>(ChatService());
+  getit.registerSingleton<SubscriptionServiceBase>(SubscriptionService());
 }
 
 void main() {

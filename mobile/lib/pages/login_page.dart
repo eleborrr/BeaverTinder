@@ -64,6 +64,7 @@ class LoginPage extends StatelessWidget {
                 Image.asset("lib/images/logo.png"),
 
                 BeaverTextField(
+                  labelText: "Login",
                   controller: usernameController,
                   hintText: "Username",
                   obscureText: false,
@@ -72,6 +73,7 @@ class LoginPage extends StatelessWidget {
                 const SizedBox(height: 30),
 
                 BeaverTextField(
+                  labelText: "Password",
                   controller: passwordController,
                   hintText: "Password",
                   obscureText: true
