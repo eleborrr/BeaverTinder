@@ -14,8 +14,8 @@ import 'navigation_routes.dart';
 MaterialPageRoute? buildRoutes(RouteSettings settings) {
 
   return MaterialPageRoute(builder: (context) {
-    final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
-    final chatId = args == null ? "" : args['id'];
+    final args = settings.arguments as Map<String, dynamic>?;
+    final userName = args != null ? args['userName'] : "";
     return switch (settings.name) {
       NavigationRoutes.home =>  const HomePage(),
       NavigationRoutes.register => BlocProvider(
@@ -36,7 +36,7 @@ MaterialPageRoute? buildRoutes(RouteSettings settings) {
       ),
       NavigationRoutes.chat => BlocProvider(
           create: (_) => LoadingBloc(),
-          child: ChatPage(chatId: chatId)
+          child: ChatPage(userName: userName)
       ),
       NavigationRoutes.shops => BlocProvider(
           create: (_) => LoadingBloc(),

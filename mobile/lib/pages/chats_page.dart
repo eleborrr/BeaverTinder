@@ -82,16 +82,17 @@ class _ChatsPageState extends State<ChatsPage> {
               itemBuilder: (context, index) {
                 final chat = _chatsView[index];
                 return ListTile(
-                  onTap: () => Navigator.pushNamed(
+                  onTap: () => {
+                    Navigator.pushNamed(
                     context,
                     '/chat',
-                    arguments: {'id': chat.userName},
-                  ),
+                    arguments: {'userName': chat.userName},
+                  )},
                   leading: CircleAvatar(
                     backgroundImage: NetworkImage(chat.image),
                     onBackgroundImageError: (_, __) => Icon(Icons.person),
                   ),
-                  title: Text('${chat.firstName} ${chat.lastName}'),
+                  title: Text('${chat.userName} ${chat.lastName}'),
                 );
               },
             ),
