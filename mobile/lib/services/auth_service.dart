@@ -1,5 +1,6 @@
 
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:mobile/components/shared/alert_window.dart';
 import 'package:mobile/dto/login/login_request_dto.dart';
 import 'package:mobile/dto/login/login_response_dto.dart';
 import 'package:mobile/dto/register/register_request_dto.dart';

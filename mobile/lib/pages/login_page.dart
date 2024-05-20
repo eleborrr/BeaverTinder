@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/components/shared/alert_window.dart';
 import 'package:mobile/components/shared/beaver_button.dart';
 import 'package:mobile/components/shared/beaver_textfield.dart';
 import 'package:mobile/dto/login/login_request_dto.dart';
@@ -30,6 +31,12 @@ class LoginPage extends StatelessWidget {
 
     if(loginResponse.success == null || !(loginResponse.success!.successful))
     {
+      showAlertDialog(context,
+          loginResponse.success == null
+              ? "Server isn't available"
+              : loginResponse.success!.message,
+          () => {}
+      );
       return;
     }
 

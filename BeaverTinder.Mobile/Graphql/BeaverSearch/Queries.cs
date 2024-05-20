@@ -14,12 +14,12 @@ namespace BeaverTinder.Mobile.Graphql.Shared;
 public partial class Queries
 {
     [Authorize]
-    public async Task<SearchUserResultDto> Search(ClaimsPrincipal claimsPrincipal)
+    public async Task<SearchUserResultDto> Search(HttpContext context)
     {
         var scope = _scopeFactory.CreateScope();
         var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
         var res = await mediator.Send(
-            new GetNextBeaverQuery(await GetUserFromJwt(claimsPrincipal, scope), await GetRoleFromJwt(claimsPrincipal, scope)));
+            new GetNextBeaverQuery(await GetUserFromJwt(context, scope), await GetRoleFromJwt(context, scope)));
         var result = res.Value;
         if (!result!.Successful)
             throw BeaverSearchError.WithMessage(result.Message);
@@ -39,12 +39,12 @@ public partial class Queries
     }
     
     [Authorize]
-    public async Task<SearchUserResultDto> Likes(ClaimsPrincipal claimsPrincipal)
+    public async Task<SearchUserResultDto> Likes(HttpContext context)
     {
         var scope = _scopeFactory.CreateScope();
         var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
         var res = await mediator.Send(
-            new GetNextSympathyQuery(await GetUserFromJwt(claimsPrincipal, scope)));
+            new GetNextSympathyQuery(await GetUserFromJwt(context, scope)));
         var result = res.Value;
         if (result is null)
             throw BeaverSearchError.WithMessage("Something went frong...");
@@ -65,18 +65,18 @@ public partial class Queries
         return user;
     }
     
-    private async Task<User?> GetUserFromJwt(ClaimsPrincipal claimsPrincipal, IServiceScope scope)
+    private async Task<User?> GetUserFromJwt(HttpContext context, IServiceScope scope)
     {
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
-        var s = claimsPrincipal.FindFirst(c => c.Type == "Id");
+        var s = context.User.FindFirst(c => c.Type == "Id");
         var user = await userManager.FindByIdAsync(s.Value);
         return user;
     }
     
-    private async Task<Role> GetRoleFromJwt(ClaimsPrincipal claimsPrincipal, IServiceScope scope)
+    private async Task<Role> GetRoleFromJwt(HttpContext context, IServiceScope scope)
     {
         var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<Role>>();
-        var s = claimsPrincipal.FindFirst(c => c.Type == ClaimTypes.Role)!;
+        var s = context.User.FindFirst(c => c.Type == ClaimTypes.Role)!;
         var role = await roleManager.FindByNameAsync(s.Value);
         if (role is null)
             throw new SecurityException("role not found");

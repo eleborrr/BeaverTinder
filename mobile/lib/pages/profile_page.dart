@@ -63,7 +63,11 @@ class _ProfilePageState extends State<ProfilePage> {
         latitude = double.parse(location[0]);
         longitude = double.parse(location[1]);
       } catch (e){
-        return showAlertDialog(context, "Geolocation is invalide, please retry again");
+        return showAlertDialog(
+            context,
+            "Geolocation is invalide, please retry again",
+            () => {}
+        );
       }
 
       var newUserData = User(

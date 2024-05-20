@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/Components/shared/beaver_scaffold.dart';
+import 'package:mobile/components/shared/alert_window.dart';
+import 'package:mobile/dto/likes/like_request_dto.dart';
+import 'package:mobile/dto/likes/search_user_result_dto.dart';
 import 'package:mobile/main.dart';
+import 'package:mobile/navigation/navigation_routes.dart';
+import 'package:mobile/services/likes_service.dart';
 import '../components/like/beaver_card.dart';
 import '../components/shared/beaver_auth_provider.dart';
 
@@ -13,6 +18,40 @@ class LikePage extends StatefulWidget {
 }
 
 class _LikePageState extends State<LikePage> {
+  final LikesServiceBase likesService = getit<LikesServiceBase>();
+
+  SearchUserResultDto? searchedUser = null;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
+    final response = await likesService.getNewUserAsync();
+    if(response.success == null)
+    {
+      showAlertDialog(context,
+          response.success == null
+            ? "Server error"
+            : response.success!.message == null
+              ? "Unexpected error"
+              : response.success!.message!,
+          () => {
+            Navigator.of(context)
+            ..pop()
+            ..pushNamed(NavigationRoutes.home)
+          }
+      );
+
+    }
+
+    searchedUser = response.success!;
+
+    setState(() {}); // Обновляем состояние, чтобы перерисовать UI
+  }
+
   List<Map<String, dynamic>> cards = [
     {
   'firstName': 'John',
@@ -41,24 +80,22 @@ class _LikePageState extends State<LikePage> {
   int currentIndex = 0;
 
   void nextCard() {
-    setState(() {
-      currentIndex = (currentIndex + 1) % cards.length;
+    setState(()  {
+      fetchData();
     });
   }
 
-  void previousCard() {
-    setState(() {
-      currentIndex = (currentIndex - 1 + cards.length) % cards.length;
-    });
-  }
-
-  void like() {
-    print('Liked');
+  void like() async {
+    await likesService.likeUserAsync(
+        LikeRequestDto(likedUserId: searchedUser!.id)
+    );
     nextCard();
   }
 
-  void dislike() {
-    print('Disliked');
+  void dislike() async {
+    await likesService.dislikeAsync(
+      LikeRequestDto(likedUserId: searchedUser!.id)
+    );
     nextCard(); // Переход к следующей карточке
   }
 
@@ -67,15 +104,21 @@ class _LikePageState extends State<LikePage> {
     final authProvider = getit<AuthProvider>();
     final token = authProvider.jwtToken;
     return BeaverScaffold(
-      title: token!,
+      title: "Likes page",
       body: cards.isEmpty
           ? Center(
         child: CircularProgressIndicator(),
       )
           : Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          BeaverCard(profile: cards[currentIndex], like: like, dislike: dislike),
+        children: searchedUser == null
+        ? []
+        : [
+            BeaverCard(
+                profile: searchedUser!,
+                like: like,
+                dislike: dislike
+            ),
         ],
       ),
     );
