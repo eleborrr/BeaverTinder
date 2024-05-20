@@ -9,4 +9,9 @@ class AuthProvider with ChangeNotifier {
     _jwtToken = token;
     notifyListeners();
   }
+
+  void deleteJwtToken() {
+    _jwtToken = null;
+    notifyListeners();
+  }
 }

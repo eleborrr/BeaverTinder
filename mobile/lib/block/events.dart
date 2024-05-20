@@ -28,6 +28,5 @@ class GetUserSubscriptionEvent extends GenericLoadingEventBase<UserSubscriptionD
 }
 
 class UserProfileInfoEvent extends GenericLoadingEventBase<User> {
-  final String id;
-  UserProfileInfoEvent({ required super.builder, required this.id });
+  UserProfileInfoEvent({ required super.builder});
 }

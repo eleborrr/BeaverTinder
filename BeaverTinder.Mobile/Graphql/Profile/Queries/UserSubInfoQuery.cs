@@ -1,11 +1,8 @@
 ﻿using BeaverTinder.Application.Features.Subscription.GetUsersActiveSubscription;
-using BeaverTinder.Mobile.Helpers.PolicyStrings;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using BeaverTinder.Shared.Dto.Subscription;
-using Microsoft.AspNetCore.Authorization;
+using HotChocolate.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MediatR;
-using AuthorizeAttribute = HotChocolate.Authorization.AuthorizeAttribute;
 
 namespace BeaverTinder.Mobile.Graphql.Shared;
 

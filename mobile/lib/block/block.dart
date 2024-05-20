@@ -35,7 +35,7 @@ class LoadingBloc extends Bloc<LoadingEventBase, LoadingStateBase> {
     });
     on<UserProfileInfoEvent>((event, emit) async {
       emit(LoadingState());
-      final result = await _accountService.getUserInfoAsync(event.id);
+      final result = await _accountService.getUserInfoAsync();
       result.match(
               (s) => emit(LoadedState(data: s, builder: event.builder)),
               (f) => emit(ErrorState(error: f))

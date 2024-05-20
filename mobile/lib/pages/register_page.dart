@@ -3,11 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:mobile/dto/register/register_request_dto.dart';
 import 'package:mobile/main.dart';
 import 'package:mobile/services/auth_service.dart';
-import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../Components/shared/beaver_button.dart';
-import '../Components/shared/beaver_textfield.dart';
+import '../components/shared/beaver_button.dart';
+import '../components/shared/beaver_textfield.dart';
 
 class RegisterPage extends StatefulWidget {
   RegisterPage({super.key});
@@ -115,6 +114,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   Image.asset("lib/images/logo.png"),
 
                   BeaverTextField(
+                    labelText: "Last name",
                     controller: lastnameController,
                     hintText: "Last name",
                     obscureText: false,
@@ -123,6 +123,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   const SizedBox(height: 10.0),
 
                   BeaverTextField(
+                    labelText: "First name",
                     controller: firstnameController,
                     hintText: "First name",
                     obscureText: false,
@@ -131,14 +132,16 @@ class _RegisterPageState extends State<RegisterPage> {
                   const SizedBox(height: 10.0),
 
                   BeaverTextField(
+                    labelText: "Username",
                     controller: usernameController,
-                    hintText: "User name",
+                    hintText: "Username",
                     obscureText: false,
                   ),
 
                   const SizedBox(height: 10.0),
 
                   BeaverTextField(
+                    labelText: "Email",
                     controller: emailController,
                     hintText: "someEmail@gmail.com",
                     obscureText: false,
@@ -181,6 +184,7 @@ class _RegisterPageState extends State<RegisterPage> {
               const SizedBox(height: 10.0),
 
                   BeaverTextField(
+                      labelText: "Password",
                       controller: passwordController,
                       hintText: "Password",
                       obscureText: true
@@ -189,6 +193,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   const SizedBox(height: 10.0),
 
                   BeaverTextField(
+                      labelText: "Confirm password",
                       controller: cPasswordController,
                       hintText: "Confirm password",
                       obscureText: true
@@ -216,6 +221,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   const SizedBox(height: 10.0),
 
                   BeaverTextField(
+                      labelText: "About",
                       controller: aboutController,
                       hintText: "Tell about yourself",
                       obscureText: false
