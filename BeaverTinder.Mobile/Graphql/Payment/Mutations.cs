@@ -1,18 +1,23 @@
-﻿using System.Web.Http.Results;
+﻿using BeaverTinder.Application.Services.Abstractions.TransactionManager;
 using BeaverTinder.Application.Dto.MediatR;
-using BeaverTinder.Application.Services.Abstractions;
-using BeaverTinder.Application.Services.Abstractions.TransactionManager;
-using BeaverTinder.Shared;
 using BeaverTinder.Shared.Dto.Payment;
+using HotChocolate.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace BeaverTinder.Mobile.Graphql.Shared;
 
 public partial class Mutations
 {
-    public async Task<Result> Pay([FromBody] PaymentRequestDto model, CancellationToken cancellationToken)
+    [Authorize]
+    public async Task<Result> Pay(
+        [FromBody] PaymentRequestDto model,
+        HttpContext context,
+        CancellationToken cancellationToken)
     {
         using var scope = _scopeFactory.CreateScope();
+        var id = context.User.FindFirstValue("id")!;
+        model.UserId = id;
         var transactionManager = scope.ServiceProvider.GetRequiredService<ITransactionManager>();
         var isServicesReady = transactionManager.CheckReadyServicesAsync();
         var transactionState = new Result(false, "Services in pending state");
