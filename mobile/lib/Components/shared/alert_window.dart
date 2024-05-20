@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-showAlertDialog(BuildContext context, String error) {
+showAlertDialog(BuildContext context, String error, VoidCallback onClose) {
 
   // set up the button
   Widget okButton = TextButton(
@@ -8,6 +8,7 @@ showAlertDialog(BuildContext context, String error) {
     onPressed: () {
       Navigator.of(context)
         ..pop();
+      onClose();
     },
   );
 

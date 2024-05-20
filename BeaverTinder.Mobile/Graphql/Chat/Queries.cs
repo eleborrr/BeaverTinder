@@ -13,14 +13,14 @@ namespace BeaverTinder.Mobile.Graphql.Shared;
 public partial class Queries
 {
     [Authorize]
-    public async Task<IEnumerable<AllChatsResponse>> Chats(ClaimsPrincipal claimsPrincipal, CancellationToken cancellationToken)
+    public async Task<IEnumerable<AllChatsResponse>> Chats(HttpContext context, CancellationToken cancellationToken)
     {
         try
         {
             var scope = _scopeFactory.CreateScope();
             var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
             var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
-            var curUser = await GetUserFromJwt(claimsPrincipal, scope);
+            var curUser = await GetUserFromJwt(context, scope);
             if (curUser is null)
                 throw new ArgumentNullException("user doesn't exists");
             
@@ -42,15 +42,16 @@ public partial class Queries
             return new List<AllChatsResponse>() {new() {FirstName = exception.Message}};
         }
     }
+  
     [Authorize]
-    public async Task<SingleChatGetResponse> Chat(string username, ClaimsPrincipal claimsPrincipal, CancellationToken cancellationToken)
+    public async Task<SingleChatGetResponse> Chat(string username, HttpContext context, CancellationToken cancellationToken)
     {
         try
         {
             var scope = _scopeFactory.CreateScope();
             var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
             var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
-            var sender = await GetUserFromJwt(claimsPrincipal, scope);
+            var sender = await GetUserFromJwt(context, scope);
             var receiver = await userManager.FindByNameAsync(username);
 
             if (receiver is null || sender is null)

@@ -8,12 +8,13 @@ import 'package:get_it/get_it.dart';
 import 'package:mobile/services/auth_service.dart';
 import 'package:mobile/services/chat_for_two_service.dart';
 import 'package:mobile/services/chat_service.dart';
+import 'package:mobile/services/likes_service.dart';
 import 'package:mobile/services/signalR_service.dart';
 import 'package:provider/provider.dart';
 import 'package:mobile/services/subscription_service.dart';
 
 final getit = GetIt.instance;
-const link = 'http://192.168.31.179:8080/graphql/';
+const link = 'http://192.168.31.9:8080/graphql/';
 
 void setup() {
   getit.registerSingleton<AuthProvider>(AuthProvider());
@@ -30,6 +31,7 @@ void setup() {
   getit.registerSingleton<AuthServiceBase>(AuthService());
   getit.registerSingleton<ChatServiceBase>(ChatService());
   getit.registerSingleton<SubscriptionServiceBase>(SubscriptionService());
+  getit.registerSingleton<LikesServiceBase>(LikesService());
   getit.registerSingleton<ChatForTwoServiceBase>(ChatForTwoService());
 }
 

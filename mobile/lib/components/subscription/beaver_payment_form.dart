@@ -33,7 +33,7 @@ class _BeaverPaymentFormState extends State<BeaverPaymentForm> {
   void handleClick() async {
       if (!validate())
       {
-        showAlertDialog(context, err!);
+        showAlertDialog(context, err!, () => {});
         return;
       }
 
@@ -48,7 +48,11 @@ class _BeaverPaymentFormState extends State<BeaverPaymentForm> {
       );
       var res = await subscriptionService.paySubscriptionAsync(request);
       if (res.success!.isFailure)
-        showAlertDialog(context, "Maybe something went wrong, login again and check your opportunities");
+        showAlertDialog(
+            context,
+            "Maybe something went wrong, login again and check your opportunities",
+            () => {}
+        );
       widget.onClose();
   }
 

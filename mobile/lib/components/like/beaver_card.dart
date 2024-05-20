@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/dto/likes/search_user_result_dto.dart';
 
 class BeaverCard extends StatelessWidget {
-  final Map<String, dynamic> profile;
+  final SearchUserResultDto profile;
   final Function like;
   final Function dislike;
 
@@ -28,20 +29,17 @@ class BeaverCard extends StatelessWidget {
             margin: EdgeInsets.symmetric(vertical: 20.0),
             child: Column(
               children: [
-                Image.asset(
-                  profile['image'],
-                  width: 300,
-                  height: 300,
-                  fit: BoxFit.cover,
+
+                Image.network(profile.image, width: 200,),
+
+                Text(
+                  '${profile.firstName} ${profile.lastName}, ${profile.age} ${correctWord(profile.age)}',
                 ),
                 Text(
-                  '${profile['firstName']} ${profile['lastName']}, ${profile['age']} ${correctWord(profile['age'])}',
+                  'Пол: ${profile.gender == 'Woman' ? 'жен' : 'муж'}',
                 ),
                 Text(
-                  'Пол: ${profile['gender'] == 'Woman' ? 'жен' : 'муж'}',
-                ),
-                Text(
-                  'О себе: ${profile['about']}',
+                  'О себе: ${profile.about}',
                 ),
               ],
             ),
