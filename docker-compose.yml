@@ -2,6 +2,8 @@ version: '3.9'
 services:
   rabbitmq:
     image: rabbitmq:3.8-management-alpine
+    networks:
+      - my_network
     container_name: rabbitmq
     environment:
       RABBITMQ_DEFAULT_USER: rabbitsa
@@ -11,6 +13,8 @@ services:
       - "15672:15672"
   mssql:
     image: mcr.microsoft.com/mssql/server:2022-latest
+    networks:
+      - my_network
     ports:
       - "1414:1433"
     volumes:
@@ -20,6 +24,8 @@ services:
       MSSQL_SA_PASSWORD: superPuperPassword!15641
   web:
     image: back
+    networks:
+      - my_network
     depends_on:
       - mssql
       - rabbitmq
@@ -33,11 +39,17 @@ services:
       MessageBroker__Password: mypa55w0rd!
       MessageBroker__Hostname: rabbitmq
       MessageBroker__Port: 5672
+      CORS_ENABLED: 'true'
+      CORS_ORIGIN: 'http://localhost:3000'
+      CORS_METHODS: 'GET,POST,PATCH,DELETE'
+      CORS_ALLOWED_HEADERS: 'Content-Type,Authorization'
       ConnectionStrings__BeaverTinderDatabase: Data Source=mssql;Initial Catalog=BeaverTinderDatabase;User=sa;Password=superPuperPassword!15641;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;MultipleActiveResultSets=true;
     volumes:
       - ~/.aspnet/https:/https:ro
   supportconsumer:
     image: support-consumer
+    networks:
+      - my_network
     depends_on:
       - mssql
       - rabbitmq
@@ -57,6 +69,8 @@ services:
   payment:
     container_name: payment
     image: payment-service
+    networks:
+      - my_network
     depends_on:
       - mssql
       - rabbitmq
@@ -71,6 +85,8 @@ services:
       - ~/.aspnet/https:/https:ro   
   subscription:
     image: subscription-service
+    networks:
+      - my_network
     container_name: subscription
     depends_on:
       - mssql
@@ -86,6 +102,8 @@ services:
       - ~/.aspnet/https:/https:ro
   s3:
     image: s3
+    networks:
+      - my_network
     depends_on:
       - mssql
       - rabbitmq
@@ -116,6 +134,8 @@ services:
       - ~/.aspnet/https:/https:ro
   minio:
     image: minio/minio:latest
+    networks:
+      - my_network
     command: server --console-address ":9001" /data/
     ports:
       - "9000:9000"
@@ -132,6 +152,8 @@ services:
       retries: 3
   redis:
     image: redis:latest
+    networks:
+      - my_network
     restart: always
     ports:
       - '6379:6379'
@@ -142,14 +164,23 @@ services:
   mongo:
     hostname: mongo
     image: mongo:latest
+    networks:
+      - my_network
     ports:
       - '27017:27017'
     volumes:
       - ./mongo-data:/data/db
   react:
     image: front
+    networks:
+      - my_network
     build:
       context: /front
       dockerfile: DockerFile
     ports:
       - "3000:3000"
+    
+        
+networks: 
+  my_network:
+    driver: overlay
