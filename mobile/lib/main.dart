@@ -6,7 +6,9 @@ import 'package:mobile/navigation/navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mobile/services/auth_service.dart';
+import 'package:mobile/services/chat_for_two_service.dart';
 import 'package:mobile/services/chat_service.dart';
+import 'package:mobile/services/signalR_service.dart';
 import 'package:provider/provider.dart';
 import 'package:mobile/services/subscription_service.dart';
 
@@ -28,6 +30,7 @@ void setup() {
   getit.registerSingleton<AuthServiceBase>(AuthService());
   getit.registerSingleton<ChatServiceBase>(ChatService());
   getit.registerSingleton<SubscriptionServiceBase>(SubscriptionService());
+  getit.registerSingleton<ChatForTwoServiceBase>(ChatForTwoService());
 }
 
 void main() {

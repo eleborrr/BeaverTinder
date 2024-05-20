@@ -42,7 +42,7 @@ public partial class Queries
             return new List<AllChatsResponse>() {new() {FirstName = exception.Message}};
         }
     }
-    
+    [Authorize]
     public async Task<SingleChatGetResponse> Chat(string username, ClaimsPrincipal claimsPrincipal, CancellationToken cancellationToken)
     {
         try
