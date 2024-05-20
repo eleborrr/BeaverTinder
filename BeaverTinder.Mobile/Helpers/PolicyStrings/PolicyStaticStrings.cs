@@ -6,4 +6,5 @@ public static class PolicyStaticStrings
     public const string LikeSubs = "OnlyLikeSubs";
     public const string ForAdmins = "OnlyForAdmins";
     public const string ForModerators = "OnlyForModerators";
+    public const string StandartUser = "StandartUser";
 }

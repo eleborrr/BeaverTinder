@@ -23,24 +23,7 @@ public static class ServicesCollectionExtension
                     provider.GetRequiredService<ILogger<ServerErrorFilter>>(),
                     environment);
             })
-            .AddAuthorization(options => 
-            {
-                options.AddPolicy(PolicyStaticStrings.MapSubs, policy =>
-                {
-                    policy.RequireClaim(ClaimTypes.Role, "UserMoreLikesAndMap", "Moderator", "Admin");
-                });
-                options.AddPolicy(PolicyStaticStrings.LikeSubs, policy =>
-                {
-                    policy.RequireClaim(ClaimTypes.Role, "UserMoreLikes", "Moderator", "Admin");
-                });
-                options.AddPolicy(PolicyStaticStrings.ForAdmins, policy => {
-                    policy.RequireClaim(ClaimTypes.Role, "Admin");
-                });
-                options.AddPolicy(PolicyStaticStrings.ForModerators, policy => {
-                    policy.RequireClaim(ClaimTypes.Role, "Moderator", "Admin");
-     
-                });
-            })
+            .AddAuthorization()
             // .AddSubscriptionType<TeacherSubscription>();
             ;
         return services;

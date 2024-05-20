@@ -10,7 +10,12 @@ public static class ServicesCollectionExtension
     public static IServiceCollection AddCustomAuth(this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
             .AddJwtBearer(options =>
             {
                 options.TokenValidationParameters = new TokenValidationParameters()
@@ -25,7 +30,7 @@ public static class ServicesCollectionExtension
                         Encoding.UTF8.GetBytes(configuration["JWTTokenSettings:KEY"]!))
                 };
             });
- 
+        services.AddAuthorizationBuilder();
 
         services.AddAuthorization(options =>
         {
@@ -44,6 +49,11 @@ public static class ServicesCollectionExtension
                 policy.RequireClaim(ClaimTypes.Role, "Moderator", "Admin");
      
             });
+        }).ConfigureApplicationCookie(options =>
+        {
+            options.Cookie.SameSite = SameSiteMode.None;
+            options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+            options.Cookie.HttpOnly = true;
         });
         return services;
     }

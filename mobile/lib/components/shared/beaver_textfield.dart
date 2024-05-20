@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 class BeaverTextField extends StatelessWidget {
   final controller;
   final String hintText;
+  final String labelText;
   final bool obscureText;
 
   const BeaverTextField({
     super.key,
     required this.controller,
     required this.hintText,
+    required this.labelText,
     required this.obscureText
   });
 
@@ -17,9 +19,11 @@ class BeaverTextField extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 25.0),
       child: TextField(
+
         controller: controller,
         obscureText: obscureText,
         decoration: InputDecoration(
+          labelText: labelText,
           enabledBorder: const OutlineInputBorder(
             borderSide: BorderSide(color: Colors.grey),
           ),
