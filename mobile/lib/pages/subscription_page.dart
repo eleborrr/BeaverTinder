@@ -1,8 +1,8 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:mobile/Components/shared/beaver_scaffold.dart';
-
+import 'package:mobile/dto/subscription/subscription_info_dto.dart';
+import 'package:mobile/services/subscription_service.dart';
+import 'package:mobile/main.dart';
 import '../Components/subscription/beaver_payment_form.dart';
 import '../Components/subscription/beaver_subscription_card.dart';
 
@@ -12,8 +12,9 @@ class SubscriptionPage extends StatefulWidget {
 }
 
 class _SubscriptionPageState extends State<SubscriptionPage> {
+  final SubscriptionServiceBase _subService = getit<SubscriptionServiceBase>();
   bool _disable = true;
-  List<dynamic>? _paymentArr;
+  List<SubscriptionInfoDto>? _paymentArr;
   int? _subsId;
   double? _amount;
 
@@ -37,28 +38,36 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
     fetchData();
   }
 
+
   Future<void> fetchData() async {
+    final response = await _subService.getAllSubscriptionsAsync();
+    if(response == null)
+    {
+      return;
+    }
+
+    _paymentArr = response.success;
 // Мок-данные для подписок
-    _paymentArr = [
-      {
-        'id': 1,
-        'name': 'Basic Subscription',
-        'description': 'Basic features for beginners',
-        'pricePerMonth': '9.99',
-      },
-      {
-        'id': 2,
-        'name': 'Premium Subscription',
-        'description': 'Advanced features for professionals',
-        'pricePerMonth': '19.99',
-      },
-      {
-        'id': 3,
-        'name': 'Pro Subscription',
-        'description': 'Premium features for experts',
-        'pricePerMonth': '29.99',
-      },
-    ];
+//     _paymentArr = [
+//       {
+//         'id': 1,
+//         'name': 'Basic Subscription',
+//         'description': 'Basic features for beginners',
+//         'pricePerMonth': '9.99',
+//       },
+//       {
+//         'id': 2,
+//         'name': 'Premium Subscription',
+//         'description': 'Advanced features for professionals',
+//         'pricePerMonth': '19.99',
+//       },
+//       {
+//         'id': 3,
+//         'name': 'Pro Subscription',
+//         'description': 'Premium features for experts',
+//         'pricePerMonth': '29.99',
+//       },
+//     ];
 
     setState(() {}); // Обновляем состояние, чтобы перерисовать UI
   }
@@ -91,11 +100,11 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
               return Padding(
                 padding: const EdgeInsets.only(bottom: 16.0),
                 child: BeaverSubscriptionCard(
-                  info: p['description'],
-                  name: p['name'],
-                  price: p['pricePerMonth'].toString(),
+                  info: p.description,
+                  name: p.name,
+                  price: p.pricePerMonth.toString(),
                   onClick: () =>
-                      handleClick(p['id'], double.parse(p['pricePerMonth'])),
+                      handleClick(p.id, p.pricePerMonth),
                 ),
               );
             }).toList(),

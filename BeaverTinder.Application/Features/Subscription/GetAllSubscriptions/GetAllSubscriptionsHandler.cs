@@ -32,6 +32,7 @@ public class GetAllSubscriptionsHandler: IQueryHandler<GetAllSubscriptionsQuery,
             Id = sub.SubscriptionId,
             Name = sub.Name,
             PricePerMonth = sub.PricePerMonth,
+            Description = sub.Description
         });
         
         return new Result<IEnumerable<SubscriptionInfoDto>>(
