@@ -41,7 +41,7 @@ class AuthService implements AuthServiceBase {
     );
 
 
-    final QueryResult result = await _client.mutate(options);
+    final result = await _client.mutate(options);
 
     return result.hasException
         ? const Result.fromFailure("Can not login")

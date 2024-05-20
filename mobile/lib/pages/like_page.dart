@@ -34,7 +34,7 @@ class _LikePageState extends State<LikePage> {
     {
       showAlertDialog(context,
           response.success == null
-            ? "Server error"
+            ? "Can't find new person"
             : response.success!.message == null
               ? "Unexpected error"
               : response.success!.message!,
