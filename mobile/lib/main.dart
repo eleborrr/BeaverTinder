@@ -7,27 +7,33 @@ import 'package:mobile/navigation/navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mobile/services/auth_service.dart';
+import 'package:mobile/services/chat_service.dart';
 import 'package:provider/provider.dart';
 
 final getit = GetIt.instance;
-final authProvider = AuthProvider();
-const link = 'http://192.168.0.109:5292/graphql/';
+const link = 'http://192.168.31.179:8080/graphql/';
 
 void setup() {
-  getit.registerSingleton<GraphQLClient>(GraphQLClient(
-      link: AuthLink(getToken: () => 'Bearer token')
-          .concat(HttpLink(link)),
-      cache: GraphQLCache()));
-  getit.registerSingleton<AccountServiceBase>(AccountService());
   getit.registerSingleton<AuthProvider>(AuthProvider());
+  final httpLink = HttpLink(link);
+  final authLink = AuthLink(getToken: () => '${getit<AuthProvider>().jwtToken}');
+  final finalLink = authLink.concat(httpLink);
+  getit.registerSingleton<GraphQLClient>(
+      GraphQLClient(
+      link: finalLink,
+      cache: GraphQLCache())
+  );
+  getit.registerSingleton<AccountServiceBase>(AccountService());
+
   getit.registerSingleton<AuthServiceBase>(AuthService());
+  getit.registerSingleton<ChatServiceBase>(ChatService());
 }
 
 void main() {
   setup();
   runApp(
     ChangeNotifierProvider(
-      create: (_) => authProvider,
+      create: (_) => getit<AuthProvider>(),
       child: MaterialApp(
         onGenerateRoute: buildRoutes,
         home: BeaverSplashScreen(),

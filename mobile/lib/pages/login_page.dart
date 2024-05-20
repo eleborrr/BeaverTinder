@@ -28,7 +28,6 @@ class LoginPage extends StatelessWidget {
 
     final loginResponse = await _authService.loginAsync(loginDto);
 
-
     if(loginResponse.success == null || !(loginResponse.success!.successful))
     {
       return;
@@ -36,7 +35,6 @@ class LoginPage extends StatelessWidget {
 
     final jwtToken = loginResponse.success!.message;
     authProvider.setJwtToken('Bearer $jwtToken');
-    print(authProvider.jwtToken);
     Navigator.pushReplacementNamed(
         context, '/home'
     );

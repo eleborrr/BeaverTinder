@@ -1,11 +1,10 @@
 ﻿using System.Security.Claims;
 using BeaverTinder.Application.Dto.Chat;
-using BeaverTinder.Application.Dto.ResponsesAbstraction;
 using BeaverTinder.Application.Features.Chat.AddChat;
 using BeaverTinder.Application.Features.Chat.GetChatById;
 using BeaverTinder.Application.Features.Like.GetIsMutualSympathy;
 using BeaverTinder.Domain.Entities;
-using MassTransit.Mediator;
+using HotChocolate.Authorization;
 using Microsoft.AspNetCore.Identity;
 using IMediator = MediatR.IMediator;
 
@@ -13,6 +12,7 @@ namespace BeaverTinder.Mobile.Graphql.Shared;
 
 public partial class Queries
 {
+    [Authorize]
     public async Task<IEnumerable<AllChatsResponse>> Chats(ClaimsPrincipal claimsPrincipal, CancellationToken cancellationToken)
     {
         try
