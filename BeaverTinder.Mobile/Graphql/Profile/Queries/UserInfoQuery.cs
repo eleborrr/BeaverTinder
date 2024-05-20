@@ -1,10 +1,10 @@
 ﻿using BeaverTinder.Application.Features.Subscription.GetUsersActiveSubscription;
 using BeaverTinder.Application.Features.Geolocation.GetGeolocationById;
 using BeaverTinder.Application.Services.Abstractions;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using BeaverTinder.Application.Dto.Account;
-using Microsoft.AspNetCore.Authorization;
 using BeaverTinder.Mobile.Errors;
+using HotChocolate.Authorization;
+using System.Security.Claims;
 using MediatR;
 
 namespace BeaverTinder.Mobile.Graphql.Shared;
@@ -12,12 +12,13 @@ namespace BeaverTinder.Mobile.Graphql.Shared;
 public partial class Queries
 {
 
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public async Task<EditUserRequestDto> GetAccountInformation(string id, CancellationToken cancellationToken)
+    [Authorize]
+    public async Task<EditUserRequestDto> GetAccountInformation(HttpContext context, CancellationToken cancellationToken)
     {
         using var scope = _scopeFactory.CreateScope();
         var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
         var serviceManager = scope.ServiceProvider.GetRequiredService<IServiceManager>();
+        var id = context.User.FindFirstValue("id")!;
         var user = await serviceManager.UserManager.FindByIdAsync(id);
         
         if (user is null)

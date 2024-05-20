@@ -7,7 +7,7 @@ import 'package:mobile/instances/user.dart';
 import 'package:mobile/main.dart';
 
 abstract class AccountServiceBase {
-  Future<Result<User, String>> getUserInfoAsync(String id);
+  Future<Result<User, String>> getUserInfoAsync();
   Future<Result<UserSubscriptionDto, String>> getUserSubscriptionAsync(String id);
   Future<Result<EditUserResponseDto, String>> editUserInfoAsync(User user);
   Future<Result<GeolocationResponseDto, String>> getGeolocationByIdAsync(String id);
@@ -18,13 +18,13 @@ class AccountService implements AccountServiceBase {
   final _client = getit<GraphQLClient>();
 
   @override
-  Future<Result<User, String>> getUserInfoAsync(String id) async {
+  Future<Result<User, String>> getUserInfoAsync() async {
     final result = await _client.query(
-        QueryOptions(document: gql('''
+        QueryOptions(
+          fetchPolicy: FetchPolicy.networkOnly,
+          document: gql('''
           query{
-            accountInformation(
-              id: "$id"
-              ) { 
+            accountInformation { 
                 lastName,
                 firstName,
                 userName,
@@ -39,7 +39,8 @@ class AccountService implements AccountServiceBase {
                 subExpiresDateTime
               }
           }
-        '''))
+        '''),
+        )
     );
 
     return result.hasException
@@ -94,8 +95,8 @@ class AccountService implements AccountServiceBase {
 
   @override
   Future<Result<EditUserResponseDto, String>> editUserInfoAsync(User user) async {
-    final result = await _client.query(
-        QueryOptions(
+    final result = await _client.mutate(
+        MutationOptions(
             document: gql('''
       mutation{
         editAccount(model: {
