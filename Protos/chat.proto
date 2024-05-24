@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+option csharp_namespace = "BeaverTinder.Shared";
+
+package greet;
+
+import "google/protobuf/empty.proto";
+
+service Chat{
+  rpc JoinChat(google.protobuf.Empty) returns (JoinResponse);
+  rpc SendMsg(Msg) returns (google.protobuf.Empty);
+  rpc ReceiveMsg(google.protobuf.Empty) returns (stream Msg);
+}
+
+message JoinResponse{
+  int32 error = 1;
+  string msg = 2;
+}
+
+message Msg{
+  string content = 1;
+  string from = 2;
+  string to = 3;
+  string room = 4;
+  string time = 5;
+}
+
+
