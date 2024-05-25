@@ -5,6 +5,8 @@ import React, { useCallback, useEffect, useState, useRef} from 'react';
 import { useParams } from "react-router-dom";
 import './../assets/css/chat_with_admin.css'
 import ServerURL from './server_url';
+import { ChatClient } from "../generated/chat_grpc_web_pb";
+import Msg from "../generated/chat_pb";
 import { FileUpload } from "./file_uploader";
 
 const ChatWindow = () => {
@@ -13,8 +15,9 @@ const ChatWindow = () => {
   const [isOpen, setIsOpen] = useState(false);
   const messagesListRef = useRef(null);
   const { nickname } = useParams();
+  const client = new ChatClient('http://localhost:8080/', null, null); // address? микросервис с мобилкой 0_о
 
-  useEffect(() => {
+    useEffect(() => {
     messagesListRef.current.scrollTop = messagesListRef.current.scrollHeight;
     }, [messagesListRef, isOpen])
 
@@ -130,6 +133,41 @@ const ChatWindow = () => {
             })
             .catch();
     }, [callbackSignalR, handleSendMessage, nickname, token])
+
+
+    useEffect(() =>{
+        console.log("AAAA");
+        // const call = client.receiveMsg({"Authorization": token});
+        call.on('data', (message) => {
+            console.log("normal chat recieved");
+            var elem = document.createElement("div");
+            var author = document.createElement("span");
+            var content = document.createElement("span");
+            if(message.from === nickname){
+                elem.className="message-from";
+
+                author.className = "message-from";
+            }
+            else{
+                elem.className="message-to";
+
+                author.className = "message-to";
+            }
+            author.textContent = user + ":";
+
+            content.className = "message-text";
+            content.textContent = message.content;
+
+            elem.appendChild(author);
+            elem.appendChild(content);
+            elem.setAttribute("key", `${counterMessagesKey++}`)
+
+            document.getElementById("messagesList").appendChild(elem);
+
+            console.log(message);
+            setMessages(prev => [...prev, message])
+        });
+    }, []);
 
   return (
     <div>

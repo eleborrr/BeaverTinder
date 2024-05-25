@@ -6,6 +6,8 @@ import jwtDecode from "jwt-decode";
 import Cookies from "js-cookie";
 import './../../assets/css/chat_for_two.css';
 import ServerURL from "../../Components/server_url";
+// import { ChatClient } from "../../generated/chat_grpc_web_pb";
+import "../../generated/chat_pb";
 
 const SupportChatPage = () => {
     const navigate = useNavigate();
@@ -13,6 +15,7 @@ const SupportChatPage = () => {
     const uid = jwtDecode(token).Id;
     const { nickname } = useParams();
     let counterMessagesKey = 0;
+    // const client = new ChatClient('http://localhost:8080/', "asd", "asd"); // address? микросервис с мобилкой 0_о
 
     useEffect(() => {
         if (!token){
@@ -90,9 +93,18 @@ const SupportChatPage = () => {
         document.getElementById("sendButton").addEventListener("click", function (event) { 
             var message = document.getElementById("messageInput").value;
             document.getElementById("messageInput").value ='';
-            connection.invoke("SendPrivateMessage", `${roomData.senderName}`, message, `${roomData.receiverName}`, `${roomData.roomName}`).catch(function (err) { 
-                return console.error(err.toString());
-            });
+            const request = new Msg(["_", message, "00:00"]);
+            // client.sendMsg(request, {"Authorization": token}, (err, response) => {
+            //     if (err) {
+            //         console.log(err.message);
+            //     }
+            //     else {
+            //         // console.log("msg send");
+            //     }
+            // });
+            // connection.invoke("SendPrivateMessage", `${roomData.senderName}`, message, `${roomData.receiverName}`, `${roomData.roomName}`).catch(function (err) { 
+            //     return console.error(err.toString());
+            // });
             event.preventDefault();
         });
     }, [counterMessagesKey, nickname])
@@ -129,7 +141,39 @@ const SupportChatPage = () => {
             .catch();
     }, [callbackSignalR, handleSendMessage, nickname, token])
 
-    
+    // useEffect(() =>{
+    //     console.log("AAAA");
+    //     const call = client.receiveMsg({"Authorization": token});
+    //     call.on('data', (message) => {
+    //         console.log("normal chat recieved");
+    //         var elem = document.createElement("div");
+    //         var author = document.createElement("span");
+    //         var content = document.createElement("span");
+    //         if(message.from === nickname){
+    //             elem.className="message-from";
+
+    //             author.className = "message-from";
+    //         }
+    //         else{
+    //             elem.className="message-to";
+
+    //             author.className = "message-to";
+    //         }
+    //         author.textContent = user + ":";
+
+    //         content.className = "message-text";
+    //         content.textContent = message.content;
+
+    //         elem.appendChild(author);
+    //         elem.appendChild(content);
+    //         elem.setAttribute("key", `${counterMessagesKey++}`)
+
+    //         document.getElementById("messagesList").appendChild(elem);
+
+    //         console.log(message);
+    //         setMessages(prev => [...prev, message])
+    //     });
+    // }, []);
     
 
     return(
