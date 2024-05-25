@@ -96,9 +96,24 @@ const ChatWindow = () => {
             var message = document.getElementById("messageInput-admin").value;
             document.getElementById("messageInput-admin").value = "";
             messagesListRef.current.scrollTop = messagesListRef.current.scrollHeight;
-            connection.invoke("SendPrivateMessage", `${roomData.senderName}`, message, `${roomData.receiverName}`, `${roomData.roomName}`).catch(function (err) {
-                return console.error(err.toString());
-            });
+            const request = new Msg();
+            request.setContent(message)
+            request.setFrom(roomData.senderName)
+            request.setTo(roomData.senderName)
+            request.setRoom(roomData.roomName)
+            request.setTime(Date.now())
+            console.log(request)
+            const headers = {
+                Authorization: `Bearer ${token}`,
+                Accept : "application/json"
+            };
+            client.sendMsg(request, headers, (err, resp) => {
+                if (err) console.log(err);
+                console.log(resp);
+            })
+            // connection.invoke("SendPrivateMessage", `${roomData.senderName}`, message, `${roomData.receiverName}`, `${roomData.roomName}`).catch(function (err) {
+            //     return console.error(err.toString());
+            // });
             event.preventDefault();
         });
     }, [nickname])
