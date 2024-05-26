@@ -6,9 +6,9 @@ using BeaverTinder.Shared;
 using BeaverTinder.Shared.Files;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Empty = BeaverTinder.Shared.Empty;
-using MediatR;
 namespace BeaverTinder.SupportChat.Services;
 
 public class SupportChatRpcService : Chat.ChatBase
@@ -53,6 +53,7 @@ public class SupportChatRpcService : Chat.ChatBase
         var receiver = await _userManager.FindByNameAsync(request.ReceiverUserName);
 
         var files = new List<SaveFileMessage>();
+        
 
         foreach (var file in request.Files)
         {
@@ -73,8 +74,10 @@ public class SupportChatRpcService : Chat.ChatBase
             ReceiverId = receiver.Id,
             Timestamp = DateTime.Now
         };
+        
         await _mediator.Send(new SaveMessageByDtoBusCommand(dto));
-        await _mediator.Send(files);
+        
+        // await _mediator.Send(files);
         
         await _chatRoomService.BroadcastMessageToChatRoom(request);
         return await base.SendMessage(request, context);

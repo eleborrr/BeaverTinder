@@ -27,6 +27,7 @@
 
 
     <ItemGroup>
+      <ProjectReference Include="..\BeaverTinder.API\BeaverTinder.API.csproj" />
       <ProjectReference Include="..\BeaverTinder.Domain\BeaverTinder.Domain.csproj" />
       <ProjectReference Include="..\BeaverTinder.Infrastructure\BeaverTinder.Infrastructure.csproj" />
     </ItemGroup>

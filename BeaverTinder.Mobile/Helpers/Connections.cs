@@ -6,5 +6,5 @@ namespace BeaverTinder.Mobile.Helpers;
 
 public static class Connections
 {
-    public static ConcurrentDictionary<string, IServerStreamWriter<Msg>> connections { get; set; } = new();
+    // public static ConcurrentDictionary<string, IServerStreamWriter<Msg>> connections { get; set; } = new();
 }
