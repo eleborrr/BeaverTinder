@@ -4,25 +4,38 @@ option csharp_namespace = "BeaverTinder.Shared";
 
 package greet;
 
-import "google/protobuf/empty.proto";
-
 service Chat{
-  rpc JoinChat(google.protobuf.Empty) returns (JoinResponse);
-  rpc SendMsg(Msg) returns (google.protobuf.Empty);
-  rpc ReceiveMsg(google.protobuf.Empty) returns (stream Msg);
+  rpc ConnectToRoom(JoinRequest) returns (stream MessageGrpc);
+  rpc SendMessage(MessageGrpc) returns (Empty);
 }
 
-message JoinResponse{
-  int32 error = 1;
-  string msg = 2;
+message JoinRequest{
+  string room_name = 1;
+  string user_name = 2;
+} 
+
+
+message ClientMessageChat {
+  string text = 1;
+  string user_name = 2;
 }
 
-message Msg{
-  string content = 1;
-  string from = 2;
-  string to = 3;
-  string room = 4;
-  string time = 5;
+message Empty{
 }
 
+message MessageGrpc {
+  string message = 1;
+  string user_name = 2;
+  repeated FileMessageGrpc files = 3;
+  string receiver_user_name = 4;
+  string group_name = 5;
+}
+
+message FileMessageGrpc {
+  bytes content = 1;
+  map<string, string> meta_data = 2;
+  string file_name = 3;
+  string main_bucket_identifier = 4;
+  string temporary_bucket_identifier = 5;
+}
 
