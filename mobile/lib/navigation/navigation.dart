@@ -1,3 +1,4 @@
+import 'package:mobile/pages/chat_admin.dart';
 import 'package:mobile/pages/fun_fact_page.dart';
 import 'package:mobile/pages/subscription_page.dart';
 import 'package:mobile/Pages/register_page.dart';
@@ -51,7 +52,13 @@ MaterialPageRoute? buildRoutes(RouteSettings settings) {
         create: (_) => LoadingBloc(),
         child: FunFactPage(),
       ),
-      _ => throw Error()
+      NavigationRoutes.supportChat => BlocProvider(
+          create: (_) => LoadingBloc(),
+          child: ChatAdminPage(),
+      ),
+
+
+          _ => throw Error()
     };
   });
 }

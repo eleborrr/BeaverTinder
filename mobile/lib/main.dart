@@ -40,7 +40,7 @@ void setup() {
   getit.registerSingleton<SubscriptionServiceBase>(SubscriptionService());
   getit.registerSingleton<LikesServiceBase>(LikesService());
   getit.registerSingleton<ChatForTwoServiceBase>(ChatForTwoService());
-  getit.registerSingleton<DioClient>(DioClient());
+  getit.registerLazySingleton<DioClient>(() => DioClient());
   getit.registerSingleton<LikesMadeServiceBase>(LikesMadeService());
 
   final channel = $grpc.ClientChannel(

@@ -8,4 +8,5 @@ class NavigationRoutes {
   static const String shops = '/shops';
   static const String profile = '/profile';
   static const String funFact = '/funFact';
+  static const String supportChat = '/supportChat';
 }

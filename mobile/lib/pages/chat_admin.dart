@@ -1,24 +1,28 @@
 import 'package:mobile/Components/shared/beaver_scaffold.dart';
+import 'package:mobile/dto/chat_admin/chat_message_admin.dart';
+import 'package:mobile/dto/chat_admin/room_data.dart';
 import 'package:mobile/generated/chat.pbgrpc.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile/main.dart';
 import 'package:grpc/grpc.dart' as $grpc;
+import 'package:mobile/services/dio_client.dart';
 
 class ChatAdminPage extends StatefulWidget {
-  final String userName;
 
-  ChatAdminPage({super.key, required this.userName});
+  ChatAdminPage({super.key});
 
   @override
   State<ChatAdminPage> createState() => ChatAdminPageState();
 }
 
 class ChatAdminPageState extends State<ChatAdminPage> {
-  final List<Map<String, String>> _messages = [];
+  late List<ChatMessageAdmin> _messages = [];
+  late Stream<MessageGrpc> stream = const Stream.empty();
+  final _dio = getit<DioClient>();
   late String userName;
-  late String roomId;
+  late RoomData roomData;
   final TextEditingController _messageController = TextEditingController();
-  final  _chatAdminService = ChatClient(getit<$grpc.ClientChannel>());
+  final  _chatAdminClient = ChatClient(getit<$grpc.ClientChannel>());
 
   @override
   void initState() {
@@ -27,46 +31,66 @@ class ChatAdminPageState extends State<ChatAdminPage> {
   }
 
   void fetchData(context) async {
-      var request = JoinRequest();
-  }
-
-  void _handleReceiveMessage(List<Object?>? parameters) {
-    if (parameters != null && parameters.length == 3) {
-      final user = parameters[0] as String;
-      final message = parameters[1] as String;
-      setState(() {
-        _messages.add({'text': message, 'sender': user != widget.userName ? 'me' : 'other'});
-      });
-    }
+    roomData = (await _dio.getAdminRoomData())!;
+    _messages = (await _dio.getAdminChatHistory())!;
+    var request = JoinRequest();
+    request.roomName = roomData.roomName;
+    request.userName = roomData.senderName;
+    stream = _chatAdminClient.connectToRoom(request);
   }
 
   Future<void> _sendMessage() async {
-
+    var mess = MessageGrpc();
+    mess.message = _messageController.text;
+    _messageController.text = "";
+    mess.userName = roomData.senderName;
+    mess.groupName = roomData.roomName;
+    mess.receiverUserName = roomData.receiverName;
+    mess.files.add(FileMessageGrpc());
+    await _chatAdminClient.sendMessage(mess);
   }
 
   @override
   Widget build(BuildContext context) {
     return BeaverScaffold(
-      title: 'Chat with ${widget.userName}',
+      title: 'Chat with Admin',
       body: Column(
         children: [
+          Center(
+            child: StreamBuilder<MessageGrpc>(
+              stream: stream, // Подписка на поток
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  _messages.add(
+                      ChatMessageAdmin(
+                          senderName: snapshot.data!.userName,
+                          content: snapshot.data!.message,
+                          timestamp: DateTime.now())
+                  ); // Отображение полученного сообщения
+                } else {
+                  return Text('No data yet');
+                }
+                return null!;
+              },
+            ),
+          ),
           Expanded(
             child: ListView.builder(
               itemCount: _messages.length,
               itemBuilder: (context, index) {
                 final message = _messages[index];
                 return Align(
-                  alignment: message['sender'] == 'me' ? Alignment.centerRight : Alignment.centerLeft,
+                  alignment: message.senderName != 'Admin' ? Alignment.centerRight : Alignment.centerLeft,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     child: Container(
                       decoration: BoxDecoration(
-                        color: message['sender'] == 'me' ? Colors.blue : Colors.grey,
+                        color: message.senderName != 'Admin' ? Colors.blue : Colors.grey,
                         borderRadius: BorderRadius.circular(8),
                       ),
                       padding: const EdgeInsets.all(8),
                       child: Text(
-                        message['text']!,
+                        message.content,
                         style: const TextStyle(color: Colors.white),
                       ),
                     ),
