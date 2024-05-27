@@ -13,6 +13,7 @@ services:
       - "15672:15672"
   mssql:
     image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: mssql
     networks:
       - my_network
     ports:
@@ -172,6 +173,7 @@ services:
       - ./mongo-data:/data/db
   react:
     image: front
+    container_name: front
     networks:
       - my_network
     build:
@@ -179,7 +181,40 @@ services:
       dockerfile: DockerFile
     ports:
       - "3000:3000"
-      
+  
+  clickhouse:
+    image: yandex/clickhouse-server:latest
+    container_name: clickhouse
+    networks:
+      - my_network
+    ports:
+      - "18123:8123"
+    volumes:
+      - ./clickhouse-data:/data/clickhouse-server/
+  
+  web-clickhouse:
+    image: web-clickhouse
+    networks:
+      - my_network
+    container_name: web-clickhouse
+    depends_on:
+      - clickhouse
+      - rabbitmq
+    build:
+      context: ./
+      dockerfile: DockerfileClickhouse
+    ports:
+      - "8085:80"
+    environment:
+      Clickhouse__ConnectionString: Host=clickhouse;Protocol=http;Port=8123;Username=default;
+      Clickhouse__DbName: BeaverTinder
+      Clickhouse__TableName: LikesMade
+      MessageBroker__Username: rabbitsa
+      MessageBroker__Password: mypa55w0rd!
+      MessageBroker__Hostname: rabbitmq
+      MessageBroker__Port: 5672
+    volumes:
+      - ~/.aspnet/https:/https:ro
   envoy:
     image: envoyproxy/envoy-dev
     networks: 
@@ -190,8 +225,6 @@ services:
     ports:
       - "9901:9901"
       - "8080:8080"
-    
-        
 networks: 
   my_network:
     driver: overlay

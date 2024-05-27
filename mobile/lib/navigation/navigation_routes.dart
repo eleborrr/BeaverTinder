@@ -7,4 +7,5 @@ class NavigationRoutes {
   static const String chat = '/chat';
   static const String shops = '/shops';
   static const String profile = '/profile';
+  static const String funFact = '/funFact';
 }

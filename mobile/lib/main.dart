@@ -9,6 +9,10 @@ import 'package:mobile/services/likes_service.dart';
 import 'package:mobile/navigation/navigation.dart';
 import 'package:mobile/services/auth_service.dart';
 import 'package:mobile/services/chat_service.dart';
+import 'package:mobile/services/dio_client.dart';
+import 'package:mobile/services/likes_made_service.dart';
+import 'package:mobile/services/likes_service.dart';
+import 'package:mobile/services/signalR_service.dart';
 import 'package:grpc/grpc.dart' as $grpc;
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +20,7 @@ import 'package:get_it/get_it.dart';
 import 'package:grpc/grpc.dart';
 
 final getit = GetIt.instance;
-const baseIp = '192.168.31.9';
+const baseIp = '192.168.31.10';
 const link = 'http://${baseIp}:8080/graphql/';
 
 void setup() {
@@ -36,6 +40,8 @@ void setup() {
   getit.registerSingleton<SubscriptionServiceBase>(SubscriptionService());
   getit.registerSingleton<LikesServiceBase>(LikesService());
   getit.registerSingleton<ChatForTwoServiceBase>(ChatForTwoService());
+  getit.registerSingleton<DioClient>(DioClient());
+  getit.registerSingleton<LikesMadeServiceBase>(LikesMadeService());
 
   final channel = $grpc.ClientChannel(
       baseIp,

@@ -27,6 +27,8 @@ const LikePage = () =>
     }, [navigate, token])
 
     const GetGeolocation = useCallback((prof) => {
+        if (!CheckGeolocationAvailable())
+            return;
         axiosInstance.post("/geolocation",{
             userId : prof.id
         },
@@ -68,7 +70,7 @@ const LikePage = () =>
     
                 if (res.data){
                     setGeolocationAvailable(false);
-                    CheckGeolocationAvailable(jwtDecode(token)["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"]);
+                    CheckGeolocationAvailable();
                     GetGeolocation(res.data);
                     setDistance(res.data.distance);
                 }
@@ -129,8 +131,9 @@ const LikePage = () =>
 
     }
 
-    function CheckGeolocationAvailable(array)
+    function CheckGeolocationAvailable()
     {
+        let array = jwtDecode(token)["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"]
         if (Array.isArray(array)) {
             array.some(element => {
                 if (element === "UserMoreLikesAndMap" || element === "Admin" || element === "Moderator")

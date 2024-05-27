@@ -1,3 +1,4 @@
+import 'package:mobile/pages/fun_fact_page.dart';
 import 'package:mobile/pages/subscription_page.dart';
 import 'package:mobile/Pages/register_page.dart';
 import 'package:mobile/Pages/profile_page.dart';
@@ -45,6 +46,10 @@ MaterialPageRoute? buildRoutes(RouteSettings settings) {
       NavigationRoutes.profile => BlocProvider(
         create: (_) => LoadingBloc(),
         child: const ProfilePage(),
+      ),
+      NavigationRoutes.funFact => BlocProvider(
+        create: (_) => LoadingBloc(),
+        child: FunFactPage(),
       ),
       _ => throw Error()
     };

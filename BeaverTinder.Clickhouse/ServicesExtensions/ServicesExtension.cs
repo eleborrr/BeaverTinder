@@ -1,11 +1,9 @@
 ﻿using BeaverTinder.Application.Configs;
-using BeaverTinder.Application.Dto.BeaverMatchSearch;
-using BeaverTinder.Shared.StaticValues;
-using MassTransit;
-using MassTransit.RabbitMqTransport.Topology;
+using BeaverTinder.Clickhouse.Services;
 using RabbitMQ.Client;
+using MassTransit;
 
-namespace BeaverTinder.API.ServicesExtensions.MassTransit;
+namespace BeaverTinder.Clickhouse.ServicesExtensions;
 
 public static class ServiceCollectionExtension
 {
@@ -22,6 +20,8 @@ public static class ServiceCollectionExtension
         
         services.AddMassTransit(busConfigurator =>
         {
+            busConfigurator.AddConsumer<LikesConsumer>();
+            
             busConfigurator.UsingRabbitMq((context, configurator) =>
             {
                 var uri =
@@ -46,7 +46,7 @@ public static class ServiceCollectionExtension
             var connection = factory.CreateConnection();
             var channel = connection.CreateModel();
 
-            channel.ExchangeDeclare(Clickhouse.ExchangeName, ExchangeType.Direct);
+            channel.ExchangeDeclare(Shared.StaticValues.Clickhouse.ExchangeName, ExchangeType.Direct);
 
             return channel;
         });
