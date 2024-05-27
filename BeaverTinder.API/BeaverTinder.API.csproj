@@ -38,6 +38,5 @@
       <ProjectReference Include="..\BeaverTinder.Domain\BeaverTinder.Domain.csproj" />
       <ProjectReference Include="..\BeaverTinder.Infrastructure\BeaverTinder.Infrastructure.csproj" />
       <ProjectReference Include="..\BeaverTinder.Shared\BeaverTinder.Shared.csproj" />
-      <ProjectReference Include="..\BeaverTinder.SupportChat\BeaverTinder.SupportChat.csproj" />
     </ItemGroup>
 </Project>

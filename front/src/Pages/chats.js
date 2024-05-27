@@ -66,7 +66,7 @@ const ChatsPage = () => {
                     </div>
                     <ul>
                     {chats.map(chat => (
-                        <li onClick={() => navigate(`${chat.userName}`)}>
+                        <li key={chat.userName} onClick={() => navigate(`${chat.userName}`)}>
                             <a href="/" className='thumbnail'>
                                 <img alt="chat icon" src = {chat.image}/> 
                             </a>

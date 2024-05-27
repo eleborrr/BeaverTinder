@@ -68,7 +68,10 @@ public class ServiceManager : IServiceManager
         _chatService = new Lazy<IChatService>(() => new ChatService(repositoryManager));
         _supportChatService = new Lazy<ISupportChatService>(() =>
             new SupportChatService(repositoryManager, publishEndpoint, userManager));
+        UserManager = userManager;
     }
+
+    public UserManager<User> UserManager { get; }
 
     public IEmailService EmailService => _emailService.Value;
     public ITwoFaService TwoFaService => _twoFaService.Value;

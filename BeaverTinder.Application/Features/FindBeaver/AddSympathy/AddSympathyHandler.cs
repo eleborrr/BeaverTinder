@@ -1,10 +1,13 @@
 ﻿using BeaverTinder.Application.Dto.BeaverMatchSearch;
 using BeaverTinder.Application.Dto.MediatR;
+using BeaverTinder.Application.Features.LikesMade;
 using BeaverTinder.Application.Services.Abstractions;
 using BeaverTinder.Application.Services.Abstractions.Cqrs.Commands;
 using BeaverTinder.Application.Services.Abstractions.Likes;
 using BeaverTinder.Domain.Entities;
 using BeaverTinder.Domain.Repositories.Abstractions;
+using MassTransit;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Caching.Memory;
 
@@ -16,17 +19,20 @@ public class AddSympathyHandler : ICommandHandler<AddSympathyCommand, LikeRespon
     private readonly IRepositoryManager _repositoryManager;
     private readonly IMemoryCache _memoryCache;
     private readonly ILikeService _likeService;
+    private readonly IMediator _mediator;
 
     public AddSympathyHandler(
         UserManager<User> userManager,
         IRepositoryManager repositoryManager,
         IMemoryCache memoryCache,
-        IServiceManager _serviceManager)
+        IServiceManager _serviceManager,
+        IMediator mediator)
     {
-        _userManager = userManager;
-        _repositoryManager = repositoryManager;
-        _memoryCache = memoryCache;
         _likeService = _serviceManager.LikeService;
+        _repositoryManager = repositoryManager;
+        _userManager = userManager;
+        _memoryCache = memoryCache;
+        _mediator = mediator;
     }
 
     public async Task<Result<LikeResponseDto>> Handle(AddSympathyCommand request, CancellationToken cancellationToken)
@@ -55,6 +61,7 @@ public class AddSympathyHandler : ICommandHandler<AddSympathyCommand, LikeRespon
 
         var newLike = new Domain.Entities.Like { UserId = request.User1.Id, LikedUserId = request.UserId2, LikeDate = DateTime.Now, Sympathy = request.Sympathy};
         await _repositoryManager.LikeRepository.AddAsync(newLike);
+        await _mediator.Send(new AddLikeMadeQuery(), cancellationToken);
         return new Result<LikeResponseDto>(new LikeResponseDto(LikeResponseStatus.Ok), true);
     }
     

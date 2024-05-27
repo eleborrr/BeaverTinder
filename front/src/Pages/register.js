@@ -174,6 +174,7 @@ const RegisterPage = () => {
             })
         }
         catch(error){
+            alert("Network error, try again later");
         }
 
     };
@@ -212,7 +213,7 @@ const RegisterPage = () => {
                     <div className="log-reg-inner">
                         <div className="section-header">
                             <h2 className="title">Welcome to BeaverTinder </h2>
-                            <p>Let's create your profile! Just fill in the fields below, and we’ll get a new account. </p>
+                            <p>Let’s create your profile! Just fill in the fields below, and we’ll get a new account. </p>
                         </div>
                         <div className="main-content">
                             {errorCode === 'ERR_NETWORK' &&

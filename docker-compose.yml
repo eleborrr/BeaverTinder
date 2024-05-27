@@ -1,7 +1,9 @@
 version: '3.9'
 services:
   rabbitmq:
-    image: rabbitmq:3.8-management-alpine
+    image: rabbitmq
+    networks:
+      - my_network
     container_name: rabbitmq
     environment:
       RABBITMQ_DEFAULT_USER: rabbitsa
@@ -11,6 +13,9 @@ services:
       - "15672:15672"
   mssql:
     image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: mssql
+    networks:
+      - my_network
     ports:
       - "1414:1433"
     volumes:
@@ -20,6 +25,8 @@ services:
       MSSQL_SA_PASSWORD: superPuperPassword!15641
   web:
     image: back
+    networks:
+      - my_network
     depends_on:
       - mssql
       - rabbitmq
@@ -33,11 +40,17 @@ services:
       MessageBroker__Password: mypa55w0rd!
       MessageBroker__Hostname: rabbitmq
       MessageBroker__Port: 5672
+      CORS_ENABLED: 'true'
+      CORS_ORIGIN: 'http://localhost:3000'
+      CORS_METHODS: 'GET,POST,PATCH,DELETE'
+      CORS_ALLOWED_HEADERS: 'Content-Type,Authorization'
       ConnectionStrings__BeaverTinderDatabase: Data Source=mssql;Initial Catalog=BeaverTinderDatabase;User=sa;Password=superPuperPassword!15641;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;MultipleActiveResultSets=true;
     volumes:
       - ~/.aspnet/https:/https:ro
   supportconsumer:
     image: support-consumer
+    networks:
+      - my_network
     depends_on:
       - mssql
       - rabbitmq
@@ -57,6 +70,8 @@ services:
   payment:
     container_name: payment
     image: payment-service
+    networks:
+      - my_network
     depends_on:
       - mssql
       - rabbitmq
@@ -64,13 +79,15 @@ services:
       context: ./
       dockerfile: DockerfilePayment
     ports:
-      - "8084:84"
+      - "8084:80"
     environment:
       ConnectionStrings__BeaverTinderDatabase: Data Source=mssql;Initial Catalog=BeaverTinderDatabase;User=sa;Password=superPuperPassword!15641;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;MultipleActiveResultSets=true;
     volumes:
       - ~/.aspnet/https:/https:ro   
   subscription:
     image: subscription-service
+    networks:
+      - my_network
     container_name: subscription
     depends_on:
       - mssql
@@ -79,13 +96,15 @@ services:
       context: ./
       dockerfile: DockerfileSub
     ports:
-      - "8083:83"
+      - "8083:80"
     environment:
       ConnectionStrings__BeaverTinderDatabase: Data Source=mssql;Initial Catalog=BeaverTinderDatabase;User=sa;Password=superPuperPassword!15641;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;MultipleActiveResultSets=true;
     volumes:
       - ~/.aspnet/https:/https:ro
   s3:
     image: s3
+    networks:
+      - my_network
     depends_on:
       - mssql
       - rabbitmq
@@ -115,7 +134,9 @@ services:
     volumes:
       - ~/.aspnet/https:/https:ro
   minio:
-    image: minio/minio:latest
+    image: minio/minio
+    networks:
+      - my_network
     command: server --console-address ":9001" /data/
     ports:
       - "9000:9000"
@@ -131,7 +152,9 @@ services:
       timeout: 20s
       retries: 3
   redis:
-    image: redis:latest
+    image: redis
+    networks:
+      - my_network
     restart: always
     ports:
       - '6379:6379'
@@ -141,15 +164,67 @@ services:
       - REDIS_DATABASES=16
   mongo:
     hostname: mongo
-    image: mongo:latest
+    image: mongo
+    networks:
+      - my_network
     ports:
       - '27017:27017'
     volumes:
       - ./mongo-data:/data/db
   react:
     image: front
+    container_name: front
+    networks:
+      - my_network
     build:
       context: /front
       dockerfile: DockerFile
     ports:
       - "3000:3000"
+  
+  clickhouse:
+    image: yandex/clickhouse-server:latest
+    container_name: clickhouse
+    networks:
+      - my_network
+    ports:
+      - "18123:8123"
+    volumes:
+      - ./clickhouse-data:/data/clickhouse-server/
+  
+  web-clickhouse:
+    image: web-clickhouse
+    networks:
+      - my_network
+    container_name: web-clickhouse
+    depends_on:
+      - clickhouse
+      - rabbitmq
+    build:
+      context: ./
+      dockerfile: DockerfileClickhouse
+    ports:
+      - "8085:80"
+    environment:
+      Clickhouse__ConnectionString: Host=clickhouse;Protocol=http;Port=8123;Username=default;
+      Clickhouse__DbName: BeaverTinder
+      Clickhouse__TableName: LikesMade
+      MessageBroker__Username: rabbitsa
+      MessageBroker__Password: mypa55w0rd!
+      MessageBroker__Hostname: rabbitmq
+      MessageBroker__Port: 5672
+    volumes:
+      - ~/.aspnet/https:/https:ro
+  envoy:
+    image: envoyproxy/envoy-dev
+    networks: 
+      - my_network
+    container_name: proxy
+    volumes:
+      - ./envoy.yaml:/etc/envoy/envoy.yaml
+    ports:
+      - "9901:9901"
+      - "8080:8080"
+networks: 
+  my_network:
+    driver: overlay

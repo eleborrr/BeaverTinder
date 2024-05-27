@@ -140,7 +140,7 @@ const MyLikesPage = () =>
         </div>
         :
         <div>
-        {likeLimit? <p>You'r days limit ends</p>:
+        {likeLimit? <p>You’r days limit ends</p>:
         <div>
             {profile ? 
             <div>

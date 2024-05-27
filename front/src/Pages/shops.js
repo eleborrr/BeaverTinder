@@ -46,6 +46,7 @@ const ShopsPage = () => {
 
         }
         catch(e){
+            alert("Network error, try again later");
         }
     }, [navigate, token])
     return(

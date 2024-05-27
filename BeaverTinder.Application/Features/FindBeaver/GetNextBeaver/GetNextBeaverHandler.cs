@@ -13,7 +13,6 @@ namespace BeaverTinder.Application.Features.FindBeaver.GetNextBeaver;
 
 public class GetNextBeaverHandler : IQueryHandler<GetNextBeaverQuery, SearchUserResultDto>
 {
-    
     private readonly IMemoryCache _memoryCache;
     private readonly IRepositoryManager _repositoryManager;
     private readonly UserManager<User> _userManager;
@@ -32,7 +31,7 @@ public class GetNextBeaverHandler : IQueryHandler<GetNextBeaverQuery, SearchUser
         CancellationToken cancellationToken)
     {
         _memoryCache.TryGetValue(request.CurrentUser!.Id, out List<User>? likesCache);
-        if (likesCache == null)
+        if (likesCache == null || likesCache?.Count == 0)
         {
             var likes = (await _repositoryManager.LikeRepository.GetAll()).ToList(); // ???
 
