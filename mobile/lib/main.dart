@@ -1,20 +1,23 @@
 import 'package:mobile/components/shared/beaver_auth_provider.dart';
 import 'package:mobile/components/shared/beaver_splash_screen.dart';
+import 'package:mobile/services/chat_for_two_service.dart';
+import 'package:mobile/services/subscription_service.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:mobile/services/account_service.dart';
+import 'package:mobile/services/signalR_service.dart';
+import 'package:mobile/services/likes_service.dart';
 import 'package:mobile/navigation/navigation.dart';
+import 'package:mobile/services/auth_service.dart';
+import 'package:mobile/services/chat_service.dart';
+import 'package:grpc/grpc.dart' as $grpc;
+import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:mobile/services/auth_service.dart';
-import 'package:mobile/services/chat_for_two_service.dart';
-import 'package:mobile/services/chat_service.dart';
-import 'package:mobile/services/likes_service.dart';
-import 'package:mobile/services/signalR_service.dart';
-import 'package:provider/provider.dart';
-import 'package:mobile/services/subscription_service.dart';
+import 'package:grpc/grpc.dart';
 
 final getit = GetIt.instance;
-const link = 'http://192.168.31.9:8080/graphql/';
+const baseIp = '192.168.31.9';
+const link = 'http://${baseIp}:8080/graphql/';
 
 void setup() {
   getit.registerSingleton<AuthProvider>(AuthProvider());
@@ -33,6 +36,16 @@ void setup() {
   getit.registerSingleton<SubscriptionServiceBase>(SubscriptionService());
   getit.registerSingleton<LikesServiceBase>(LikesService());
   getit.registerSingleton<ChatForTwoServiceBase>(ChatForTwoService());
+
+  final channel = $grpc.ClientChannel(
+      baseIp,
+      port: 8080,
+      options: const ChannelOptions(
+      credentials: $grpc.ChannelCredentials.insecure(),
+
+  ));
+
+  getit.registerSingleton<$grpc.ClientChannel>(channel);
 }
 
 void main() {
