@@ -8,6 +8,7 @@ using BeaverTinder.Infrastructure.Database;
 using BeaverTinder.Infrastructure.Database.Repositories;
 using BeaverTinder.SupportChat.Services;
 using BeaverTinder.SupportChat.ServicesExtensions.RabbitMq;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

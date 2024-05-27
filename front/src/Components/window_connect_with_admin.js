@@ -1,12 +1,10 @@
 import { axiosInstance } from "../Components/axios_server";
-import * as signalR from "@microsoft/signalr";
 import Cookies from "js-cookie";
 import React, { useCallback, useEffect, useState, useRef} from 'react';
 import { useParams } from "react-router-dom";
 import './../assets/css/chat_with_admin.css'
-import ServerURL from './server_url';
 import { ChatClient } from "../generated/chat_grpc_web_pb";
-import Msg from "../generated/chat_pb";
+import { MessageGrpc, JoinRequest } from "../generated/chat_pb"
 import { FileUpload } from "./file_uploader";
 
 const ChatWindow = () => {
@@ -15,7 +13,7 @@ const ChatWindow = () => {
   const [isOpen, setIsOpen] = useState(false);
   const messagesListRef = useRef(null);
   const { nickname } = useParams();
-  const client = new ChatClient('http://localhost:8080/', null, null); // address? микросервис с мобилкой 0_о
+  const client = new ChatClient('http://localhost:8080', null, null);
 
     useEffect(() => {
     messagesListRef.current.scrollTop = messagesListRef.current.scrollHeight;
@@ -53,107 +51,18 @@ const ChatWindow = () => {
   const togglePopup = () => {
     setIsOpen(!isOpen);
   }
-    const callbackSignalR = useCallback((roomData) => {
-        let connection = new signalR.HubConnectionBuilder().withUrl(`${ServerURL}/supportChatHub`).build();
+    const callbackGrpc = useCallback((roomData) => {
 
-        connection.on("Receive", function (user, message){
-            console.log("received back");
-            var elem = document.createElement("div");
-            var author = document.createElement("span");
-            var content = document.createElement("span");
-            if(user === nickname){
-                elem.className="message-from";
+        console.log(roomData);
+        const request = new JoinRequest();
+        request.setRoomName(roomData.roomName);
+        request.setUserName(roomData.senderName);
 
-                author.className = "message-from";
-            }
-            else{
-                elem.className="message-to";
-
-                author.className = "message-to";
-            }
-            author.textContent = user + ":";
-
-            content.className = "message-text";
-            content.textContent = message;
-
-            elem.appendChild(author);
-            elem.appendChild(content);
-
-            document.getElementById("messagesList-admin").appendChild(elem);
-        });
-
-        connection.start().then(res => {connection.invoke("ConnectToRoom", `${roomData.roomName}`)
-            .catch(function (err) {
-                return console.error(err.toString());
-            })});
-    
-        // document.addEventListener('DOMContentLoaded', function(){
-        //     var a = document.getElementById("sendButton");
-        //     console.log(a);
-        //   });
-        document.getElementById('sendButton-admin').addEventListener("click", function (event) {
-            console.log("Sended");
-            var message = document.getElementById("messageInput-admin").value;
-            document.getElementById("messageInput-admin").value = "";
-            messagesListRef.current.scrollTop = messagesListRef.current.scrollHeight;
-            const request = new Msg();
-            request.setContent(message)
-            request.setFrom(roomData.senderName)
-            request.setTo(roomData.senderName)
-            request.setRoom(roomData.roomName)
-            request.setTime(Date.now())
-            console.log(request)
-            const headers = {
-                Authorization: `Bearer ${token}`,
-                Accept : "application/json"
-            };
-            client.sendMsg(request, headers, (err, resp) => {
-                if (err) console.log(err);
-                console.log(resp);
-            })
-            // connection.invoke("SendPrivateMessage", `${roomData.senderName}`, message, `${roomData.receiverName}`, `${roomData.roomName}`).catch(function (err) {
-            //     return console.error(err.toString());
-            // });
-            event.preventDefault();
-        });
-    }, [nickname])
-
-    useEffect(() => {
-        let room;
-        axiosInstance.get(`/im/supportChat?username=Admin`,
-            {
-                headers:{
-                    Authorization: `Bearer ${token}`,
-                    Accept : "application/json"
-                }
-            })
-            .then(response => {
-                room = response.data; // выводим данные, полученные из сервера
-                callbackSignalR(room);
-            })
-            .catch();
-        let messages;
-        axiosInstance.get(`/history?username=Admin`,
-            {
-                headers:{
-                    Authorization: `Bearer ${token}`,
-                    Accept : "application/json"
-                }
-            })
-            .then(response => {
-                messages = response.data; // выводим данные, полученные из сервера
-                if(messages){
-                    messages.forEach(msg => handleSendMessage(msg))
-                }
-            })
-            .catch();
-    }, [callbackSignalR, handleSendMessage, nickname, token])
+        const stream = client.connectToRoom(request);
 
 
-    useEffect(() =>{
-        console.log("AAAA");
-        // const call = client.receiveMsg({"Authorization": token});
-        call.on('data', (message) => {
+        stream.on('data', (message) => {
+            console.log(message.getMessage());
             console.log("normal chat recieved");
             var elem = document.createElement("div");
             var author = document.createElement("span");
@@ -182,7 +91,63 @@ const ChatWindow = () => {
             console.log(message);
             setMessages(prev => [...prev, message])
         });
-    }, []);
+
+        
+        document.getElementById('sendButton-admin').addEventListener("click", function (event) {
+            console.log("Sended");
+            var message = document.getElementById("messageInput-admin").value;
+            document.getElementById("messageInput-admin").value = "";
+            messagesListRef.current.scrollTop = messagesListRef.current.scrollHeight;
+            const request = new MessageGrpc();
+            request.setMessage(message)
+            request.setUserName(roomData.senderName)
+            request.setReceiverUserName("Admin")
+            request.setGroupName(roomData.roomName)
+            // request.setFiles([])
+            console.log(request)
+            const headers = {
+                Authorization: `Bearer ${token}`,
+                Accept : "application/json"
+            };
+            client.sendMessage(request, headers, (err, resp) => {
+                if (err) console.log(err);
+                console.log(resp);
+            })
+            event.preventDefault();
+        });
+    }, [nickname])
+
+    useEffect(() => {
+        let room;
+        axiosInstance.get(`/im/supportChat?username=Admin`,
+            {
+                headers:{
+                    Authorization: `Bearer ${token}`,
+                    Accept : "application/json"
+                }
+            })
+            .then(response => {
+                room = response.data; // выводим данные, полученные из сервера
+                callbackGrpc(room);
+            })
+            .catch();
+        let messages;
+        axiosInstance.get(`/history?username=Admin`,
+            {
+                headers:{
+                    Authorization: `Bearer ${token}`,
+                    Accept : "application/json"
+                }
+            })
+            .then(response => {
+                messages = response.data; // выводим данные, полученные из сервера
+                if(messages){
+                    messages.forEach(msg => handleSendMessage(msg))
+                }
+            })
+            .catch();
+    }, [callbackGrpc, handleSendMessage, nickname, token])
+
 
   return (
     <div>

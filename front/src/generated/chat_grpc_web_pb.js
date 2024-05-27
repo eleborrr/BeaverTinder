@@ -11,8 +11,6 @@
 const grpc = {};
 grpc.web = require('grpc-web');
 
-
-var google_protobuf_empty_pb = require('google-protobuf/google/protobuf/empty_pb')
 const proto = {};
 proto.greet = require('./chat_pb');
 
@@ -91,160 +89,105 @@ proto.greet.ChatPromiseClient =
 /**
  * @const
  * @type {!grpc.web.AbstractClientBase.MethodInfo<
- *   !proto.google.protobuf.Empty,
- *   !proto.greet.JoinResponse>}
+ *   !proto.greet.JoinRequest,
+ *   !proto.greet.MessageGrpc>}
  */
-const methodInfo_Chat_JoinChat = new grpc.web.AbstractClientBase.MethodInfo(
-  proto.greet.JoinResponse,
-  /** @param {!proto.google.protobuf.Empty} request */
+const methodInfo_Chat_ConnectToRoom = new grpc.web.AbstractClientBase.MethodInfo(
+  proto.greet.MessageGrpc,
+  /** @param {!proto.greet.JoinRequest} request */
   function(request) {
     return request.serializeBinary();
   },
-  proto.greet.JoinResponse.deserializeBinary
+  proto.greet.MessageGrpc.deserializeBinary
 );
 
 
 /**
- * @param {!proto.google.protobuf.Empty} request The
- *     request proto
+ * @param {!proto.greet.JoinRequest} request The request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @param {function(?grpc.web.Error, ?proto.greet.JoinResponse)}
- *     callback The callback function(error, response)
- * @return {!grpc.web.ClientReadableStream<!proto.greet.JoinResponse>|undefined}
+ * @return {!grpc.web.ClientReadableStream<!proto.greet.MessageGrpc>}
  *     The XHR Node Readable Stream
  */
-proto.greet.ChatClient.prototype.joinChat =
-    function(request, metadata, callback) {
-  return this.client_.rpcCall(this.hostname_ +
-      '/greet.Chat/JoinChat',
+proto.greet.ChatClient.prototype.connectToRoom =
+    function(request, metadata) {
+  return this.client_.serverStreaming(this.hostname_ +
+      '/greet.Chat/ConnectToRoom',
       request,
       metadata || {},
-      methodInfo_Chat_JoinChat,
-      callback);
+      methodInfo_Chat_ConnectToRoom);
 };
 
 
 /**
- * @param {!proto.google.protobuf.Empty} request The
- *     request proto
+ * @param {!proto.greet.JoinRequest} request The request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @return {!Promise<!proto.greet.JoinResponse>}
- *     A native promise that resolves to the response
+ * @return {!grpc.web.ClientReadableStream<!proto.greet.MessageGrpc>}
+ *     The XHR Node Readable Stream
  */
-proto.greet.ChatPromiseClient.prototype.joinChat =
+proto.greet.ChatPromiseClient.prototype.connectToRoom =
     function(request, metadata) {
-  return this.client_.unaryCall(this.hostname_ +
-      '/greet.Chat/JoinChat',
+  return this.client_.serverStreaming(this.hostname_ +
+      '/greet.Chat/ConnectToRoom',
       request,
       metadata || {},
-      methodInfo_Chat_JoinChat);
+      methodInfo_Chat_ConnectToRoom);
 };
 
 
 /**
  * @const
  * @type {!grpc.web.AbstractClientBase.MethodInfo<
- *   !proto.greet.Msg,
- *   !proto.google.protobuf.Empty>}
+ *   !proto.greet.MessageGrpc,
+ *   !proto.greet.Empty>}
  */
-const methodInfo_Chat_SendMsg = new grpc.web.AbstractClientBase.MethodInfo(
-  google_protobuf_empty_pb.Empty,
-  /** @param {!proto.greet.Msg} request */
+const methodInfo_Chat_SendMessage = new grpc.web.AbstractClientBase.MethodInfo(
+  proto.greet.Empty,
+  /** @param {!proto.greet.MessageGrpc} request */
   function(request) {
     return request.serializeBinary();
   },
-  google_protobuf_empty_pb.Empty.deserializeBinary
+  proto.greet.Empty.deserializeBinary
 );
 
 
 /**
- * @param {!proto.greet.Msg} request The
+ * @param {!proto.greet.MessageGrpc} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @param {function(?grpc.web.Error, ?proto.google.protobuf.Empty)}
+ * @param {function(?grpc.web.Error, ?proto.greet.Empty)}
  *     callback The callback function(error, response)
- * @return {!grpc.web.ClientReadableStream<!proto.google.protobuf.Empty>|undefined}
+ * @return {!grpc.web.ClientReadableStream<!proto.greet.Empty>|undefined}
  *     The XHR Node Readable Stream
  */
-proto.greet.ChatClient.prototype.sendMsg =
+proto.greet.ChatClient.prototype.sendMessage =
     function(request, metadata, callback) {
   return this.client_.rpcCall(this.hostname_ +
-      '/greet.Chat/SendMsg',
+      '/greet.Chat/SendMessage',
       request,
       metadata || {},
-      methodInfo_Chat_SendMsg,
+      methodInfo_Chat_SendMessage,
       callback);
 };
 
 
 /**
- * @param {!proto.greet.Msg} request The
+ * @param {!proto.greet.MessageGrpc} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @return {!Promise<!proto.google.protobuf.Empty>}
+ * @return {!Promise<!proto.greet.Empty>}
  *     A native promise that resolves to the response
  */
-proto.greet.ChatPromiseClient.prototype.sendMsg =
+proto.greet.ChatPromiseClient.prototype.sendMessage =
     function(request, metadata) {
   return this.client_.unaryCall(this.hostname_ +
-      '/greet.Chat/SendMsg',
+      '/greet.Chat/SendMessage',
       request,
       metadata || {},
-      methodInfo_Chat_SendMsg);
-};
-
-
-/**
- * @const
- * @type {!grpc.web.AbstractClientBase.MethodInfo<
- *   !proto.google.protobuf.Empty,
- *   !proto.greet.Msg>}
- */
-const methodInfo_Chat_ReceiveMsg = new grpc.web.AbstractClientBase.MethodInfo(
-  proto.greet.Msg,
-  /** @param {!proto.google.protobuf.Empty} request */
-  function(request) {
-    return request.serializeBinary();
-  },
-  proto.greet.Msg.deserializeBinary
-);
-
-
-/**
- * @param {!proto.google.protobuf.Empty} request The request proto
- * @param {?Object<string, string>} metadata User defined
- *     call metadata
- * @return {!grpc.web.ClientReadableStream<!proto.greet.Msg>}
- *     The XHR Node Readable Stream
- */
-proto.greet.ChatClient.prototype.receiveMsg =
-    function(request, metadata) {
-  return this.client_.serverStreaming(this.hostname_ +
-      '/greet.Chat/ReceiveMsg',
-      request,
-      metadata || {},
-      methodInfo_Chat_ReceiveMsg);
-};
-
-
-/**
- * @param {!proto.google.protobuf.Empty} request The request proto
- * @param {?Object<string, string>} metadata User defined
- *     call metadata
- * @return {!grpc.web.ClientReadableStream<!proto.greet.Msg>}
- *     The XHR Node Readable Stream
- */
-proto.greet.ChatPromiseClient.prototype.receiveMsg =
-    function(request, metadata) {
-  return this.client_.serverStreaming(this.hostname_ +
-      '/greet.Chat/ReceiveMsg',
-      request,
-      metadata || {},
-      methodInfo_Chat_ReceiveMsg);
+      methodInfo_Chat_SendMessage);
 };
 
 
