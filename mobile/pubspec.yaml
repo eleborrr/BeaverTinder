@@ -44,6 +44,8 @@ dependencies:
   cupertino_icons: ^1.0.6
   dio: ^5.4.3+1
   dart_amqp: ^0.3.0
+  protobuf: ^3.1.0
+  grpc: ^3.2.4
 
 dev_dependencies:
   flutter_test:

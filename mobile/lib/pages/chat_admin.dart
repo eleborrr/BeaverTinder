@@ -1,55 +1,33 @@
-import 'package:flutter/material.dart';
 import 'package:mobile/Components/shared/beaver_scaffold.dart';
+import 'package:mobile/generated/chat.pbgrpc.dart';
+import 'package:flutter/material.dart';
 import 'package:mobile/main.dart';
-import 'package:mobile/services/chat_for_two_service.dart';
-import 'package:mobile/services/signalR_service.dart';
-import 'package:signalr_core/signalr_core.dart';
+import 'package:grpc/grpc.dart' as $grpc;
 
-class ChatPage extends StatefulWidget {
+class ChatAdminPage extends StatefulWidget {
   final String userName;
 
-  ChatPage({super.key, required this.userName});
+  ChatAdminPage({super.key, required this.userName});
 
   @override
-  State<ChatPage> createState() => _ChatPageState();
+  State<ChatAdminPage> createState() => ChatAdminPageState();
 }
 
-class _ChatPageState extends State<ChatPage> {
+class ChatAdminPageState extends State<ChatAdminPage> {
   final List<Map<String, String>> _messages = [];
-  late SignalRService _signalRService;
   late String userName;
   late String roomId;
   final TextEditingController _messageController = TextEditingController();
-  final ChatForTwoServiceBase _chatService = getit<ChatForTwoServiceBase>();
+  final  _chatAdminService = ChatClient(getit<$grpc.ClientChannel>());
 
   @override
   void initState() {
     super.initState();
-    fetchData();
+    fetchData(this);
   }
 
-  void fetchData() {
-    _chatService.getChatAsync(widget.userName).then((chatForTwoResponse) {
-      if (chatForTwoResponse.success != null) {
-        setState(() {
-          roomId = chatForTwoResponse.success!.roomName;
-          userName = chatForTwoResponse.success!.senderName;
-        });
-
-        _signalRService = SignalRService('http://192.168.129.174:4040');
-        _signalRService.hubConnection.on('ReceivePrivateMessage', _handleReceiveMessage);
-
-        _signalRService.connect().then((_) {
-          _signalRService.getMessages(roomId);
-        }).catchError((error) {
-          print('Error connecting to SignalR: $error');
-        });
-      } else {
-        print('Error fetching chat data');
-      }
-    }).catchError((error) {
-      print('Error fetching chat data: $error');
-    });
+  void fetchData(context) async {
+      var request = JoinRequest();
   }
 
   void _handleReceiveMessage(List<Object?>? parameters) {
@@ -63,10 +41,7 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   Future<void> _sendMessage() async {
-    if (_messageController.text.isNotEmpty) {
-      await _signalRService.sendMessage(userName, _messageController.text, [], widget.userName, roomId);
-      _messageController.clear();
-    }
+
   }
 
   @override
@@ -127,7 +102,6 @@ class _ChatPageState extends State<ChatPage> {
   @override
   void dispose() {
     _messageController.dispose();
-    _signalRService.disconnect();
     super.dispose();
   }
 }

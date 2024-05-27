@@ -1,7 +1,7 @@
 version: '3.9'
 services:
   rabbitmq:
-    image: rabbitmq:3.8-management-alpine
+    image: rabbitmq
     networks:
       - my_network
     container_name: rabbitmq
@@ -134,7 +134,7 @@ services:
     volumes:
       - ~/.aspnet/https:/https:ro
   minio:
-    image: minio/minio:latest
+    image: minio/minio
     networks:
       - my_network
     command: server --console-address ":9001" /data/
@@ -152,7 +152,7 @@ services:
       timeout: 20s
       retries: 3
   redis:
-    image: redis:latest
+    image: redis
     networks:
       - my_network
     restart: always
@@ -164,7 +164,7 @@ services:
       - REDIS_DATABASES=16
   mongo:
     hostname: mongo
-    image: mongo:latest
+    image: mongo
     networks:
       - my_network
     ports:
@@ -215,7 +215,16 @@ services:
       MessageBroker__Port: 5672
     volumes:
       - ~/.aspnet/https:/https:ro
-
+  envoy:
+    image: envoyproxy/envoy-dev
+    networks: 
+      - my_network
+    container_name: proxy
+    volumes:
+      - ./envoy.yaml:/etc/envoy/envoy.yaml
+    ports:
+      - "9901:9901"
+      - "8080:8080"
 networks: 
   my_network:
     driver: overlay

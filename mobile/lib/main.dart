@@ -1,19 +1,23 @@
 import 'package:mobile/components/shared/beaver_auth_provider.dart';
 import 'package:mobile/components/shared/beaver_splash_screen.dart';
+import 'package:mobile/services/chat_for_two_service.dart';
+import 'package:mobile/services/subscription_service.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:mobile/services/account_service.dart';
+import 'package:mobile/services/signalR_service.dart';
+import 'package:mobile/services/likes_service.dart';
 import 'package:mobile/navigation/navigation.dart';
-import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:mobile/services/auth_service.dart';
-import 'package:mobile/services/chat_for_two_service.dart';
 import 'package:mobile/services/chat_service.dart';
 import 'package:mobile/services/dio_client.dart';
 import 'package:mobile/services/likes_made_service.dart';
 import 'package:mobile/services/likes_service.dart';
 import 'package:mobile/services/signalR_service.dart';
+import 'package:grpc/grpc.dart' as $grpc;
 import 'package:provider/provider.dart';
-import 'package:mobile/services/subscription_service.dart';
+import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:grpc/grpc.dart';
 
 final getit = GetIt.instance;
 const baseIp = '192.168.31.10';
@@ -38,6 +42,16 @@ void setup() {
   getit.registerSingleton<ChatForTwoServiceBase>(ChatForTwoService());
   getit.registerSingleton<DioClient>(DioClient());
   getit.registerSingleton<LikesMadeServiceBase>(LikesMadeService());
+
+  final channel = $grpc.ClientChannel(
+      baseIp,
+      port: 8080,
+      options: const ChannelOptions(
+      credentials: $grpc.ChannelCredentials.insecure(),
+
+  ));
+
+  getit.registerSingleton<$grpc.ClientChannel>(channel);
 }
 
 void main() {
