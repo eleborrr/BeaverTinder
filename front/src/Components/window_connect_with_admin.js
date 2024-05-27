@@ -27,7 +27,7 @@ const ChatWindow = () => {
     elem.className="message-from";
 
     author.className = "message-from";
-    if(msg.senderName === nickname){
+    if(msg.senderName === "Admin"){
         elem.className="message-from";
 
         author.className = "message-from";
@@ -53,7 +53,6 @@ const ChatWindow = () => {
   }
     const callbackGrpc = useCallback((roomData) => {
 
-        console.log(roomData);
         const request = new JoinRequest();
         request.setRoomName(roomData.roomName);
         request.setUserName(roomData.senderName);
@@ -62,39 +61,15 @@ const ChatWindow = () => {
 
 
         stream.on('data', (message) => {
-            console.log(message.getMessage());
-            console.log("normal chat recieved");
-            var elem = document.createElement("div");
-            var author = document.createElement("span");
-            var content = document.createElement("span");
-            if(message.from === nickname){
-                elem.className="message-from";
-
-                author.className = "message-from";
-            }
-            else{
-                elem.className="message-to";
-
-                author.className = "message-to";
-            }
-            author.textContent = user + ":";
-
-            content.className = "message-text";
-            content.textContent = message.content;
-
-            elem.appendChild(author);
-            elem.appendChild(content);
-            elem.setAttribute("key", `${counterMessagesKey++}`)
-
-            document.getElementById("messagesList").appendChild(elem);
-
-            console.log(message);
-            setMessages(prev => [...prev, message])
+            var msg = {
+                "content": message.getMessage(),
+                "senderName" : message.getUserName()
+            };
+            handleSendMessage(msg);
         });
 
         
         document.getElementById('sendButton-admin').addEventListener("click", function (event) {
-            console.log("Sended");
             var message = document.getElementById("messageInput-admin").value;
             document.getElementById("messageInput-admin").value = "";
             messagesListRef.current.scrollTop = messagesListRef.current.scrollHeight;
@@ -104,7 +79,6 @@ const ChatWindow = () => {
             request.setReceiverUserName("Admin")
             request.setGroupName(roomData.roomName)
             // request.setFiles([])
-            console.log(request)
             const headers = {
                 Authorization: `Bearer ${token}`,
                 Accept : "application/json"
@@ -127,6 +101,7 @@ const ChatWindow = () => {
                 }
             })
             .then(response => {
+                console.log(response.data);
                 room = response.data; // выводим данные, полученные из сервера
                 callbackGrpc(room);
             })
@@ -140,6 +115,7 @@ const ChatWindow = () => {
                 }
             })
             .then(response => {
+                console.log(response.data)
                 messages = response.data; // выводим данные, полученные из сервера
                 if(messages){
                     messages.forEach(msg => handleSendMessage(msg))
@@ -169,7 +145,7 @@ const ChatWindow = () => {
                     className='chat-messages__content main-content log-reg-inner'>
                     
                 </div>
-                <div id="files-admin" className="files-admin"></div>
+                {/* <div id="files-admin" className="files-admin"></div> */}
             
                 <div  className='chat-admin-input'>
                     <textarea
@@ -179,18 +155,17 @@ const ChatWindow = () => {
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}
                     />
-                    <FileUpload 
+                    {/* <FileUpload 
                         sendButtonId="sendButton-admin"
                         addFilesArea="files-admin"
                         idForDiv="admin"
-                    />
+                    /> */}
                     <input type='submit' id="sendButton-admin" className='chat-form__submit-admin' value='Send' />
                 </div>
             </div>
           </div>
         </div>
       
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js"></script>
     </div>
   );
 };

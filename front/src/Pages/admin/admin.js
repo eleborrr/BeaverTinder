@@ -37,12 +37,12 @@ const AdminPage = () => {
     }, [token])
 
     useEffect( () => {   
-        const roles = jwtDecode(token)["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];    
+        const roles = jwtDecode(token)["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];   
+        console.log(roles); 
         if(Array.isArray(roles))
         {
         roles.some(element => {
             console.log(element);
-            console.log(roles)
             if (element === "Moderator")
             {
                 setIsAvailable(true);
@@ -54,7 +54,6 @@ const AdminPage = () => {
                 setIsAdmin(true);
                 getAllUsersAxios();
             }
-            return element;
         })
         }
         else

@@ -27,11 +27,10 @@ const SupporChatsPage = () => {
         if(Array.isArray(roles))
         {
         roles.some(element => {
-            if (element === "Moderator")
+            if (element === "Moderator" || element === "Admin")
             {
                 setIsAvailable(true);
             }
-            return element;
         })
         }
         else
