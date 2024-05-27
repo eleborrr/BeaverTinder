@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:mobile/Components/shared/beaver_scaffold.dart';
 import 'package:mobile/dto/chat_admin/chat_message_admin.dart';
 import 'package:mobile/dto/chat_admin/room_data.dart';
@@ -16,6 +18,8 @@ class ChatAdminPage extends StatefulWidget {
 }
 
 class ChatAdminPageState extends State<ChatAdminPage> {
+
+  late StreamController<MessageGrpc> _streamController = StreamController<MessageGrpc>();
   late List<ChatMessageAdmin> _messages = [];
   late Stream<MessageGrpc> stream = const Stream.empty();
   final _dio = getit<DioClient>();
@@ -36,8 +40,17 @@ class ChatAdminPageState extends State<ChatAdminPage> {
     var request = JoinRequest();
     request.roomName = roomData.roomName;
     request.userName = roomData.senderName;
-    stream = _chatAdminClient.connectToRoom(request);
+    _chatAdminClient.connectToRoom(request).listen((data) {
+      setState(() {
+        _messages.add(ChatMessageAdmin(
+          senderName: data.userName,
+          content: data.message,
+        ));
+      });
+    });
+    setState(() {}); // Добавьте эту строку для обновления списка сообщений
   }
+
 
   Future<void> _sendMessage() async {
     var mess = MessageGrpc();
@@ -46,7 +59,6 @@ class ChatAdminPageState extends State<ChatAdminPage> {
     mess.userName = roomData.senderName;
     mess.groupName = roomData.roomName;
     mess.receiverUserName = roomData.receiverName;
-    mess.files.add(FileMessageGrpc());
     await _chatAdminClient.sendMessage(mess);
   }
 
@@ -56,24 +68,6 @@ class ChatAdminPageState extends State<ChatAdminPage> {
       title: 'Chat with Admin',
       body: Column(
         children: [
-          Center(
-            child: StreamBuilder<MessageGrpc>(
-              stream: stream, // Подписка на поток
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  _messages.add(
-                      ChatMessageAdmin(
-                          senderName: snapshot.data!.userName,
-                          content: snapshot.data!.message,
-                          timestamp: DateTime.now())
-                  ); // Отображение полученного сообщения
-                } else {
-                  return Text('No data yet');
-                }
-                return null!;
-              },
-            ),
-          ),
           Expanded(
             child: ListView.builder(
               itemCount: _messages.length,

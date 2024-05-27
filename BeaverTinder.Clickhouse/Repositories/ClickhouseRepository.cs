@@ -26,7 +26,7 @@ public class ClickhouseRepository : IClickhouseRepository
         using var connection = new ClickHouseConnection(ConnectionStrings.Clickhouse.ConnectionString);
         // ExecuteScalarAsync is an async extension which creates command and executes it
         var roundDate = date.Date;
-        var formattedDate = date.ToString("yyyy-MM-dd HH:mm:ss");
+        var formattedDate = roundDate.ToString("yyyy-MM-dd HH:mm:ss");
         var curDay = await GetCurrDay(connection, roundDate);
         if (curDay is null)
         {

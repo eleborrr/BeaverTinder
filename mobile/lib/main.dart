@@ -20,8 +20,8 @@ import 'package:get_it/get_it.dart';
 import 'package:grpc/grpc.dart';
 
 final getit = GetIt.instance;
-const baseIp = '192.168.31.10';
-const link = 'http://${baseIp}:8080/graphql/';
+const baseIp = '192.168.31.180';
+const link = 'http://${baseIp}:8086/graphql/';
 
 void setup() {
   getit.registerSingleton<AuthProvider>(AuthProvider());

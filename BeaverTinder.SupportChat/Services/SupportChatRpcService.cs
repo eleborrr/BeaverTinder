@@ -80,6 +80,6 @@ public class SupportChatRpcService : Chat.ChatBase
         // await _mediator.Send(files);
         
         await _chatRoomService.BroadcastMessageToChatRoom(request);
-        return await base.SendMessage(request, context);
+        return new Empty();
     }
 }

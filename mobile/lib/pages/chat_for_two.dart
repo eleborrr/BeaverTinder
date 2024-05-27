@@ -36,7 +36,7 @@ class _ChatPageState extends State<ChatPage> {
           userName = chatForTwoResponse.success!.senderName;
         });
 
-        _signalRService = SignalRService('http://192.168.129.174:4040');
+        _signalRService = SignalRService('http://192.168.31.180:4040');
         _signalRService.hubConnection.on('ReceivePrivateMessage', _handleReceiveMessage);
 
         _signalRService.connect().then((_) {

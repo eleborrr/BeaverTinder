@@ -15,6 +15,7 @@ class DioClient {
   }
 
   Future<AllLikesMadeDto?> getAllLikesMade() async {
+    initHeaders();
     AllLikesMadeDto? allLikes;
     try
     {
