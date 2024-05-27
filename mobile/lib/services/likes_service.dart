@@ -17,8 +17,8 @@ class LikesService implements LikesServiceBase {
 
   @override
   Future<Result<LikesResponseDto, String>> dislikeAsync(LikeRequestDto model) async {
-    final result = await _client.query(
-        QueryOptions(
+    final result = await _client.mutate(
+        MutationOptions(
             document: gql('''
       mutation {
         disLike(likeRequestDto: { likedUserId: "${model.likedUserId}" }) {
@@ -32,7 +32,7 @@ class LikesService implements LikesServiceBase {
 
     return result.hasException
         ? const Result.fromFailure("Не удалось загрузить контент")
-        : Result.fromSuccess(LikesResponseDto.fromJson(result.data!["dislike"]));
+        : Result.fromSuccess(LikesResponseDto.fromJson(result.data!["disLike"]));
   }
 
   @override

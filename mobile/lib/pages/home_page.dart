@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/Components/home/home_card.dart';
-import 'package:mobile/Components/shared/beaver_scaffold.dart';
-import 'package:mobile/styles/home_style.dart';
-import '../Components/shared/beaver_drawer.dart';
+import 'package:mobile/components/home/home_card.dart';
+import 'package:mobile/components/shared/beaver_scaffold.dart';
+import '../components/shared/beaver_drawer.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

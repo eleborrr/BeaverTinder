@@ -26,4 +26,12 @@ public class LikesMadeController : Controller
         result.AllDaysLikes = allDaysLikes;
         return Json(result);
     }
+    
+    [HttpGet]
+    [Route("/connect")]
+    public JsonResult ConnectUserToQueue()
+    {
+        var result = _clickhouseService.ConnectUserToQueue();
+        return Json(result);
+    }
 }

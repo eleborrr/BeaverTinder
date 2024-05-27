@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/navigation/navigation_routes.dart';
 import 'package:mobile/styles/home_style.dart';
 
 class BeaverDrawer extends StatelessWidget {
@@ -25,7 +26,7 @@ class BeaverDrawer extends StatelessWidget {
             title: 'Home Page',
             onTap: () {
               Navigator.of(context).pop();
-              Navigator.pushNamed(context, '/home');
+              Navigator.pushNamed(context, NavigationRoutes.home);
             },
           ),
           _buildListTile(
@@ -33,7 +34,7 @@ class BeaverDrawer extends StatelessWidget {
             title: 'Like Page',
             onTap: () {
               Navigator.of(context).pop();
-              Navigator.pushNamed(context, '/like');
+              Navigator.pushNamed(context, NavigationRoutes.like);
             },
           ),
           _buildListTile(
@@ -41,7 +42,7 @@ class BeaverDrawer extends StatelessWidget {
             title: 'Chats',
             onTap: () {
               Navigator.of(context).pop();
-              Navigator.pushNamed(context, '/chats');
+              Navigator.pushNamed(context, NavigationRoutes.chats);
             },
           ),
           _buildListTile(
@@ -49,7 +50,7 @@ class BeaverDrawer extends StatelessWidget {
             title: 'Shops Page',
             onTap: () {
               Navigator.of(context).pop();
-              Navigator.pushNamed(context, '/shops');
+              Navigator.pushNamed(context, NavigationRoutes.shops);
             },
           ),
           _buildListTile(
@@ -57,7 +58,15 @@ class BeaverDrawer extends StatelessWidget {
             title: 'Profile Page',
             onTap: () {
               Navigator.of(context).pop();
-              Navigator.pushNamed(context, '/profile');
+              Navigator.pushNamed(context, NavigationRoutes.profile);
+            },
+          ),
+          _buildListTile(
+            context,
+            title: 'Fun fact',
+            onTap: () {
+              Navigator.of(context).pop();
+              Navigator.pushNamed(context, NavigationRoutes.funFact);
             },
           ),
         ],
