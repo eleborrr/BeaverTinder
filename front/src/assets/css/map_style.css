@@ -1,0 +1,14 @@
+.div_map{
+    display: flex;
+    justify-content: center;
+}
+
+#map {
+    width: 430px;
+    height: 320px;
+    border: 1px solid black;
+    margin: 0;
+    padding: 0;
+    background-color:#ccc;
+    overflow:hidden;
+}

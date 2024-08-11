@@ -1,0 +1,32 @@
+.checkboxRemember{
+    margin-left: 5px;
+    width: 25px;
+    height: 25px;
+}
+
+.checkbox-form{
+    display: flex;
+    align-items: center;
+    margin: 5%;
+}
+
+.errorMessage{
+    color: red;
+    font-style: oblique;
+    font-size: x-large;
+}
+
+.hide{
+    display: none;
+}
+
+.vk-logo{
+    width: 50px;
+}
+
+.image-log{
+    background-image: url('./../images/login/log.jpg');
+    background-size: 50px 50px;
+    background-repeat: no-repeat;
+    background-position: end;
+}

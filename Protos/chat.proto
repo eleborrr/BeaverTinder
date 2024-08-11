@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+option csharp_namespace = "BeaverTinder.Shared";
+
+package greet;
+
+service Chat{
+  rpc ConnectToRoom(JoinRequest) returns (stream MessageGrpc);
+  rpc SendMessage(MessageGrpc) returns (Empty);
+}
+
+message JoinRequest{
+  string room_name = 1;
+  string user_name = 2;
+} 
+
+
+message ClientMessageChat {
+  string text = 1;
+  string user_name = 2;
+}
+
+message Empty{
+}
+
+message MessageGrpc {
+  string message = 1;
+  string user_name = 2;
+  repeated FileMessageGrpc files = 3;
+  string receiver_user_name = 4;
+  string group_name = 5;
+}
+
+message FileMessageGrpc {
+  bytes content = 1;
+  map<string, string> meta_data = 2;
+  string file_name = 3;
+  string main_bucket_identifier = 4;
+  string temporary_bucket_identifier = 5;
+}
+
